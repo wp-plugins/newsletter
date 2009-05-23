@@ -1,0 +1,26 @@
+<?php
+
+// Subscription form (traslate "your name", "your email" and the button "subscribe me")
+$newsletter_labels['subscription_form'] =
+'<form method="post" action="" style="text-align: center">
+<input type="hidden" name="na" value="s"/>
+<table cellspacing="3" cellpadding="3" border="0" width="50%">
+<tr><td>Your&nbsp;name</td><td><input type="text" name="nn" size="30"/></td></tr>
+<tr><td>Your&nbsp;email</td><td><input type="text" name="ne" size="30"/></td></tr>
+<tr><td colspan="2" style="text-align: center"><input type="submit" value="Subscribe me"/></td></tr>
+</table>
+</form>';
+
+$newsletter_labels['widget_form'] =
+'<form action="{newsletter_url}" method="post">
+<p><input type="text" name="ne" value="Your email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
+<p><input type="text" name="nn" value="Your name" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
+<p><input type="submit" value="Subscribe"/></p>
+<input type="hidden" name="na" value="s"/>
+</form>';
+
+// Errors on subscription
+$newsletter_labels['error_email'] = 'Wrong email address. <a href="javascript:history.back()">Go back</a>.';
+$newsletter_labels['error_name'] = 'The name cannot be empty. <a href="javascript:history.back()">Go back</a>.';
+
+?>
