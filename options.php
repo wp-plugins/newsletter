@@ -147,7 +147,9 @@ tinyMCE.init({
         </tr>
         </table>
         -->
-        
+        <p class="submit">
+            <input class="button" type="submit" name="save" value="Save"/>
+        </p>
         <h2>Confirmation (double opt-in)</h2>
         <table class="form-table">
             <tr valign="top">
@@ -182,9 +184,29 @@ tinyMCE.init({
                     <br />
                     {name} will be replaced with the user name                    
                 </td>
-            </tr>             
+            </tr> 
+            
+            <tr valign="top">
+                <th scope="row"><label>Confirmation email subject</label></th>
+                <td>
+                    <input name="options[confirmed_subject]" type="text" size="50" value="<?php echo htmlspecialchars($options['confirmed_subject'])?>"/>
+                    <br />
+                    {name} will be replaced with the user name
+                </td>
+            </tr>               
+                        <tr valign="top">
+                <th scope="row"><label>Confirmed message</label></th>
+                <td>
+                    <textarea name="options[confirmed_message]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['confirmed_message'])?></textarea>
+                    <br />
+                    {name} will be replaced with the user name                    
+                </td>
+            </tr>  
         </table>           
-        
+
+        <p class="submit">
+            <input class="button" type="submit" name="save" value="Save"/>
+        </p>
         <h2>Unsubscription</h2>
         
         <p>A user start the unsubscription process clicking the unsubscription link in a newsletter. This lkink contains the email to unsubscribe and some

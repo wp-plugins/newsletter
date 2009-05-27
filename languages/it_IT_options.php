@@ -22,6 +22,12 @@ oppure copia il link qui sotto nel tu programma di navigazione:</p>
 <p>{subscription_confirm_url}</p>
 <p>Grazie!</p>";
 
+$newsletter_default_options['confirmed_subject'] =
+"Benvenuto in Satollo";
+
+$newsletter_default_options['confirmed_message'] =
+"<p>Con questo messaggio ti confermo l'iscrizione alla newsletter.</p>
+<p>Thank you!</p>";
 
 // Subscription confirmed text
 $newsletter_default_options['confirmed_text'] =

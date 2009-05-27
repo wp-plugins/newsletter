@@ -19,6 +19,14 @@ $newsletter_labels['widget_form'] =
 <input type="hidden" name="na" value="s"/>
 </form>';
 
+$newsletter_labels['embedded_form'] =
+'<form action="{newsletter_url}" method="post">
+<p><input type="text" name="ne" value="Your email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
+&nbsp;<input type="text" name="nn" value="Your name" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
+<input type="submit" value="Subscribe"/>
+<input type="hidden" name="na" value="s"/></p>
+</form>';
+
 // Errors on subscription
 $newsletter_labels['error_email'] = 'Wrong email address. <a href="javascript:history.back()">Go back</a>.';
 $newsletter_labels['error_name'] = 'The name cannot be empty. <a href="javascript:history.back()">Go back</a>.';

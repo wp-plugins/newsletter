@@ -77,17 +77,92 @@ if (isset($_POST['test']))
 ?>
 
 <?php
-if (isset($_POST['send']))
+if (isset($_POST['simulate']))
 {
-    echo '<h2>Sending...</h2>';
-    
+    update_option('newsletter_last', array());
     $options = newsletter_request('options');
     update_option('newsletter_email', $options);
+?>
+    <h2>Sending simulation</h2>
+    <p>There is a little delay between each email sending to simulate mailing process.</p>
+    <script type="text/javascript">
+    location.href=location.href + "&sendbatchsimulate=1";
+    </script>
 
-    newsletter_send($options['subject'], $options['message']);
+<?php 
+    return;
 }
 ?>
 
+<?php
+if (isset($_GET['sendbatchsimulate']))
+{
+    echo '<h2>Sending batch simulation</h2>';
+    echo '<p><strong>NEVER CLOSE THIS BROWSER WINDOW!</strong></p>';
+
+    $res = newsletter_send($options['subject'], $options['message']);
+    if (!$res)
+    {
+        echo '<script type="text/javascript">';
+        echo 'location.href=location.href';
+        echo '</script>';
+        return;
+    }
+}
+
+?>
+
+
+
+<?php
+if (isset($_POST['send']) || isset($_POST['restart']))
+{
+    echo '<h2>Sending...</h2>';
+    if (isset($_POST['send'])) update_option('newsletter_last', array());
+    $options = newsletter_request('options');
+    update_option('newsletter_email', $options);
+
+    echo '<script type="text/javascript">';
+    echo 'location.href=location.href + "&sendbatch=1";';
+    echo '</script>';
+    return;
+}
+?>
+
+<?php
+if (isset($_GET['sendbatch']))
+{
+    echo '<h2>Sending batch</h2>';
+    echo '<p><strong>NEVER CLOSE THIS BROWSER WINDOW!</strong></p>';
+
+    $res = newsletter_send($options['subject'], $options['message'], null, 0, false);
+    if (!$res)
+    {
+        echo '<script type="text/javascript">';
+        echo 'location.href=location.href';
+        echo '</script>';
+        return;
+    }
+}
+/*
+ * \(<a[^>]href=["']{0,1})(.*)(["']{0,1}[^>]>)\i
+[15.45.01] Davide Pozza: (<\s*[A]\s[^>]*[\n\s]*)(href\s*=\s*([^>|\s]*))[^>]*>
+ */
+?>
+
+<?php $last = get_option('newsletter_last'); ?>
+<h2>Last batch</h2>
+<?php if (!$last) { ?>
+<p>No batch info found.</p>
+<?php } else { ?>
+<p>
+    Total: <?php echo $last['total']; ?><br />
+    Sent: <?php echo $last['sent']; ?><br />
+    Last email: <?php echo $last['email']; ?><br />
+</p>
+<?php } ?>
+
+<h2>Newsletter message</h2>
         <table class="form-table">
             <tr valign="top">
                 <td>
@@ -112,6 +187,11 @@ if (isset($_POST['send']))
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
             <input class="button" type="submit" name="send" value="Send"/>
+            <input class="button" type="submit" name="simulate" value="Simulate" onclick="return confirm('Simulation erases last batch data. Proceed?')"/>
+            <?php if ($last['email'] != '') { ?>
+            <input class="button" type="submit" name="restart" value="Restart send process"/>
+            (last email: <?php echo get_option('newsletter_last'); ?>)
+            <?php } ?>
             <input class="button" type="submit" name="test" value="Send test email"/>
 
 

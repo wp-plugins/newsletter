@@ -36,6 +36,13 @@ $newsletter_default_options['confirmed_text'] =
 "<p>Your subscription has been confirmed!
 Thank you {name}!</p>";
 
+$newsletter_default_options['confirmed_subject'] =
+"Welcome aboard, {name}";
+
+$newsletter_default_options['confirmed_message'] =
+"<p>The message confirm your subscription to {blog_title} newsletter.</p>
+<p>Thank you!</p>";
+
 // Unsubscription request introductory text
 $newsletter_default_options['unsubscription_text'] =
 "<p>Please confirm you want to unsubscribe my newsletter

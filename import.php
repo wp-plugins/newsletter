@@ -14,7 +14,7 @@ if (isset($_POST['import']))
         $email = newsletter_normalize_email($data[0]);
         $name = $data[1];
         $token = md5(rand());
-        $r = $wpdb->query("insert into " . $wpdb->prefix . "newsletter (email, name, token) values ('" . $wpdb->escape($email) . "','" . $wpdb->escape($name) . "','" . $token . "')");
+        $r = $wpdb->query("insert into " . $wpdb->prefix . "newsletter (status, email, name, token) values ('C', '" . $wpdb->escape($email) . "','" . $wpdb->escape($name) . "','" . $token . "')");
         // Zero or false mean no row inserted
         if (!$r) $errors[] = $line;
     }
@@ -36,6 +36,7 @@ if (isset($_POST['import']))
                     rows starting with "#" are skipped.
                 </td>
             </tr>
+            <?php if ($errors) { ?>
             <tr valign="top">
                 <th scope="row"><label>Rows with errors</label></th>
                 <td>
@@ -43,6 +44,7 @@ if (isset($_POST['import']))
                     <br />
                 </td>
             </tr>
+            <?php } ?>
         </table>
         
 
