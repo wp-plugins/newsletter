@@ -1,15 +1,15 @@
 <?php
 /*
 Plugin Name: Newsletter
-Plugin URI: http://www.satollo.com/english/wordpress/newsletter
+Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.2
+Version: 1.0.3
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 */
 
-/*	Copyright 2008  Satollo  (email : satollo@gmail.com)
+/*	Copyright 2008  Satollo  (email: info@satollo.net)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -512,7 +512,7 @@ function newsletter_mail($to, &$subject, &$message, $html=true)
 add_action('activate_newsletter/plugin.php', 'newsletter_activate');
 function newsletter_activate()
 {
-    global $wpdb;
+    global $wpdb, $newsletter_default_options;
 
     // SQL to create the table
     $sql = 'create table if not exists ' . $wpdb->prefix . 'newsletter (
@@ -525,6 +525,11 @@ function newsletter_activate()
         )';
 
     $wpdb->query($sql);
+    $options = get_option('newsletter');
+    if (is_array($options)) $options = array_merge($newsletter_default_options, $options);
+    else $options = $newsletter_default_options;
+
+    update_option('newsletter', $options);
 }
 
 add_action('admin_menu', 'newsletter_admin_menu');
