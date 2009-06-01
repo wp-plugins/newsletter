@@ -1,5 +1,10 @@
 <?php
 
+if (isset($_POST['defaults']))
+{
+    update_option('newsletter', $newsletter_default_options);
+}
+
 if (isset($_POST['save']))
 {
     $options = newsletter_request('options');
@@ -7,8 +12,7 @@ if (isset($_POST['save']))
     update_option('newsletter', $options);
 }
 
-// Merging between the default options and te user settings: $newsletter_fields is
-// initialized in plugin.php.
+// Merging between the default options and the user settings
 $options = get_option('newsletter');
 if ($options) $options = array_merge($newsletter_default_options, $options);
 else $options = $newsletter_default_options;
@@ -319,6 +323,7 @@ tinyMCE.init({
 
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
+            <input class="button" type="submit" name="defaults" value="Revert to defaults"/>
         </p>
     </form>
 

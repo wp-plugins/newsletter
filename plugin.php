@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.com/english/wordpress/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.1
+Version: 1.0.2
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -28,26 +28,26 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 
 define('NEWSLETTER', true);
 
-require_once(ABSPATH . 'wp-content/plugins/newsletter/widget.php');
+require_once(dirname(__FILE__) . '/widget.php');
 
 // Load the default options values that will be merged with the actual user settings
-@include_once(ABSPATH . 'wp-content/plugins/newsletter/languages/en_US_options.php');
-if (WPLANG != '') @include_once(ABSPATH . 'wp-content/plugins/newsletter/languages/' . WPLANG . '_options.php');
-@include_once(ABSPATH . 'wp-content/plugins/newsletter/languages/custom_options.php');
+@include_once(dirname(__FILE__) . '/languages/en_US_options.php');
+if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '_options.php');
+@include_once(ABSPATH . 'wp-content/newsletter/languages/custom_options.php');
 
-$newsletter_home_url = get_option('home');
-for ($i=0; $i<count(newsletter_default_options); $i++)
-{
-    $newsletter_default_options[$i] = str_replace('{home_url}', $newsletter_home_url, $newsletter_default_options[$i]);
-}
+//$newsletter_home_url = get_option('home');
+//foreach($newsletter_default_options as $key=>$value)
+//{
+//    $newsletter_default_options[$key] = str_replace('{home_url}', $newsletter_home_url, $value);
+//}
 
-@include_once(ABSPATH . 'wp-content/plugins/newsletter/languages/en_US.php');
-if (WPLANG != '') @include_once(ABSPATH . 'wp-content/plugins/newsletter/languages/' . WPLANG . '.php');
-@include_once(ABSPATH . 'wp-content/plugins/newsletter/languages/custom.php');
+@include_once(dirname(__FILE__) . '/languages/en_US.php');
+if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '.php');
+@include_once(ABSPATH . 'wp-content/newsletter/languages/custom.php');
 
 // Merging of default settings with user setting
 $newsletter_options = get_option('newsletter');
-if ($newsletter_options) $newsletter_options = array_merge($newsletter_default_options, $newsletter_options);
+if (is_array($newsletter_options)) $newsletter_options = array_merge($newsletter_default_options, $newsletter_options);
 else $newsletter_options = $newsletter_default_options;
 
 $newsletter_options_email = get_option('newsletter_email');

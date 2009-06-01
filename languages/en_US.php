@@ -13,8 +13,8 @@ $newsletter_labels['subscription_form'] =
 
 $newsletter_labels['widget_form'] =
 '<form action="{newsletter_url}" method="post">
-<p><input type="text" name="ne" value="Your email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
 <p><input type="text" name="nn" value="Your name" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
+<p><input type="text" name="ne" value="Your email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
 <p><input type="submit" value="Subscribe"/></p>
 <input type="hidden" name="na" value="s"/>
 </form>';
