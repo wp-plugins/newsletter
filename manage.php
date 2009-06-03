@@ -1,5 +1,11 @@
 <?php
 
+if ($_POST['a'] == 'resend')
+{
+    newsletter_send_confirmation(newsletter_get_subscriber(newsletter_request('email')));
+    $_POST['a'] = 'search';
+}
+
 if ($_POST['a'] == 'remove')
 {
     newsletter_delete(newsletter_request('email'));
@@ -42,6 +48,13 @@ function newsletter_set_status(email, status)
     document.getElementById("status").value = status;
     document.getElementById("channel").submit();
 }
+function newsletter_resend(email)
+{
+    if (!confirm("Resend the subscription confirmation email?")) return;
+    document.getElementById("action").value = "resend";
+    document.getElementById("email").value = email;
+    document.getElementById("channel").submit();
+}
 </script>
 <div class="wrap">
         <h2>Subscribers Management</h2>
@@ -66,6 +79,11 @@ function newsletter_set_status(email, status)
     <input type="submit" value="Remove all unconfirmed" name="removeallunconfirmed" onclick="return confirm('Are your sure, really sure?')"/>
     </p>
     </form>
+
+    <h2>Statistics</h2>
+    Confirmed subscriber: <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C'"); ?>
+    <br />
+    Unconfirmed subscriber: <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='S'"); ?>
 
     <h2>Results</h2>
     <style type="text/css">
@@ -92,6 +110,7 @@ function newsletter_set_status(email, status)
                 echo '<a href="javascript:void(newsletter_remove(\'' . $s->email . '\'))">remove</a>';
                 echo ' | <a href="javascript:void(newsletter_set_status(\'' . $s->email . '\', \'C\'))">confirm</a>';
                 echo ' | <a href="javascript:void(newsletter_set_status(\'' . $s->email . '\', \'S\'))">unconfirm</a>';
+                echo ' | <a href="javascript:void(newsletter_resend(\'' . $s->email . '\'))">resend confirmation</a>';
                 echo '</td>';
                 echo '</tr>';
             }

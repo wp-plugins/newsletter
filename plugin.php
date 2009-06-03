@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.3
+Version: 1.0.4
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -256,7 +256,7 @@ function newsletter_subscribe($email, $name)
 {
     global $newsletter_options, $wpdb, $newsletter_subscriber;
 
-    newsletter_log('Iscrizione di ' . $email);
+    //newsletter_log('Iscrizione di ' . $email);
 
     $email = newsletter_normalize_email($email);
 
@@ -290,6 +290,22 @@ function newsletter_subscribe($email, $name)
     newsletter_notify_admin($subject, $message);
 }
 
+function newsletter_send_confirmation($subscriber)
+{
+    global $newsletter_options;
+
+    // The full URL to the confirmation page
+    $url = $newsletter_options['url'] . '?na=c&amp;ne=' . urlencode($subscriber->email) . '&amp;nt=' . $subscriber->token;
+
+    $message = newsletter_replace_url($newsletter_options['confirmation_message'], 'SUBSCRIPTION_CONFIRM_URL', $url);
+    $message = newsletter_replace($message, $subscriber);
+
+    $subject = newsletter_replace($newsletter_options['confirmation_subject'], $subscriber);
+
+    newsletter_mail($subscriber->email, $subject, $message);
+    var_dump($subscriber);
+}
+
 /**
  * Return a subscriber by his email. The email will be sanitized and normalized
  * before issuing the query to the database.
@@ -318,6 +334,7 @@ function newsletter_search($text)
     if (!$recipients) return null;
     return $recipients;
 }
+
 
 /**
  * Normalize an email address,making it lowercase and trimming spaces.
