@@ -28,10 +28,26 @@ if (isset($_POST['auto']))
             $excerpt = substr($excerpt, 0, $x) . '[...]';
         }
 
+        $image = '';
+        $x = stripos($content, '<img');
+
+        if ($x !== false) {
+            $x = stripos($content, 'src="', $x);
+            if ($x !== false) {
+                $x += 5;
+                $y = strpos($content, '"', $x);
+                $image = substr($content, $x, $y-$x);
+            }
+        }
+
+        if ($image == '') $image = get_option('siteurl') . '/wp-content/plugins/newsletter/images/empty.gif';
+
+
         $message = str_replace('{excerpt_' . $idx . '}', $excerpt, $message);
         $message = str_replace('{content_' . $idx . '}', $content, $message);
         $message = str_replace('{link_' . $idx . '}', get_permalink(), $message);
         $message = str_replace('{title_' . $idx . '}', get_the_title(), $message);
+        $message = str_replace('{image_' . $idx . '}', $image, $message);
         // image replacement
         $idx++;
     }
@@ -63,16 +79,22 @@ tinyMCE.init({
 <?php
 if (isset($_POST['test']))
 {
+    update_option('newsletter_last', array());
     echo '<h2>Sending test...</h2>';
 
     $options = newsletter_request('options');
     update_option('newsletter_email', $options);
     $subscribers = array();
-    $subscribers[0]->name = $options['test_name_1'];
-    $subscribers[0]->email = $options['test_email_1'];
-    $subscribers[0]->token = 'FAKETOKEN';
-    var_dump($subscribers);
-    newsletter_send($options['subject'], $options['message'], $subscribers);
+    for ($i=1; $i<=10; $i++)
+    {
+        if (!$options['test_email_1']) continue;
+
+        $subscribers[0]->name = $options['test_name_1'];
+        $subscribers[0]->email = $options['test_email_1'];
+        $subscribers[0]->token = 'FAKETOKEN';
+    }
+    //var_dump($subscribers);
+    newsletter_send($options['subject'], $options['message'], $subscribers, 0, false);
 }
 ?>
 
@@ -158,11 +180,13 @@ if (isset($_GET['sendbatch']))
 <p>
     Total: <?php echo $last['total']; ?><br />
     Sent: <?php echo $last['sent']; ?><br />
-    Last email: <?php echo $last['email']; ?><br />
+    Last email: <?php echo $last['email']; ?> (if empty the batch has completed)<br />
 </p>
 <?php } ?>
 
 <h2>Newsletter message</h2>
+<p>PHP execution timeout is set to <?php echo ini_get('max_execution_time'); ?> (information
+for debug purpose).</p>
         <table class="form-table">
             <tr valign="top">
                 <td>
@@ -175,7 +199,7 @@ if (isset($_GET['sendbatch']))
             <tr valign="top">
                 <td>
                     Message<br />
-                    <textarea name="options[message]" wrap="off" rows="20" style="width: 600px"><?php echo htmlspecialchars($options['message'])?></textarea>
+                    <textarea name="options[message]" wrap="off" rows="20" style="width: 100%"><?php echo htmlspecialchars($options['message'])?></textarea>
                     <br />
                     {name} will be replaced with receiver name; {unsubscription_url} will be replaced with the
                     unsubscription url but if you want to create a link with the editor, use UNSUBSCRIPTION_URL as address.
@@ -215,18 +239,16 @@ if (isset($_GET['sendbatch']))
         <h2>Test subscriber</h2>
         <p>
         <table class="form-table">
+            <?php for ($i=1; $i<=10; $i++) { ?>
             <tr valign="top">
-                <th scope="row"><label>Name</label></th>
+                <th scope="row"><label>Subscriber <?php echo $i; ?></label></th>
                 <td>
-                    <input name="options[test_name_1]" type="text" size="30" value="<?php echo htmlspecialchars($options['test_name_1'])?>"/>
+                    name: <input name="options[test_name_<?php echo $i; ?>]" type="text" size="30" value="<?php echo htmlspecialchars($options['test_name_' . $i])?>"/>
+                    &nbsp;&nbsp;&nbsp;
+                    email:<input name="options[test_email_<?php echo $i; ?>]" type="text" size="30" value="<?php echo htmlspecialchars($options['test_email_' . $i])?>"/>
                 </td>
             </tr>
-            <tr valign="top">
-                <th scope="row"><label>Email</label></th>
-                <td>
-                    <input name="options[test_email_1]" type="text" size="30" value="<?php echo htmlspecialchars($options['test_email_1'])?>"/>
-                </td>
-            </tr>
+            <?php } ?>
         </table>
     </form>
 

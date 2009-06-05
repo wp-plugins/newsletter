@@ -58,7 +58,6 @@ function newsletter_resend(email)
 </script>
 <div class="wrap">
         <h2>Subscribers Management</h2>
-        <p>max execution time: <?=ini_get('max_execution_time')?></p>
         <p>Still in developement, any ideas will be great: write me to info@satollo.com.</p>
     <form id="channel" method="post" action="">
         <input type="hidden" id="action" name="a" value="search"/>

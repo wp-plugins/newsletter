@@ -11,6 +11,8 @@ newsletters.
 
 == Description ==
 
+Deeper infos on [Newsletter official page](http://www.satollo.net/plugins/newsletter).
+
 This plugin let you to collect subscribers on your blog with a double opt-in
 subscription process. Double opt-in means the user has to confirm a subscription
 following some simple instruction sent to him by email.
@@ -37,13 +39,14 @@ a little a time:
 * mass mail support
 * PHP execution timeout bypass
 
-More on [Newsletter plugin page](http://www.satollo.com/english/wordpress/newsletter) or write me
-to info@satollo.com.
+
 
 **Check out my other plugins**:
 
 * [Hyper Cache](http://www.satollo.com/english/wordpress/hyper-cache "Hyper Cache WordPress plugin: when performance and flexibilty are not an option")
-* [Post Layout](http://www.satollo.com/english/wordpress/post-layout "Post Layout WordPress plugin: the easy way to enrich your posts")
+* [Post Layout](http://www.satollo.net/plugins/post-layout)
+* [Post Layout Pro](http://www.satollo.net/plugins/post-layout-pro)
+* [Other Posts](http://www.satollo.net/plugins/other-posts)
 * [Feed Layout](http://www.satollo.com/english/wordpress/feed-layout "Feed Layout WordPress plugin: the easy way to enrich your feed contents")
 * [Dynatags](http://www.satollo.com/english/wordpress/dynatags "Dynatags WordPress plugin: Create your own custom short tag in seconds")
 

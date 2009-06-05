@@ -3,9 +3,9 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.4
+Version: 1.0.5
 Author: Satollo
-Author URI: http://www.satollo.com
+Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 */
 
@@ -190,9 +190,9 @@ function newsletter_send($subject, $message, $recipients = null, $max=0, $simula
 
     echo 'Queue: ' . count($recipients) . ' emails<br />';
     $start_time = time();
-    $max_time = (int)(ini_get('max_execution_time') * 0.1);
+    $max_time = (int)(ini_get('max_execution_time') * 0.8);
     echo 'Max time: ' . $max_time . ' seconds<br />';
-    echo 'Last sent: ' . get_option('newsletter_last') . '<br />';
+    echo 'Sending to: ';
 
     $last['total'] = count($recipients);
     if (!$last['sent']) $last['sent'] = 0;
@@ -577,7 +577,9 @@ function newsletter_replace($text, $subscriber)
 }
 
 /**
- * Replaces the URL placeholder.
+ * Replaces the URL placeholders. There are two kind of URL placeholders: the ones
+ * lowercase and betweeb curly brakets and the ones all uppercase. The tag to be passed
+ * is the one all uppercase but the lowercase one will also be replaced.
  */
 function newsletter_replace_url($text, $tag, $url)
 {
