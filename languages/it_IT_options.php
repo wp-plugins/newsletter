@@ -17,17 +17,17 @@ $newsletter_default_options['confirmation_subject'] =
 $newsletter_default_options['confirmation_message'] =
 "<p>Ciao {name},</p>
 <p>hai richiesto l'iscrizione alla newsletter di {blog_title}.
-Conferma l'iscrizione <a href=\"{home_url}/SUBSCRIPTION_CONFIRM_URL\"><strong>cliccando qui</strong></a>
+Conferma l'iscrizione <a href=\"SUBSCRIPTION_CONFIRM_URL\"><strong>cliccando qui</strong></a>
 oppure copia il link qui sotto nel tu programma di navigazione:</p>
 <p>{subscription_confirm_url}</p>
 <p>Grazie!</p>";
 
 $newsletter_default_options['confirmed_subject'] =
-"Benvenuto in Satollo";
+"Benvenuto {name}!";
 
 $newsletter_default_options['confirmed_message'] =
 "<p>Con questo messaggio ti confermo l'iscrizione alla newsletter.</p>
-<p>Thank you!</p>";
+<p>Grazie!</p>";
 
 // Subscription confirmed text
 $newsletter_default_options['confirmed_text'] =
@@ -38,7 +38,7 @@ Buona lettura!</p>";
 $newsletter_default_options['unsubscription_text'] =
 "<p>{name}, vuoi eliminare la tua iscrizione? 
 Se sì... mi dispace, ma non ti trattengo oltre:</p>
-<p><a href=\"{home_url}/UNSUBSCRIPTION_CONFIRM_URL\">Sì, voglio eliminare la mia iscrizione per sempre</a>.</p>";
+<p><a href=\"UNSUBSCRIPTION_CONFIRM_URL\">Sì, voglio eliminare la mia iscrizione per sempre</a>.</p>";
 
 $newsletter_default_options['unsubscribed_text'] =
 "<p>La tua iscrizione è stata definitivamente eliminata.</p>";

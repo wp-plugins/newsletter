@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.5
+Version: 1.0.6
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -521,6 +521,8 @@ function newsletter_mail($to, &$subject, &$message, $html=true)
     $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
 
     $headers .= 'From: "' . $from_name . '" <' . $from_email . ">\r\n";
+
+    $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
 
     return mail($to, $subject, $message, $headers, "-f" . $from_email);
 }
