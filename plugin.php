@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.6
+Version: 1.0.7
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -329,8 +329,15 @@ function newsletter_get_all()
 function newsletter_search($text)
 {
     global $wpdb;
-    $recipients = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter where email like '%" .
-        $wpdb->escape($text) . "%' or name like '%" . $wpdb->escape($text) . "%' order by email");
+    if ($text == '')
+    {
+        $recipients = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter order by email");
+    }
+    else
+    {
+        $recipients = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter where email like '%" .
+            $wpdb->escape($text) . "%' or name like '%" . $wpdb->escape($text) . "%' order by email");
+    }
     if (!$recipients) return null;
     return $recipients;
 }
@@ -523,8 +530,14 @@ function newsletter_mail($to, &$subject, &$message, $html=true)
     $headers .= 'From: "' . $from_name . '" <' . $from_email . ">\r\n";
 
     $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-
-    return mail($to, $subject, $message, $headers, "-f" . $from_email);
+    if ($newsletter_options['sendmail'])
+    {
+        return mail($to, $subject, $message, $headers, "-f" . $from_email);
+    }
+    else
+    {
+        return mail($to, $subject, $message, $headers);
+    }
 }
 
 

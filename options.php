@@ -322,7 +322,18 @@ The text of the link for unsubscription to be placed in the unsubscription email
 </td>
 </tr> 
 </table>
--->
+        -->
+        <h2>Advanced</h2>
+
+        <table class="form-table">
+            <tr valign="top">
+                <th scope="row">&nbsp;</th>
+                <td>
+                    <input type="checkbox" name="options[sendmail]" value="1" <?php echo $options['sendmail']!= null?'checked':''; ?> />
+                    <label for="options[sendmail]">add -f parameter to send mail to correct the Return-Path</label>
+                </td>
+            </tr>
+        </table>
 
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
