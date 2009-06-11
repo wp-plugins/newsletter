@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.8
+Version: 1.0.9
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -30,16 +30,12 @@ define('NEWSLETTER', true);
 
 require_once(dirname(__FILE__) . '/widget.php');
 
+global $newsletter_default_options;
+
 // Load the default options values that will be merged with the actual user settings
 @include_once(dirname(__FILE__) . '/languages/en_US_options.php');
 if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '_options.php');
 @include_once(ABSPATH . 'wp-content/newsletter/languages/custom_options.php');
-
-//$newsletter_home_url = get_option('home');
-//foreach($newsletter_default_options as $key=>$value)
-//{
-//    $newsletter_default_options[$key] = str_replace('{home_url}', $newsletter_home_url, $value);
-//}
 
 @include_once(dirname(__FILE__) . '/languages/en_US.php');
 if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '.php');
@@ -563,9 +559,12 @@ function newsletter_activate()
 
     $wpdb->query($sql);
     $options = get_option('newsletter');
+
     if (is_array($options)) $options = array_merge($newsletter_default_options, $options);
     else $options = $newsletter_default_options;
 
+    newsletter_log('Plugin activated', true);
+    
     update_option('newsletter', $options);
 }
 
@@ -625,16 +624,19 @@ function newsletter_is_email($email, $empty_ok=false)
     return false;
 }
 
-// Append a line of text to a text file.
-function newsletter_log($text) 
+/**
+ * Write a line of log in the log file if the logs are enabled or force is
+ * set to true.
+ */
+function newsletter_log($text, $force=false)
 {
     global $newsletter_options;
 
-    if (!$newsletter_options['logs']) return;
+    if (!$force && !$newsletter_options['logs']) return;
     
     $file = fopen(dirname(__FILE__) . '/newsletter.log', 'a');
     if (!$file) return;
-    fwrite($file, $text . "\n");
+    fwrite($file, date('Y-m-d') . ' ' . $text . "\n");
     fclose($file);
 }
 ?>

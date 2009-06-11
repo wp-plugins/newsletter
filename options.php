@@ -333,6 +333,13 @@ The text of the link for unsubscription to be placed in the unsubscription email
                     <label for="options[sendmail]">add -f parameter to send mail to correct the Return-Path</label>
                 </td>
             </tr>
+            <tr valign="top">
+                <th scope="row">&nbsp;</th>
+                <td>
+                    <input type="checkbox" name="options[logs]" value="1" <?php echo $options['logs']!= null?'checked':''; ?> />
+                    <label for="options[logs]">write logs</label>
+                </td>
+            </tr>
         </table>
 
         <p class="submit">
