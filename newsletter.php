@@ -11,9 +11,16 @@ if (isset($_POST['auto']))
     global $post;
 
     // Load the theme
-    $message = file_get_contents(dirname(__FILE__) . '/themes/' . $_POST['theme']);
+    if ($_POST['theme'][0] == '*')
+    {
+       $message = file_get_contents(ABSPATH . '/wp-content/newsletter/themes/' . substr($_POST['theme'], 1));
+    }
+    else
+    {
+        $message = file_get_contents(dirname(__FILE__) . '/themes/' . $_POST['theme']);
+    }
 
-    $myposts = get_posts('numberposts=5');
+    $myposts = get_posts('numberposts=10');
     $idx = 1;
     foreach($myposts as $post)
     {
@@ -228,6 +235,18 @@ for debug purpose).</p>
                 {
                     if ($file == '.' || $file == '..') continue;
                     echo '<option value="' . $file . '">' . $file . '</option>';
+                }
+        		closedir($handle);
+            }
+            ?>
+
+            <?php
+            if ($handle = @opendir(ABSPATH . 'wp-content/newsletter/themes'))
+            {
+                while ($file = readdir($handle))
+                {
+                    if ($file == '.' || $file == '..') continue;
+                    echo '<option value="*' . $file . '">* ' . $file . '</option>';
                 }
         		closedir($handle);
             }

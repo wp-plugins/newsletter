@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.7
+Version: 1.0.8
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -294,8 +294,11 @@ function newsletter_send_confirmation($subscriber)
 {
     global $newsletter_options;
 
+    newsletter_log('newsletter_send_confirmation() - Sending a confirmation request message');
     // The full URL to the confirmation page
     $url = $newsletter_options['url'] . '?na=c&amp;ne=' . urlencode($subscriber->email) . '&amp;nt=' . $subscriber->token;
+
+    newsletter_log('newsletter_send_confirmation() - URL: ' . $url);
 
     $message = newsletter_replace_url($newsletter_options['confirmation_message'], 'SUBSCRIPTION_CONFIRM_URL', $url);
     $message = newsletter_replace($message, $subscriber);
@@ -303,7 +306,6 @@ function newsletter_send_confirmation($subscriber)
     $subject = newsletter_replace($newsletter_options['confirmation_subject'], $subscriber);
 
     newsletter_mail($subscriber->email, $subject, $message);
-    var_dump($subscriber);
 }
 
 /**
@@ -359,11 +361,14 @@ add_action('init', 'newsletter_init');
 function newsletter_init()
 {
     global $newsletter_options, $newsletter_step, $wpdb, $newsletter_subscriber, $newsletter_labels;
+    global $hyper_cache_stop;
 
     // "na" always is the action to be performed - stands for "newsletter action"
     $action = $_REQUEST['na'];
     if (!$action) return;
 
+    $hyper_cache_stop = true;
+    
     if ($action == 'subscribe' || $action == 's')
     {
         if (!newsletter_is_email($_REQUEST['ne'])) {
@@ -623,7 +628,12 @@ function newsletter_is_email($email, $empty_ok=false)
 // Append a line of text to a text file.
 function newsletter_log($text) 
 {
+    global $newsletter_options;
+
+    if (!$newsletter_options['logs']) return;
+    
     $file = fopen(dirname(__FILE__) . '/newsletter.log', 'a');
+    if (!$file) return;
     fwrite($file, $text . "\n");
     fclose($file);
 }
