@@ -63,7 +63,9 @@ if (isset($_POST['auto']))
     $options['message'] = $message;
 }
 
+$last = get_option('newsletter_last');
 ?>
+
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
 tinyMCE.init({
@@ -81,117 +83,103 @@ tinyMCE.init({
 
 <div class="wrap">
     <form method="post">
+
         <h2>Newsletter Composer</h2>
 
-<?php
-if (isset($_POST['test']))
-{
-    update_option('newsletter_last', array());
-    echo '<h2>Sending test...</h2>';
-
-    $options = newsletter_request('options');
-    update_option('newsletter_email', $options);
-    $subscribers = array();
-    for ($i=1; $i<=10; $i++)
-    {
-        if (!$options['test_email_1']) continue;
-
-        $subscribers[0]->name = $options['test_name_1'];
-        $subscribers[0]->email = $options['test_email_1'];
-        $subscribers[0]->token = 'FAKETOKEN';
-    }
-    //var_dump($subscribers);
-    newsletter_send($options['subject'], $options['message'], $subscribers, 0, false);
-}
-?>
-
-<?php
-if (isset($_POST['simulate']))
-{
-    update_option('newsletter_last', array());
-    $options = newsletter_request('options');
-    update_option('newsletter_email', $options);
-?>
-    <h2>Sending simulation</h2>
-    <p>There is a little delay between each email sending to simulate mailing process.</p>
-    <script type="text/javascript">
-    location.href=location.href + "&sendbatchsimulate=1";
-    </script>
-
-<?php 
-    return;
-}
-?>
-
-<?php
-if (isset($_GET['sendbatchsimulate']))
-{
-    echo '<h2>Sending batch simulation</h2>';
-    echo '<p><strong>NEVER CLOSE THIS BROWSER WINDOW!</strong></p>';
-
-    $res = newsletter_send($options['subject'], $options['message']);
-    if (!$res)
-    {
-        echo '<script type="text/javascript">';
-        echo 'location.href=location.href';
-        echo '</script>';
-        return;
-    }
-}
-
-?>
+        <h3>Last batch infos</h3>
+        <?php if (!$last) { ?>
+            <p>No batch info found.</p>
+        <?php } else { ?>
+            <p>
+                Total emails to send: <?php echo $last['total']; ?><br />
+                Emails sent till now: <?php echo $last['sent']; ?><br />
+                Last email (if empty the batch has completed): <?php echo $last['email']; ?><br />
+            </p>
+        <?php } ?>
 
 
+        <?php if (isset($_POST['test'])) { ?>
 
-<?php
-if (isset($_POST['send']) || isset($_POST['restart']))
-{
-    echo '<h2>Sending...</h2>';
-    if (isset($_POST['send'])) update_option('newsletter_last', array());
-    $options = newsletter_request('options');
-    update_option('newsletter_email', $options);
+        <h3>Sending to test subscribers</h3>
+        <p>
+        <?php
+            update_option('newsletter_last', array());
+            $options = newsletter_request('options');
+            update_option('newsletter_email', $options);
+            $subscribers = array();
+            for ($i=1; $i<=10; $i++)
+            {
+                if (!$options['test_email_' . $i]) continue;
 
-    echo '<script type="text/javascript">';
-    echo 'location.href=location.href + "&sendbatch=1";';
-    echo '</script>';
-    return;
-}
-?>
+                $subscribers[$i-1]->name = $options['test_name_' . $i];
+                $subscribers[$i-1]->email = $options['test_email_' . $i];
+                $subscribers[$i-1]->token = 'FAKETOKEN';
+            }
+            newsletter_send($options['subject'], $options['message'], $subscribers);
+        ?>
+        </p>
 
-<?php
-if (isset($_GET['sendbatch']))
-{
-    echo '<h2>Sending batch</h2>';
-    echo '<p><strong>NEVER CLOSE THIS BROWSER WINDOW!</strong></p>';
+        <?php } ?>
 
-    $res = newsletter_send($options['subject'], $options['message'], null, 0, false);
-    if (!$res)
-    {
-        echo '<script type="text/javascript">';
-        echo 'location.href=location.href';
-        echo '</script>';
-        return;
-    }
-}
+
+        <?php if (isset($_POST['simulate']) || isset($_POST['simulate2'])) { ?>
+
+        <h3>Sending for simulation</h3>
+        <p>There is a little delay between each email sending to simulate mailing process.</p>
+        <?php
+            if (isset($_POST['simulate']))
+            {
+                $options = newsletter_request('options');
+                update_option('newsletter_email', $options);
+                update_option('newsletter_last', array());
+            }
+            echo '<p>';
+            $res = newsletter_send_batch($options['subject'], $options['message'], true);
+            echo '</p>';
+            if (!$res)
+            {
+                echo '</p><form action="" method="post">Still some emails to send.';
+                echo '<input type="submit" name="simulate2" value="Proceed"/>';
+                echo '</form>';
+            }
+        ?>
+
+
+        <?php } ?>
+
+
+        <?php if (isset($_REQUEST['send']) || isset($_POST['send2'])) { ?>
+
+        <h3>Sending for real</h3>
+        <?php
+            if (isset($_POST['send']))
+            {
+                $options = newsletter_request('options');
+                update_option('newsletter_email', $options);
+                update_option('newsletter_last', array());
+            }
+            echo '<p>';
+            $res = newsletter_send_batch($options['subject'], $options['message'], false);
+            echo '</p>';
+            if (!$res)
+            {
+                echo '</p><form action="" method="post">Still some emails to send.';
+                echo '<input type="submit" name="send2" value="Proceed"/>';
+                echo '</form>';
+            }
+        ?>
+
+        <?php } ?>
+
+<!--
 /*
  * \(<a[^>]href=["']{0,1})(.*)(["']{0,1}[^>]>)\i
 [15.45.01] Davide Pozza: (<\s*[A]\s[^>]*[\n\s]*)(href\s*=\s*([^>|\s]*))[^>]*>
  */
-?>
+-->
 
-<?php $last = get_option('newsletter_last'); ?>
-<h2>Last batch</h2>
-<?php if (!$last) { ?>
-<p>No batch info found.</p>
-<?php } else { ?>
-<p>
-    Total: <?php echo $last['total']; ?><br />
-    Sent: <?php echo $last['sent']; ?><br />
-    Last email: <?php echo $last['email']; ?> (if empty the batch has completed)<br />
-</p>
-<?php } ?>
 
-<h2>Newsletter message</h2>
+<h3>Newsletter message</h3>
 <p>PHP execution timeout is set to <?php echo ini_get('max_execution_time'); ?> (information
 for debug purpose).</p>
         <table class="form-table">
@@ -200,7 +188,7 @@ for debug purpose).</p>
                     Subject<br />
                     <input name="options[subject]" type="text" size="50" value="<?php echo htmlspecialchars($options['subject'])?>"/>
                     <br />
-                    {name} will be replaced with receiver name
+                    Tags: <strong>{name}</strong> receiver name.
                 </td>
             </tr>        
             <tr valign="top">
@@ -208,8 +196,8 @@ for debug purpose).</p>
                     Message<br />
                     <textarea name="options[message]" wrap="off" rows="20" style="width: 100%"><?php echo htmlspecialchars($options['message'])?></textarea>
                     <br />
-                    {name} will be replaced with receiver name; {unsubscription_url} will be replaced with the
-                    unsubscription url but if you want to create a link with the editor, use UNSUBSCRIPTION_URL as address.
+                    Tags: <strong>{name}</strong> receiver name;
+                    <strong>{unsubscription_url}</strong> unsubscription URL.
                 </td>
             </tr>
         </table>
@@ -217,8 +205,8 @@ for debug purpose).</p>
 
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
-            <input class="button" type="submit" name="send" value="Send"/>
-            <input class="button" type="submit" name="simulate" value="Simulate" onclick="return confirm('Simulation erases last batch data. Proceed?')"/>
+            <input class="button" type="submit" name="send" value="Send" onclick="return confirm('Send for real?')"/>
+            <input class="button" type="submit" name="simulate" value="Simulate"  onclick="return confirm('Send for simulation?')"/>
             <?php if ($last['email'] != '') { ?>
             <input class="button" type="submit" name="restart" value="Restart send process"/>
             (last email: <?php echo get_option('newsletter_last'); ?>)
@@ -238,9 +226,7 @@ for debug purpose).</p>
                 }
         		closedir($handle);
             }
-            ?>
 
-            <?php
             if ($handle = @opendir(ABSPATH . 'wp-content/newsletter/themes'))
             {
                 while ($file = readdir($handle))
@@ -255,8 +241,10 @@ for debug purpose).</p>
             <input class="button" type="submit" name="auto" value="Auto compose"/>
         </p>
 
-        <h2>Test subscriber</h2>
-        <p>
+        <h3>Test subscribers</h3>
+        <p>Define more test subscriber to see how your email looks on different clients:
+        GMail, Outlook, Thunderbird, Hotmail, ...</p>
+        
         <table class="form-table">
             <?php for ($i=1; $i<=10; $i++) { ?>
             <tr valign="top">

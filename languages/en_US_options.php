@@ -23,7 +23,7 @@ $newsletter_default_options['confirmation_subject'] =
 $newsletter_default_options['confirmation_message'] =
 "<p>Hi {name},</p>
 <p>I received a subscription request for this email address. You can confirm it
-<a href=\"SUBSCRIPTION_CONFIRM_URL\"><strong>clicking here</strong></a>.
+<a href=\"{subscription_confirm_url}\"><strong>clicking here</strong></a>.
 If you cannot click the link, use the following link:</p>
 <p>{subscription_confirm_url}</p>
 <p>If this subscription request has not been made from you, just ignore this message.</p>
@@ -46,7 +46,7 @@ $newsletter_default_options['confirmed_message'] =
 // Unsubscription request introductory text
 $newsletter_default_options['unsubscription_text'] =
 "<p>Please confirm you want to unsubscribe my newsletter
-<a href=\"UNSUBSCRIPTION_CONFIRM_URL\">clicking here</a>.";
+<a href=\"{unsubscription_confirm_url}\">clicking here</a>.";
 
 // When you finally loosed your subscriber
 $newsletter_default_options['unsubscribed_text'] =

@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.0.9
+Version: 1.1.0
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -32,21 +32,32 @@ require_once(dirname(__FILE__) . '/widget.php');
 
 global $newsletter_default_options;
 
-// Load the default options values that will be merged with the actual user settings
-@include_once(dirname(__FILE__) . '/languages/en_US_options.php');
-if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '_options.php');
-@include_once(ABSPATH . 'wp-content/newsletter/languages/custom_options.php');
 
-@include_once(dirname(__FILE__) . '/languages/en_US.php');
-if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '.php');
-@include_once(ABSPATH . 'wp-content/newsletter/languages/custom.php');
+global $newsletter_labels;
+function newsletter_init_labels()
+{
+    global $newsletter_labels;
 
-// Merging of default settings with user setting
-$newsletter_options = get_option('newsletter');
-if (is_array($newsletter_options)) $newsletter_options = array_merge($newsletter_default_options, $newsletter_options);
-else $newsletter_options = $newsletter_default_options;
+    @include(dirname(__FILE__) . '/languages/en_US.php');
+    if (WPLANG != '') @include(dirname(__FILE__) . '/languages/' . WPLANG . '.php');
+    @include_once(ABSPATH . 'wp-content/newsletter/labels.php');
+}
 
-$newsletter_options_email = get_option('newsletter_email');
+function newsletter_label($name)
+{
+    global $newsletter_labels;
+
+    if ($newsletter_labels) return $newsletter_labels[$name];
+    newsletter_init_labels();
+    return $newsletter_labels[$name];
+}
+
+function newsletter_echo($name)
+{
+    echo newsletter_label($name);
+}
+
+
 $newsletter_step = 'subscription';
 
 $newsletter_subscriber;
@@ -72,35 +83,37 @@ function newsletter_stripslashes($value)
 
 function newsletter_embed_form()
 {
-    global $newsletter_labels, $newsletter_options;
-    echo str_replace('{newsletter_url}', $newsletter_options['url'], $newsletter_labels['embedded_form']);
+    $options = get_option('newsletter');
+    echo str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form'));
 }
 
 add_shortcode('newsletter', 'newsletter_call');
 
 function newsletter_call($attrs, $content=null)
 {
-    global $newsletter_options, $newsletter_labels, $newsletter_step, $newsletter_subscriber;
+    global $newsletter_step, $newsletter_subscriber;
+
+    $options = get_option('newsletter');
 
     $buffer = '';
 
     // When a user is starting the subscription process
     if ($newsletter_step == 'subscription')
     {
-        $buffer .= $newsletter_options['subscription_text'];
-        $buffer .= $newsletter_labels['subscription_form'];
+        $buffer .= $options['subscription_text'];
+        $buffer .= newsletter_label('subscription_form');
     }
 
     // When a user has asked to subscribe and the connfirmation request has been sent
     if ($newsletter_step == 'subscribed')
     {
-        $text = newsletter_replace($newsletter_options['subscribed_text'], $newsletter_subscriber);
+        $text = newsletter_replace($options['subscribed_text'], $newsletter_subscriber);
         $buffer .= $text;
     }
 
     if ($newsletter_step == 'confirmed')
     {
-        $text = newsletter_replace($newsletter_options['confirmed_text'], $newsletter_subscriber);
+        $text = newsletter_replace($options['confirmed_text'], $newsletter_subscriber);
         $buffer .= $text;
     }
 
@@ -111,14 +124,15 @@ function newsletter_call($attrs, $content=null)
     if ($newsletter_step == 'unsubscription' || $newsletter_step == 'unsubscription_error')
     {
         $newsletter_subscriber = newsletter_get_subscriber($_REQUEST['ne']);
-        $buffer = newsletter_replace($newsletter_options['unsubscription_text'], $newsletter_subscriber);
-        $url = $newsletter_options['url'] . '?na=uc&amp;ne=' . urlencode($_REQUEST['ne']) . '&amp;nt=' . $_REQUEST['nt'];
+        $buffer = newsletter_replace($options['unsubscription_text'], $newsletter_subscriber);
+        $url = $options['url'] . '?na=uc&amp;ne=' . urlencode($_REQUEST['ne']) .
+        '&amp;nt=' . $_REQUEST['nt'];
         $buffer = newsletter_replace_url($buffer, 'UNSUBSCRIPTION_CONFIRM_URL', $url);
     }
 
     if ($newsletter_step == 'unsubscribed')
     {
-        $text = $newsletter_options['unsubscribed_text'];
+        $text = $options['unsubscribed_text'];
         $text = newsletter_replace($text, $newsletter_subscriber);
         $buffer .= $text;
     }
@@ -127,20 +141,20 @@ function newsletter_call($attrs, $content=null)
     {
         if ($newsletter_step == 'unsubscription_mm_error')
         {
-            $buffer .= '<p>' . $newsletter_options['unsubscription_mm_error'] . '</p>';
+            $buffer .= '<p>' . $options['unsubscription_mm_error'] . '</p>';
         }
-        $buffer .= $newsletter_options['unsubscription_mm_text'];
+        $buffer .= $options['unsubscription_mm_text'];
         $buffer .= '<form method="post" action="?">';
         $buffer .= '<input type="hidden" name="na" value="ue"/>';
         $buffer .= '<table cellspacing="3" cellpadding="3" border="0">';
-        $buffer .= '<tr><td>' . $newsletter_options['unsubscription_mm_email_label'] . '</td><td><input type="text" name="ne" size="20"/></td></tr>';
-        $buffer .= '<tr><td colspan="2" style="text-align: center"><input type="submit" value="' . $newsletter_options['unsubscription_mm_label'] . '"/></td></tr></table>';
+        $buffer .= '<tr><td>' . $options['unsubscription_mm_email_label'] . '</td><td><input type="text" name="ne" size="20"/></td></tr>';
+        $buffer .= '<tr><td colspan="2" style="text-align: center"><input type="submit" value="' . $options['unsubscription_mm_label'] . '"/></td></tr></table>';
         $buffer .= '</form>';
     }
 
     if ($newsletter_step == 'unsubscription_mm_end')
     {
-        $text = $newsletter_options['unsubscription_mm_end'];
+        $text = $options['unsubscription_mm_end'];
         $text = str_replace('{name}', $newsletter_subscriber->name, $text);
         $buffer .= $text;
     }
@@ -159,44 +173,49 @@ function newsletter_call($attrs, $content=null)
  *
  * If recipients are specified, from_last is not used but max is respected.
  */
-function newsletter_send($subject, $message, $recipients = null, $max=0, $simulate=true)
+function newsletter_send_batch($subject, $message, $simulate=true)
 {
-    global $newsletter_options, $newsletter_options_email, $wpdb;
+    global $wpdb;
 
+    $options = get_option('newsletter');
+
+    // Get infos on the last batch sent
     $last = get_option('newsletter_last');
-    if (!is_array($last)) {
-        $last = array();
-        update_option('newsletter_last', array());
-    }
+    if (!is_array($last)) $last = array();
 
-    if ($recipients == null)
-    {
-        $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
-        if ($last['email']) $query .= " and email>'" . $wpdb->escape($last['email']) . "'";
-        $recipients = $wpdb->get_results($query . " order by email");
-    }
+    $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
+    if ($last['email']) $query .= " and email>'" . $wpdb->escape($last['email']) . "'";
+    $recipients = $wpdb->get_results($query . " order by email");
 
+    // This batch is empty...
     if (!$recipients)
     {
-        echo 'No subscribers found';
-        newsletter_log('No subscribers found');
-        update_option('newsletter_last', array());
+        $last['email'] = '';
+        update_option('newsletter_last', $last);
         return true;
+    }
+    else
+    {
+        // If the batch id new store the total recipients
+        if (!$last['email']) $last['total'] = count($recipients);
     }
 
     echo 'Queue: ' . count($recipients) . ' emails<br />';
     $start_time = time();
-    $max_time = (int)(ini_get('max_execution_time') * 0.8);
+    $max_time = (int)(ini_get('max_execution_time') * 0.1);
     echo 'Max time: ' . $max_time . ' seconds<br />';
     echo 'Sending to: ';
 
-    $last['total'] = count($recipients);
+    // Count the total emails sent
     if (!$last['sent']) $last['sent'] = 0;
     $idx = 0;
     foreach ($recipients as $r)
     {
         $m = $message;
-        $url = $newsletter_options['url'] . '?na=u&amp;ne=' . urlencode($r->email) . '&amp;nt=' . $r->token;
+        
+        $url = newsletter_add_qs($options['url'],
+            '?na=u&amp;ne=' . urlencode($r->email) . '&amp;nt=' . $r->token);
+
         $m = newsletter_replace_url($m, 'UNSUBSCRIPTION_URL', $url);
         $m = newsletter_replace($m, $r);
 
@@ -210,23 +229,13 @@ function newsletter_send($subject, $message, $recipients = null, $max=0, $simula
         }
         else
         {
-            sleep(1);
+            sleep(3);
         }
-        //$x = newsletter_mail('satollo@gmail.com', $s, $m, true);
 
-        echo $r->email;
-        //echo ($x?'(ok)':'(ko)');
-        //echo ' ' . time()-$start_time . ', ';;
+        echo $r->email . ' ';
         flush();
         $idx++;
         $last['sent']++;
-
-        if ($max > 0 && $idx >= $max)
-        {
-            $last['email'] = $r->email;
-            update_option('newsletter_last', $last);
-            return false;
-        }
 
         // Timeout check
         if ($max_time != 0 && (time()-$start_time) > $max_time)
@@ -235,11 +244,46 @@ function newsletter_send($subject, $message, $recipients = null, $max=0, $simula
             update_option('newsletter_last', $last);
             return false;
         }
-        //sleep(5);
     }
     $last['email'] = '';
     update_option('newsletter_last', $last);
     return true;
+}
+
+/**
+ * Send a newsletter to recipients (usually test subscribers). There is no
+ * timeout management.
+ */
+function newsletter_send($subject, $message, $recipients = null)
+{
+    $options = get_option('newsletter');
+
+    if (!$recipients) return true;
+
+    foreach ($recipients as $r)
+    {
+        $m = $message;
+        
+        $url = newsletter_add_qs($options['url'],
+            '?na=u&amp;ne=' . urlencode($r->email) . '&amp;nt=' . $r->token);
+
+        $m = newsletter_replace_url($m, 'UNSUBSCRIPTION_URL', $url);
+        $m = newsletter_replace($m, $r);
+
+        $s = $subject;
+        $s = newsletter_replace($s, $r);
+
+        $x = newsletter_mail($r->email, $s, $m, true);
+
+        echo $r->email . ' ';
+        flush();
+    }
+}
+
+function newsletter_add_qs($url, $qs)
+{
+    if (strpos($url, '?') !== false) return $url . '&amp;' . $qs;
+    else return $url . '?' . $qs;
 }
 
 /**
@@ -250,7 +294,9 @@ function newsletter_send($subject, $message, $recipients = null, $max=0, $simula
  */
 function newsletter_subscribe($email, $name)
 {
-    global $newsletter_options, $wpdb, $newsletter_subscriber;
+    global $wpdb, $newsletter_subscriber;
+
+    $options = get_option('newsletter');
 
     //newsletter_log('Iscrizione di ' . $email);
 
@@ -272,12 +318,12 @@ function newsletter_subscribe($email, $name)
     }
 
     // The full URL to the confirmation page
-    $url = $newsletter_options['url'] . '?na=c&amp;ne=' . urlencode($email) . '&amp;nt=' . $token;
+    $url = $options['url'] . '?na=c&amp;ne=' . urlencode($email) . '&amp;nt=' . $token;
 
-    $message = newsletter_replace_url($newsletter_options['confirmation_message'], 'SUBSCRIPTION_CONFIRM_URL', $url);
+    $message = newsletter_replace_url($options['confirmation_message'], 'SUBSCRIPTION_CONFIRM_URL', $url);
     $message = newsletter_replace($message, $newsletter_subscriber);
 
-    $subject = newsletter_replace($newsletter_options['confirmation_subject'], $newsletter_subscriber);
+    $subject = newsletter_replace($options['confirmation_subject'], $newsletter_subscriber);
 
     newsletter_mail($email, $subject, $message);
 
@@ -288,18 +334,19 @@ function newsletter_subscribe($email, $name)
 
 function newsletter_send_confirmation($subscriber)
 {
-    global $newsletter_options;
+    $options = get_option('newsletter');
 
     newsletter_log('newsletter_send_confirmation() - Sending a confirmation request message');
     // The full URL to the confirmation page
-    $url = $newsletter_options['url'] . '?na=c&amp;ne=' . urlencode($subscriber->email) . '&amp;nt=' . $subscriber->token;
+    $url = $options['url'] . '?na=c&amp;ne=' . urlencode($subscriber->email) .
+    '&amp;nt=' . $subscriber->token;
 
     newsletter_log('newsletter_send_confirmation() - URL: ' . $url);
 
-    $message = newsletter_replace_url($newsletter_options['confirmation_message'], 'SUBSCRIPTION_CONFIRM_URL', $url);
+    $message = newsletter_replace_url($options['confirmation_message'], 'SUBSCRIPTION_CONFIRM_URL', $url);
     $message = newsletter_replace($message, $subscriber);
 
-    $subject = newsletter_replace($newsletter_options['confirmation_subject'], $subscriber);
+    $subject = newsletter_replace($options['confirmation_subject'], $subscriber);
 
     newsletter_mail($subscriber->email, $subject, $message);
 }
@@ -310,8 +357,10 @@ function newsletter_send_confirmation($subscriber)
  */
 function newsletter_get_subscriber($email)
 {
-    global $newsletter_options, $wpdb, $newsletter_subscriber;
-    $recipients = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter where email='" . $wpdb->escape(newsletter_normalize_email($email)) . "'");
+    global $wpdb;
+    
+    $recipients = $wpdb->get_results("select * from " . $wpdb->prefix .
+    "newsletter where email='" . $wpdb->escape(newsletter_normalize_email($email)) . "'");
     if (!$recipients) return null;
     return $recipients[0];
 }
@@ -319,8 +368,8 @@ function newsletter_get_subscriber($email)
 function newsletter_get_all()
 {
     global $wpdb;
+
     $recipients = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter order by email");
-    if (!$recipients) return null;
     return $recipients;
 }
 
@@ -356,8 +405,10 @@ add_action('init', 'newsletter_init');
  */
 function newsletter_init()
 {
-    global $newsletter_options, $newsletter_step, $wpdb, $newsletter_subscriber, $newsletter_labels;
+    global $newsletter_step, $wpdb, $newsletter_subscriber;
     global $hyper_cache_stop;
+
+    $options = get_option('newsletter');
 
     // "na" always is the action to be performed - stands for "newsletter action"
     $action = $_REQUEST['na'];
@@ -368,10 +419,10 @@ function newsletter_init()
     if ($action == 'subscribe' || $action == 's')
     {
         if (!newsletter_is_email($_REQUEST['ne'])) {
-            die($newsletter_labels['error_email']);
+            die(newsletter_label('error_email'));
         }
         if (trim($_REQUEST['nn']) == '') {
-            die($newsletter_labels['error_name']);
+            die(newsletter_label('error_name'));
         }
         newsletter_subscribe($_REQUEST['ne'], $_REQUEST['nn']);
         $newsletter_step = 'subscribed';
@@ -407,16 +458,16 @@ function newsletter_init()
 
         $name = $recipients[0]->name;
         $token = $recipients[0]->token;
-        $url = $newsletter_options['url'] . '?na=uc&amp;ne=' . urlencode($email) . '&amp;nt=' . $token;
-        $message = $newsletter_options['unsubscription_mm_message'];
+        $url = $options['url'] . '?na=uc&amp;ne=' . urlencode($email) . '&amp;nt=' . $token;
+        $message = $options['unsubscription_mm_message'];
         $message = str_replace('{unsubscription_url}', $url, $message);
         $message = str_replace('{unsubscription_link}',
             '<a href="' . $url .
-            '">' . $newsletter_options['unsubscription_mm_link'] . '</a>', $message);
+            '">' . $options['unsubscription_mm_link'] . '</a>', $message);
 
         $message = str_replace('{name}', $name, $message);
 
-        $subject = $newsletter_options['unsubscription_mm_subject'];
+        $subject = $options['unsubscription_mm_subject'];
         $subject = str_replace('{name}', $name, $subject);
         newsletter_mail($email, $subject, $message);
 
@@ -440,7 +491,7 @@ function newsletter_init()
  */
 function newsletter_unsubscribe($email, $token)
 {
-    global $newsletter_subscriber, $newsletter_options, $wpdb;
+    global $newsletter_subscriber, $wpdb;
 
     // Save the subscriber for good bye page
     $newsletter_subscriber = newsletter_get_subscriber($email);
@@ -483,16 +534,18 @@ function newsletter_delete_all($status=null)
  */
 function newsletter_confirm($email, $token)
 {
-    global $newsletter_options, $wpdb, $newsletter_subscriber;
+    global $wpdb, $newsletter_subscriber;
 
+    $options = get_option('newsletter');
+    
     $wpdb->query("update " . $wpdb->prefix . "newsletter set status='C' where email='" . $wpdb->escape($email) . "'" .
         " and token='" . $wpdb->escape($token) . "'");
 
     $newsletter_subscriber = newsletter_get_subscriber($email);
 
-    $message = newsletter_replace($newsletter_options['confirmed_message'], $newsletter_subscriber);
+    $message = newsletter_replace($options['confirmed_message'], $newsletter_subscriber);
 
-    $subject = newsletter_replace($newsletter_options['confirmed_subject'], $newsletter_subscriber);
+    $subject = newsletter_replace($options['confirmed_subject'], $newsletter_subscriber);
 
     newsletter_mail($email, $subject, $message);
 }
@@ -517,10 +570,12 @@ function newsletter_notify_admin(&$subject, &$message)
  */
 function newsletter_mail($to, &$subject, &$message, $html=true)
 {
-    global $newsletter_options, $wpdb;
+    global $wpdb;
 
-    $from_email = $newsletter_options['from_email'];
-    $from_name = $newsletter_options['from_name'];
+    $options = get_option('newsletter');
+
+    $from_email = $options['from_email'];
+    $from_name = $options['from_name'];
 
     $headers  = "MIME-Version: 1.0\r\n";
     if ($html)
@@ -531,7 +586,8 @@ function newsletter_mail($to, &$subject, &$message, $html=true)
     $headers .= 'From: "' . $from_name . '" <' . $from_email . ">\r\n";
 
     $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-    if ($newsletter_options['sendmail'])
+
+    if ($options['sendmail'])
     {
         return mail($to, $subject, $message, $headers, "-f" . $from_email);
     }
@@ -545,7 +601,7 @@ function newsletter_mail($to, &$subject, &$message, $html=true)
 add_action('activate_newsletter/plugin.php', 'newsletter_activate');
 function newsletter_activate()
 {
-    global $wpdb, $newsletter_default_options;
+    global $wpdb;
 
     // SQL to create the table
     $sql = 'create table if not exists ' . $wpdb->prefix . 'newsletter (
@@ -558,7 +614,13 @@ function newsletter_activate()
         )';
 
     $wpdb->query($sql);
+    
     $options = get_option('newsletter');
+
+    // Load the default options
+    @include_once(dirname(__FILE__) . '/languages/en_US_options.php');
+    if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '_options.php');
+    //@include_once(ABSPATH . 'wp-content/newsletter/languages/custom_options.php');
 
     if (is_array($options)) $options = array_merge($newsletter_default_options, $options);
     else $options = $newsletter_default_options;
@@ -571,10 +633,13 @@ function newsletter_activate()
 add_action('admin_menu', 'newsletter_admin_menu');
 function newsletter_admin_menu()
 {
-    if (function_exists('add_menu_page')) {
-        add_menu_page('Newsletter', 'Newsletter', 10, 'newsletter/options.php', '', plugins_url('wp-polls/images/poll.png'));
+    if (function_exists('add_menu_page'))
+    {
+        add_menu_page('Newsletter', 'Newsletter', 10, 'newsletter/options.php', '', '');
     }
-    if (function_exists('add_submenu_page')) {
+    
+    if (function_exists('add_submenu_page'))
+    {
         add_submenu_page('newsletter/options.php', 'Configuration', 'Configuration', 10, 'newsletter/options.php');
         add_submenu_page('newsletter/options.php', 'Composer', 'Composer', 10, 'newsletter/newsletter.php');
         add_submenu_page('newsletter/options.php', 'Import', 'Import', 10, 'newsletter/import.php');
@@ -592,7 +657,6 @@ function newsletter_replace($text, $subscriber)
     $text = str_replace('{email}', $subscriber->email, $text);
     $text = str_replace('{name}', $subscriber->name, $text);
     return $text;
-
 }
 
 /**
@@ -602,15 +666,16 @@ function newsletter_replace($text, $subscriber)
  */
 function newsletter_replace_url($text, $tag, $url)
 {
-    $text = str_replace('{' . strtolower($tag) . '}', $url, $text);
+    $home = get_option('home') . '/';
+    $tag_lower = strtolower($tag);
+    $text = str_replace($home . '{' . $tag_lower . '}', $url, $text);
+    $text = str_replace($home . '%7B' . $tag_lower . '%7D', $url, $text);
+    $text = str_replace('{' . $tag_lower . '}', $url, $text);
 
-    // Make the URL relative for use in an HTML A tag
-    $url = substr($url, strlen(get_option('home'))+1);
-
-    $text = str_replace($tag, $url, $text);
+    // for compatibility
+    $text = str_replace($home . $tag, $url, $text);
 
     return $text;
-
 }
 
 function newsletter_is_email($email, $empty_ok=false)
@@ -630,9 +695,9 @@ function newsletter_is_email($email, $empty_ok=false)
  */
 function newsletter_log($text, $force=false)
 {
-    global $newsletter_options;
+    $options = get_option('newsletter');
 
-    if (!$force && !$newsletter_options['logs']) return;
+    if (!$force && !$options['logs']) return;
     
     $file = fopen(dirname(__FILE__) . '/newsletter.log', 'a');
     if (!$file) return;

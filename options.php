@@ -2,26 +2,22 @@
 
 if (isset($_POST['defaults']))
 {
+    @include_once(dirname(__FILE__) . '/languages/en_US_options.php');
+    if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '_options.php');
     update_option('newsletter', $newsletter_default_options);
 }
 
 if (isset($_POST['save']))
 {
     $options = newsletter_request('options');
-    foreach ($options as $key=>$value) if ($value == '') unset($options[$key]);
     update_option('newsletter', $options);
 }
 
-// Merging between the default options and the user settings
 $options = get_option('newsletter');
-if ($options) $options = array_merge($newsletter_default_options, $options);
-else $options = $newsletter_default_options;
-
-if ($options['from_name'] == '') $options['from_name'] = get_option('blogname');
-if ($options['from_email'] == '') $options['from_email'] = get_option('admin_email');
 
 ?>
 
+<?php if (!$options['novisual']) { ?>
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
 
 <script type="text/javascript">
@@ -35,15 +31,19 @@ if ($options['from_email'] == '') $options['from_email'] = get_option('admin_ema
 
     });
 </script>
+<?php } ?>
 
 <div class="wrap">
     <form method="post">
         <h2>Newsletter</h2>
-        <p>First time user? <a target="_blank" href="http://www.satollo.net/plugins/newsletter">Read how to use this plugin</a></p>.
-        <p>If you want to revert a single field to the original value, empty it and save. If you want to revert
-        all fields there is a button on the page bottom. After reverting, recofigure the newsletter URL page.</p>
 
-        <p>To write me: <a href="mailto:info@satollo.com">info@satollo.com</a>.</p>
+        <p><strong>First time user?</strong> <a target="_blank" href="http://www.satollo.net/plugins/newsletter">
+        Read how to use this plugin <strong>carefully</strong></a>. It's not as simpleas it
+        appears.</p>
+
+        <p>To ask questions <a href="http://www.satollo.net/newsletter-help">leave a comment on 
+        this page</a>. To write me: <a href="mailto:info@satollo.net">info@satollo.net</a>.</p>
+        
         <p>
             My other plugins:
             <a href="http://www.satollo.net/plugins/post-layout">Post Layout</a>,
@@ -53,118 +53,77 @@ if ($options['from_email'] == '') $options['from_email'] = get_option('admin_ema
             <a href="http://www.satollo.com/english/wordpress/comment-notifier">Comment Notifier</a>.
         </p>
 
-        <h2>Sender and subscription page</h2>
+        <h3>Sender and subscription page</h3>
         <table class="form-table">
             <tr valign="top">
                 <th scope="row"><label for="options[from_email]">Sender email</label></th>
                 <td>
                     <input name="options[from_email]" type="text" size="50" value="<?php echo htmlspecialchars($options['from_email'])?>"/>
+                    <br />
+                    Newsletter sender email address: the email address subscribers will see the email coming from.
                 </td>
             </tr>
             <tr valign="top">
                 <th scope="row"><label for="options[from_name]">Sender name</label></th>
                 <td>
                     <input name="options[from_name]" type="text" size="50" value="<?php echo htmlspecialchars($options['from_name'])?>"/>
+                    <br />
+                    The name of the newsletter sender subscribers will see on incoming email. Please, use english characters.
                 </td>
             </tr>
             <tr valign="top">
-                <th scope="row"><label>Full URL of the newsletter page</label></th>
+                <th scope="row"><label>Subscription page URL</label></th>
                 <td>
                     <input name="options[url]" type="text" size="50" value="<?php echo htmlspecialchars($options['url'])?>"/>
                     <br />
-                    This is the page where you placed the [newsletter] short tag.
+                    This is the page where you placed the <strong>[newsletter]</strong> short tag.
+                    Have you created the newsletter
+                    subscription page as explained in the
+                    <a href="http://www.satollo.net/plugins/newsletter">newsletter documentation</a>?
                 </td>
             </tr>
         </table>
 
-        <h2>Subscription form</h2>
-        <!--
-<table>
-<tr><td>
-        -->
+        <h3>Subscription form</h3>
+        <p>Remeber to create the subscription page and to configure the subscription page URL above.</p>
+
         <table class="form-table">
             <tr valign="top">
                 <th scope="row"><label>Introduction</label></th>
                 <td>
                     <textarea id="subscription_text" name="options[subscription_text]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['subscription_text'])?></textarea>
                     <br />
-                    This is the text showed to subscriber before the subscription form. Be nice with your subscriber!
+                    This is the text showed to subscriber before the subscription form which is added automatically.
                 </td>
             </tr>
-            <!--
-<tr valign="top">
-<th scope="row"><label>"Your name" label</label></th>
-<td>
-<input id="name_label" name="options[name_label]" type="text" size="50" value="<?php echo htmlspecialchars($options['name_label'])?>"/>
-</td>
-</tr>
-<tr valign="top">
-<th scope="row"><label>"Your email" label</label></th>
-<td>
-<input id="email_label" name="options[email_label]" type="text" size="50" value="<?php echo htmlspecialchars($options['email_label'])?>"/>
-</td>
-</tr>            
-
-<tr valign="top">
-<th scope="row"><label>"Subscribe" label</label></th>
-<td>
-<input id="subscribe_label" name="options[subscribe_label]" type="text" size="50" value="<?php echo htmlspecialchars($options['subscribe_label'])?>"/>
-</td>
-</tr>
-
-<tr valign="top">
-<th scope="row"><label>Privacy text</label></th>
-<td>
-<input id="privacy_text" name="options[privacy_text]" type="text" size="50" value="<?php echo htmlspecialchars($options['privacy_text'])?>"/>
-</td>
-</tr>
-            -->
             <tr valign="top">
                 <th scope="row"><label>Success subscription text</label></th>
                 <td>
                     <textarea name="options[subscribed_text]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['subscribed_text'])?></textarea>
+                    <br />
+                    This is the text showed to a user who has pressed "subscribe me" on the previous step
+                    informing that an email to confirm subscription has just been sent. Remeber the user
+                    to check the spam folder and to follow the email instructions.<br />
+                    Tags: <strong>{name}</strong> the user name; <strong>{email}</strong> the user email.
                 </td>
             </tr>
         </table>
-        <!--
-</td>
-<td style="border-left: 1px solid #666">
-This is how the subscription form look like (even if your theme CSS can give it a different appareance)
-<div style="border: 1px solid #000">
-<div id="_subscription_text"></div>
-<table border="1">
-<tr><td id="_name_label"></td><td><input type="text" size="20"/></td></tr>
-<tr><td id="_email_label"></td><td><input type="text" size="20"/></td></tr>
-<tr><td colspan="2" id="_privacy_text"><input id="_subscribe_label" type="button" value=""/></td></tr>
-</table>
-</div>
-<input type="button" value="update" onclick="upd()"/>
-<script>
-function upd()
-{
-tinyMCE.get('subscription_text').save();
-document.getElementById('_name_label').innerHTML = document.getElementById('name_label').value;
-document.getElementById('_email_label').innerHTML = document.getElementById('email_label').value;
-document.getElementById('_subscription_text').innerHTML = document.getElementById('subscription_text').value;
-document.getElementById('_privacy_text').innerHTML = document.getElementById('privacy_text').value;
-document.getElementById('_subscribe_label').value = document.getElementById('subscribe_label').value;
-}
-</script>
-</td>
-</tr>
-</table>
-        -->
+
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
         </p>
-        <h2>Confirmation (double opt-in)</h2>
+
+        <h3>Confirmation (double opt-in)</h3>
+        <p>Email sent to the user to confirm his subscription, the successful confirmation
+        text, the welcome email.</p>
+        
         <table class="form-table">
             <tr valign="top">
                 <th scope="row"><label for="options[confirmation_subject]">Confirmation email subject</label></th>
                 <td>
                     <input name="options[confirmation_subject]" type="text" size="50" value="<?php echo htmlspecialchars($options['confirmation_subject'])?>"/>
                     <br />
-                    {name} will be replaced with the user name
+                    Tags: <strong>{name}</strong> the user name.
                 </td>
             </tr>
             <tr valign="top">
@@ -172,41 +131,36 @@ document.getElementById('_subscribe_label').value = document.getElementById('sub
                 <td>
                     <textarea name="options[confirmation_message]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['confirmation_message'])?></textarea>
                     <br />
-                    {name} will be replaced with the user name. {confirmation_url} will be replaced with a full confirmation URL, BUT if you want to create a link
-                    with the editor button, use CONFIRMATION_URL as address.
-                </td>
-            </tr>
-            <!--
-<tr valign="top">
-<th scope="row"><label>Confirm link text</label></th>
-<td>
-<input name="options[confirmation_link]" type="text" size="50" value="<?php echo htmlspecialchars($options['confirmation_link'])?>"/>
-</td>
-</tr>        
-            -->
-            <tr valign="top">
-                <th scope="row"><label for="options[confirmed_text]">Confirmed text</label></th>
-                <td>
-                    <textarea name="options[confirmed_text]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['confirmed_text'])?></textarea>
-                    <br />
-                    {name} will be replaced with the user name
+                    Tags: <strong>{name}</strong> the user name; <strong>{subscription_confirm_url}</strong>
+                    confirmation URL to be clicked by the user to confirm his subscription.
                 </td>
             </tr>
 
             <tr valign="top">
-                <th scope="row"><label>Confirmation email subject</label></th>
+                <th scope="row"><label for="options[confirmed_text]">Successful confirmation page</label></th>
+                <td>
+                    <textarea name="options[confirmed_text]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['confirmed_text'])?></textarea>
+                    <br />
+                    Showed when the user follow the confirmation URL sent to him with previous email settings.
+                    <br />
+                    Tags: <strong>{name}</strong> the user name.
+                </td>
+            </tr>
+
+            <tr valign="top">
+                <th scope="row"><label>Welcome email subject</label></th>
                 <td>
                     <input name="options[confirmed_subject]" type="text" size="50" value="<?php echo htmlspecialchars($options['confirmed_subject'])?>"/>
                     <br />
-                    {name} will be replaced with the user name
+                    Tags: <strong>{name}</strong> user name.
                 </td>
             </tr>
             <tr valign="top">
-                <th scope="row"><label>Confirmed message</label></th>
+                <th scope="row"><label>Welcome email message</label></th>
                 <td>
                     <textarea name="options[confirmed_message]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['confirmed_message'])?></textarea>
                     <br />
-                    {name} will be replaced with the user name
+                    Tags: <strong>{name}</strong> user name.
                 </td>
             </tr>
         </table>
@@ -214,9 +168,10 @@ document.getElementById('_subscribe_label').value = document.getElementById('sub
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
         </p>
-        <h2>Unsubscription</h2>
+        
+        <h3>Unsubscription</h3>
 
-        <p>A user start the unsubscription process clicking the unsubscription link in a newsletter. This lkink contains the email to unsubscribe and some
+        <p>A user starts the unsubscription process clicking the unsubscription link in a newsletter. This lkink contains the email to unsubscribe and some
             unique information to avoid hacking. The user are requird to confirm the unsubscription: this is the last step where YOU can communicate with you
         almost missed user.</p>
 
@@ -226,26 +181,22 @@ document.getElementById('_subscribe_label').value = document.getElementById('sub
                 <td>
                     <textarea name="options[unsubscription_text]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['unsubscription_text'])?></textarea>
                     <br />
-                    This text is show to users who click on a "unsubscription link" in a email. You have to insert a link in the text containing
-                    "UNSUBSCRIPTION_CONFIRM_URL" (without double quotes).
+                    This text is show to users who click on a "unsubscription link" in a newsletter email.
+                    You have to insert a link in the text that user can follow to confirm the unsubscription
+                    request (see tags).
+                    <br />
+                    Tags: <strong>{name}</strong> user name; <strong>{email}</strong> user email; <strong>{unsubscription_confirm_url}</strong> URL to confirm unsubscription.
                 </td>
             </tr>
-            <!--
-<tr valign="top">
-<th scope="row"><label for="options[unsubscription_label]">"Confirm unsubscription" label</label></th>
-<td>
-<input name="options[unsubscription_label]" type="text" size="50" value="<?php echo htmlspecialchars($options['unsubscription_label'])?>"/>
-<br />
-The button text to confirm unsubscription or to send an unsubscription request for the specified
-email address when "mass mail" mode is used for sending newsletters.
-</td>
-</tr>
--->            
+
             <!-- Text showed to the user on successful unsubscription -->
             <tr valign="top">
-                <th scope="row"><label for="options[unsubscribed_text]">Unsubscribed text</label></th>
+                <th scope="row"><label for="options[unsubscribed_text]">Good bye text</label></th>
                 <td>
                     <textarea name="options[unsubscribed_text]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['unsubscribed_text'])?></textarea>
+                    Latest message showed to the user to say "good bye".
+                    <br />
+                    Tags: none.
                 </td>
             </tr>
         </table>
@@ -338,6 +289,13 @@ The text of the link for unsubscription to be placed in the unsubscription email
                 <td>
                     <input type="checkbox" name="options[logs]" value="1" <?php echo $options['logs']!= null?'checked':''; ?> />
                     <label for="options[logs]">write logs</label>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">&nbsp;</th>
+                <td>
+                    <input type="checkbox" name="options[novisual]" value="1" <?php echo $options['novisual']!= null?'checked':''; ?> />
+                    <label for="options[novisual]">do not use visual editors</label>
                 </td>
             </tr>
         </table>

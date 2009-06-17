@@ -4,7 +4,8 @@ function widget_newsletter_init()
 {
     function widget_newsletter($args)
     {
-        global $newsletter_options, $newsletter_labels;
+        $options = get_option('newsletter');
+
         // $args is an array of strings that help widgets to conform to
         // the active theme: before_widget, before_title, after_widget,
         // and after_title are the array keys. Default tags: li and h2.
@@ -18,15 +19,13 @@ function widget_newsletter_init()
         // but as you can see here, they can also be very, very simple.
         echo $before_widget . $before_title . $title . $after_title;
 
-        echo str_replace('{newsletter_url}', $newsletter_options['url'], $newsletter_labels['widget_form']);
+        echo str_replace('{newsletter_url}', $options['url'], newsletter_label('widget_form'));
 
         echo $after_widget;
     }
 
     function widget_newsletter_control()
     {
-        global $newsletter_labels;
-
         // Get our options and see if we're handling a form submission.
         $options = get_option('newsletter_widget');
         if (!is_array($options))
