@@ -12,15 +12,18 @@ function widget_newsletter_init()
         extract($args);
 
         // Each widget can store its own options. We keep strings here.
-        $options = get_option('newsletter_widget');
-        $title = $options['title'];
+        $optionsw = get_option('newsletter_widget');
+        $title = $optionsw['title'];
+        $text = $optionsw['text'];
 
         // These lines generate our output. Widgets can be very complex
         // but as you can see here, they can also be very, very simple.
         echo $before_widget . $before_title . $title . $after_title;
 
-        echo str_replace('{newsletter_url}', $options['url'], newsletter_label('widget_form'));
-
+        $buffer = str_replace('{newsletter_url}', $options['url'], newsletter_label('widget_form'));
+        $buffer = str_replace('{text}', $optionsw['text'], $buffer);
+        echo $buffer;
+        
         echo $after_widget;
     }
 
@@ -31,21 +34,25 @@ function widget_newsletter_init()
         if (!is_array($options))
         {
             $options = array('title'=>'Newsletter subscription');
+            $options = array('text'=>'');
         }
 
         if ( $_POST['newsletter-submit'] )
         {
             // Remember to sanitize and format use input appropriately.
             $options['title'] = strip_tags(stripslashes($_POST['newsletter-title']));
+            $options['text'] = strip_tags(stripslashes($_POST['newsletter-text']));
             update_option('newsletter_widget', $options);
         }
 
         // Be sure you format your options to be valid HTML attributes.
         $title = htmlspecialchars($options['title'], ENT_QUOTES);
+        $text = htmlspecialchars($options['text'], ENT_QUOTES);
 
         // Here is our little form segment. Notice that we don't need a
         // complete form. This will be embedded into the existing form.
         echo '<p style="text-align:right;"><label for="newsletter-title">Title<input style="width: 200px;" id="newsletter-title" name="newsletter-title" type="text" value="'.$title.'" /></label></p>';
+        echo '<p style="text-align:right;"><label for="newsletter-text">Intro<textarea style="width: 200px;" id="newsletter-text" name="newsletter-text">'.$text.'</textarea></label></p>';
         echo '<input type="hidden" id="newsletter-submit" name="newsletter-submit" value="1" />';
     }
 

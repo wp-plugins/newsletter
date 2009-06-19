@@ -68,23 +68,26 @@ function newsletter_resend(email)
                 <th scope="row"><label>Search by email</label></th>
                 <td>
                     <input name="text" type="text" size="50" value="<?php echo htmlspecialchars(newsletter_request('text'))?>"/>
+                    <input type="submit" value="Search" />
                 </td>
             </tr>
         </table>
     </form>
+    <!--
     <form method="post" action="">
             <p class="submit">
     <input type="submit" value="Remove all" name="removeall" onclick="return confirm('Are your sure, really sure?')"/>
     <input type="submit" value="Remove all unconfirmed" name="removeallunconfirmed" onclick="return confirm('Are your sure, really sure?')"/>
     </p>
     </form>
+    -->
 
-    <h2>Statistics</h2>
+    <h3>Statistics</h3>
     Confirmed subscriber: <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C'"); ?>
     <br />
     Unconfirmed subscriber: <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='S'"); ?>
 
-    <h2>Results</h2>
+    <h3>Results</h3>
     <style type="text/css">
     .newsletter-results {
         border-collapse: collapse;

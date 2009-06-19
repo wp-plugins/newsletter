@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.1.0
+Version: 1.1.1
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -202,7 +202,7 @@ function newsletter_send_batch($subject, $message, $simulate=true)
 
     echo 'Queue: ' . count($recipients) . ' emails<br />';
     $start_time = time();
-    $max_time = (int)(ini_get('max_execution_time') * 0.1);
+    $max_time = (int)(ini_get('max_execution_time') * 0.8);
     echo 'Max time: ' . $max_time . ' seconds<br />';
     echo 'Sending to: ';
 
@@ -560,8 +560,8 @@ function newsletter_set_status($email, $status)
 function newsletter_notify_admin(&$subject, &$message)
 {
     $to = get_option('admin_email');
-    $headers  = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+    $headers  = "MIME-Version: 1.0\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\n";
     mail($to, $subject, $message, $headers);
 }
 
@@ -577,13 +577,13 @@ function newsletter_mail($to, &$subject, &$message, $html=true)
     $from_email = $options['from_email'];
     $from_name = $options['from_name'];
 
-    $headers  = "MIME-Version: 1.0\r\n";
+    $headers  = "MIME-Version: 1.0\n";
     if ($html)
-    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\n";
     else
-    $headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8\n";
 
-    $headers .= 'From: "' . $from_name . '" <' . $from_email . ">\r\n";
+    $headers .= 'From: "' . $from_name . '" <' . $from_email . ">\n";
 
     $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
 
