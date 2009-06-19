@@ -37,7 +37,7 @@ $options = get_option('newsletter');
     <form method="post">
         <h2>Newsletter</h2>
 
-        <p><strong>TAGS HAVE BEEN CHANEGED! PLEASE CORRECT YOUR LINK IN TEXTS AND EMAILS.</strong></p>
+        <p><strong>TAGS HAVE BEEN CHANEGED! PLEASE CORRECT YOUR LINKS IN TEXTS AND EMAILS.</strong></p>
         
         <p><strong>First time user?</strong> <a target="_blank" href="http://www.satollo.net/plugins/newsletter">
         Read how to use this plugin <strong>carefully</strong></a>. It's not as simple as it

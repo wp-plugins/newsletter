@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.1.1
+Version: 1.1.2
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -214,7 +214,7 @@ function newsletter_send_batch($subject, $message, $simulate=true)
         $m = $message;
         
         $url = newsletter_add_qs($options['url'],
-            '?na=u&amp;ne=' . urlencode($r->email) . '&amp;nt=' . $r->token);
+            'na=u&amp;ne=' . urlencode($r->email) . '&amp;nt=' . $r->token);
 
         $m = newsletter_replace_url($m, 'UNSUBSCRIPTION_URL', $url);
         $m = newsletter_replace($m, $r);
@@ -265,7 +265,7 @@ function newsletter_send($subject, $message, $recipients = null)
         $m = $message;
         
         $url = newsletter_add_qs($options['url'],
-            '?na=u&amp;ne=' . urlencode($r->email) . '&amp;nt=' . $r->token);
+            'na=u&amp;ne=' . urlencode($r->email) . '&amp;nt=' . $r->token);
 
         $m = newsletter_replace_url($m, 'UNSUBSCRIPTION_URL', $url);
         $m = newsletter_replace($m, $r);
