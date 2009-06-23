@@ -27,7 +27,8 @@ if (isset($_POST['auto']))
         $content = $post->post_content;
         $x = strpos($content, '<!--more-->');
         if ($x !== false) $content = substr($content, 0, $x);
-        $content = apply_filters('the_content', $content);
+        $content = preg_replace('/\[[^\]]*\]/', '', $content);
+        //$content = apply_filters('the_content', $content);
 
         $excerpt = strip_tags($content);
         if (strlen($excerpt) > 200) {
@@ -110,10 +111,13 @@ tinyMCE.init({
             for ($i=1; $i<=10; $i++)
             {
                 if (!$options['test_email_' . $i]) continue;
-
+                $s = newsletter_get_subscriber($options['test_email_' . $i]);
+                if ($s) $subscribers[$i-1]= $s;
+                else {
                 $subscribers[$i-1]->name = $options['test_name_' . $i];
                 $subscribers[$i-1]->email = $options['test_email_' . $i];
                 $subscribers[$i-1]->token = 'FAKETOKEN';
+                }
             }
             newsletter_send($options['subject'], $options['message'], $subscribers);
         ?>

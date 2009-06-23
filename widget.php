@@ -51,13 +51,14 @@ function widget_newsletter_init()
 
         // Here is our little form segment. Notice that we don't need a
         // complete form. This will be embedded into the existing form.
-        echo '<p style="text-align:right;"><label for="newsletter-title">Title<input style="width: 200px;" id="newsletter-title" name="newsletter-title" type="text" value="'.$title.'" /></label></p>';
-        echo '<p style="text-align:right;"><label for="newsletter-text">Intro<textarea style="width: 200px;" id="newsletter-text" name="newsletter-text">'.$text.'</textarea></label></p>';
+        echo 'Title<br /><input id="newsletter-title" name="newsletter-title" type="text" value="'.$title.'" />';
+        echo '<br /><br />';
+        echo 'Introduction<br /><textarea style="width: 350px;" id="newsletter-text" name="newsletter-text">'.$text.'</textarea>';
         echo '<input type="hidden" id="newsletter-submit" name="newsletter-submit" value="1" />';
     }
 
     register_sidebar_widget('Newsletter', 'widget_newsletter');
-    register_widget_control('Newsletter', 'widget_newsletter_control', 300, 100);
+    register_widget_control('Newsletter', 'widget_newsletter_control', 370, 200);
 }
 
 add_action('widgets_init', 'widget_newsletter_init');

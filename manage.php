@@ -55,6 +55,7 @@ function newsletter_resend(email)
     document.getElementById("email").value = email;
     document.getElementById("channel").submit();
 }
+
 </script>
 <div class="wrap">
         <h2>Subscribers Management</h2>
