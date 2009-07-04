@@ -51,8 +51,8 @@ $options = get_option('newsletter');
             <a href="http://www.satollo.net/plugins/post-layout">Post Layout</a>,
             <a href="http://www.satollo.net/plugins/post-layout-pro">Post Layout Pro</a>,
             <a href="http://www.satollo.com/english/wordpress/feed-layout">Feed Layout</a>,
-            <a href="http://www.satollo.com/english/wordpress/hyper-cache">Hyper Cache</a>,
-            <a href="http://www.satollo.com/english/wordpress/comment-notifier">Comment Notifier</a>.
+            <a href="http://www.satollo.com/plugins/hyper-cache">Hyper Cache</a>,
+            <a href="http://www.satollo.com/plugins/comment-notifier">Comment Notifier</a>.
         </p>
 
         <h3>Sender and subscription page</h3>
@@ -145,7 +145,7 @@ $options = get_option('newsletter');
                     <br />
                     Showed when the user follow the confirmation URL sent to him with previous email settings.
                     <br />
-                    Tags: <strong>{name}</strong> the user name.
+                    Tags: <strong>{name}</strong> the user name; <strong>{email}</strong> for the user email.
                 </td>
             </tr>
 
@@ -279,6 +279,14 @@ The text of the link for unsubscription to be placed in the unsubscription email
         <h2>Advanced</h2>
 
         <table class="form-table">
+            <tr valign="top">
+                <th scope="row"><label>Export key for Zanzara</label></th>
+                <td>
+                    <input name="options[key]" type="text" size="50" value="<?php echo htmlspecialchars($options['key'])?>"/>
+                    <br />
+                    Do not search for Zanzara, is a my private software
+                </td>
+            </tr>
             <tr valign="top">
                 <th scope="row">&nbsp;</th>
                 <td>

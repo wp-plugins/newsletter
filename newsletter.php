@@ -1,5 +1,6 @@
 <?php
 $options = get_option('newsletter_email');
+
 if (isset($_POST['save']))
 {
     $options = newsletter_request('options');
@@ -13,7 +14,7 @@ if (isset($_POST['auto']))
     // Load the theme
     if ($_POST['theme'][0] == '*')
     {
-       $message = file_get_contents(ABSPATH . '/wp-content/newsletter/themes/' . substr($_POST['theme'], 1));
+        $message = file_get_contents(ABSPATH . '/wp-content/newsletter/themes/' . substr($_POST['theme'], 1));
     }
     else
     {
@@ -69,17 +70,17 @@ $last = get_option('newsletter_last');
 
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
-tinyMCE.init({
-    mode : "textareas",
-    theme : "advanced",
-    plugins: "table",
-    theme_advanced_disable : "styleselect",
-    theme_advanced_buttons3 : "tablecontrols",
-    relative_urls : false,
-    remove_script_host : false,
-    document_base_url : "<?php echo get_option('home'); ?>/"
+    tinyMCE.init({
+        mode : "textareas",
+        theme : "advanced",
+        plugins: "table",
+        theme_advanced_disable : "styleselect",
+        theme_advanced_buttons3 : "tablecontrols",
+        relative_urls : false,
+        remove_script_host : false,
+        document_base_url : "<?php echo get_option('home'); ?>/"
 
-});
+    });
 </script>
 
 <div class="wrap">
@@ -89,21 +90,22 @@ tinyMCE.init({
 
         <h3>Last batch infos</h3>
         <?php if (!$last) { ?>
-            <p>No batch info found.</p>
+        <p>No batch info found.</p>
         <?php } else { ?>
-            <p>
-                Total emails to send: <?php echo $last['total']; ?><br />
-                Emails sent till now: <?php echo $last['sent']; ?><br />
-                Last email (if empty the batch has completed): <?php echo $last['email']; ?><br />
-            </p>
+        <p>
+            Total emails to send: <?php echo $last['total']; ?><br />
+            Emails sent till now: <?php echo $last['sent']; ?><br />
+            Last email (if empty the batch has completed): <?php echo $last['email']; ?><br />
+        </p>
         <?php } ?>
 
 
-        <?php if (isset($_POST['test'])) { ?>
 
+    <?php if (isset($_POST['test'])) { ?>
+        
         <h3>Sending to test subscribers</h3>
         <p>
-        <?php
+            <?php
             update_option('newsletter_last', array());
             $options = newsletter_request('options');
             update_option('newsletter_email', $options);
@@ -114,78 +116,78 @@ tinyMCE.init({
                 $s = newsletter_get_subscriber($options['test_email_' . $i]);
                 if ($s) $subscribers[$i-1]= $s;
                 else {
-                $subscribers[$i-1]->name = $options['test_name_' . $i];
-                $subscribers[$i-1]->email = $options['test_email_' . $i];
-                $subscribers[$i-1]->token = 'FAKETOKEN';
+                    $subscribers[$i-1]->name = $options['test_name_' . $i];
+                    $subscribers[$i-1]->email = $options['test_email_' . $i];
+                    $subscribers[$i-1]->token = 'FAKETOKEN';
                 }
             }
             newsletter_send($options['subject'], $options['message'], $subscribers);
-        ?>
+            ?>
         </p>
 
-        <?php } ?>
+    <?php } ?>
 
 
-        <?php if (isset($_POST['simulate']) || isset($_POST['simulate2'])) { ?>
+<?php if (isset($_POST['simulate']) || isset($_POST['simulate2'])) { ?>
 
         <h3>Sending for simulation</h3>
         <p>There is a little delay between each email sending to simulate mailing process.</p>
         <?php
-            if (isset($_POST['simulate']))
-            {
-                $options = newsletter_request('options');
-                update_option('newsletter_email', $options);
-                update_option('newsletter_last', array());
-            }
-            echo '<p>';
-            $res = newsletter_send_batch($options['subject'], $options['message'], true);
-            echo '</p>';
-            if (!$res)
-            {
-                echo '</p><form action="" method="post">Still some emails to send.';
-                echo '<input type="submit" name="simulate2" value="Proceed"/>';
-                echo '</form>';
-            }
+        if (isset($_POST['simulate']))
+        {
+            $options = newsletter_request('options');
+            update_option('newsletter_email', $options);
+            update_option('newsletter_last', array());
+        }
+        echo '<p>';
+        $res = newsletter_send_batch($options['subject'], $options['message'], true);
+        echo '</p>';
+        if (!$res)
+        {
+            echo '</p><form action="" method="post">Still some emails to send.';
+            echo '<input type="submit" name="simulate2" value="Proceed"/>';
+            echo '</form>';
+        }
         ?>
 
 
         <?php } ?>
 
 
-        <?php if (isset($_REQUEST['send']) || isset($_POST['send2'])) { ?>
+    <?php if (isset($_REQUEST['send']) || isset($_POST['send2'])) { ?>
 
         <h3>Sending for real</h3>
         <?php
-            if (isset($_POST['send']))
-            {
-                $options = newsletter_request('options');
-                update_option('newsletter_email', $options);
-                update_option('newsletter_last', array());
-            }
-            echo '<p>';
-            $res = newsletter_send_batch($options['subject'], $options['message'], false);
-            echo '</p>';
-            if (!$res)
-            {
-                echo '</p><form action="" method="post">Still some emails to send.';
-                echo '<input type="submit" name="send2" value="Proceed"/>';
-                echo '</form>';
-            }
+        if (isset($_POST['send']))
+        {
+            $options = newsletter_request('options');
+            update_option('newsletter_email', $options);
+            update_option('newsletter_last', array());
+        }
+        echo '<p>';
+        $res = newsletter_send_batch($options['subject'], $options['message'], false);
+        echo '</p>';
+        if (!$res)
+        {
+            echo '</p><form action="" method="post">Still some emails to send.';
+            echo '<input type="submit" name="send2" value="Proceed"/>';
+            echo '</form>';
+        }
         ?>
 
         <?php } ?>
 
-<!--
+        <!--
 /*
- * \(<a[^>]href=["']{0,1})(.*)(["']{0,1}[^>]>)\i
+* \(<a[^>]href=["']{0,1})(.*)(["']{0,1}[^>]>)\i
 [15.45.01] Davide Pozza: (<\s*[A]\s[^>]*[\n\s]*)(href\s*=\s*([^>|\s]*))[^>]*>
- */
+*/
 -->
 
 
-<h3>Newsletter message</h3>
-<p>PHP execution timeout is set to <?php echo ini_get('max_execution_time'); ?> (information
-for debug purpose).</p>
+        <h3>Newsletter message</h3>
+        <p>PHP execution timeout is set to <?php echo ini_get('max_execution_time'); ?> (information
+        for debug purpose).</p>
         <table class="form-table">
             <tr valign="top">
                 <td>
@@ -194,7 +196,7 @@ for debug purpose).</p>
                     <br />
                     Tags: <strong>{name}</strong> receiver name.
                 </td>
-            </tr>        
+            </tr>
             <tr valign="top">
                 <td>
                     Message<br />
@@ -205,7 +207,7 @@ for debug purpose).</p>
                 </td>
             </tr>
         </table>
-        
+
 
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
@@ -220,35 +222,36 @@ for debug purpose).</p>
 
             Theme:
             <select name="theme">
-            <?php
-            if ($handle = @opendir(ABSPATH . 'wp-content/plugins/newsletter/themes'))
-            {
-                while ($file = readdir($handle))
+                <?php
+                if ($handle = @opendir(ABSPATH . 'wp-content/plugins/newsletter/themes'))
                 {
-                    if ($file == '.' || $file == '..') continue;
-                    echo '<option value="' . $file . '">' . $file . '</option>';
+                    while ($file = readdir($handle))
+                    {
+                        if ($file == '.' || $file == '..') continue;
+                        echo '<option value="' . $file . '">' . $file . '</option>';
+                    }
+                    closedir($handle);
                 }
-        		closedir($handle);
-            }
 
-            if ($handle = @opendir(ABSPATH . 'wp-content/newsletter/themes'))
-            {
-                while ($file = readdir($handle))
+                if ($handle = @opendir(ABSPATH . 'wp-content/newsletter/themes'))
                 {
-                    if ($file == '.' || $file == '..') continue;
-                    echo '<option value="*' . $file . '">* ' . $file . '</option>';
+                    while ($file = readdir($handle))
+                    {
+                        if ($file == '.' || $file == '..') continue;
+                        echo '<option value="*' . $file . '">* ' . $file . '</option>';
+                    }
+                    closedir($handle);
                 }
-        		closedir($handle);
-            }
-            ?>
+                ?>
             </select>
             <input class="button" type="submit" name="auto" value="Auto compose"/>
+            <input class="button" type="submit" name="export" value="Export for Zanzara"/>
         </p>
 
         <h3>Test subscribers</h3>
         <p>Define more test subscriber to see how your email looks on different clients:
         GMail, Outlook, Thunderbird, Hotmail, ...</p>
-        
+
         <table class="form-table">
             <?php for ($i=1; $i<=10; $i++) { ?>
             <tr valign="top">

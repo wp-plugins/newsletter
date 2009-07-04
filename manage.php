@@ -59,7 +59,7 @@ function newsletter_resend(email)
 </script>
 <div class="wrap">
         <h2>Subscribers Management</h2>
-        <p>Still in developement, any ideas will be great: write me to info@satollo.com.</p>
+        <p>Still in developement, any ideas will be great: write me to info@satollo.net.</p>
     <form id="channel" method="post" action="">
         <input type="hidden" id="action" name="a" value="search"/>
         <input type="hidden" id="email" name="email" value=""/>
@@ -69,19 +69,17 @@ function newsletter_resend(email)
                 <th scope="row"><label>Search by email</label></th>
                 <td>
                     <input name="text" type="text" size="50" value="<?php echo htmlspecialchars(newsletter_request('text'))?>"/>
-                    <input type="submit" value="Search" />
+                    <input type="submit" value="Search" /> (press without filter to show all)
                 </td>
             </tr>
         </table>
     </form>
-    <!--
     <form method="post" action="">
-            <p class="submit">
-    <input type="submit" value="Remove all" name="removeall" onclick="return confirm('Are your sure, really sure?')"/>
+    <p class="submit">
+    <!--<input type="submit" value="Remove all" name="removeall" onclick="return confirm('Are your sure, really sure?')"/>-->
     <input type="submit" value="Remove all unconfirmed" name="removeallunconfirmed" onclick="return confirm('Are your sure, really sure?')"/>
     </p>
     </form>
-    -->
 
     <h3>Statistics</h3>
     Confirmed subscriber: <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C'"); ?>
