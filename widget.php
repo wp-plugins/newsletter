@@ -41,7 +41,7 @@ function widget_newsletter_init()
         {
             // Remember to sanitize and format use input appropriately.
             $options['title'] = strip_tags(stripslashes($_POST['newsletter-title']));
-            $options['text'] = strip_tags(stripslashes($_POST['newsletter-text']));
+            $options['text'] = stripslashes($_POST['newsletter-text']);
             update_option('newsletter_widget', $options);
         }
 

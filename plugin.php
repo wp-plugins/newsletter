@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.1.5
+Version: 1.1.6
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -480,8 +480,19 @@ function newsletter_init()
         echo '<void property="blogTitle">' . "\n";
         echo '<string><![CDATA['. get_option('blogname') . ']]></string>' . "\n";
         echo '</void>' . "\n";
+
         echo '<void property="subject">' . "\n";
         echo '<string><![CDATA[' . $options_email['subject'] . ']]></string>' . "\n";
+        echo '</void>' . "\n";
+
+        echo '<void property="smtpHost">' . "\n";
+        echo '<string><![CDATA[' . $options['smtp_host'] . ']]></string>' . "\n";
+        echo '</void>' . "\n";
+        echo '<void property="smtpUser">' . "\n";
+        echo '<string><![CDATA[' . $options['smtp_user'] . ']]></string>' . "\n";
+        echo '</void>' . "\n";
+        echo '<void property="smtpPassword">' . "\n";
+        echo '<string><![CDATA[' . $options['smtp_password'] . ']]></string>' . "\n";
         echo '</void>' . "\n";
 
         echo '<void property="recipients">' . "\n";
@@ -493,6 +504,17 @@ function newsletter_init()
         {
             echo $recipients[$i]->email . ';' . $recipients[$i]->name .
                 ';' . $recipients[$i]->token . "\n";
+        }
+        echo ']]></string>' . "\n";
+        echo '</void>' . "\n";
+
+        echo '<void property="testRecipients">' . "\n";
+        echo '<string><![CDATA[';
+        for ($i=1; $i<=10; $i++)
+        {
+            if (!$options_email['test_email_' . $i]) continue;
+            echo $options_email['test_email_' . $i] . ';' . $options_email['test_name_' . $i] .
+                ';' . 'FAKETOKEN' . "\n";
         }
         echo ']]></string>' . "\n";
         echo '</void>' . "\n";

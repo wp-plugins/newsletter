@@ -280,14 +280,6 @@ The text of the link for unsubscription to be placed in the unsubscription email
 
         <table class="form-table">
             <tr valign="top">
-                <th scope="row"><label>Export key for Zanzara</label></th>
-                <td>
-                    <input name="options[key]" type="text" size="50" value="<?php echo htmlspecialchars($options['key'])?>"/>
-                    <br />
-                    Do not search for Zanzara, is a my private software
-                </td>
-            </tr>
-            <tr valign="top">
                 <th scope="row">&nbsp;</th>
                 <td>
                     <input type="checkbox" name="options[sendmail]" value="1" <?php echo $options['sendmail']!= null?'checked':''; ?> />
@@ -309,6 +301,37 @@ The text of the link for unsubscription to be placed in the unsubscription email
                 </td>
             </tr>
         </table>
+
+        <h2>Zanzara client</h2>
+
+        <table class="form-table">
+            <tr valign="top">
+                <th scope="row"><label>Export key</label></th>
+                <td>
+                    <input name="options[key]" type="text" size="50" value="<?php echo htmlspecialchars($options['key'])?>"/>
+                    <br />
+                    Do not search for Zanzara, is a my private software
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label>SMTP address</label></th>
+                <td>
+                    <input name="options[smtp_host]" type="text" size="50" value="<?php echo htmlspecialchars($options['smtp_host'])?>"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label>SMTP user</label></th>
+                <td>
+                    <input name="options[smtp_user]" type="text" size="50" value="<?php echo htmlspecialchars($options['smtp_user'])?>"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label>SMTP password</label></th>
+                <td>
+                    <input name="options[smtp_password]" type="text" size="50" value="<?php echo htmlspecialchars($options['smtp_password'])?>"/>
+                </td>
+            </tr>
+            </table>
 
         <p class="submit">
             <input class="button" type="submit" name="save" value="Save"/>
