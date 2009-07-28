@@ -108,10 +108,10 @@ function newsletter_resend(email)
                 echo '<td>' . $s->name . '</td>';
                 echo '<td>' . ($s->status=='S'?'Not confirmed':'Confirmed') . '</td>';
                 echo '<td>';
-                echo '<a href="javascript:void(newsletter_remove(\'' . $s->email . '\'))">remove</a>';
-                echo ' | <a href="javascript:void(newsletter_set_status(\'' . $s->email . '\', \'C\'))">confirm</a>';
-                echo ' | <a href="javascript:void(newsletter_set_status(\'' . $s->email . '\', \'S\'))">unconfirm</a>';
-                echo ' | <a href="javascript:void(newsletter_resend(\'' . $s->email . '\'))">resend confirmation</a>';
+                echo '<a href="javascript:void(newsletter_remove(\'' . htmlspecialchars($s->email) . '\'))">remove</a>';
+                echo ' | <a href="javascript:void(newsletter_set_status(\'' . htmlspecialchars($s->email) . '\', \'C\'))">confirm</a>';
+                echo ' | <a href="javascript:void(newsletter_set_status(\'' . htmlspecialchars($s->email) . '\', \'S\'))">unconfirm</a>';
+                echo ' | <a href="javascript:void(newsletter_resend(\'' . htmlspecialchars($s->email) . '\'))">resend confirmation</a>';
                 echo '</td>';
                 echo '</tr>';
             }
