@@ -3,6 +3,7 @@ $options = get_option('newsletter_email');
 
 if (isset($_POST['save']))
 {
+    if (!check_admin_referer()) die('No hacking please');
     $options = newsletter_request('options');
     update_option('newsletter_email', $options);
 }
@@ -10,6 +11,8 @@ if (isset($_POST['save']))
 if (isset($_POST['auto']))
 {
     global $post;
+
+    if (!check_admin_referer()) die('No hacking please');
 
     // Load the theme
     if ($_POST['theme'][0] == '*')
@@ -85,6 +88,7 @@ $last = get_option('newsletter_last');
 
 <div class="wrap">
     <form method="post">
+        <?php wp_nonce_field(); ?>
 
         <h2>Newsletter Composer</h2>
 
@@ -102,7 +106,7 @@ $last = get_option('newsletter_last');
 
 
     <?php if (isset($_POST['test'])) { ?>
-        
+        <?php if (!check_admin_referer()) die('No hacking please'); ?>
         <h3>Sending to test subscribers</h3>
         <p>
             <?php
@@ -129,6 +133,7 @@ $last = get_option('newsletter_last');
 
 
 <?php if (isset($_POST['simulate']) || isset($_POST['simulate2'])) { ?>
+        <?php if (!check_admin_referer()) die('No hacking please'); ?>
 
         <h3>Sending for simulation</h3>
         <p>There is a little delay between each email sending to simulate mailing process.</p>
@@ -155,6 +160,7 @@ $last = get_option('newsletter_last');
 
 
     <?php if (isset($_REQUEST['send']) || isset($_POST['send2'])) { ?>
+        <?php if (!check_admin_referer()) die('No hacking please'); ?>
 
         <h3>Sending for real</h3>
         <?php
@@ -170,6 +176,7 @@ $last = get_option('newsletter_last');
         if (!$res)
         {
             echo '</p><form action="" method="post">Still some emails to send.';
+            wp_nonce_field();
             echo '<input type="submit" name="send2" value="Proceed"/>';
             echo '</form>';
         }
@@ -186,7 +193,7 @@ $last = get_option('newsletter_last');
 
 
         <h3>Newsletter message</h3>
-        <p>PHP execution timeout is set to <?php echo ini_get('max_execution_time'); ?> (information
+        <p>PHP execution timeout is set to <?php set_time_limit(0); echo ini_get('max_execution_time'); ?> (information
         for debug purpose).</p>
         <table class="form-table">
             <tr valign="top">

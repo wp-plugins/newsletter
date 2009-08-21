@@ -23,4 +23,12 @@ $newsletter_labels['widget_form'] =
 $newsletter_labels['error_email'] = 'L\'indirizzo email non è corretto. <a href="javascript:history.back()">Torna indietro</a>.';
 $newsletter_labels['error_name'] = 'Il nome non è tato inserito. <a href="javascript:history.back()">Torna indietro</a>.';
 
+$newsletter_labels['embedded_form'] =
+'<form action="{newsletter_url}" method="post">
+<p><input type="text" name="ne" value="La tua email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
+&nbsp;<input type="text" name="nn" value="Il tuo nome" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
+<input type="submit" value="Conferma"/>
+<input type="hidden" name="na" value="s"/></p>
+</form>';
+
 ?>

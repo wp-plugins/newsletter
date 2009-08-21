@@ -2,8 +2,8 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail
 Requires at least: 2.7
-Tested up to: 2.8.1
-Stable tag: trunk
+Tested up to: 2.8.4
+Stable tag: 1.1.8
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo
 

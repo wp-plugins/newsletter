@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.1.7
+Version: 1.1.8
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -194,6 +194,9 @@ function newsletter_send_batch($subject, $message, $simulate=true)
         // If the batch id new store the total recipients
         if (!$last['email']) $last['total'] = count($recipients);
     }
+    
+    // Not all hosting provider allow this...
+    set_time_limit(0);
 
     echo 'Queue: ' . count($recipients) . ' emails<br />';
     $start_time = time();
@@ -232,7 +235,7 @@ function newsletter_send_batch($subject, $message, $simulate=true)
         $idx++;
         $last['sent']++;
 
-        // Timeout check
+        // Timeout check, max time is zero if set_time_limit works
         if ($max_time != 0 && (time()-$start_time) > $max_time)
         {
             $last['email'] = $r->email;
@@ -660,27 +663,25 @@ function newsletter_mail($to, &$subject, &$message, $html=true)
 
     $options = get_option('newsletter');
 
-    $from_email = $options['from_email'];
-    $from_name = $options['from_name'];
-
     $headers  = "MIME-Version: 1.0\n";
     if ($html)
-    $headers .= "Content-type: text/html; charset=UTF-8\n";
+        $headers .= "Content-type: text/html; charset=UTF-8\n";
     else
-    $headers .= "Content-type: text/plain; charset=UTF-8\n";
+        $headers .= "Content-type: text/plain; charset=UTF-8\n";
 
-    $headers .= 'From: "' . $from_name . '" <' . $from_email . ">\n";
+    $headers .= 'From: "' . $options['from_name'] . '" <' . $options['from_email'] . ">\n";
 
-    $subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    //$subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
 
-    if ($options['sendmail'])
-    {
-        return mail($to, $subject, $message, $headers, "-f" . $from_email);
-    }
-    else
-    {
-        return mail($to, $subject, $message, $headers);
-    }
+//    if ($options['sendmail'])
+//    {
+//        return mail($to, $subject, $message, $headers, "-f" . $from_email);
+//    }
+//    else
+//    {
+//        return mail($to, $subject, $message, $headers);
+//    }
+    wp_mail($to, $subject, $message, $headers);
 }
 
 
@@ -745,6 +746,7 @@ function newsletter_replace($text, $subscriber)
     $text = str_replace('{blog_title}', get_option('blogname'), $text);
     $text = str_replace('{email}', $subscriber->email, $text);
     $text = str_replace('{name}', $subscriber->name, $text);
+    $text = str_replace('{token}', $subscriber->token, $text);
     return $text;
 }
 
