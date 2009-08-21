@@ -93,6 +93,11 @@ $last = get_option('newsletter_last');
         <h2>Newsletter Composer</h2>
 
         <h3>Last batch infos</h3>
+        <p>Here you find information about last sending batch. A sending batch may have completed
+        or not. If not you can user the "restart" button and the batch starts again from the last
+        email address processed.</p>
+
+
         <?php if (!$last) { ?>
         <p>No batch info found.</p>
         <?php } else { ?>
@@ -150,6 +155,7 @@ $last = get_option('newsletter_last');
         if (!$res)
         {
             echo '</p><form action="" method="post">Still some emails to send.';
+            wp_nonce_field();
             echo '<input type="submit" name="simulate2" value="Proceed"/>';
             echo '</form>';
         }
@@ -211,6 +217,12 @@ $last = get_option('newsletter_last');
                     <br />
                     Tags: <strong>{name}</strong> receiver name;
                     <strong>{unsubscription_url}</strong> unsubscription URL.
+                </td>
+            </tr>
+            <tr valign="top">
+                <td>
+                    Max emails to send in a single batch<br />
+                    <input name="options[max]" type="text" size="5" value="<?php echo htmlspecialchars($options['max'])?>"/>
                 </td>
             </tr>
         </table>

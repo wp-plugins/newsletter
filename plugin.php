@@ -173,6 +173,7 @@ function newsletter_send_batch($subject, $message, $simulate=true)
     global $wpdb;
 
     $options = get_option('newsletter');
+    $options_email = get_option('newsletter_email');
 
     // Get infos on the last batch sent
     $last = get_option('newsletter_last');
@@ -236,7 +237,7 @@ function newsletter_send_batch($subject, $message, $simulate=true)
         $last['sent']++;
 
         // Timeout check, max time is zero if set_time_limit works
-        if ($max_time != 0 && (time()-$start_time) > $max_time)
+        if (($options_email['max'] && $idx > $options_email['max']) || ($max_time != 0 && (time()-$start_time) > $max_time))
         {
             $last['email'] = $r->email;
             update_option('newsletter_last', $last);
