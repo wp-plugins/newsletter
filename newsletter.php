@@ -94,19 +94,20 @@ $last = get_option('newsletter_last');
 
         <h3>Last batch infos</h3>
         <p>Here you find information about last sending batch. A sending batch may have completed
-        or not. If not you can user the "restart" button and the batch starts again from the last
+        or not. If not you can use the "restart" button and the batch starts again from the last
         email address processed.</p>
 
-
+        <div style="padding: 15px; border: 1px solid #ccc">
         <?php if (!$last) { ?>
-        <p>No batch info found.</p>
+        No batch info found.
         <?php } else { ?>
-        <p>
+
             Total emails to send: <?php echo $last['total']; ?><br />
             Emails sent till now: <?php echo $last['sent']; ?><br />
             Last email (if empty the batch has completed): <?php echo $last['email']; ?><br />
-        </p>
+
         <?php } ?>
+        </div>
 
 
 

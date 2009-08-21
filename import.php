@@ -66,15 +66,13 @@ if (isset($_POST['import']))
 
     <textarea wrap="off" style="width: 100%; height: 300px; font-size: 11px; font-family: monospace">Email,Name,Status,Token
 <?php
-$query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
-$recipients = $wpdb->get_results($query . " order by email");
-for ($i=0; $i<count($recipients); $i++)
-{
-    echo $recipients[$i]->email . ';' . $recipients[$i]->name .
-                ';' . $recipients[$i]->status . ';' . $recipients[$i]->token . "\n";
-}
+    $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
+    $recipients = $wpdb->get_results($query . " order by email");
+    for ($i=0; $i<count($recipients); $i++)
+    {
+        echo $recipients[$i]->email . ';' . $recipients[$i]->name .
+            ';' . $recipients[$i]->status . ';' . $recipients[$i]->token . "\n";
+    }
 ?></textarea>
-
-
 
 </div>
