@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.1.9
+Version: 1.2.0
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -316,8 +316,11 @@ function newsletter_subscribe($email, $name)
 
     newsletter_send_confirmation($newsletter_subscriber);
 
-    $message = 'New subscription: ' . $name . ' <' . $email . '>';
-    $subject = 'A new subscription';
+    $message = 'There is a new subscriber to ' . get_option('blogname') . ' newsletter:' . "\n\n" . 
+        $name . ' <' . $email . '>' . "\n\n" .
+        'Have a nice day,' . "\n" . 'your Newsletter plugin.';
+
+    $subject = '[' . get_option('blogname') . '] New subscription';
     newsletter_notify_admin($subject, $message);
 }
 
@@ -584,9 +587,13 @@ function newsletter_unsubscribe($email, $token)
     $wpdb->query("delete from " . $wpdb->prefix . "newsletter where email='" . $wpdb->escape($email) . "'" .
         " and token='" . $wpdb->escape($token) . "'");
 
-    $message = 'Unsubscription: ' . $name . ' <' . $email . '>';
-    $subject = 'Unsubscription';
-    newsletter_notify_admin($subject, $newsletter);
+    $message = 'There is an unsubscription to ' . get_option('blogname') . ' newsletter:' . "\n\n" .
+        $name . ' <' . $email . '>' . "\n\n" .
+        'Don\'t worry, for one lost two gained!' . "\n\n" .
+        'Have a nice day,' . "\n" . 'your Newsletter plugin.';
+
+    $subject = '[' . get_option('blogname') . '] Unsubscription';
+    newsletter_notify_admin($subject, $message);
 }
 
 function newsletter_delete($email)
@@ -650,9 +657,8 @@ function newsletter_set_status($email, $status)
 function newsletter_notify_admin(&$subject, &$message)
 {
     $to = get_option('admin_email');
-    $headers  = "MIME-Version: 1.0\n";
     $headers .= "Content-type: text/plain; charset=UTF-8\n";
-    mail($to, $subject, $message, $headers);
+    wp_mail($to, $subject, $message, $headers);
 }
 
 /**
@@ -701,7 +707,7 @@ function newsletter_activate()
         key `email_token` (`email`,`token`)
         )';
 
-    $wpdb->query($sql);
+    @$wpdb->query($sql);
 
     $options = get_option('newsletter');
 
@@ -723,17 +729,20 @@ if (is_admin())
     add_action('admin_menu', 'newsletter_admin_menu');
     function newsletter_admin_menu()
     {
+        $options = get_option('newsletter');
+        $level = $options['editor']?7:10;
+
         if (function_exists('add_menu_page'))
         {
-            add_menu_page('Newsletter', 'Newsletter', 10, 'newsletter/options.php', '', '');
+            add_menu_page('Newsletter', 'Newsletter', $level, 'newsletter/options.php', '', '');
         }
 
         if (function_exists('add_submenu_page'))
         {
-            add_submenu_page('newsletter/options.php', 'Configuration', 'Configuration', 10, 'newsletter/options.php');
-            add_submenu_page('newsletter/options.php', 'Composer', 'Composer', 10, 'newsletter/newsletter.php');
-            add_submenu_page('newsletter/options.php', 'Import', 'Import', 10, 'newsletter/import.php');
-            add_submenu_page('newsletter/options.php', 'Manage', 'Manage', 10, 'newsletter/manage.php');
+            add_submenu_page('newsletter/options.php', 'Configuration', 'Configuration', $level, 'newsletter/options.php');
+            add_submenu_page('newsletter/options.php', 'Composer', 'Composer', $level, 'newsletter/newsletter.php');
+            add_submenu_page('newsletter/options.php', 'Import', 'Import', $level, 'newsletter/import.php');
+            add_submenu_page('newsletter/options.php', 'Manage', 'Manage', $level, 'newsletter/manage.php');
         }
     }
 }

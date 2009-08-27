@@ -300,6 +300,13 @@ The text of the link for unsubscription to be placed in the unsubscription email
                     <label for="options[novisual]">do not use visual editors</label>
                 </td>
             </tr>
+            <tr valign="top">
+                <th scope="row">&nbsp;</th>
+                <td>
+                    <input type="checkbox" name="options[editor]" value="1" <?php echo $options['editor']!= null?'checked':''; ?> />
+                    <label for="options[editor]">allow editors to user the newsletter plugin</label>
+                </td>
+            </tr>
         </table>
 
         <h2>Zanzara client</h2>
