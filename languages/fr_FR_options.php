@@ -38,7 +38,7 @@ $newsletter_default_options['confirmed_message'] =
 
 // Unsubscription request introductory text
 $newsletter_default_options['unsubscription_text'] =
-"<p>&Ecirc;tes-vous certain de vouloir vous d&eacute;sinscrire de la lettre d&prime;information {blog_title} ? <a href=\{unsubscription_confirm_url}\">Oui</a>.";
+"<p>&Ecirc;tes-vous certain de vouloir vous d&eacute;sinscrire de la lettre d&prime;information {blog_title} ? <a href=\"{unsubscription_confirm_url}\">Oui</a>.";
 
 // When you finally loosed your subscriber
 $newsletter_default_options['unsubscribed_text'] =
