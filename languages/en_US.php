@@ -11,6 +11,16 @@ $newsletter_labels['subscription_form'] =
 </table>
 </form>';
 
+
+$newsletter_labels['subscription_form_noname'] =
+'<form method="post" action="" style="text-align: center">
+<input type="hidden" name="na" value="s"/>
+<table cellspacing="3" cellpadding="3" border="0" width="50%">
+<tr><td>Your&nbsp;email</td><td><input type="text" name="ne" size="30"/></td></tr>
+<tr><td colspan="2" style="text-align: center"><input type="submit" value="Subscribe me"/></td></tr>
+</table>
+</form>';
+
 $newsletter_labels['widget_form'] =
 '<form action="{newsletter_url}" method="post">
 {text}
@@ -20,6 +30,17 @@ $newsletter_labels['widget_form'] =
 <input type="hidden" name="na" value="s"/>
 </form>';
 
+
+$newsletter_labels['widget_form_noname'] =
+'<form action="{newsletter_url}" method="post">
+{text}
+<p><input type="text" name="ne" value="Your email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
+<p><input type="submit" value="Subscribe"/></p>
+<input type="hidden" name="na" value="s"/>
+</form>';
+
+
+
 $newsletter_labels['embedded_form'] =
 '<form action="{newsletter_url}" method="post">
 <p><input type="text" name="ne" value="Your email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
@@ -27,6 +48,16 @@ $newsletter_labels['embedded_form'] =
 <input type="submit" value="Subscribe"/>
 <input type="hidden" name="na" value="s"/></p>
 </form>';
+
+// Example of embedded form without name
+
+$newsletter_labels['embedded_form_noname'] =
+'<form action="{newsletter_url}" method="post">
+<p><input type="text" name="ne" value="Your email" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
+<input type="submit" value="Subscribe"/>
+<input type="hidden" name="na" value="s"/></p>
+</form>';
+
 
 // Errors on subscription
 $newsletter_labels['error_email'] = 'Wrong email address. <a href="javascript:history.back()">Go back</a>.';

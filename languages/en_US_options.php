@@ -1,5 +1,9 @@
 <?php
 // This file contains the default options values
+$newsletter_default_options['from_email'] = get_option('admin_email');
+$newsletter_default_options['from_name'] = get_option('blogname');
+
+
 
 // Subscription page introductory text (befor the subscription form)
 $newsletter_default_options['subscription_text'] =
@@ -51,4 +55,21 @@ $newsletter_default_options['unsubscription_text'] =
 // When you finally loosed your subscriber
 $newsletter_default_options['unsubscribed_text'] =
 "<p>That make me cry, but I have removed your subscription...</p>";
+
+$newsletter_default_options['unsubscribed_subject'] =
+"Goodbye, {name}";
+
+$newsletter_default_options['unsubscribed_message'] =
+"<p>The message confirm your unsubscription to {blog_title} newsletter.</p>
+<p>Good bye!</p>";
+
+$newsletter_default_options['subscription_form'] =
+'<form method="post" action="" style="text-align: center">
+<input type="hidden" name="na" value="s"/>
+<table cellspacing="3" cellpadding="3" border="0" width="50%">
+<tr><td>Your&nbsp;name</td><td><input type="text" name="nn" size="30"/></td></tr>
+<tr><td>Your&nbsp;email</td><td><input type="text" name="ne" size="30"/></td></tr>
+<tr><td colspan="2" style="text-align: center"><input type="submit" value="Subscribe me"/></td></tr>
+</table>
+</form>';
 ?>

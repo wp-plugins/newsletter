@@ -2,41 +2,31 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail
 Requires at least: 2.7
-Tested up to: 2.8.4
+Tested up to: 2.9
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo
 
-Newsletter is a simple plug-in (still in development) to collect subscribers and send out
-newsletters.
+Newsletter is a plug-in to collect subscribers and send out newsletters.
 
 == Description ==
 
-More detailed information on is found on the newsletter's official page (http://www.satollo.net/plugins/newsletter).
-
-This plug-in lets you collect subscribers on your blog with a double opt-in
+This plug-in lets you collect subscribers on your blog with a single or double opt-in
 subscription process. Double opt-in means the user has to confirm a subscription
 following simple standard instructions sent to him via email.
 
-Each step of subscribe and unsubscribe process is fully configurable (almost fully
-configurable).
+Each step of subscribe and unsubscribe process is fully configurable.
 
 The plug-in has a simple visual composer to create your newsletter
-and send it to subscribers.
+and send it to subscribers. The newsletter message can be auto composed starting
+with blog content and themes.
 
-Emails are sent one-per-user, so subject and body can be customized with subscriber name.
-This make the plug-in NOT suitable for big subscribers list.
+Emails are sent one-per-user, so subject and body can be customized
+with subscriber name.
 
-The subscriber management is still really stupid, but it is enough to search emails and delete them.
+More on Newsletter plug-in official page (http://www.satollo.net/plugins/newsletter).
 
-The plug-in is still under development and the features mentioned below will be rolled out a little a time:
 
-* themes for emails
-* auto-composer to create an email with blog contents
-* subscribers importer
-* subscribers exporter
-* mass mail support
-* PHP execution timeout bypass
 
 **Check out my other plug-ins**:
 

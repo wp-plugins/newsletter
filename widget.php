@@ -20,16 +20,25 @@ function widget_newsletter_init()
         // but as you can see here, they can also be very, very simple.
         echo $before_widget . $before_title . $title . $after_title;
 
-        $buffer = str_replace('{newsletter_url}', $options['url'], newsletter_label('widget_form'));
+        if (isset($options['noname']))
+        {
+            $buffer = str_replace('{newsletter_url}', $options['url'], newsletter_label('widget_form_noname'));
+        }
+        else
+        {
+            $buffer = str_replace('{newsletter_url}', $options['url'], newsletter_label('widget_form'));
+        }
         $buffer = str_replace('{text}', $optionsw['text'], $buffer);
-        echo $buffer;
-        
+        $buffer = str_replace('{count}', newsletter_subscribers_count(), $buffer);
+        if (defined('NEWSLETTER_EXTRAS')) echo $buffer;
+        else echo $buffer . '<div style="text-align:right;padding:0 10px;margin:0;"><a style="font-size:9px;color:#bbb;text-decoration:none" href="http://www.satollo.net">by satollo.net</a></div>';
+
         echo $after_widget;
     }
 
     function widget_newsletter_control()
     {
-        // Get our options and see if we're handling a form submission.
+    // Get our options and see if we're handling a form submission.
         $options = get_option('newsletter_widget');
         if (!is_array($options))
         {
@@ -39,7 +48,7 @@ function widget_newsletter_init()
 
         if ( $_POST['newsletter-submit'] )
         {
-            // Remember to sanitize and format use input appropriately.
+        // Remember to sanitize and format use input appropriately.
             $options['title'] = strip_tags(stripslashes($_POST['newsletter-title']));
             $options['text'] = stripslashes($_POST['newsletter-text']);
             update_option('newsletter_widget', $options);
