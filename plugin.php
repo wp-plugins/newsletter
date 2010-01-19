@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.4.1
+Version: 1.4.2
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -207,7 +207,13 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
     // Get infos on the last batch sent
         $last = get_option('newsletter_last');
         newsletter_log('newsletter_send_batch() - last batch info: ' . print_r($last, true));
-        if (!is_array($last) || !$continue) {
+
+        // Check the "continue" ask validity (may be broken by database error on a
+        // previous sending process
+        if ($continue && !is_array($last)) return array();
+        if ($continue && !isset($last['id'])) return $last;
+        
+        if (!$continue) {
             $last = array();
             $last['simulate'] = $simulate;
             $last['list'] = $list;
@@ -324,11 +330,12 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
             // every 20 email, save the status on database
             if ($idx % 20 == 1) {
                 newsletter_log('newsletter_send_batch() - Saving batch info: ' . print_r($last, true));
+                // Message will be lost in scheduled operations
                 if (!update_option('newsletter_last', $last)) {
+                    $last['error'] = true;
                     newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
                     newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
-                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . '). ' .
-                        'If scheduled the sending process will restart maybe sending some duplicate emails';
+                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
                     return $last;
                 }
             }
@@ -336,15 +343,12 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
             // Check for the max emails per batch
             if ($max != 0 && $idx >= $max) {
                 newsletter_log('newsletter_send_batch() - Batch limit reached');
+                $last['message'] = 'Batch email limit reached, if scheduled the sending process will restart automatically';
                 if (!update_option('newsletter_last', $last)) {
                     $last['error'] = true;
                     newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
                     newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
-                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . '). ' .
-                        'If scheduled the sending process will restart maybe sending some duplicate emails';
-                }
-                else {
-                    $last['message'] = 'Batch email limit reached, if scheduled the sending process will restart automatically';
+                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
                 }
                 return $last;
             }
@@ -352,15 +356,12 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
             // Timeout check, max time is zero if set_time_limit works
             if (($max_time != 0 && (time()-$start_time) > $max_time)) {
                 newsletter_log('newsletter_send_batch() - Timeout reached');
+                $last['message'] = 'Timeout reached';
                 if (!update_option('newsletter_last', $last)) {
                     $last['error'] = true;
                     newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
                     newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
-                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . '). ' .
-                        'If scheduled the sending process will restart maybe sending some duplicate emails';
-                }
-                else {
-                    $last['message'] = 'Timeout reached';
+                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
                 }
                 return $last;
             }
