@@ -1061,6 +1061,7 @@ function nt_post_image($post_id, $size='thumbnail', $alternative=null) {
         //$image = $image[0];
         return $image[0];
     }
+    return null;
 }
 
 function nt_option($name, $def = null) {
