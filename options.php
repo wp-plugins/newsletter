@@ -166,7 +166,9 @@ $options = get_option('newsletter');
                     <textarea class="visual" name="options[confirmation_message]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['confirmation_message'])?></textarea>
                     <br />
                     Tags: <strong>{name}</strong> the user name; <strong>{subscription_confirm_url}</strong>
-                    confirmation URL to be clicked by the user to confirm his subscription.
+                    confirmation URL to be clicked by the user to confirm his subscription;
+                    <strong>{unsubscription_url}</strong> URL to be clickd to remove the subscription (confirmed
+                    or not).
                 </td>
             </tr>
         </table>
@@ -222,7 +224,9 @@ $options = get_option('newsletter');
                 <td>
                     <textarea class="visual" name="options[confirmed_message]" wrap="off" rows="5" cols="75"><?php echo htmlspecialchars($options['confirmed_message'])?></textarea>
                     <br />
-                    Tags: <strong>{name}</strong> user name; <strong>{token}</strong> the subscriber unique token
+                    Tags: <strong>{name}</strong> user name; <strong>{token}</strong> the subscriber unique token;
+                    <strong>{unsubscription_url}</strong> URL to be clickd to remove the subscription (confirmed
+                    or not).
                 </td>
             </tr>
         </table>

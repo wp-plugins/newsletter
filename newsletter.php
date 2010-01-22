@@ -13,6 +13,9 @@ if (isset($_POST['auto']) && check_admin_referer()) {
     if ($_POST['theme'][0] == '*') {
         $file = ABSPATH . '/wp-content/plugins/newsletter-custom/themes/' . substr($_POST['theme'], 1) . '/theme.php';
     }
+    if ($_POST['theme'][0] == '$') {
+        $file = ABSPATH . '/wp-content/plugins/newsletter-extras/themes/' . substr($_POST['theme'], 1) . '/theme.php';
+    }
     else {
         $file = dirname(__FILE__) . '/themes/' . $_POST['theme'] . '/theme.php';
     }
@@ -150,7 +153,7 @@ $last = null;
                 newsletter_send_batch(false, 0, false, $subscribers);
                 ?>
         </div>
-        
+
         <?php } ?>
 
 
@@ -210,9 +213,9 @@ $last = null;
         </table>
 
         <p class="submit">
-            <?php if (isset($last['id'])) { ?>
+                <?php if (isset($last['id'])) { ?>
             <input class="button" type="submit" name="restart" value="Restart batch"  onclick="return confirm('Continue with this batch?')"/>
-            <?php } ?>
+                <?php } ?>
             <input class="button" type="submit" name="reset" value="Reset batch"  onclick="return confirm('Reset the batch status?')"/>
         </p>
 
@@ -280,6 +283,15 @@ $last = null;
                         <optgroup label="Included themes">
                             <option value="default">Default</option>
                             <option value="with-picture">With picture</option>
+                        </optgroup>
+                        <optgroup label="Extras themes">
+                            <?php
+                            $themes = newsletter_get_extras_themes();
+
+                            foreach ($themes as $theme) {
+                                echo '<option value="$' . $theme . '">' . $theme . '</option>';
+                            }
+                            ?>
                         </optgroup>
                         <optgroup label="Custom themes">
                             <?php

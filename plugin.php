@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.4.3
+Version: 1.4.4
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -1011,6 +1011,21 @@ function newsletter_get_themes() {
         $list[] = $file;
     }
     closedir($handle);
+    return $list;
+}
+
+function newsletter_get_extras_themes() {
+    $handle = @opendir(ABSPATH . 'wp-content/plugins/newsletter-extras/themes');
+    $list = array();
+    if (!$handle) return $list;
+    while ($file = readdir($handle)) {
+        if ($file == '.' || $file == '..') continue;
+        if (!is_dir(ABSPATH . 'wp-content/plugins/newsletter-extras/themes/' . $file)) continue;
+        if (!is_file(ABSPATH . 'wp-content/plugins/newsletter-extras/themes/' . $file . '/theme.php')) continue;
+        $list[] = $file;
+    }
+    closedir($handle);
+    return $list;
 }
 
 /**
