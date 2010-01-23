@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.4.4
+Version: 1.4.5
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -450,6 +450,17 @@ function newsletter_subscribe($email, $name='', $profile=null) {
     $subject = '[' . get_option('blogname') . '] New subscription';
     newsletter_notify_admin($subject, $message);
 }
+
+
+function newsletter_save($subscriber) {
+    global $wpdb;
+
+    $email = newsletter_normalize_email($email);
+    $name = newsletter_normalize_name($name);
+    $wpdb->query($wpdb->prepare("update " . $wpdb->prefix . "newsletter set email=%s, name=%s where id=%d",
+            $subscriber['email'], $subscriber['name'], $subscriber['id']));
+}
+
 
 /**
  * Resends the confirmation message when asked by user manager panel.

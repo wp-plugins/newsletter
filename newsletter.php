@@ -13,7 +13,7 @@ if (isset($_POST['auto']) && check_admin_referer()) {
     if ($_POST['theme'][0] == '*') {
         $file = ABSPATH . '/wp-content/plugins/newsletter-custom/themes/' . substr($_POST['theme'], 1) . '/theme.php';
     }
-    if ($_POST['theme'][0] == '$') {
+    else if ($_POST['theme'][0] == '$') {
         $file = ABSPATH . '/wp-content/plugins/newsletter-extras/themes/' . substr($_POST['theme'], 1) . '/theme.php';
     }
     else {
