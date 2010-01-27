@@ -191,7 +191,7 @@ if ($list) {
         echo '<td>' . $s->token . '</td>';
         echo '<td>';
         echo '<a href="javascript:void(newsletter_edit(' . $s->id . '))">' . __('edit', 'newsletter') . '</a>';
-        echo '<a href="javascript:void(newsletter_remove(' . $s->id . '))">' . __('remove', 'newsletter') . '</a>';
+        echo ' | <a href="javascript:void(newsletter_remove(' . $s->id . '))">' . __('remove', 'newsletter') . '</a>';
         echo ' | <a href="javascript:void(newsletter_set_status(' . $s->id . ', \'C\'))">' . __('confirm', 'newsletter') . '</a>';
         echo ' | <a href="javascript:void(newsletter_set_status(' . $s->id . ', \'S\'))">' . __('unconfirm', 'newsletter') . '</a>';
         echo ' | <a href="javascript:void(newsletter_resend(' . $s->id . '))">' . __('resend confirmation', 'newsletter') . '</a>';
