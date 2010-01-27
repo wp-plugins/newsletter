@@ -1,0 +1,784 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Russian Lang for Newsletter\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-22 20:58+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: M.O.Z.G <mozg@mozg-studio.org>\n"
+"Language-Team: M.O.Z.G Studio | http://mozg-studio.org <mozg@mozg-studio.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: _e;__;_c;_n\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: export.php:8
+msgid "Subscribers Export"
+msgstr "Экспорт подписчиков"
+
+#: export.php:10
+msgid "The text below is a list of all your subscribers (confirmed and not) in cvs format. You can copy, save and edit it with Excel or other software. Status column has 2 values: S - subscribed but not confirmed, C - confirmed."
+msgstr "Приведенный ниже текст представляет собой список всех Ваших подписчиков (подтвержденных и нет) в CVS формате. Вы можете скопировать, сохранить и редактировать их в MS Excel или другом приложении.<br>Статус колонок имеет 2 значения: S - подписчик не подтвержден, C - подтвержден."
+
+#: export.php:12
+#: manage.php:148
+msgid "Email"
+msgstr "Email"
+
+#: export.php:12
+#: manage.php:148
+msgid "Name"
+msgstr "Имя"
+
+#: export.php:12
+#: manage.php:148
+msgid "Status"
+msgstr "Статус"
+
+#: export.php:12
+#: manage.php:148
+msgid "Token"
+msgstr "Ключ"
+
+#: import.php:34
+msgid "Subscribers Import"
+msgstr "Импорт подписчиков"
+
+#: import.php:40
+msgid "Rows with errors"
+msgstr "Строк с ошибками"
+
+#: import.php:47
+#: import.php:54
+#: plugin.php:934
+msgid "Import"
+msgstr "Импорт"
+
+#: import.php:48
+msgid "On the textarea below you can copy a text in CSV (comma separated values) with format:<br /><br /> <pre>user email;user name</pre><br /><br />and then import them. If an email is already stored, it won't be imported. If an email is wrong it won't be imported. Even when there are errors on CSV lines, the import will continue to the end. After the import process has ended, a box will appear with all the line not imported due to duplications or errors. Imported subscriber will be set as confirmed."
+msgstr "В текстовоt поле ниже Вы можете cкопировать текст CSV (Сomma Separated Values) в формате:<br /><br /><pre>email пользователя;имя пользователя</pre><br /><br />а затем импортировать его. Если адреса уже занесены в базу, они не будут импортированы. Если адреса записаны с ошибка, они не будут импортированы. Даже при наличии ошибок в строках CSV, импорт будет продолжаться до конца. После завершения процесса Вам будет показано окно со всеми строками, которые не были импортированы. Испортированые подписчики автоматический станут подтвержденными."
+
+#: import.php:50
+msgid "Empty rows and rows staring with sharp (#) are skipped. Emails will be normalized and a subscriber token generated for each imported email."
+msgstr "Пустые строки и строки содержащие символ решетки (#) будут пропущены. Адреса электронной почты будут форматированы, а пользователям назначен уникальный бинарный код на каждый e-mail."
+
+#: manage.php:95
+#: manage_.php:70
+msgid "Subscribers Management"
+msgstr "Управление подписчиками"
+
+#: manage.php:106
+#: manage.php:109
+#: manage_.php:81
+#: manage_.php:84
+msgid "Search"
+msgstr "Поиск"
+
+#: manage.php:109
+#: manage_.php:84
+msgid "press without filter to show all"
+msgstr "оставьте поле пустым, если хотите посмотреть всех подписчиков"
+
+#: manage.php:116
+#: manage_.php:91
+msgid "Only not yet confirmed"
+msgstr "Только не подвержденные"
+
+#: manage.php:120
+msgid "Order"
+msgstr "Порядок"
+
+#: manage.php:134
+#: manage_.php:109
+msgid "Remove all unconfirmed"
+msgstr "Удалить всех не подтвержденных"
+
+#: manage.php:134
+#: manage_.php:109
+msgid "Are your sure, really sure?"
+msgstr "Вы уверены?"
+
+#: manage.php:138
+#: manage_.php:113
+msgid "Subscriber's statistics"
+msgstr "Статистика подписчиков"
+
+#: manage.php:139
+#: manage_.php:114
+msgid "Confirmed subscriber"
+msgstr "Подтвержденный подписчик"
+
+#: manage.php:141
+#: manage_.php:116
+msgid "Unconfirmed subscriber"
+msgstr "Не подтвержденный подписчик"
+
+#: manage.php:143
+#: manage_.php:118
+msgid "Results"
+msgstr "Результат"
+
+#: manage.php:148
+msgid "Profile"
+msgstr "Профиль"
+
+#: manage.php:148
+msgid "Actions"
+msgstr "Действия"
+
+#: manage.php:166
+msgid "remove"
+msgstr "удалить"
+
+#: manage.php:167
+msgid "confirm"
+msgstr "подтвердить"
+
+#: manage.php:168
+msgid "unconfirm"
+msgstr "убрать подтверждение"
+
+#: manage.php:169
+msgid "resend confirmation"
+msgstr "переслать подтверждающее письмо"
+
+#: manage_.php:76
+msgid "search"
+msgstr "поиск"
+
+#: newsletter.php:79
+msgid "Newsletter Composer"
+msgstr "Компановщик рассылки"
+
+#: newsletter.php:89
+msgid "Continuing with previous batch"
+msgstr "Продолжить с предыдущим пакетом"
+
+#: newsletter.php:95
+#: newsletter.php:113
+#: newsletter.php:130
+msgid "Batch not completed, see more below."
+msgstr "Пакетная отправка не завершена, смотрите подробности ниже."
+
+#: newsletter.php:104
+msgid "Simulation"
+msgstr "Имитация"
+
+#: newsletter.php:123
+msgid "Sending"
+msgstr "Отправка"
+
+#: newsletter.php:140
+msgid "Sending to test subscribers"
+msgstr "Отправка тестовым подписчикам"
+
+#: newsletter.php:160
+msgid "Last batch info"
+msgstr "Информация о последней пакетной отправке."
+
+#: newsletter.php:161
+msgid "Here you find information about last batch. A sending batch may have completed or not and may be a simulation or not. When a batch is not complete you can use the \"restart\" button and the batch starts again from the last email address processed."
+msgstr "Здесь вы найдете информацию о последней пакетной отправке. Пакетная отправка может быть завершена или нет, и может быть имитацией или нет. Когда пакетная отправка не закончена, вы можете нажать кнопку \"Перезапуск\" и отправка продолжится с последнего адреса в процессе."
+
+#: newsletter.php:166
+msgid "No batch info found, it's ok!"
+msgstr "Нет информации о последней пакетной отправке, это нормально!"
+
+#: newsletter.php:172
+msgid "Total emails to send"
+msgstr "Всего адресов для отправки"
+
+#: newsletter.php:176
+msgid "Emails sent till now"
+msgstr "Сейчас отправлено"
+
+#: newsletter.php:181
+#: options.php:353
+msgid "List"
+msgstr "Список"
+
+#: newsletter.php:186
+msgid "Sending type"
+msgstr "Типа отправки"
+
+#: newsletter.php:190
+msgid "Scheduled"
+msgstr "Планировщик"
+
+#: newsletter.php:193
+msgid "next"
+msgstr "следующая"
+
+#: newsletter.php:194
+msgid "now"
+msgstr "сейчас"
+
+#: newsletter.php:199
+msgid "Last subscriber"
+msgstr "Последний подписчик"
+
+#: newsletter.php:203
+msgid "Last id"
+msgstr "Последний ID"
+
+#: newsletter.php:204
+msgid "debug info"
+msgstr "информация для отладки"
+
+#: newsletter.php:207
+#: newsletter.php:263
+msgid "Message"
+msgstr "Сообщение"
+
+#: newsletter.php:214
+msgid "Restart batch"
+msgstr "Перезапуск"
+
+#: newsletter.php:214
+msgid "Continue with this batch?"
+msgstr "Продолжить с этой пакетной отправкой?"
+
+#: newsletter.php:216
+msgid "Reset batch"
+msgstr "Перезапуск"
+
+#: newsletter.php:216
+msgid "Reset the batch status?"
+msgstr "Сбросить состояние пакетной отправки?"
+
+#: newsletter.php:226
+msgid "Newsletter message"
+msgstr "Контент рассылки"
+
+#: newsletter.php:231
+msgid "Newsletter name"
+msgstr "Название рассылки"
+
+#: newsletter.php:235
+msgid "This symbolic name will be used to track the link clicks and associate them to a specific newsletter. Keep the name compact and significative."
+msgstr "Это символическое название будет использоваться для отслеживания кликов ссылки и связывать их с конкретными рассылками. Стсрайтесь делать название компактным и симантичным."
+
+#: newsletter.php:239
+#: newsletter.php:249
+msgid "Tracking"
+msgstr "Отслеживание"
+
+#: newsletter.php:242
+msgid "Track link clicks"
+msgstr "Отслеживать клики"
+
+#: newsletter.php:244
+msgid "When this option is enabled, each link in the email text will be rewritten and clicks on them intercepted."
+msgstr "Когда эта опция включена, каждая ссылка в тексте письма будет переписана, и клики на ней будут перехватываться."
+
+#: newsletter.php:250
+msgid "Tracking options available with Newsletter Extras package"
+msgstr "Отслеживание доступено после установкой Newsletter Extras"
+
+#: newsletter.php:255
+msgid "Subject"
+msgstr "Тема"
+
+#: newsletter.php:259
+msgid "Tags: <strong>{name}</strong> receiver name."
+msgstr "Тэги: <strong>{name}</strong> - имя получателя."
+
+#: newsletter.php:267
+msgid "Tags: <strong>{name}</strong> receiver name; <strong>{unsubscription_url}</strong> unsubscription URL; <strong>{token}</strong> the subscriber token."
+msgstr "Тэги: <strong>{name}</strong> - имя получателя; <strong>{unsubscription_url}</strong> -адрес для отписки; <strong>{token}</strong> - уникальный ключ подписчика."
+
+#: newsletter.php:272
+msgid "Theme"
+msgstr "Шаблон"
+
+#: newsletter.php:275
+msgid "Included themes"
+msgstr "Внутренние"
+
+#: newsletter.php:276
+msgid "Default"
+msgstr "По умолчанию"
+
+#: newsletter.php:277
+msgid "With picture"
+msgstr "С картинками"
+
+#: newsletter.php:279
+msgid "Custom themes"
+msgstr "Пользовательский"
+
+#: newsletter.php:289
+msgid "Auto compose"
+msgstr "Автоматическое заполнение"
+
+#: newsletter.php:293
+msgid "Number of posts on theme"
+msgstr "Кол-во постов в шаблоне"
+
+#: newsletter.php:301
+#: newsletter.php:332
+#: newsletter.php:369
+#: newsletter.php:399
+#: options.php:99
+#: options.php:133
+#: options.php:169
+#: options.php:222
+#: options.php:273
+#: options.php:388
+#: options.php:406
+#: options.php:443
+msgid "Save"
+msgstr "Сохранить"
+
+#: newsletter.php:302
+msgid "Test"
+msgstr "Тест"
+
+#: newsletter.php:303
+msgid "Simulate"
+msgstr "Имитировать"
+
+#: newsletter.php:303
+msgid "Simulate? The test address will receive all emails!"
+msgstr "Имитировать? Тестовые адресаты получат все письма!"
+
+#: newsletter.php:304
+msgid "Send"
+msgstr "Отправить"
+
+#: newsletter.php:304
+msgid "Start a real newsletter sending batch?"
+msgstr "Начасть настоящую рассылку в пакетном режиме?"
+
+#: newsletter.php:306
+msgid "Scheduled simulation"
+msgstr "Имитация по расписанию"
+
+#: newsletter.php:306
+msgid "Start a scheduled simulation?"
+msgstr "Начать запланированную имитацию?"
+
+#: newsletter.php:307
+msgid "Scheduled send"
+msgstr "Планировщик отправки"
+
+#: newsletter.php:307
+msgid "Start a scheduled real send?"
+msgstr "Начать запланированную настоящую рассылку?"
+
+#: newsletter.php:312
+msgid "Scheduler"
+msgstr "Планировщик"
+
+#: newsletter.php:313
+msgid "Scheduler helps to send out a long list of emails slowly to not overload the server."
+msgstr "Планировщик помогает отправлять длинные списки адресатов медленнее, не перегружая сервер."
+
+#: newsletter.php:317
+msgid "Interval between sending tasks"
+msgstr "Интервал между задачами отправки"
+
+#: newsletter.php:320
+msgid "minutes, minimum value is 10"
+msgstr "минуты, минимальное значение - 10"
+
+#: newsletter.php:324
+msgid "Max number of emails per task"
+msgstr "Максимальное число писем на каждую задачу"
+
+#: newsletter.php:327
+msgid "good value is 20 but if you use an external SMTP go with 5"
+msgstr "оптимальное значение - 20, но вы можете использовать внешний SMTP"
+
+#: newsletter.php:335
+msgid "Available only with Newsletter Extras package"
+msgstr "Доступен после установки Newsletter Extras"
+
+#: newsletter.php:342
+msgid "General"
+msgstr "Общие"
+
+#: newsletter.php:350
+msgid "Sending options"
+msgstr "Параметры отправки"
+
+#: newsletter.php:351
+msgid "Configuration for not scheduled sending process."
+msgstr "Настройка для незапланированных процессов отправки."
+
+#: newsletter.php:354
+msgid "Max emails in a single batch"
+msgstr "Максимум писем в одном пакете"
+
+#: newsletter.php:360
+msgid "Receiver address for simulation"
+msgstr "Адреса получателей для имитации"
+
+#: newsletter.php:363
+msgid "When you simulate a sending process, emails are really sent but all to this email address. That helps to test out problems with mail server."
+msgstr "Во время имитации процесса отправки, письма действительно отправляються, но только по этому адресу. Это помогает установить проблемы почтового сервера."
+
+#: newsletter.php:374
+msgid "Filter"
+msgstr "Фильтр"
+
+#: newsletter.php:381
+msgid "Test subscribers"
+msgstr "Тестовые подписчики"
+
+#: newsletter.php:383
+msgid "Define more test subscriber to see how your email looks on different clients: GMail, Outlook, Thunderbird, Hotmail, ..."
+msgstr "назначте нескольок тестовых подписчиков, что бы посмотреть как ваше сообщение выглядит в различных клиентах: GMail, Outlook, Thunderbird, Hotmail, ..."
+
+#: newsletter.php:389
+msgid "Subscriber"
+msgstr "Подписчик"
+
+#: newsletter.php:391
+msgid "name"
+msgstr "имя"
+
+#: newsletter.php:393
+msgid "email"
+msgstr "email"
+
+#: options.php:58
+msgid "Newsletter"
+msgstr "Newsletter плагин"
+
+#: options.php:63
+msgid "Questions, help, critiques and whatever else <a target=\"_blank\" href=\"http://www.satollo.net/plugins/newsletter\">click here</a>!"
+msgstr "Вопросы, помощь, критика и все остальное писать <a target=\"_blank\" href=\"http://www.satollo.net/plugins/newsletter\">здесь</a>!"
+
+#: options.php:70
+msgid "Sender and subscription page"
+msgstr "Отправитель и страница подписки"
+
+#: options.php:73
+msgid "Sender email"
+msgstr "Адрес отправителя"
+
+#: options.php:77
+msgid "Newsletter sender email address: the address subscribers will see the newsletters coming from."
+msgstr "Адрес отправителя рассылки: этот адрес подписчики увидят во поле \"От\" входящего письма, когда получат рассулку."
+
+#: options.php:81
+msgid "Sender name"
+msgstr "Имя отправителя"
+
+#: options.php:85
+msgid "The name of the newsletter sender subscribers will see on incoming email."
+msgstr "Имя отправителя рассылки подписчики увидят во входящем письме."
+
+#: options.php:89
+msgid "Subscription page URL"
+msgstr "Адрес страницы для подписки"
+
+#: options.php:93
+msgid "This is the page where you placed the <strong>[newsletter]</strong> short tag."
+msgstr "Это страница на которой вы разместили короткий тег <strong>[newsletter]</strong>."
+
+#: options.php:94
+msgid "Read more on plugin official page"
+msgstr "Узнать больше о плагине Вы на официальной странице"
+
+#: options.php:105
+msgid "Subscription form"
+msgstr "Форма подписки"
+
+#: options.php:111
+msgid "Do not ask the user name, only email."
+msgstr "Не спрашивать имя пользователя, только e-mail."
+
+#: options.php:115
+msgid "Subscription form page"
+msgstr "Страница формы подписки"
+
+#: options.php:119
+msgid "This is the text showed to subscriber before the subscription form which is added automatically."
+msgstr "Этот текст показываеться подписчику перед формой, которая добавляеться автоматический."
+
+#: options.php:123
+msgid "Successfully subscription page"
+msgstr "Страница успешной подписки"
+
+#: options.php:127
+msgid "This is the text showed to a user who has pressed \"subscribe me\" on the previous step informing that an email to confirm subscription has just been sent. Remeber the user to check the spam folder and to follow the email instructions.<br />Tags: <strong>{name}</strong> the user name; <strong>{email}</strong> the user email."
+msgstr "Этот текст показывается пользователю нажавшему в предыдущем шаге \"Подписаться\", информируя его о том, что сообщение с подтверждающей ссылкой было отправлено. Напоминает пользователю проверить папку \"Спам\" и следовать инструкция в письме.<br />Тэги: <strong>{name}</strong> - имя пользователя; <strong>{email}</strong> - e-mail пользователя."
+
+#: options.php:138
+msgid "Confirmation"
+msgstr "Подтверждение"
+
+#: options.php:138
+msgid "double opt-in"
+msgstr "опция"
+
+#: options.php:140
+msgid "Email sent to the user to confirm his subscription, the successful confirmation page, the welcome email."
+msgstr "Письмо отпрвлено пользователю для подтверждения, страница успешного подтверждения, преветсвенное письмо."
+
+#: options.php:147
+msgid "Do not use double opt-in. If checked the subscription is direct, so subscribers will be immediately confirmed and will receive the welcome email."
+msgstr "Не использовать эту опцию. Если проверка подписки примая, то подписчики немедленно становяться подтвержденными и получают приветвенное письмо."
+
+#: options.php:151
+msgid "Confirmation email subject"
+msgstr "Тема подтверждающего письма"
+
+#: options.php:155
+msgid "Tags: <strong>{name}</strong> the user name."
+msgstr "Тэги: <strong>{name}</strong> - имя пользователя."
+
+#: options.php:159
+msgid "Confirmation email message"
+msgstr "Текст подтверждающего письма"
+
+#: options.php:163
+msgid "Tags: <strong>{name}</strong> the user name; <strong>{subscription_confirm_url}</strong>confirmation URL to be clicked by the user to confirm his subscription."
+msgstr "Тэги: <strong>{name}</strong> - имя пользователя; <strong>{subscription_confirm_url}</strong> - адрес ссылки, кликнув по которой пользователя подтверждает подписку."
+
+#: options.php:174
+msgid "Welcome message"
+msgstr "Приветвенное сообщение"
+
+#: options.php:176
+msgid "Users jump directly to this step if you disabled the double opt-in step."
+msgstr "Пользователи сразу попадуют  на этот шаг, если выключена опция подтверждения."
+
+#: options.php:180
+msgid "Successful confirmation page"
+msgstr "Страница успешного подтверждения"
+
+#: options.php:184
+msgid "Showed when the user follow the confirmation URL sent to him with previous email settings or if signed up directly with no double opt-in process."
+msgstr "Показываеться когда пользователь переходит по подтверждающей ссылке, или если он зарегестрировался напрямую (двойная опция выключена)."
+
+#: options.php:186
+msgid "Tags: <strong>{name}</strong> the user name; <strong>{email}</strong> for the user email; <strong>{token}</strong> the subscriber unique token"
+msgstr "Тэги: <strong>{name}</strong> - имя пользователя; <strong>{email}</strong> - e-mail пользователяl; <strong>{token}</strong> - уникальный ключ пользователя"
+
+#: options.php:191
+msgid "Conversion tracking code"
+msgstr "Код слежения за переходами"
+
+#: options.php:196
+msgid "Available with Newsletter Extras package"
+msgstr "Доступен с установкой Newsletter Extras"
+
+#: options.php:199
+msgid "That code is injected AS-IS in welcome page and can be used to track conversion (you can use PHP if needed). Conversion code is usually supply by tracking services, like Google AdWords, Google Analytics and so on."
+msgstr "Этот код вставляеться КАК ЕСТЬ в страницу приветсвия и может отслеживать переходы (вы можете использовать PHP если нужно). Отслеживающий код используеться поддерживающими отслеживание сервисами, такими как Google AdWords, Google Analytics и другими."
+
+#: options.php:202
+msgid "Welcome email"
+msgstr "Приветсвенное письмо"
+
+#: options.php:204
+msgid "Welcome email subject"
+msgstr "Тема приветсвенного письма"
+
+#: options.php:208
+#: options.php:259
+#: options.php:267
+msgid "Tags: <strong>{name}</strong> user name."
+msgstr "Тэги: <strong>{name}</strong> - имя пользователя."
+
+#: options.php:212
+msgid "Welcome email message"
+msgstr "Текст приветсвенного письма"
+
+#: options.php:216
+msgid "Tags: <strong>{name}</strong> user name; <strong>{token}</strong> the subscriber unique token"
+msgstr "Тэги: <strong>{name}</strong> - имя пользователя; <strong>{token}</strong> - уникальный ключ пользователя"
+
+#: options.php:227
+msgid "Unsubscription"
+msgstr "Отписка"
+
+#: options.php:229
+msgid "A user starts the unsubscription process clicking the unsubscription link in a newsletter. This lkink contains the email to unsubscribe and some unique information to avoid hacking. The user are requird to confirm the unsubscription: this is the last step where YOU can communicate with you almost missed user."
+msgstr "Пользователь начавший процесс отписки кликнув на ссылку в письме. Эта ссылка содержит адрес пользователя и некоторую уникальную информацию, защищающую от подлога. Пользователю требуеться подтвердить отписку: это последний шаг когда ВЫ можете связаться с ним во избежании потери пользователя."
+
+#: options.php:233
+#: options.php:282
+msgid "Unsubscription text"
+msgstr "Текст отписки"
+
+#: options.php:237
+msgid "This text is show to users who click on a \"unsubscription link\" in a newsletter email. You have to insert a link in the text that user can follow to confirm the unsubscription request (see tags)."
+msgstr "Этот текст показываеться пользователю котороый кликнул \"ссылку для отписки\" в письме. Вам надо вставить ссылку в текст, так пользователь сможет по ней пройти для потверждения отписки (см. теги)."
+
+#: options.php:239
+msgid "Tags: <strong>{name}</strong> user name; <strong>{email}</strong> user email; <strong>{unsubscription_confirm_url}</strong> URL to confirm unsubscription."
+msgstr "Тэги: <strong>{name}</strong> - имя пользователя; <strong>{email}</strong> - e-mail пользователя; <strong>{unsubscription_confirm_url}</strong> адрес ссылки для подтверждения отписки."
+
+#: options.php:245
+msgid "Good bye text"
+msgstr "Прощальный текст"
+
+#: options.php:248
+msgid "Latest message showed to the user to say \"good bye\"."
+msgstr "Последнее сообщение показываемое пользователю, что бы сказать \"Прощайте\"."
+
+#: options.php:250
+msgid "Tags: none."
+msgstr "Нет тэгов."
+
+#: options.php:255
+msgid "Goodbye email subject"
+msgstr "Тема прощального письма"
+
+#: options.php:263
+msgid "Goodbye email message"
+msgstr "Текст прощального письма"
+
+#: options.php:277
+msgid "Unsubscription for mass mail mode"
+msgstr "Отписка для массового режима"
+
+#: options.php:278
+msgid "This section is not working!"
+msgstr "Эта рубрика не работает!"
+
+#: options.php:289
+msgid "Unsubscription error"
+msgstr "Ошибка отписки"
+
+#: options.php:293
+msgid "Shown with the unsubscription message then the email to unsubscribe is not found."
+msgstr "Показываеться с сообщением отписки, когда адрес для отписки не найден."
+
+#: options.php:297
+msgid "\"Email to unsubscribe\" label"
+msgstr "Метка \"Адрес для отписки\""
+
+#: options.php:305
+msgid "\"Confirm unsubscription\" label"
+msgstr "Метка \"Подтверждение отписки\""
+
+#: options.php:309
+msgid "The button text to confirm unsubscription or to send an unsubscription request for the specified email address when \"mass mail\" mode is used for sending newsletters."
+msgstr "Текст кнопки для потдверждения отписки или для отправки запроса отписки на спейифичные адреса, когда режим \"Массовая рассылка\"  используеться."
+
+#: options.php:313
+msgid "Unsubscription end text"
+msgstr "Текст о законченной отписке"
+
+#: options.php:317
+msgid "This text is shown when a user type in an email to be removed and the confirmation email has been sent."
+msgstr "Этот текст показываеться, когда пользователь вводит e-mail который был удален, или подтверждающее письмобыло отправлено."
+
+#: options.php:322
+msgid "Unsubscription email subject"
+msgstr "Тема пиьсма об отписке"
+
+#: options.php:328
+msgid "Unsubscription email message"
+msgstr "Текст пиьсма об отписке"
+
+#: options.php:332
+msgid "Email sent to confirm unsubscription when the request is made specifying an email address to remove. Use {unsubscription_link} to place the link where the user has to click on; use {unsubscription_url} toplace the plain unsubscription URL."
+msgstr "Письмо отправлено для подтверждения отписки, когда запрос был сделан с удаленного адреса. Используйте {unsubscription_link} что бы вставить ссылку где пользователь кликнет по ней; используйте {unsubscription_url} что бы вставить не кликабельную ссылку."
+
+#: options.php:336
+msgid "Unsubscription link text"
+msgstr "Текст ссылки для отписки."
+
+#: options.php:340
+msgid "The text of the link for unsubscription to be placed in the unsubscription email."
+msgstr "Текст ссылку для отписки будет вставлен в отписывающее письмо."
+
+#: options.php:346
+msgid "Lists"
+msgstr "Списки"
+
+#: options.php:351
+msgid "List 0 is the general one"
+msgstr "Список 0 - общий"
+
+#: options.php:362
+msgid "Advanced"
+msgstr "Дополнительно"
+
+#: options.php:369
+msgid "write logs"
+msgstr "писать логи"
+
+#: options.php:376
+msgid "do not use visual editors"
+msgstr "не использовать визуальный редактор"
+
+#: options.php:383
+msgid "allow editors to user the newsletter plugin"
+msgstr "разрешить редакторам использовать этот плагин"
+
+#: options.php:392
+msgid "Really advanced options"
+msgstr "Действительно дополнительные опции"
+
+#: options.php:399
+msgid "Use the custom subscription form below"
+msgstr "Использовать настраиваему форму ниже"
+
+#: options.php:411
+msgid "Zanzara client"
+msgstr "Zanzara клиент"
+
+#: options.php:412
+msgid "Obsolete"
+msgstr "Устаревший"
+
+#: options.php:415
+msgid "Export key"
+msgstr "Ключ экспорта"
+
+#: options.php:419
+msgid "Do not search for Zanzara, is a my private software"
+msgstr "Не искать Zanzara, это мое частное ПО"
+
+#: options.php:423
+msgid "SMTP address"
+msgstr "SMTP адрес"
+
+#: options.php:429
+msgid "SMTP user"
+msgstr "SMTP логин"
+
+#: options.php:435
+msgid "SMTP password"
+msgstr "SMTP пароль"
+
+#: options.php:444
+msgid "Revert to defaults"
+msgstr "Вернуться к настройка по умолчанию"
+
+#: plugin.php:932
+msgid "Configuration"
+msgstr "Конфигурация"
+
+#: plugin.php:933
+msgid "Composer"
+msgstr "Компановщик"
+
+#: plugin.php:935
+msgid "Export"
+msgstr "Экспорт"
+
+#: plugin.php:936
+msgid "Manage"
+msgstr "Управление"
+
+#: plugin.php:937
+#: statistics.php:8
+msgid "Statistics"
+msgstr "Статистика"
+
+#: statistics.php:11
+msgid "You need the Newsletter Extras installed to view statistics"
+msgstr "Вам необходим установленый пакет Newsletter Extras, что бы смотреть статистику"
+

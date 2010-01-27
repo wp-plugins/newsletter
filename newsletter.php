@@ -14,11 +14,11 @@ if (isset($_POST['auto']) && check_admin_referer()) {
         $file = ABSPATH . '/wp-content/plugins/newsletter-custom/themes/' . substr($_POST['theme'], 1) . '/theme.php';
     }
     else if ($_POST['theme'][0] == '$') {
-        $file = ABSPATH . '/wp-content/plugins/newsletter-extras/themes/' . substr($_POST['theme'], 1) . '/theme.php';
-    }
-    else {
-        $file = dirname(__FILE__) . '/themes/' . $_POST['theme'] . '/theme.php';
-    }
+            $file = ABSPATH . '/wp-content/plugins/newsletter-extras/themes/' . substr($_POST['theme'], 1) . '/theme.php';
+        }
+        else {
+            $file = dirname(__FILE__) . '/themes/' . $_POST['theme'] . '/theme.php';
+        }
 
 
     // Execute the theme file and get the content generated
@@ -43,6 +43,13 @@ if (isset($_POST['scheduled_send']) && check_admin_referer()) {
     $options = stripslashes_deep($_POST['options']);
     update_option('newsletter_email', $options);
     newsletter_send_scheduled(0, false);
+}
+
+if (isset($_POST['restore']) && check_admin_referer()) {
+    //$options = stripslashes_deep($_POST['options']);
+    //update_option('newsletter_email', $options);
+    $last = newsletter_load_batch_file();
+    update_option('newsletter_last', $last);
 }
 
 $last = null;
@@ -218,6 +225,25 @@ $last = null;
                 <?php } ?>
             <input class="button" type="submit" name="reset" value="Reset batch"  onclick="return confirm('Reset the batch status?')"/>
         </p>
+
+
+        <?php } ?>
+
+
+
+        <?php
+        $batch_file = newsletter_load_batch_file();
+        if ($batch_file != null) {
+        ?>
+        <h3>Warning</h3>
+            <p>There is a batch saved to disk. That means an error occurred while sending.
+                Would you try to restore
+                that batch?<br />
+                <input class="button" type="submit" name="restore" value="Restore batch data"  onclick="return confirm('Restore batch data?')"/>
+                <br />
+                (It won't be deleted from disk so you can try many times. It will be deleted only when you
+                start a new sending process)
+            </p>
 
         <?php } ?>
 

@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.4.5
+Version: 1.4.6
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.4.3');
+define('NEWSLETTER', '1.4.6');
 
 @include(ABSPATH . 'wp-content/plugins/newsletter-extras/newsletter-extras.php');
 
@@ -214,6 +214,7 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
         if ($continue && !isset($last['id'])) return $last;
         
         if (!$continue) {
+            newsletter_delete_batch_file();
             $last = array();
             $last['simulate'] = $simulate;
             $last['list'] = $list;
@@ -261,7 +262,7 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
 
     $start_time = time();
     $max_time = (int)(ini_get('max_execution_time') * 0.8);
-
+    $db_time = time();
 
     if ($last['scheduled']) {
         $max = $options_email['scheduler_max'];
@@ -327,11 +328,12 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
             $last['email'] = $r->email;
             $last['name'] = $r->name;
 
-            // every 20 email, save the status on database
-            if ($idx % 20 == 1) {
-                newsletter_log('newsletter_send_batch() - Saving batch info: ' . print_r($last, true));
-                // Message will be lost in scheduled operations
+            if (time()-$db_time > 15)
+            {
+                newsletter_log('newsletter_send_batch() - Temporary batch saving', true);
+                $db_time = time();
                 if (!update_option('newsletter_last', $last)) {
+                    newsletter_save_batch_file($last);
                     $last['error'] = true;
                     newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
                     newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
@@ -339,12 +341,26 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
                     return $last;
                 }
             }
+            
+            // every 20 email, save the status on database
+//            if ($idx % 20 == 1) {
+//                newsletter_log('newsletter_send_batch() - Saving batch info: ' . print_r($last, true));
+//                // Message will be lost in scheduled operations
+//                if (!update_option('newsletter_last', $last)) {
+//                    $last['error'] = true;
+//                    newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
+//                    newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
+//                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
+//                    return $last;
+//                }
+//            }
 
             // Check for the max emails per batch
             if ($max != 0 && $idx >= $max) {
                 newsletter_log('newsletter_send_batch() - Batch limit reached');
                 $last['message'] = 'Batch email limit reached, if scheduled the sending process will restart automatically';
                 if (!update_option('newsletter_last', $last)) {
+                    newsletter_save_batch_file($last);
                     $last['error'] = true;
                     newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
                     newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
@@ -358,6 +374,7 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
                 newsletter_log('newsletter_send_batch() - Timeout reached');
                 $last['message'] = 'Timeout reached';
                 if (!update_option('newsletter_last', $last)) {
+                    newsletter_save_batch_file($last);
                     $last['error'] = true;
                     newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
                     newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
@@ -756,7 +773,6 @@ function newsletter_unsubscribe($id, $token) {
     // Admin notification
     $message = 'There is an unsubscription to ' . get_option('blogname') . ' newsletter:' . "\n\n" .
         $newsletter_subscriber->name . ' <' . $newsletter_subscriber->email . '>' . "\n\n" .
-        'Don\'t worry, for one lost two gained!' . "\n\n" .
         'Have a nice day,' . "\n" . 'your Newsletter plugin.';
 
     $subject = '[' . get_option('blogname') . '] Unsubscription';
@@ -992,6 +1008,25 @@ function newsletter_is_email($email, $empty_ok=false) {
         return false;
 }
 
+function newsletter_delete_batch_file()
+{
+    @unlink(dirname(__FILE__) . '/batch.dat');
+}
+
+function newsletter_save_batch_file($batch)
+{
+    $file = @fopen(dirname(__FILE__) . '/batch.dat', 'a');
+    if (!$file) return;
+    @fwrite($file, serialize($batch));
+    @fclose($file);
+}
+
+function newsletter_load_batch_file()
+{
+    $content = @file_get_contents(dirname(__FILE__) . '/batch.dat', 'a');
+    return @unserialize($content);
+}
+
 /**
  * Write a line of log in the log file if the logs are enabled or force is
  * set to true.
@@ -1001,10 +1036,10 @@ function newsletter_log($text, $force=false) {
 
     if (!$force && !isset($options['logs'])) return;
 
-    $file = fopen(dirname(__FILE__) . '/newsletter.log', 'a');
+    $file = @fopen(dirname(__FILE__) . '/newsletter.log', 'a');
     if (!$file) return;
-    fwrite($file, date('Y-m-d h:i') . ' ' . $text . "\n");
-    fclose($file);
+    @fwrite($file, date('Y-m-d h:i') . ' ' . $text . "\n");
+    @fclose($file);
 }
 
 /**
