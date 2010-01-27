@@ -179,7 +179,7 @@ if ($list) {
         echo '<td>' . $s->email . '</td>';
         echo '<td>' . $s->name . '</td>';
         echo '<td>' . ($s->status=='S'?'Not confirmed':'Confirmed') . '</td>';
-        echo '<td>';
+        echo '<td><small>';
 
         $profile = unserialize($s->profile);
         if (is_array($profile)) {
@@ -187,8 +187,8 @@ if ($list) {
                 echo htmlspecialchars($key) . ': ' . htmlspecialchars($value) . '<br />';
             }
         }
-        echo '</td>';
-        echo '<td>' . $s->token . '</td>';
+        echo '</small></td>';
+        echo '<td><small>' . $s->token . '</small></td>';
         echo '<td>';
         echo '<a href="javascript:void(newsletter_edit(' . $s->id . '))">' . __('edit', 'newsletter') . '</a>';
         echo ' | <a href="javascript:void(newsletter_remove(' . $s->id . '))">' . __('remove', 'newsletter') . '</a>';
