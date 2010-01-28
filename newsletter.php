@@ -10,22 +10,20 @@ if (isset($_POST['save']) && check_admin_referer()) {
 // Auto composition
 if (isset($_POST['auto']) && check_admin_referer()) {
 // Load the theme
-    if ($_POST['theme'][0] == '*') {
-        $file = ABSPATH . '/wp-content/plugins/newsletter-custom/themes/' . substr($_POST['theme'], 1) . '/theme.php';
-    }
-    else if ($_POST['theme'][0] == '$') {
-            $file = ABSPATH . '/wp-content/plugins/newsletter-extras/themes/' . substr($_POST['theme'], 1) . '/theme.php';
-        }
-        else {
-            $file = dirname(__FILE__) . '/themes/' . $_POST['theme'] . '/theme.php';
-        }
+	$options = stripslashes_deep($_POST['options']);
 
+        $file = newsletter_get_theme_dir($options['theme']) . '/theme.php';
 
     // Execute the theme file and get the content generated
     ob_start();
     @include($file);
     $options['message'] = ob_get_contents();
     ob_end_clean();
+    
+    if ($options['novisual']) {
+	$options['message'] = "<html>\n<head>\n<style type=\"text/css\">\n" . newsletter_get_theme_css($options_email['theme']) . 
+	"\n</style>\n</head>\n<body>\n" . $options['message'] . "\n</body>\n</html>";
+    }
 }
 
 // Reset the batch
@@ -46,15 +44,24 @@ if (isset($_POST['scheduled_send']) && check_admin_referer()) {
 }
 
 if (isset($_POST['restore']) && check_admin_referer()) {
-    //$options = stripslashes_deep($_POST['options']);
-    //update_option('newsletter_email', $options);
+//$options = stripslashes_deep($_POST['options']);
+//update_option('newsletter_email', $options);
     $last = newsletter_load_batch_file();
     update_option('newsletter_last', $last);
 }
 
 $last = null;
-?>
 
+// Theme style
+
+$css_url = null;
+$theme_dir = newsletter_get_theme_dir($options['theme']);
+if (file_exists($theme_dir . '/style.css')) {
+    $css_url = newsletter_get_theme_url($options['theme']) . '/style.css';
+}
+
+?>
+<?php if (!isset($options['novisual'])) { ?>
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
     tinyMCE.init({
@@ -68,8 +75,14 @@ $last = null;
         remove_script_host : false,
         theme_advanced_toolbar_location : "top",
         document_base_url : "<?php echo get_option('home'); ?>/"
+<?php 
+if ($css_url != null) {
+    echo ', content_css: "' . $css_url . '?' . time() . '"';
+}
+?>
     });
 </script>
+<?php } ?>
 
 <style>
     #newsletter h3 {
@@ -234,16 +247,16 @@ $last = null;
         <?php
         $batch_file = newsletter_load_batch_file();
         if ($batch_file != null) {
-        ?>
+            ?>
         <h3>Warning</h3>
-            <p>There is a batch saved to disk. That means an error occurred while sending.
-                Would you try to restore
-                that batch?<br />
-                <input class="button" type="submit" name="restore" value="Restore batch data"  onclick="return confirm('Restore batch data?')"/>
-                <br />
-                (It won't be deleted from disk so you can try many times. It will be deleted only when you
-                start a new sending process)
-            </p>
+        <p>There is a batch saved to disk. That means an error occurred while sending.
+            Would you try to restore
+            that batch?<br />
+            <input class="button" type="submit" name="restore" value="Restore batch data"  onclick="return confirm('Restore batch data?')"/>
+            <br />
+            (It won't be deleted from disk so you can try many times. It will be deleted only when you
+            start a new sending process)
+        </p>
 
         <?php } ?>
 
@@ -293,7 +306,7 @@ $last = null;
             <tr valign="top">
                 <th>Message</th>
                 <td>
-                    <textarea name="options[message]" wrap="off" rows="20" style="width: 100%"><?php echo htmlspecialchars($options['message'])?></textarea>
+                    <textarea name="options[message]" wrap="off" rows="20" style="font-family: monospace; width: 100%"><?php echo htmlspecialchars($options['message'])?></textarea>
                     <br />
                     Tags:
                     <strong>{name}</strong> receiver name;
@@ -303,12 +316,20 @@ $last = null;
                 </td>
             </tr>
             <tr valign="top">
+                <th>Disable visual editor</th>
+                <td>
+                    <input name="options[novisual]" value="1" type="checkbox" <?php echo $options['novisual']?'checked':''; ?>/>
+                    (save to apply and be sure to <a href="http://www.satollo.net/plugins/newsletter#composer">read here</a>)
+                </td>
+            </tr>	    
+            <tr valign="top">
                 <th>Theme</th>
                 <td>
-                    <select name="theme">
+                    <select name="options[theme]">
                         <optgroup label="Included themes">
-                            <option value="default">Default</option>
-                            <option value="with-picture">With picture</option>
+                            <option <?php echo ('blank'==$options['theme'])?'selected':''; ?> value="blank">Blank</option>
+                            <option <?php echo ('default'==$options['theme'])?'selected':''; ?> value="default">Default</option>
+                            <option <?php echo ('with-picture'==$options['theme'])?'selected':''; ?> value="with-picture">With picture</option>
                         </optgroup>
                         <optgroup label="Extras themes">
                             <?php

@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.4.6
+Version: 1.4.7
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.4.6');
+define('NEWSLETTER', '1.4.7');
 
 @include(ABSPATH . 'wp-content/plugins/newsletter-extras/newsletter-extras.php');
 
@@ -290,8 +290,13 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
     //            if (strtolower(trim($profile[$filter[0]['key']])) == $filter[0]
     //        }
 
-        $m = $options_email['message'];
-
+	if (isset($options_email['novisual'])) {
+	$m = $options_email['message'];
+	}
+	else {
+        $m = '<html><head><style type="text/css">' . newsletter_get_theme_css($options_email['theme']) . 
+	'</style></head><body>' . $options_email['message'] . '</body></html>';
+	}
         $url = newsletter_add_qs($options['url'],
             'na=u&amp;ni=' . $r->id . '&amp;nt=' . $r->token);
 
@@ -359,7 +364,7 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
             if ($max != 0 && $idx >= $max) {
                 newsletter_log('newsletter_send_batch() - Batch limit reached');
                 $last['message'] = 'Batch email limit reached, if scheduled the sending process will restart automatically';
-                if (!update_option('newsletter_last', $last)) {
+                if (update_option('newsletter_last', $last)) {
                     newsletter_save_batch_file($last);
                     $last['error'] = true;
                     newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
@@ -1115,6 +1120,46 @@ function nt_option($name, $def = null) {
     $option = $options['theme_' . $name];
     if (!isset($option)) return $def;
     else return $option;
+}
+
+/**
+ * Retrieves the theme dir path.
+ */
+function newsletter_get_theme_dir($theme)
+{
+    if ($theme[0] == '*') {
+        return ABSPATH . '/wp-content/plugins/newsletter-custom/themes/' . substr($theme, 1);
+    }
+    elseif ($theme[0] == '$') {
+        return ABSPATH . '/wp-content/plugins/newsletter-extras/themes/' . substr($theme, 1);
+    }
+    else {
+        return dirname(__FILE__) . '/themes/' . $theme;
+    }
+}
+
+/**
+ * Retrieves the theme URL (pointing to theme dir).
+ */
+function newsletter_get_theme_url($theme)
+{
+    if ($theme[0] == '*') {
+        return get_option('siteurl') . '/wp-content/plugins/newsletter-custom/themes/' . substr($theme, 1);
+    }
+    elseif ($theme[0] == '$') {
+        return get_option('siteurl') . '/wp-content/plugins/newsletter-extras/themes/' . substr($theme, 1);
+    }
+    else {
+        return get_option('siteurl') . '/wp-content/plugins/newsletter/themes/' . $theme;
+    }
+}
+
+/**
+ * Loads the theme css content to be embedded in emails body.
+ */
+function newsletter_get_theme_css($theme)
+{
+	return @file_get_contents(newsletter_get_theme_dir($theme) . '/style.css');
 }
 
 ?>
