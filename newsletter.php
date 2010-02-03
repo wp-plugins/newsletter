@@ -10,25 +10,27 @@ if (isset($_POST['save']) && check_admin_referer()) {
 // Auto composition
 if (isset($_POST['auto']) && check_admin_referer()) {
 // Load the theme
-	$options = stripslashes_deep($_POST['options']);
+    $options = stripslashes_deep($_POST['options']);
 
-        $file = newsletter_get_theme_dir($options['theme']) . '/theme.php';
+    $file = newsletter_get_theme_dir($options['theme']) . '/theme.php';
 
     // Execute the theme file and get the content generated
     ob_start();
     @include($file);
     $options['message'] = ob_get_contents();
     ob_end_clean();
-    
+
     if ($options['novisual']) {
-	$options['message'] = "<html>\n<head>\n<style type=\"text/css\">\n" . newsletter_get_theme_css($options_email['theme']) . 
-	"\n</style>\n</head>\n<body>\n" . $options['message'] . "\n</body>\n</html>";
+        $options['message'] = "<html>\n<head>\n<style type=\"text/css\">\n" . newsletter_get_theme_css($options_email['theme']) .
+            "\n</style>\n</head>\n<body>\n" . $options['message'] . "\n</body>\n</html>";
     }
 }
 
 // Reset the batch
 if (isset($_POST['reset']) && check_admin_referer()) {
-    newsletter_reset_batch();
+    newsletter_delete_batch_file();
+    wp_clear_scheduled_hook('newsletter_cron_hook');
+    delete_option('newsletter_batch', array());
 }
 
 if (isset($_POST['scheduled_simulate']) && check_admin_referer()) {
@@ -44,13 +46,10 @@ if (isset($_POST['scheduled_send']) && check_admin_referer()) {
 }
 
 if (isset($_POST['restore']) && check_admin_referer()) {
-//$options = stripslashes_deep($_POST['options']);
-//update_option('newsletter_email', $options);
-    $last = newsletter_load_batch_file();
-    update_option('newsletter_last', $last);
+    $batch = newsletter_load_batch_file();
+    update_option('newsletter_batch', $batch);
+    newsletter_delete_batch_file();
 }
-
-$last = null;
 
 // Theme style
 
@@ -75,12 +74,12 @@ if (file_exists($theme_dir . '/style.css')) {
         remove_script_host : false,
         theme_advanced_toolbar_location : "top",
         document_base_url : "<?php echo get_option('home'); ?>/"
-<?php 
-if ($css_url != null) {
-    echo ', content_css: "' . $css_url . '?' . time() . '"';
-}
-?>
-    });
+    <?php
+    if ($css_url != null) {
+        echo ', content_css: "' . $css_url . '?' . time() . '"';
+    }
+    ?>
+        });
 </script>
 <?php } ?>
 
@@ -91,19 +90,22 @@ if ($css_url != null) {
     }
     #newsletter .form-table {
         border: 1px solid #ccc;
-        background-color: #f4f4f4;
+        background-color: #ffffff;
     }
 </style>
 
 <div class="wrap" id="newsletter">
 
     <h2>Newsletter Composer</h2>
+    <?php if (!touch(dirname(__FILE__) . '/test.tmp')) { ?>
+    <div class="error fade" style="background-color:red;"><p><strong>It seems that Newsletter plugin folder is not writable. Make it writable to let
+                Newsletter write logs and save date when errors occour.</strong></p></div>
+    <?php } ?>
 
     <?php require_once 'header.php'; ?>
 
     <form method="post" action="">
         <?php wp_nonce_field(); ?>
-
 
         <?php if (isset($_POST['restart']) && check_admin_referer()) { ?>
 
@@ -112,8 +114,14 @@ if ($css_url != null) {
                 <?php
                 $options = stripslashes_deep($_POST['options']);
                 update_option('newsletter_email', $options);
-                $last = newsletter_send_batch(true);
-                if (isset($last['id'])) echo '<p>Batch not completed, see more below.</p>';
+                $batch = get_option('newsletter_batch');
+
+                if (defined('NEWSLETTER_EXTRAS') && $batch['scheduled']) {
+                    newsletter_cron_task();
+                }
+                else {
+                    newsletter_send_batch();
+                }
                 ?>
         </div>
 
@@ -127,11 +135,15 @@ if ($css_url != null) {
                 <?php
                 $options = stripslashes_deep($_POST['options']);
                 update_option('newsletter_email', $options);
-                newsletter_reset_batch();
+                $batch = array();
+                $batch['id'] = 0;
+                $batch['list'] = 0;
+                $batch['scheduled'] = false;
+                $batch['simulate'] = true;
 
-                $last = newsletter_send_batch(false, 0, true);
+                update_option('newsletter_batch', $batch);
 
-                if (isset($last['id'])) echo '<p>Batch not completed, see more below.</p>';
+                newsletter_send_batch();
                 ?>
         </div>
 
@@ -146,9 +158,15 @@ if ($css_url != null) {
                 <?php
                 $options = stripslashes_deep($_POST['options']);
                 update_option('newsletter_email', $options);
-                newsletter_reset_batch();
-                $last = newsletter_send_batch(false, 0, false);
-                if (isset($last['id'])) echo '<p>Batch not completed, see more below.</p>';
+                $batch = array();
+                $batch['id'] = 0;
+                $batch['list'] = 0;
+                $batch['scheduled'] = false;
+                $batch['simulate'] = true;
+
+                update_option('newsletter_batch', $batch);
+
+                newsletter_send_batch();
                 ?>
         </div>
 
@@ -170,75 +188,9 @@ if ($css_url != null) {
                     $subscribers[$i-1]->email = $options['test_email_' . $i];
                     $subscribers[$i-1]->token = 'FAKETOKEN';
                 }
-                newsletter_send_batch(false, 0, false, $subscribers);
+                newsletter_send_test($subscribers);
                 ?>
         </div>
-
-        <?php } ?>
-
-
-
-        <h3>Last batch info</h3>
-        <p>Here you find information about last batch. A sending batch may have completed
-            or not and may be a simulation or not. When a batch is not complete you can use the "restart"
-            button and the batch starts again from the last email address processed.</p>
-
-        <?php if (!isset($last)) $last = get_option('newsletter_last'); ?>
-        <?php if (!is_array($last) || empty($last)) { ?>
-
-        <p><strong>No batch info found, it's ok!</strong></p>
-
-        <?php } else { ?>
-
-        <table class="form-table">
-            <tr>
-                <th>Total emails to send</th>
-                <td><?php echo $last['total']; ?></td>
-            </tr>
-            <tr>
-                <th>Emails sent till now</th>
-                <td><?php echo $last['sent']; ?></td>
-            </tr>
-            <!--
-            <tr>
-                <td>List</td>
-                <td><?php echo $last['list']; ?></td>
-            </tr>
-            -->
-            <tr>
-                <th>Sending type</th>
-                <td><?php echo $last['simulate']?"simluation":"real"; ?></td>
-            </tr>
-            <tr>
-                <th>Scheduled</th>
-                <td>
-                        <?php echo $last['scheduled']?"yes":"no"; ?>
-                    (next:  <?php echo date('j/m/Y h:i', wp_next_scheduled('newsletter_cron_hook')); ?>,
-                    now: <?php echo date('j/m/Y h:i'); ?>)
-
-                </td>
-            </tr>
-            <tr>
-                <th>Last subscriber</td>
-                <td><?php echo htmlspecialchars($last['name']); ?> [<?php echo $last['email']; ?>]</th>
-            </tr>
-            <tr>
-                <th>Last id</th>
-                <td><?php echo $last['id']; ?> (debug info)</td>
-            </tr>
-            <tr>
-                <th>Message</th>
-                <td><?php echo $last['message']; ?></td>
-            </tr>
-        </table>
-
-        <p class="submit">
-                <?php if (isset($last['id'])) { ?>
-            <input class="button" type="submit" name="restart" value="Restart batch"  onclick="return confirm('Continue with this batch?')"/>
-                <?php } ?>
-            <input class="button" type="submit" name="reset" value="Reset batch"  onclick="return confirm('Reset the batch status?')"/>
-        </p>
-
 
         <?php } ?>
 
@@ -248,14 +200,71 @@ if ($css_url != null) {
         $batch_file = newsletter_load_batch_file();
         if ($batch_file != null) {
             ?>
-        <h3>Warning</h3>
+        <h3>Warning!!!</h3>
         <p>There is a batch saved to disk. That means an error occurred while sending.
             Would you try to restore
             that batch?<br />
             <input class="button" type="submit" name="restore" value="Restore batch data"  onclick="return confirm('Restore batch data?')"/>
-            <br />
-            (It won't be deleted from disk so you can try many times. It will be deleted only when you
-            start a new sending process)
+        </p>
+        <?php } ?>
+
+        <h3>Batch info</h3>
+
+        <?php $batch = get_option('newsletter_batch'); ?>
+        <?php if (!is_array($batch) || empty($batch)) { ?>
+
+        <p><strong>No batch info found, it's ok!</strong></p>
+
+        <?php } else { ?>
+
+        <table class="form-table">
+            <tr>
+                <th>Status</th>
+                <td>
+                        <?php
+                        if ($batch['scheduled']) {
+
+                            if ($batch['completed']) echo 'Completed';
+                            else {
+                                $time = wp_next_scheduled('newsletter_cron_hook');
+                                if ($time == 0) {
+                                    echo 'Not completed but no next run found (errors?)';
+                                }
+                                else {
+                                    echo 'Not completed, next run on ' . date('j/m/Y h:i', $time);
+                                }
+                            }
+                        }
+                        else {
+                            if ($batch['completed']) echo 'Completed';
+                            else echo 'Not completed (you should restart it)';
+                        }
+                        ?>
+                    <br />
+                    <?php echo $batch['message']; ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Emails sent/total</th>
+                <td><?php echo $batch['sent']; ?>/<?php echo $batch['total']; ?> (last id: <?php echo $batch['id']; ?>)</td>
+            </tr>
+            <!--
+            <tr>
+                <td>List</td>
+                <td><?php echo $batch['list']; ?></td>
+            </tr>
+            -->
+            <tr>
+                <th>Sending type</th>
+                <td><?php echo $batch['simulate']?"Simluation":"Real"; ?>/<?php echo $batch['scheduled']?"Scheduled":"Not scheduled"; ?></td>
+            </tr>
+        </table>
+
+        <p class="submit">
+                <?php if (!$batch['completed']) { ?>
+            <input class="button" type="submit" name="restart" value="Restart batch"  onclick="return confirm('Continue with this batch?')"/>
+                <?php } ?>
+            <input class="button" type="submit" name="reset" value="Reset batch"  onclick="return confirm('Reset the batch status?')"/>
         </p>
 
         <?php } ?>
@@ -298,7 +307,7 @@ if ($css_url != null) {
             <tr valign="top">
                 <th>Subject</th>
                 <td>
-                    <input name="options[subject]" type="text" size="50" value="<?php echo htmlspecialchars($options['subject'])?>"/>
+                    <input name="options[subject]" type="text" size="70" value="<?php echo htmlspecialchars($options['subject'])?>"/>
                     <br />
                     Tags: <strong>{name}</strong> receiver name.
                 </td>
@@ -336,7 +345,7 @@ if ($css_url != null) {
                             $themes = newsletter_get_extras_themes();
 
                             foreach ($themes as $theme) {
-                                echo '<option value="$' . $theme . '">' . $theme . '</option>';
+                                echo '<option ' .  (('$'.$theme)==$options['theme']?'selected':'') . ' value="$' . $theme . '">' . $theme . '</option>';
                             }
                             ?>
                         </optgroup>
@@ -345,7 +354,7 @@ if ($css_url != null) {
                             $themes = newsletter_get_themes();
 
                             foreach ($themes as $theme) {
-                                echo '<option value="*' . $theme . '">' . $theme . '</option>';
+                                echo '<option ' .  (('*'.$theme)==$options['theme']?'selected':'') . ' value="*' . $theme . '">' . $theme . '</option>';
                             }
                             ?>
                         </optgroup>
@@ -381,14 +390,14 @@ if ($css_url != null) {
                 <th>Interval between sending tasks</th>
                 <td>
                     <input name="options[scheduler_interval]" type="text" size="5" value="<?php echo htmlspecialchars($options['scheduler_interval'])?>"/>
-                    (minutes, minimum value is 10)
+                    (minutes, minimum value is 1)
                 </td>
             </tr>
             <tr valign="top">
                 <th>Max number of emails per task</th>
                 <td>
                     <input name="options[scheduler_max]" type="text" size="5" value="<?php echo htmlspecialchars($options['scheduler_max'])?>"/>
-                    (good value is 20 but if you use an external SMTP go with 5)
+                    (good value is 20 to 50)
                 </td>
             </tr>
         </table>
@@ -396,7 +405,7 @@ if ($css_url != null) {
             <input class="button" type="submit" name="save" value="Save"/>
         </p>
         <?php } else { ?>
-        <p><strong>Available only with Newsletter Extras package</strong></p>
+        <p><strong>Available only with <a href="http://www.satollo.net/plugins/newsletter#extras">Newsletter Extras</a> package</strong></p>
         <?php } ?>
 
         <!--

@@ -2,8 +2,8 @@
 /*
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
-Description: Newsletter is a simple plugin (still in developement) to collect subscribers and send out newsletters
-Version: 1.4.7
+Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
+Version: 1.4.8
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.4.7');
+define('NEWSLETTER', '1.4.8');
 
 @include(ABSPATH . 'wp-content/plugins/newsletter-extras/newsletter-extras.php');
 
@@ -68,16 +68,21 @@ function newsletter_subscribers_count() {
     return $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C'");
 }
 
-function newsletter_embed_form() {
+function newsletter_embed_form($form=0) {
     $options = get_option('newsletter');
-    echo '<div class="newsletter-embed-form">';
-    if (isset($options['noname'])) {
-        echo str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form_noname'));
+    if (newsletter_has_extras('1.0.2') && $form>0) {
+        echo str_replace('{newsletter_url}', $options['url'], newsletter_extras_get_form($form));
     }
     else {
-        echo str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form'));
+        echo '<div class="newsletter-embed-form">';
+        if (isset($options['noname'])) {
+            echo str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form_noname'));
+        }
+        else {
+            echo str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form'));
+        }
+        echo '</div>';
     }
-    echo '</div>';
 }
 
 if (!is_admin()) {
@@ -87,14 +92,21 @@ if (!is_admin()) {
 
 function newsletter_form_call($attrs, $content=null) {
     $options = get_option('newsletter');
-    echo '<div class="newsletter-embed-form">';
-    if (!isset($options['noname'])) {
-        return str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form'));
+    if (newsletter_has_extras('1.0.2') && isset($attrs['form'])) {
+        $buffer = str_replace('{newsletter_url}', $options['url'], newsletter_extras_get_form($attrs['form']));
     }
     else {
-        return str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form_noname'));
+        $buffer = '<div class="newsletter-embed-form">';
+        if (!isset($options['noname'])) {
+            $buffer .= str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form'));
+        }
+        else {
+            $buffer .= str_replace('{newsletter_url}', $options['url'], newsletter_label('embedded_form_noname'));
+        }
+
+        $buffer .= '</div>';
     }
-    echo '</div>';
+    return $buffer;
 }
 
 function newsletter_call($attrs, $content=null) {
@@ -108,14 +120,20 @@ function newsletter_call($attrs, $content=null) {
     if ($newsletter_step == 'subscription') {
         $buffer .= $options['subscription_text'];
 
-        if (isset($options['noname'])) {
-            $buffer .= newsletter_label('subscription_form_noname');
+        if (newsletter_has_extras('1.0.2') && isset($attrs['form'])) {
+            $buffer .= str_replace('{newsletter_url}', $options['url'], newsletter_extras_get_form($attrs['form']));
         }
         else {
-            $buffer .= newsletter_label('subscription_form');
+            if (isset($options['noname'])) {
+                $buffer .= newsletter_label('subscription_form_noname');
+            }
+            else {
+                $buffer .= newsletter_label('subscription_form');
+            }
+            if (!defined('NEWSLETTER_EXTRAS'))
+                $buffer .=  '<div style="text-align:right;padding:0 10px;margin:0;"><a style="font-size:9px;color:#bbb;text-decoration:none" href="http://www.satollo.net">by satollo.net</a></div>';
         }
-        if (!defined('NEWSLETTER_EXTRAS'))
-            $buffer .=  '<div style="text-align:right;padding:0 10px;margin:0;"><a style="font-size:9px;color:#bbb;text-decoration:none" href="http://www.satollo.net">by satollo.net</a></div>';
+
     }
 
     // When a user asked to subscribe and the connfirmation request has been sent
@@ -193,78 +211,75 @@ function newsletter_call($attrs, $content=null) {
  *
  * Return true if the batch is completed.
  */
-function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipients=null) {
+function newsletter_send_batch() {
     global $wpdb;
 
-    newsletter_log('newsletter_send_batch() - starting');
+    newsletter_info(__FUNCTION__, 'Start');
 
     $options = get_option('newsletter');
     $options_email = get_option('newsletter_email');
+    $batch = get_option('newsletter_batch');
 
-    $test = ($recipients != null);
-
-    if (!$test) {
-    // Get infos on the last batch sent
-        $last = get_option('newsletter_last');
-        newsletter_log('newsletter_send_batch() - last batch info: ' . print_r($last, true));
-
-        // Check the "continue" ask validity (may be broken by database error on a
-        // previous sending process
-        if ($continue && !is_array($last)) return array();
-        if ($continue && !isset($last['id'])) return $last;
-        
-        if (!$continue) {
-            newsletter_delete_batch_file();
-            $last = array();
-            $last['simulate'] = $simulate;
-            $last['list'] = $list;
-            $last['scheduled'] = false;
-            $last['error'] = false;
-        }
-        else {
-            $simulate = $last['simulate'];
-            $list = $last['list'];
-        }
-
-        $query = "select * from " . $wpdb->prefix . "newsletter where status='C' and list=" . $list;
-        if (isset($last['id'])) $query .= " and id>" . $last['id'];
-        $recipients = $wpdb->get_results($query . " order by id");
-
-        if (count($recipients) == 0) {
-            newsletter_log('newsletter_send_batch() - no more recipients');
-            unset($last['id']);
-            update_option('newsletter_last', $last);
-            return $last;
-        }
-        else {
-        // If the batch is new store the total recipients
-            if (!isset($last['id'])) $last['total'] = count($recipients);
-        }
-        if (!isset($last['sent'])) $last['sent'] = 0;
+    if ($batch == null || !is_array($batch)) {
+        newsletter_error(__FUNCTION__, 'No batch found');
+        return;
     }
 
-    //    if ($filter)
-    //    {
-    //        $tmp = explode('=', $filter);
-    //        if (count($tmp) == 2)
-    //        {
-    //            $filter[0] = array(trim($tmp[0])=>strtolower(trim($tmp[1])));
-    //        }
-    //        else $filter = null;
-    //    }
+    newsletter_debug(__FUNCTION__, "Batch:\n" . print_r($last, true));
 
-    // This batch is empty...
+    // Batch have to contain 'id' which is the starting id, 'simulate' boolean
+    // to indicate if is a simulation or not, 'scheduled' if it's a scheduled
+    // sending process. 'list' is the list number, required.
+    // If 'id' = 0 it's a new seding process.
 
+    if (!isset($batch['id'])) {
+        newsletter_error(__FUNCTION__, 'Batch "id" parameter not present');
+        return false;
+    }
+
+    if (!isset($batch['list'])) {
+        newsletter_error(__FUNCTION__, 'Batch "list" parameter not present');
+        return false;
+    }
+
+    if (!isset($batch['simulate'])) {
+        newsletter_error(__FUNCTION__, 'Batch "simulate" parameter not present');
+        return false;
+    }
+
+    if (!isset($batch['scheduled'])) {
+        newsletter_error(__FUNCTION__, 'Batch "scheduled" parameter not present');
+        return false;
+    }
+
+    $id = (int)$batch['id'];
+    $list = (int)$batch['list'];
+    $simulate = (bool)$batch['simulate'];
+    $scheduled = (bool)$batch['scheduled']; // Used to avoid echo
+
+    $query = "select * from " . $wpdb->prefix . "newsletter where status='C' and list=" . $list .
+        " and id>" . $id . " order by id";
+
+    $recipients = $wpdb->get_results($query);
+
+    // For a new batch save some info
+    if ($id == 0) {
+        newsletter_delete_batch_file();
+        wp_clear_scheduled_hook('newsletter_cron_hook');
+        $batch['total'] = count($recipients);
+        $batch['sent'] = 0;
+        $batch['completed'] = false;
+        $batch['message'] = '';
+    }
 
     // Not all hosting provider allow this...
     @set_time_limit(100000);
-
 
     $start_time = time();
     $max_time = (int)(ini_get('max_execution_time') * 0.8);
     $db_time = time();
 
-    if ($last['scheduled']) {
+    if ($scheduled) {
         $max = $options_email['scheduler_max'];
         if (!is_numeric($max)) $max = 10;
     }
@@ -273,42 +288,35 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
         if (!is_numeric($max)) $max = 0;
     }
 
-    if (!$last['scheduled']) {
-        echo 'Queue: ' . count($recipients) . ' emails<br />';
-        echo 'Max time: ' . $max_time . ' seconds<br />';
-        echo 'Max emails: ' . $max . '<br />';
+    if (!$scheduled) {
         echo 'Sending to: <br />';
     }
-    // Count total emails sent
+
+
+    if (isset($options_email['novisual'])) {
+        $message = $options_email['message'];
+    }
+    else {
+        $message = '<html><head><style type="text/css">' . newsletter_get_theme_css($options_email['theme']) .
+            '</style></head><body>' . $options_email['message'] . '</body></html>';
+    }
 
     $idx = 0;
 
     foreach ($recipients as $r) {
-    //$profile = unserialize($r->profile);
-    //        if (is_array($profile))
-    //        {
-    //            if (strtolower(trim($profile[$filter[0]['key']])) == $filter[0]
-    //        }
 
-	if (isset($options_email['novisual'])) {
-	$m = $options_email['message'];
-	}
-	else {
-        $m = '<html><head><style type="text/css">' . newsletter_get_theme_css($options_email['theme']) . 
-	'</style></head><body>' . $options_email['message'] . '</body></html>';
-	}
         $url = newsletter_add_qs($options['url'],
             'na=u&amp;ni=' . $r->id . '&amp;nt=' . $r->token);
 
-        $m = newsletter_replace_url($m, 'UNSUBSCRIPTION_URL', $url);
+        $m = newsletter_replace_url($message, 'UNSUBSCRIPTION_URL', $url);
         $m = newsletter_replace($m, $r);
 
-        if (defined('NEWSLETTER_EXTRAS') && isset($options_email['track'])) $m = newsletter_relink($m, $r->id, $options_email['name']);
+        if (defined('NEWSLETTER_EXTRAS') && isset($options_email['track']))
+            $m = newsletter_relink($m, $r->id, $options_email['name']);
 
         $s = $options_email['subject'];
         $s = newsletter_replace($s, $r);
 
-        //newsletter_log('Spedizione notifica a: ' . $r->email);
         if ($simulate) {
             $x = newsletter_mail($options_email['simulate_email'], $s, $m, true);
         }
@@ -316,95 +324,136 @@ function newsletter_send_batch($continue=true, $list=0, $simulate=true, $recipie
             $x = newsletter_mail($r->email, $s, $m, true);
         }
 
-        if (!$x) {
-            newsletter_log('newsletter_send_batch() - Sending failed');
-        }
+        if (!$scheduled) {
+            echo htmlspecialchars($r->name) . ' (' . $r->email . ') ';
 
-        if (!$last['scheduled']) {
-            echo htmlspecialchars($r->name) . ' [' . $r->id . ', ' . $r->email . '], ';
+            if ($x) {
+                echo '[OK] - ';
+                newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' success');
+            } else {
+                echo '[KO] - ';
+                newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' failed');
+            }
             flush();
         }
+
         $idx++;
 
-        if (!$test) {
-            $last['sent']++;
+        $batch['sent']++;
+        $batch['id'] = $r->id;
 
-            $last['id'] = $r->id;
-            $last['email'] = $r->email;
-            $last['name'] = $r->name;
+        // Try to avoid database timeout
+        if (time()-$db_time > 15) {
+            newsletter_debug(__FUNCTION__, 'Batch saving to avoid database timeout');
+            $db_time = time();
+            $batch['message'] = 'Temporary saved batch to avoid database timeout';
+            if (!update_option('newsletter_batch', $batch)) {
+                newsletter_error(__FUNCTION__, 'Unable to save to database, saving on file system');
+                newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
 
-            if (time()-$db_time > 15)
-            {
-                newsletter_log('newsletter_send_batch() - Temporary batch saving', true);
-                $db_time = time();
-                if (!update_option('newsletter_last', $last)) {
-                    newsletter_save_batch_file($last);
-                    $last['error'] = true;
-                    newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
-                    newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
-                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
-                    return $last;
-                }
+                newsletter_save_batch_file($batch);
+                return false;
             }
-            
-            // every 20 email, save the status on database
-//            if ($idx % 20 == 1) {
-//                newsletter_log('newsletter_send_batch() - Saving batch info: ' . print_r($last, true));
-//                // Message will be lost in scheduled operations
-//                if (!update_option('newsletter_last', $last)) {
-//                    $last['error'] = true;
-//                    newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
-//                    newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
-//                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
-//                    return $last;
-//                }
-//            }
+        }
 
-            // Check for the max emails per batch
-            if ($max != 0 && $idx >= $max) {
-                newsletter_log('newsletter_send_batch() - Batch limit reached');
-                $last['message'] = 'Batch email limit reached, if scheduled the sending process will restart automatically';
-                if (update_option('newsletter_last', $last)) {
-                    newsletter_save_batch_file($last);
-                    $last['error'] = true;
-                    newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
-                    newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
-                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
-                }
-                return $last;
-            }
+        // Check for the max emails per batch
+        if ($max != 0 && $idx >= $max) {
+            newsletter_info(__FUNCTION__, 'Batch saving due to max emails limit reached');
+            $batch['message'] = 'Batch max emails limit reached (it is ok)';
+            if (!update_option('newsletter_batch', $batch)) {
+                newsletter_error(__FUNCTION__, 'Unable to save to database, saving on file system');
+                newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
 
-            // Timeout check, max time is zero if set_time_limit works
-            if (($max_time != 0 && (time()-$start_time) > $max_time)) {
-                newsletter_log('newsletter_send_batch() - Timeout reached');
-                $last['message'] = 'Timeout reached';
-                if (!update_option('newsletter_last', $last)) {
-                    newsletter_save_batch_file($last);
-                    $last['error'] = true;
-                    newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
-                    newsletter_log('newsletter_send_batch() - Unsaved batch: ' . print_r($last, true));
-                    $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . ').';
-                }
-                return $last;
+                newsletter_save_batch_file($batch);
+                return false;
             }
+            return true;
+        }
+
+        // Timeout check, max time is zero if set_time_limit works
+        if (($max_time != 0 && (time()-$start_time) > $max_time)) {
+            newsletter_info(__FUNCTION__, 'Batch saving due to max time limit reached');
+            $batch['message'] = 'Batch max time limit reached (it is ok)';
+            if (!update_option('newsletter_batch', $batch)) {
+                newsletter_error(__FUNCTION__, 'Unable to save to database, saving on file system');
+                newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
+
+                newsletter_save_batch_file($batch);
+                return false;
+            }
+            return true;
         }
     }
 
-    if (!$test) {
-        unset($last['id']);
-        unset($last['email']);
-        unset($last['name']);
-        newsletter_log('newsletter_send_batch() - Batch completed');
-        if (!update_option('newsletter_last', $last)) {
-            $last['error'] = true;
-            $last['message'] = 'FATAL ERROR. Unable to save batch info to db, see the log (db error: ' . $wpdb->last_error . '). The batch was completed so you can reset it by hand.';
-            newsletter_log('newsletter_send_batch() - Unable to save batch info to db: ' . $wpdb->last_error, true);
-            newsletter_log('newsletter_send_batch() - The batch was completed', true);
-        }
+    // All right (incredible!)
+    newsletter_info(__FUNCTION__, 'Sending completed!');
+    $batch['completed'] = true;
+    if (!update_option('newsletter_batch', $batch)) {
+        newsletter_error(__FUNCTION__, 'Unable to save to database, saving on file system');
+        newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
+
+        newsletter_save_batch_file($batch);
+        return false;
     }
 
-    return $last;
+    return true;
 }
+
+/**
+ * Send a set of test emails to a list of recipents. The recipients are created
+ * in the composer page using the test addresses.
+ */
+function newsletter_send_test($recipients) {
+    global $wpdb;
+
+    newsletter_info(__FUNCTION__, 'Start');
+
+    $options = get_option('newsletter');
+    $options_email = get_option('newsletter_email');
+
+    @set_time_limit(100000);
+
+    echo 'Sending to: <br />';
+
+    if (isset($options_email['novisual'])) {
+        $message = $options_email['message'];
+    }
+    else {
+        $message = '<html><head><style type="text/css">' . newsletter_get_theme_css($options_email['theme']) .
+            '</style></head><body>' . $options_email['message'] . '</body></html>';
+    }
+
+    foreach ($recipients as $r) {
+
+        $url = newsletter_add_qs($options['url'],
+            'na=u&amp;ni=' . $r->id . '&amp;nt=' . $r->token);
+
+        $m = newsletter_replace_url($message, 'UNSUBSCRIPTION_URL', $url);
+        $m = newsletter_replace($m, $r);
+
+        if (defined('NEWSLETTER_EXTRAS') && isset($options_email['track']))
+            $m = newsletter_relink($m, $r->id, $options_email['name']);
+
+        $s = $options_email['subject'];
+        $s = newsletter_replace($s, $r);
+
+        $x = newsletter_mail($r->email, $s, $m, true);
+
+        echo htmlspecialchars($r->name) . ' (' . $r->email . ') ';
+        flush();
+
+        if ($x) {
+            echo '[OK] -- ';
+            newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' failed');
+        } else {
+            echo '[KO] -- ';
+            newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' success');
+        }
+
+    }
+}
+
+
 
 function newsletter_add_qs($url, $qs, $amp=true) {
     if (strpos($url, '?') !== false) {
@@ -445,23 +494,31 @@ function newsletter_subscribe($email, $name='', $profile=null) {
         else {
             $status = 'S';
         }
-        $wpdb->insert($wpdb->prefix . 'newsletter', array(
+        @$wpdb->insert($wpdb->prefix . 'newsletter', array(
             'email'=>$email,
             'name'=>$name,
             'token'=>$token,
             'list'=>$list,
-            'status'=>$status,
-            'profile'=>serialize($profile)));
+            'status'=>$status
+            //'profile'=>serialize($profile)
+        ));
+        $id = $wpdb->insert_id;
+        $newsletter_subscriber = newsletter_get_subscriber($id);
 
-        $newsletter_subscriber = newsletter_get_subscriber($wpdb->insert_id);
+        // Profile saving
+        foreach ($profile as $key=>$value) {
+            @$wpdb->insert($wpdb->prefix . 'newsletter_profiles', array(
+                'newsletter_id'=>$id,
+                'name'=>$key,
+                'value'=>$value));
+        }
+
     }
 
     if (isset($options['noconfirmation'])) {
-        newsletter_log('Invio del welcome a ' . print_r($newsletter_subscriber, true));
         newsletter_send_welcome($newsletter_subscriber);
     }
     else {
-        newsletter_log('Invio della conferma ' . print_r($newsletter_subscriber, true));
         newsletter_send_confirmation($newsletter_subscriber);
     }
 
@@ -480,7 +537,7 @@ function newsletter_save($subscriber) {
     $email = newsletter_normalize_email($email);
     $name = newsletter_normalize_name($name);
     $wpdb->query($wpdb->prepare("update " . $wpdb->prefix . "newsletter set email=%s, name=%s where id=%d",
-            $subscriber['email'], $subscriber['name'], $subscriber['id']));
+        $subscriber['email'], $subscriber['name'], $subscriber['id']));
 }
 
 
@@ -490,9 +547,7 @@ function newsletter_save($subscriber) {
 function newsletter_send_confirmation($subscriber) {
     $options = get_option('newsletter');
 
-    newsletter_log('newsletter_send_confirmation() - Sending a confirmation request message');
-
-    newsletter_log('newsletter_send_confirmation() - URL: ' . $url);
+    newsletter_debug(__FUNCTION__, "Confirmation request to:\n" . print_r($subscriber, true));
 
     $message = $options['confirmation_message'];
 
@@ -553,11 +608,11 @@ function newsletter_search($text, $status=null, $order='email') {
     }
 
     if ($text == '') {
-        $recipients = $wpdb->get_results($query . " order by " . $order);
+        $recipients = $wpdb->get_results($query . " order by " . $order . ' limit 100');
     }
     else {
         $recipients = $wpdb->get_results($query . " and email like '%" .
-            $wpdb->escape($text) . "%' or name like '%" . $wpdb->escape($text) . "%' order by " . $order);
+            $wpdb->escape($text) . "%' or name like '%" . $wpdb->escape($text) . "%' order by " . $order . ' limit 100');
     }
     if (!$recipients) return null;
     return $recipients;
@@ -815,23 +870,33 @@ function newsletter_delete_all($status=null) {
 function newsletter_confirm($id, $token) {
     global $wpdb, $newsletter_subscriber;
 
-    $newsletter_subscriber = newsletter_get_subscriber($id);
-
     $options = get_option('newsletter');
 
-    $count = $wpdb->query($wpdb->prepare("update " . $wpdb->prefix . "newsletter set status='C' where id=%d" .
-        " and token=%s", $id, $token));
+    $newsletter_subscriber = newsletter_get_subscriber($id);
 
-    if ($count > 0) {
-        $newsletter_subscriber = newsletter_get_subscriber($id);
-        newsletter_send_welcome($newsletter_subscriber);
+    newsletter_info(__FUNCTION__, "Starting confirmation of subscriber " . $id);
+
+    if ($newsletter_subscriber == null) {
+        newsletter_error(__FUNCTION__, "Subscriber not found");
+        return;
     }
+
+    if ($newsletter_subscriber->token != $token) {
+        newsletter_error(__FUNCTION__, "Token not matching");
+        return;
+    }
+
+    newsletter_debug(__FUNCTION__, "Confirming subscriber:\n" . print_r($newsletter_subscriber, true));
+
+    $count = $wpdb->query($wpdb->prepare("update " . $wpdb->prefix . "newsletter set status='C' where id=%d", $id));
+
+    newsletter_send_welcome($newsletter_subscriber);
 }
 
 function newsletter_send_welcome($subscriber) {
     $options = get_option('newsletter');
 
-    if ($options['confirmed_subject'] == '') return;
+    newsletter_debug(__FUNCTION__, "Welcome message to:\n" . print_r($subscriber, true));
 
     $message = newsletter_replace($options['confirmed_message'], $subscriber);
 
@@ -872,7 +937,10 @@ function newsletter_notify_admin(&$subject, &$message) {
 function newsletter_mail($to, &$subject, &$message, $html=true) {
     global $wpdb;
 
-    if ($subject == '') return true;
+    if ($subject == '') {
+        newsletter_debug(__FUNCTION__, 'Subject empty, skipped');
+        return true;
+    }
 
     $options = get_option('newsletter');
 
@@ -883,7 +951,11 @@ function newsletter_mail($to, &$subject, &$message, $html=true) {
     // Special character are manager by wp_mail()
     $headers .= 'From: "' . $options['from_name'] . '" <' . $options['from_email'] . ">\n";
 
-    return wp_mail($to, $subject, $message, $headers);
+    $r = wp_mail($to, $subject, $message, $headers);
+    if (!$r) {
+        newsletter_error(__FUNCTION__, "wp_mail() failed");
+    }
+    return $r;
 }
 
 
@@ -940,7 +1012,16 @@ function newsletter_activate() {
         @$wpdb->query($sql);
     }
 
-    newsletter_log('Plugin activated', true);
+    $sql = 'create table if not exists ' . $wpdb->prefix . 'newsletter_profiles (
+        `newsletter_id` int not null,
+        `name` varchar (100) not null default \'\',
+        `value` text,
+        primary key (newsletter_id, name)
+        )';
+
+    @$wpdb->query($sql);
+
+    newsletter_info(__FUNCTION__, 'Activated');
 
     $options['version'] = NEWSLETTER;
     update_option('newsletter', $options);
@@ -965,6 +1046,8 @@ if (is_admin()) {
             add_submenu_page('newsletter/options.php', 'Export', 'Export', $level, 'newsletter/export.php');
             add_submenu_page('newsletter/options.php', 'Manage', 'Manage', $level, 'newsletter/manage.php');
             add_submenu_page('newsletter/options.php', 'Statistics', 'Statistics', $level, 'newsletter/statistics.php');
+            add_submenu_page('newsletter/options.php', 'Forms', 'Forms', $level, 'newsletter/forms.php');
+            add_submenu_page('newsletter/options.php', 'Update', 'Update', $level, 'newsletter/convert.php');
         }
     }
 }
@@ -1013,22 +1096,19 @@ function newsletter_is_email($email, $empty_ok=false) {
         return false;
 }
 
-function newsletter_delete_batch_file()
-{
+function newsletter_delete_batch_file() {
     @unlink(dirname(__FILE__) . '/batch.dat');
 }
 
-function newsletter_save_batch_file($batch)
-{
-    $file = @fopen(dirname(__FILE__) . '/batch.dat', 'a');
+function newsletter_save_batch_file($batch) {
+    $file = @fopen(dirname(__FILE__) . '/batch.dat', 'w');
     if (!$file) return;
     @fwrite($file, serialize($batch));
     @fclose($file);
 }
 
-function newsletter_load_batch_file()
-{
-    $content = @file_get_contents(dirname(__FILE__) . '/batch.dat', 'a');
+function newsletter_load_batch_file() {
+    $content = @file_get_contents(dirname(__FILE__) . '/batch.dat');
     return @unserialize($content);
 }
 
@@ -1036,15 +1116,29 @@ function newsletter_load_batch_file()
  * Write a line of log in the log file if the logs are enabled or force is
  * set to true.
  */
-function newsletter_log($text, $force=false) {
-    $options = get_option('newsletter');
-
-    if (!$force && !isset($options['logs'])) return;
-
+function newsletter_log($text) {
     $file = @fopen(dirname(__FILE__) . '/newsletter.log', 'a');
     if (!$file) return;
     @fwrite($file, date('Y-m-d h:i') . ' ' . $text . "\n");
     @fclose($file);
+}
+
+function newsletter_debug($fn, $text) {
+    $options = get_option('newsletter');
+    if ($options['logs'] < 2) return;
+    newsletter_log('- DEBUG - ' . $fn . ' - ' . $text);
+}
+
+function newsletter_info($fn, $text) {
+    $options = get_option('newsletter');
+    if ($options['logs'] < 1) return;
+    newsletter_log('- INFO  - ' . $fn . ' - ' . $text);
+}
+
+function newsletter_error($fn, $text) {
+    $options = get_option('newsletter');
+    if ($options['logs'] < 1) return;
+    newsletter_log('- ERROR - ' . $fn . ' - ' . $text);
 }
 
 /**
@@ -1083,12 +1177,10 @@ function newsletter_get_extras_themes() {
  * Resets the batch status.
  */
 function newsletter_reset_batch() {
-    update_option('newsletter_last', array());
-    wp_clear_scheduled_hook('newsletter_cron_hook');
+
 }
 
-function newsletter_has_extras($version=null)
-{
+function newsletter_has_extras($version=null) {
     if (!defined('NEWSLETTER_EXTRAS')) return false;
     if ($version == null) return true;
     if ($version >= NEWSLETTER_EXTRAS) return true;
@@ -1125,8 +1217,7 @@ function nt_option($name, $def = null) {
 /**
  * Retrieves the theme dir path.
  */
-function newsletter_get_theme_dir($theme)
-{
+function newsletter_get_theme_dir($theme) {
     if ($theme[0] == '*') {
         return ABSPATH . '/wp-content/plugins/newsletter-custom/themes/' . substr($theme, 1);
     }
@@ -1141,8 +1232,7 @@ function newsletter_get_theme_dir($theme)
 /**
  * Retrieves the theme URL (pointing to theme dir).
  */
-function newsletter_get_theme_url($theme)
-{
+function newsletter_get_theme_url($theme) {
     if ($theme[0] == '*') {
         return get_option('siteurl') . '/wp-content/plugins/newsletter-custom/themes/' . substr($theme, 1);
     }
@@ -1157,9 +1247,8 @@ function newsletter_get_theme_url($theme)
 /**
  * Loads the theme css content to be embedded in emails body.
  */
-function newsletter_get_theme_css($theme)
-{
-	return @file_get_contents(newsletter_get_theme_dir($theme) . '/style.css');
+function newsletter_get_theme_css($theme) {
+    return @file_get_contents(newsletter_get_theme_dir($theme) . '/style.css');
 }
 
 ?>

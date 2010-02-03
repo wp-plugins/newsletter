@@ -50,7 +50,7 @@ if (isset($_POST['save'])) {
     }
     #newsletter .form-table {
         border: 1px solid #999;
-        background-color: #f4f4f4;
+        background-color: #fff;
     }
 </style>
 
@@ -371,10 +371,14 @@ Used when the newsletter is sent with "mass mail" mode.
                 </td>
             </tr>
             <tr valign="top">
-                <th>&nbsp;</th>
+                <th>Logging</th>
                 <td>
-                    <input type="checkbox" name="options[logs]" value="1" <?php echo $options['logs']!= null?'checked':''; ?> />
-                    <?php _e('write logs', 'newsletter'); ?>
+                    <select name="options[logs]">
+                            <option <?php echo (0==$options['logs'])?'selected':''; ?> value="0">None</option>
+                            <option <?php echo (1==$options['logs'])?'selected':''; ?> value="1">Normal</option>
+                            <option <?php echo (2==$options['logs'])?'selected':''; ?> value="2">Debug</option>
+                    </select>
+                    (debug level saves user data on file system, use only to debug problems)
                 </td>
             </tr>
             <tr valign="top">
