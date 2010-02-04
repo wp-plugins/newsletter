@@ -162,7 +162,7 @@ if (file_exists($theme_dir . '/style.css')) {
                 $batch['id'] = 0;
                 $batch['list'] = 0;
                 $batch['scheduled'] = false;
-                $batch['simulate'] = true;
+                $batch['simulate'] = false;
 
                 update_option('newsletter_batch', $batch);
 

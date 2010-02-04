@@ -10,7 +10,7 @@ load_plugin_textdomain('newsletter', 'wp-content/plugins/' . $plugin_dir . '/lan
 
     <textarea wrap="off" style="width: 100%; height: 300px; font-size: 11px; font-family: monospace"><?php _e('Email', 'newsletter'); ?>,<?php _e('Name', 'newsletter'); ?>,<?php _e('Status', 'newsletter'); ?>,<?php _e('Token', 'newsletter'); ?>
         <?php
-        $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
+        $query = "select * from " . $wpdb->prefix . "newsletter";
         $recipients = $wpdb->get_results($query . " order by email");
         for ($i=0; $i<count($recipients); $i++) {
             echo $recipients[$i]->email . ';' . $recipients[$i]->name .
