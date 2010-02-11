@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-Version: 1.4.9
+Version: 1.5.0
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.4.9');
+define('NEWSLETTER', '1.5.0');
 
 @include(ABSPATH . 'wp-content/plugins/newsletter-extras/newsletter-extras.php');
 
@@ -550,7 +550,11 @@ function newsletter_send_confirmation($subscriber) {
     newsletter_debug(__FUNCTION__, "Confirmation request to:\n" . print_r($subscriber, true));
 
     $message = $options['confirmation_message'];
+    $html = newsletter_get_theme_html($options['theme']);
+    if ($html == null) $html = '{message}';
 
+    $message = str_replace('{message}', $message, $html);
+    
     // The full URL to the confirmation page
     $url = newsletter_add_qs($options['url'], 'na=c&amp;ni=' . $subscriber->id .
         '&amp;nt=' . $subscriber->token);
@@ -818,7 +822,11 @@ function newsletter_unsubscribe($id, $token) {
     $wpdb->query($wpdb->prepare("delete from " . $wpdb->prefix . "newsletter where id=%d" .
         " and token=%s", $id, $token));
 
-    $message = newsletter_replace($options['unsubscribed_message'], $newsletter_subscriber);
+    $html = newsletter_get_theme_html($options['theme']);
+    if ($html == null) $html = '{message}';
+    $message = str_replace('{message}', $options['unsubscribed_message'], $html);
+
+    $message = newsletter_replace($message, $newsletter_subscriber);
 
     // URL to the unsubscription page (for test purpose)
     //    $url = newsletter_add_qs($options['url'], 'na=u&amp;ni=' . $newsletter_subscriber->id .
@@ -898,7 +906,11 @@ function newsletter_send_welcome($subscriber) {
 
     newsletter_debug(__FUNCTION__, "Welcome message to:\n" . print_r($subscriber, true));
 
-    $message = newsletter_replace($options['confirmed_message'], $subscriber);
+    $html = newsletter_get_theme_html($options['theme']);
+    if ($html == null) $html = '{message}';
+    $message = str_replace('{message}', $options['confirmed_message'], $html);
+
+    $message = newsletter_replace($message, $subscriber);
 
     // URL to the unsubscription page (for test purpose)
     $url = newsletter_add_qs($options['url'], 'na=u&amp;ni=' . $subscriber->id .
@@ -1248,7 +1260,20 @@ function newsletter_get_theme_url($theme) {
  * Loads the theme css content to be embedded in emails body.
  */
 function newsletter_get_theme_css($theme) {
+    if ($theme == 'blank') return '';
     return @file_get_contents(newsletter_get_theme_dir($theme) . '/style.css');
 }
 
+function newsletter_get_theme_html($theme)
+{
+    if ($theme == 'blank') return '';
+    $file = newsletter_get_theme_dir($theme) . '/theme.php';
+
+    // Execute the theme file and get the content generated
+    ob_start();
+    @include($file);
+    $html = ob_get_contents();
+    ob_end_clean();
+    return $html;
+}
 ?>

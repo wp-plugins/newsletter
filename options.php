@@ -95,6 +95,38 @@ if (isset($_POST['save'])) {
                     (<a href="http://www.satollo.net/plugins/newsletter"><?php _e('Read more on plugin official page', 'newsletter'); ?></a>)
                 </td>
             </tr>
+            <tr valign="top">
+                <th>Theme to use for messages</th>
+                <td>
+                    <select name="options[theme]">
+                        <optgroup label="Included themes">
+                            <option <?php echo ('blank'==$options['theme'])?'selected':''; ?> value="blank">Blank</option>
+                            <option <?php echo ('messages'==$options['theme'])?'selected':''; ?> value="messages">For messages</option>
+                        </optgroup>
+                        <optgroup label="Extras themes">
+                            <?php
+                            $themes = newsletter_get_extras_themes();
+
+                            foreach ($themes as $theme) {
+                                echo '<option ' .  (('$'.$theme)==$options['theme']?'selected':'') . ' value="$' . $theme . '">' . $theme . '</option>';
+                            }
+                            ?>
+                        </optgroup>
+                        <optgroup label="Custom themes">
+                            <?php
+                            $themes = newsletter_get_themes();
+
+                            foreach ($themes as $theme) {
+                                echo '<option ' .  (('*'.$theme)==$options['theme']?'selected':'') . ' value="*' . $theme . '">' . $theme . '</option>';
+                            }
+                            ?>
+                        </optgroup>
+                    </select>
+                    <br />
+                    Selected theme has to be one with {message} tag inside, tag that will be replaced
+                    with messages. Use the blank theme to send messages as you see them in the editor.
+                </td>
+            </tr>
         </table>
         <p class="submit">
             <input class="button" type="submit" name="save" value="<?php _e('Save','newsletter'); ?>"/>

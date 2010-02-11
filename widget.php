@@ -20,7 +20,7 @@ function widget_newsletter_init() {
         echo $before_widget . $before_title . $title . $after_title;
 
         if (newsletter_has_extras('1.0.2') && $form != '') {
-            $buffer .= str_replace('{newsletter_url}', $options['url'], newsletter_extra_form($form));
+            $buffer .= str_replace('{newsletter_url}', $options['url'], newsletter_extras_get_form($form));
         }
         else {
             if (isset($options['noname'])) {

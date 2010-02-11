@@ -9,6 +9,7 @@ if (!isset($options['no_translation'])) {
 
 if (isset($_POST['import'])) {
     if (!check_admin_referer()) die('No hacking please');
+    @set_time_limit(100000);
     $csv = newsletter_request('csv');
     $lines = explode("\n", $csv);
 

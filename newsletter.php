@@ -66,10 +66,10 @@ if (file_exists($theme_dir . '/style.css')) {
     tinyMCE.init({
         mode : "textareas",
         theme : "advanced",
-        plugins: "table",
+        plugins: "table,fullscreen",
         theme_advanced_disable : "styleselect",
         theme_advanced_buttons1_add: "forecolor,blockquote,code",
-        theme_advanced_buttons3 : "tablecontrols",
+        theme_advanced_buttons3 : "tablecontrols,fullscreen",
         relative_urls : false,
         remove_script_host : false,
         theme_advanced_toolbar_location : "top",
@@ -232,6 +232,7 @@ if (file_exists($theme_dir . '/style.css')) {
                                 }
                                 else {
                                     echo 'Not completed, next run on ' . date('j/m/Y h:i', $time);
+                                    echo ' (' . ((int)(($time-time())/60)) . ' minutes left)';
                                 }
                             }
                         }

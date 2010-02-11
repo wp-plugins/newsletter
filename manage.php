@@ -46,6 +46,12 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
 
 ?>
 <script type="text/javascript">
+    function newsletter_detail(id)
+    {
+        document.getElementById("action").value = "detail";
+        document.getElementById("id").value = id;
+        document.getElementById("channel").submit();
+    }
     function newsletter_edit(id)
     {
         document.getElementById("action").value = "edit";
@@ -87,8 +93,13 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
         border: 1px solid #999;
         padding: 5px;
     }
+    #newsletter .form-table {
+        border: 1px solid #999;
+        background-color: #fff;
+    }
 </style>
-<div class="wrap">
+
+<div class="wrap" id="newsletter">
     <h2><?php _e('Subscribers Management', 'newsletter'); ?></h2>
 
     <?php require_once 'header.php'; ?>
@@ -106,6 +117,8 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
                     <td>
                         <input name="text" type="text" size="50" value="<?php echo htmlspecialchars(newsletter_request('text'))?>"/>
                         <input type="submit" value="<?php _e('Search', 'newsletter'); ?>" /> (press without filter to show all)
+                        <br />
+                        Max 100 results will be shown
                     </td>
                 </tr>
                 <tr valign="top">
@@ -162,6 +175,8 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
     </p>
 </form>
 
+
+
 <h3><?php _e('Subscriber\'s statistics', 'newsletter'); ?></h3>
 <?php _e('Confirmed subscriber', 'newsletter'); ?>: <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C'"); ?>
 <br />
@@ -180,13 +195,17 @@ if ($list) {
         echo '<td>' . $s->name . '</td>';
         echo '<td>' . ($s->status=='S'?'Not confirmed':'Confirmed') . '</td>';
         echo '<td><small>';
-
-        $profile = unserialize($s->profile);
-        if (is_array($profile)) {
-            foreach ($profile as $key=>$value) {
-                echo htmlspecialchars($key) . ': ' . htmlspecialchars($value) . '<br />';
-            }
+        $query = $wpdb->prepare("select name,value from " . $wpdb->prefix . "newsletter_profiles where newsletter_id=%d", $s->id);
+        $profile = $wpdb->get_results($query);
+        foreach ($profile as $field) {
+            echo htmlspecialchars($field->name) . ': ' . htmlspecialchars($field->value) . '<br />';
         }
+//        $profile = unserialize($s->profile);
+//        if (is_array($profile)) {
+//            foreach ($profile as $key=>$value) {
+//                echo htmlspecialchars($key) . ': ' . htmlspecialchars($value) . '<br />';
+//            }
+//        }
         echo '</small></td>';
         echo '<td><small>' . $s->token . '</small></td>';
         echo '<td>';
