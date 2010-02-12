@@ -36,19 +36,19 @@ if (isset($_POST['import'])) {
 
 <div class="wrap">
 
-    <h2><?php _e('Subscribers Import', 'newsletter'); ?></h2>
+    <h2>Newsletter Import</h2>
 
-<?php require_once 'header.php'; ?>
+    <?php require_once 'header.php'; ?>
 
     <?php if ($errors) { ?>
 
     <h3><?php _e('Rows with errors', 'newsletter'); ?></h3>
     <textarea wrap="off" style="width: 100%; height: 150px; font-size: 11px; font-family: monospace"><?php echo htmlspecialchars(implode("\n", $errors))?></textarea>
 
-<?php } ?>
+    <?php } ?>
 
     <form method="post">
-<?php wp_nonce_field(); ?>
+        <?php wp_nonce_field(); ?>
         <h3><?php _e('Import', 'newsletter'); ?></h3>
         <p><?php _e('On the textarea below you can copy a text in CSV (comma separated values) with format:<br /><br /> <pre>user email;user name</pre><br /><br />and then import them. If an email is already stored, it won\'t be imported. If an email is wrong it won\'t be imported. Even when there are errors on CSV lines, the import will continue to the end. After the import process has ended, a box will appear with all the line not imported due to duplications or errors. Imported subscriber will be set as confirmed.', 'newsletter'); ?>
         </p>

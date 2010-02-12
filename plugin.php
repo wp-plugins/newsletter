@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-Version: 1.5.0
+Version: 1.5.1
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.5.0');
+define('NEWSLETTER', '1.5.1');
 
 @include(ABSPATH . 'wp-content/plugins/newsletter-extras/newsletter-extras.php');
 
@@ -197,7 +197,13 @@ function newsletter_call($attrs, $content=null) {
     return '<div class="newsletter">' . $buffer . '</div>';
 }
 
+function newsletter_phpmailer_init($phpmailer) {
+    $options_email = get_option('newsletter_email');
+    $phpmailer->Sender = $options_email['return_path'];
+}
+
 /**
+ *
  * Sends out newsletters.
  *
  * I recipients is an array of subscribers, other parameters are ignored and a test
@@ -303,6 +309,7 @@ function newsletter_send_batch() {
 
     $idx = 0;
 
+    add_action('phpmailer_init','newsletter_phpmailer_init');
     foreach ($recipients as $r) {
 
         $url = newsletter_add_qs($options['url'],
@@ -352,6 +359,8 @@ function newsletter_send_batch() {
                 newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
 
                 newsletter_save_batch_file($batch);
+                remove_action('phpmailer_init','newsletter_phpmailer_init');
+
                 return false;
             }
         }
@@ -365,8 +374,13 @@ function newsletter_send_batch() {
                 newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
 
                 newsletter_save_batch_file($batch);
+                remove_action('phpmailer_init','newsletter_phpmailer_init');
+
                 return false;
             }
+
+            remove_action('phpmailer_init','newsletter_phpmailer_init');
+
             return true;
         }
 
@@ -379,8 +393,12 @@ function newsletter_send_batch() {
                 newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
 
                 newsletter_save_batch_file($batch);
+                remove_action('phpmailer_init','newsletter_phpmailer_init');
+
                 return false;
             }
+
+            remove_action('phpmailer_init','newsletter_phpmailer_init');
             return true;
         }
     }
@@ -393,9 +411,12 @@ function newsletter_send_batch() {
         newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
 
         newsletter_save_batch_file($batch);
+        remove_action('phpmailer_init','newsletter_phpmailer_init');
+
         return false;
     }
 
+    remove_action('phpmailer_init','newsletter_phpmailer_init');
     return true;
 }
 
@@ -554,7 +575,7 @@ function newsletter_send_confirmation($subscriber) {
     if ($html == null) $html = '{message}';
 
     $message = str_replace('{message}', $message, $html);
-    
+
     // The full URL to the confirmation page
     $url = newsletter_add_qs($options['url'], 'na=c&amp;ni=' . $subscriber->id .
         '&amp;nt=' . $subscriber->token);
@@ -1056,10 +1077,18 @@ if (is_admin()) {
             add_submenu_page('newsletter/options.php', 'Composer', 'Composer', $level, 'newsletter/newsletter.php');
             add_submenu_page('newsletter/options.php', 'Import', 'Import', $level, 'newsletter/import.php');
             add_submenu_page('newsletter/options.php', 'Export', 'Export', $level, 'newsletter/export.php');
-            add_submenu_page('newsletter/options.php', 'Manage', 'Manage', $level, 'newsletter/manage.php');
+            add_submenu_page('newsletter/options.php', 'Subscribers', 'Manage', $level, 'newsletter/manage.php');
             add_submenu_page('newsletter/options.php', 'Statistics', 'Statistics', $level, 'newsletter/statistics.php');
             add_submenu_page('newsletter/options.php', 'Forms', 'Forms', $level, 'newsletter/forms.php');
             add_submenu_page('newsletter/options.php', 'Update', 'Update', $level, 'newsletter/convert.php');
+        }
+    }
+
+    add_action('admin_head', 'newsletter_admin_head');
+    function newsletter_admin_head() {
+        if (strpos($_GET['page'], 'newsletter/') === 0) {
+            echo '<link type="text/css" rel="stylesheet" href="' .
+                get_option('siteurl') . '/wp-content/plugins/newsletter/style.css"/>';
         }
     }
 }
@@ -1074,6 +1103,9 @@ function newsletter_replace($text, $subscriber) {
     $text = str_replace('{id}', $subscriber->id, $text);
     $text = str_replace('{name}', $subscriber->name, $text);
     $text = str_replace('{token}', $subscriber->token, $text);
+    $text = str_replace('%7Btoken%7D', $subscriber->token, $text);
+    $text = str_replace('%7Bid%7D', $subscriber->id, $text);
+
     return $text;
 }
 
@@ -1195,7 +1227,7 @@ function newsletter_reset_batch() {
 function newsletter_has_extras($version=null) {
     if (!defined('NEWSLETTER_EXTRAS')) return false;
     if ($version == null) return true;
-    if ($version >= NEWSLETTER_EXTRAS) return true;
+    if ($version <= NEWSLETTER_EXTRAS) return true;
     return false;
 }
 
@@ -1264,8 +1296,7 @@ function newsletter_get_theme_css($theme) {
     return @file_get_contents(newsletter_get_theme_dir($theme) . '/style.css');
 }
 
-function newsletter_get_theme_html($theme)
-{
+function newsletter_get_theme_html($theme) {
     if ($theme == 'blank') return '';
     $file = newsletter_get_theme_dir($theme) . '/theme.php';
 

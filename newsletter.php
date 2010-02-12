@@ -83,18 +83,7 @@ if (file_exists($theme_dir . '/style.css')) {
 </script>
 <?php } ?>
 
-<style>
-    #newsletter h3 {
-        margin-bottom: 0px;
-        margin-top: 30px;
-    }
-    #newsletter .form-table {
-        border: 1px solid #ccc;
-        background-color: #ffffff;
-    }
-</style>
-
-<div class="wrap" id="newsletter">
+<div class="wrap">
 
     <h2>Newsletter Composer</h2>
     <?php if (!touch(dirname(__FILE__) . '/test.tmp')) { ?>
@@ -272,39 +261,27 @@ if (file_exists($theme_dir . '/style.css')) {
 
 
 
-
-
-
         <h3>Newsletter message</h3>
 
         <table class="form-table">
+            <tr valign="top">
+                <th>Newsletter name and tracking</th>
             <?php if (defined('NEWSLETTER_EXTRAS')) { ?>
-            <tr valign="top">
-                <th>Newsletter name</th>
                 <td>
-                    <input name="options[name]" type="text" size="20" value="<?php echo htmlspecialchars($options['name'])?>"/>
-                    <br />
-                    This symbolic name will be used to track the link clicks and associate them to a specific newsletter.
-                    Keep the name compact and significative.
-                </td>
-            </tr>
-            <tr valign="top">
-                <th>Tracking</th>
-                <td>
+                    <input name="options[name]" type="text" size="25" value="<?php echo htmlspecialchars($options['name'])?>"/>
                     <input name="options[track]" value="1" type="checkbox" <?php echo $options['track']?'checked':''; ?>/>
                     Track link clicks
                     <br />
                     When this option is enabled, each link in the email text will be rewritten and clicks
                     on them intercepted.
+                    The symbolic name will be used to track the link clicks and associate them to a specific newsletter.
+                    Keep the name compact and significative.
                 </td>
-            </tr>
-            <?php } else { ?>
-            <tr valign="top">
-                <th>Tracking</th>
-                <td>Tracking options available with Newsletter Extras package</td>
-            </tr>
-            <?php } ?>
 
+            <?php } else { ?>
+                <td>Tracking options available with Newsletter Extras package</td>
+            <?php } ?>
+            </tr>
             <tr valign="top">
                 <th>Subject</th>
                 <td>
@@ -316,6 +293,10 @@ if (file_exists($theme_dir . '/style.css')) {
             <tr valign="top">
                 <th>Message</th>
                 <td>
+                    <input name="options[novisual]" value="1" type="checkbox" <?php echo $options['novisual']?'checked':''; ?>/>
+                    disable the visual editor
+                    (save to apply and be sure to <a href="http://www.satollo.net/plugins/newsletter#composer">read here</a>)
+                    <br />
                     <textarea name="options[message]" wrap="off" rows="20" style="font-family: monospace; width: 100%"><?php echo htmlspecialchars($options['message'])?></textarea>
                     <br />
                     Tags:
@@ -323,13 +304,6 @@ if (file_exists($theme_dir . '/style.css')) {
                     <strong>{unsubscription_url}</strong> unsubscription URL;
                     <strong>{token}</strong> the subscriber token.
                     <pre><?php //echo htmlspecialchars(newsletter_relink($options['message']))?></pre>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th>Disable visual editor</th>
-                <td>
-                    <input name="options[novisual]" value="1" type="checkbox" <?php echo $options['novisual']?'checked':''; ?>/>
-                    (save to apply and be sure to <a href="http://www.satollo.net/plugins/newsletter#composer">read here</a>)
                 </td>
             </tr>	    
             <tr valign="top">
@@ -382,10 +356,71 @@ if (file_exists($theme_dir . '/style.css')) {
             <?php } ?>
         </p>
 
+        <h3>Theme parameters</h3>
+        <p>Themes may not use such parameters!</p>
+        <table class="form-table">
+            <tr valign="top">
+                <th>Number of posts on theme</th>
+                <td>
+                    <input name="options[theme_posts]" type="text" size="5" value="<?php echo htmlspecialchars($options['theme_posts'])?>"/>
+                </td>
+            </tr>
+        </table>
 
-        <h3>Scheduler</h3>
-        <p>Scheduler helps to send out a long list of emails slowly to not overload the server.</p>
+
+
+        <!--
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        List:
+        <select name="options[list]">
+            <option value="0">General</option>
+        <?php for ($i=1; $i<=10; $i++) { ?>
+            <option value="<?php echo $i; ?>"><?php echo htmlspecialchars($options_newsletter['list_' . $i]); ?></option>
+        <?php } ?>
+        </select>
+        -->
+
+
+        <h3>Sending options</h3>
+        <table class="form-table">
+            <tr valign="top">
+                <th>Max emails in a single batch</th>
+                <td>
+                    <input name="options[max]" type="text" size="5" value="<?php echo htmlspecialchars($options['max'])?>"/>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th>Receiver address for simulation</th>
+                <td>
+                    <input name="options[simulate_email]" type="text" size="40" value="<?php echo htmlspecialchars($options['simulate_email'])?>"/>
+                    <br />When you simulate a sending process, emails are really sent but all to this
+                    email address. That helps to test out problems with mail server.
+                </td>
+            </tr>
+            <tr valign="top">
+                <th>Return path</th>
+                <td>
+                    <input name="options[return_path]" type="text" size="40" value="<?php echo htmlspecialchars($options['return_path'])?>"/>
+                    <br />Force the return path to this email address. Return path is used from mail server to
+                    send back messages with delivery errors.
+                </td>
+            </tr>
+        </table>
+        <p class="submit">
+            <input class="button" type="submit" name="save" value="Save"/>
+        </p>
+        <!--
+        <tr valign="top">
+            <td>
+                Filter<br />
+                <input name="options[filter]" type="text" size="30" value="<?php echo htmlspecialchars($options['filter'])?>"/>
+            </td>
+        </tr>
+        -->
+
+        <h3>Sending options for scheduler</h3>
         <?php if (defined('NEWSLETTER_EXTRAS')) { ?>
+        <p>Scheduler is described <a href="http://www.satollo.net/plugins/newsletter-extras">here</a>.</p>
         <table class="form-table">
             <tr valign="top">
                 <th>Interval between sending tasks</th>
@@ -406,53 +441,9 @@ if (file_exists($theme_dir . '/style.css')) {
             <input class="button" type="submit" name="save" value="Save"/>
         </p>
         <?php } else { ?>
-        <p><strong>Available only with <a href="http://www.satollo.net/plugins/newsletter#extras">Newsletter Extras</a> package</strong></p>
+        <p><strong>Available only with <a href="http://www.satollo.net/plugins/newsletter-extras">Newsletter Extras</a> package</strong></p>
         <?php } ?>
-
-        <!--
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        List:
-        <select name="options[list]">
-            <option value="0">General</option>
-        <?php for ($i=1; $i<=10; $i++) { ?>
-            <option value="<?php echo $i; ?>"><?php echo htmlspecialchars($options_newsletter['list_' . $i]); ?></option>
-        <?php } ?>
-        </select>
-        -->
-
-
-        <h3>Sending options</h3>
-        <p>Configuration for not scheduled sending process.</p>
-        <table class="form-table">
-            <tr valign="top">
-                <th>Max emails in a single batch</th>
-                <td>
-                    <input name="options[max]" type="text" size="5" value="<?php echo htmlspecialchars($options['max'])?>"/>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th>Receiver address for simulation</th>
-                <td>
-                    <input name="options[simulate_email]" type="text" size="40" value="<?php echo htmlspecialchars($options['simulate_email'])?>"/>
-                    <br />When you simulate a sending process, emails are really sent but all to this
-                    email address. That helps to test out problems with mail server.
-                </td>
-            </tr>
-
-        </table>
-        <p class="submit">
-            <input class="button" type="submit" name="save" value="Save"/>
-        </p>
-        <!--
-        <tr valign="top">
-            <td>
-                Filter<br />
-                <input name="options[filter]" type="text" size="30" value="<?php echo htmlspecialchars($options['filter'])?>"/>
-            </td>
-        </tr>
-        -->
-
-
+        
         <h3>Test subscribers</h3>
         <p>
             Define more test subscriber to see how your email looks on different clients:

@@ -1,47 +1,38 @@
 <?php
 
-$options = get_option('newsletter');
+$options = get_option('newsletter_feed');
 
 if (!isset($options['no_translation'])) {
 	$plugin_dir = basename(dirname(__FILE__));
 	load_plugin_textdomain('newsletter', 'wp-content/plugins/' . $plugin_dir . '/languages/');
 }
 
-if (isset($_POST['defaults'])) {
-    @include(dirname(__FILE__) . '/languages/en_US_options.php');
-    if (WPLANG != '') @include(dirname(__FILE__) . '/languages/' . WPLANG . '_options.php');
-    update_option('newsletter', $newsletter_default_options);
-}
-
 if (isset($_POST['save'])) {
     $options = newsletter_request('options');
-    update_option('newsletter', $options);
+    update_option('newsletter_feed', $options);
 }
 
 ?>
 
-<?php if (!$options['novisual']) { ?>
-<script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
 
-<script type="text/javascript">
-    tinyMCE.init({
-        //mode : "textareas",
-        mode : "specific_textareas",
-        editor_selector : "visual",
-        theme : "advanced",
-        theme_advanced_disable : "styleselect",
-        relative_urls : false,
-        remove_script_host : false,
-        theme_advanced_buttons3: "",
-        theme_advanced_toolbar_location : "top",
-        document_base_url : "<?php echo get_option('home'); ?>/"
-    });
-</script>
-<?php } ?>
+<style>
+    #newsletter h3 {
+        margin-bottom: 0px;
+        margin-top: 30px;
+    }
+    #newsletter h4 {
+        font-size: 1.3em;
+        border-bottom: 1px solid #999;
+    }
+    #newsletter .form-table {
+        border: 1px solid #999;
+        background-color: #fff;
+    }
+</style>
 
-<div class="wrap">
+<div class="wrap" id="newsletter">
 
-    <h2>Newsletter Configuration</h2>
+    <h2>Feed by mail</h2>
 
     <?php require_once 'header.php'; ?>
 

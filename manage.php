@@ -85,22 +85,9 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
     }
 
 </script>
-<style type="text/css">
-    .newsletter-results {
-        border-collapse: collapse;
-    }
-    .newsletter-results td, .newsletter-results th {
-        border: 1px solid #999;
-        padding: 5px;
-    }
-    #newsletter .form-table {
-        border: 1px solid #999;
-        background-color: #fff;
-    }
-</style>
 
-<div class="wrap" id="newsletter">
-    <h2><?php _e('Subscribers Management', 'newsletter'); ?></h2>
+<div class="wrap">
+    <h2>Newsletter Subscribers</h2>
 
     <?php require_once 'header.php'; ?>
 
@@ -186,20 +173,28 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
 
 <?php
 if ($list) {
-    echo '<table class="newsletter-results" border="1" cellspacing="5">';
-    echo '<tr><th>Id</th><th>' . __('Email', 'newsletter') . '</th><th>' . __('Name', 'newsletter') . '</th><th>' . __('Status', 'newsletter') . '</th><th>' . __('Profile', 'newsletter') . '</th><th>' . __('Token', 'newsletter') . '</th><th>' . __('Actions', 'newsletter') . '</th></tr>';
+    echo '<table class="bordered-table" border="1" cellspacing="5">';
+    echo '<tr><th>Id</th><th>' . __('Email', 'newsletter') . '</th><th>' . __('Name', 'newsletter') . '</th><th>' . __('Status', 'newsletter') . '</th><th>' . __('Actions', 'newsletter') . '</th><th>' . __('Profile', 'newsletter') . '</th></tr>';
     foreach($list as $s) {
         echo '<tr>';
         echo '<td>' . $s->id . '</td>';
         echo '<td>' . $s->email . '</td>';
         echo '<td>' . $s->name . '</td>';
-        echo '<td>' . ($s->status=='S'?'Not confirmed':'Confirmed') . '</td>';
+        echo '<td><small>' . ($s->status=='S'?'Not confirmed':'Confirmed') . '</small></td>';
+        echo '<td><small>';
+        echo '<a href="javascript:void(newsletter_edit(' . $s->id . '))">' . __('edit', 'newsletter') . '</a>';
+        echo ' | <a href="javascript:void(newsletter_remove(' . $s->id . '))">' . __('remove', 'newsletter') . '</a>';
+        echo ' | <a href="javascript:void(newsletter_set_status(' . $s->id . ', \'C\'))">' . __('confirm', 'newsletter') . '</a>';
+        echo ' | <a href="javascript:void(newsletter_set_status(' . $s->id . ', \'S\'))">' . __('unconfirm', 'newsletter') . '</a>';
+        echo ' | <a href="javascript:void(newsletter_resend(' . $s->id . '))">' . __('resend confirmation', 'newsletter') . '</a>';
+        echo '</small></td>';
         echo '<td><small>';
         $query = $wpdb->prepare("select name,value from " . $wpdb->prefix . "newsletter_profiles where newsletter_id=%d", $s->id);
         $profile = $wpdb->get_results($query);
         foreach ($profile as $field) {
             echo htmlspecialchars($field->name) . ': ' . htmlspecialchars($field->value) . '<br />';
         }
+        echo 'Token: ' . $s->token;
 //        $profile = unserialize($s->profile);
 //        if (is_array($profile)) {
 //            foreach ($profile as $key=>$value) {
@@ -207,14 +202,7 @@ if ($list) {
 //            }
 //        }
         echo '</small></td>';
-        echo '<td><small>' . $s->token . '</small></td>';
-        echo '<td>';
-        echo '<a href="javascript:void(newsletter_edit(' . $s->id . '))">' . __('edit', 'newsletter') . '</a>';
-        echo ' | <a href="javascript:void(newsletter_remove(' . $s->id . '))">' . __('remove', 'newsletter') . '</a>';
-        echo ' | <a href="javascript:void(newsletter_set_status(' . $s->id . ', \'C\'))">' . __('confirm', 'newsletter') . '</a>';
-        echo ' | <a href="javascript:void(newsletter_set_status(' . $s->id . ', \'S\'))">' . __('unconfirm', 'newsletter') . '</a>';
-        echo ' | <a href="javascript:void(newsletter_resend(' . $s->id . '))">' . __('resend confirmation', 'newsletter') . '</a>';
-        echo '</td>';
+
         echo '</tr>';
     }
     echo '</table>';
