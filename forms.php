@@ -1,3 +1,7 @@
+<?php
+@include_once 'commons.php';
+?>
+
 <div class="wrap">
 
 <h2>Newsletter Forms</h2>

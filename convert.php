@@ -1,4 +1,6 @@
-
+<?php
+@include_once 'commons.php';
+?>
 <div class="wrap">
     <form method="post" action="">
         <h2>Conversion</h2>

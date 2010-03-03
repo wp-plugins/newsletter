@@ -1,4 +1,7 @@
 <?php
+
+@include_once 'commons.php';
+
 $options = get_option('newsletter_email');
 $options_newsletter = get_option('newsletter');
 
@@ -59,6 +62,8 @@ if (file_exists($theme_dir . '/style.css')) {
     $css_url = newsletter_get_theme_url($options['theme']) . '/style.css';
 }
 
+$nc = new NewsletterControls($options, 'composer');
+
 ?>
 <?php if (!isset($options['novisual'])) { ?>
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
@@ -86,6 +91,7 @@ if (file_exists($theme_dir . '/style.css')) {
 <div class="wrap">
 
     <h2>Newsletter Composer</h2>
+    
     <?php if (!touch(dirname(__FILE__) . '/test.tmp')) { ?>
     <div class="error fade" style="background-color:red;"><p><strong>It seems that Newsletter plugin folder is not writable. Make it writable to let
                 Newsletter write logs and save date when errors occour.</strong></p></div>
@@ -282,30 +288,30 @@ if (file_exists($theme_dir . '/style.css')) {
                 <td>Tracking options available with Newsletter Extras package</td>
             <?php } ?>
             </tr>
+
             <tr valign="top">
                 <th>Subject</th>
                 <td>
-                    <input name="options[subject]" type="text" size="70" value="<?php echo htmlspecialchars($options['subject'])?>"/>
+                    <?php $nc->text('subject', 70); ?>
                     <br />
-                    Tags: <strong>{name}</strong> receiver name.
+                    <?php _e('Tags: <strong>{name}</strong> receiver name.', 'newsletter'); ?>
                 </td>
             </tr>
+
             <tr valign="top">
                 <th>Message</th>
                 <td>
-                    <input name="options[novisual]" value="1" type="checkbox" <?php echo $options['novisual']?'checked':''; ?>/>
-                    disable the visual editor
+                    <?php $nc->checkbox('novisual', 'disable the visual editor'); ?>
                     (save to apply and be sure to <a href="http://www.satollo.net/plugins/newsletter#composer">read here</a>)
                     <br />
                     <textarea name="options[message]" wrap="off" rows="20" style="font-family: monospace; width: 100%"><?php echo htmlspecialchars($options['message'])?></textarea>
                     <br />
-                    Tags:
-                    <strong>{name}</strong> receiver name;
-                    <strong>{unsubscription_url}</strong> unsubscription URL;
-                    <strong>{token}</strong> the subscriber token.
-                    <pre><?php //echo htmlspecialchars(newsletter_relink($options['message']))?></pre>
+                    <?php _e('Tags: <strong>{name}</strong> receiver name;
+<strong>{unsubscription_url}</strong> unsubscription URL;
+<strong>{token}</strong> the subscriber token.', 'newsletter'); ?>
                 </td>
-            </tr>	    
+            </tr>
+            
             <tr valign="top">
                 <th>Theme</th>
                 <td>
@@ -335,12 +341,6 @@ if (file_exists($theme_dir . '/style.css')) {
                         </optgroup>
                     </select>
                     <input class="button" type="submit" name="auto" value="Auto compose"/>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th>Number of posts on theme</th>
-                <td>
-                    <input name="options[theme_posts]" type="text" size="5" value="<?php echo htmlspecialchars($options['theme_posts'])?>"/>
                 </td>
             </tr>
         </table>
@@ -386,28 +386,30 @@ if (file_exists($theme_dir . '/style.css')) {
             <tr valign="top">
                 <th>Max emails in a single batch</th>
                 <td>
-                    <input name="options[max]" type="text" size="5" value="<?php echo htmlspecialchars($options['max'])?>"/>
+                    <?php $nc->text('max', 5); ?>
                 </td>
             </tr>
             <tr valign="top">
                 <th>Receiver address for simulation</th>
                 <td>
-                    <input name="options[simulate_email]" type="text" size="40" value="<?php echo htmlspecialchars($options['simulate_email'])?>"/>
-                    <br />When you simulate a sending process, emails are really sent but all to this
-                    email address. That helps to test out problems with mail server.
+                    <?php $nc->text('simulate_email', 50); ?>
+                    <br />
+                    <?php _e('When you simulate a sending process, emails are really sent but all to this
+email address. That helps to test out problems with mail server.', 'newsletter'); ?>
                 </td>
             </tr>
             <tr valign="top">
                 <th>Return path</th>
                 <td>
-                    <input name="options[return_path]" type="text" size="40" value="<?php echo htmlspecialchars($options['return_path'])?>"/>
-                    <br />Force the return path to this email address. Return path is used from mail server to
-                    send back messages with delivery errors.
+                    <?php $nc->text('return_path', 50); ?>
+                    <br />
+                    <?php _e('Force the return path to this email address. Return path is used from mail server to
+send back messages with delivery errors.', 'newsletter'); ?>
                 </td>
             </tr>
         </table>
         <p class="submit">
-            <input class="button" type="submit" name="save" value="Save"/>
+            <input class="button" type="submit" name="save" value="<?php _e('Save', 'newsletter'); ?>"/>
         </p>
         <!--
         <tr valign="top">
@@ -419,20 +421,21 @@ if (file_exists($theme_dir . '/style.css')) {
         -->
 
         <h3>Sending options for scheduler</h3>
+        
         <?php if (defined('NEWSLETTER_EXTRAS')) { ?>
         <p>Scheduler is described <a href="http://www.satollo.net/plugins/newsletter-extras">here</a>.</p>
         <table class="form-table">
             <tr valign="top">
                 <th>Interval between sending tasks</th>
                 <td>
-                    <input name="options[scheduler_interval]" type="text" size="5" value="<?php echo htmlspecialchars($options['scheduler_interval'])?>"/>
+                    <?php $nc->text('scheduler_interval', 5); ?>
                     (minutes, minimum value is 1)
                 </td>
             </tr>
             <tr valign="top">
                 <th>Max number of emails per task</th>
                 <td>
-                    <input name="options[scheduler_max]" type="text" size="5" value="<?php echo htmlspecialchars($options['scheduler_max'])?>"/>
+                    <?php $nc->text('scheduler_max', 5); ?>
                     (good value is 20 to 50)
                 </td>
             </tr>
@@ -443,7 +446,8 @@ if (file_exists($theme_dir . '/style.css')) {
         <?php } else { ?>
         <p><strong>Available only with <a href="http://www.satollo.net/plugins/newsletter-extras">Newsletter Extras</a> package</strong></p>
         <?php } ?>
-        
+
+
         <h3>Test subscribers</h3>
         <p>
             Define more test subscriber to see how your email looks on different clients:

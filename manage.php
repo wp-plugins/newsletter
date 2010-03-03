@@ -1,10 +1,8 @@
 <?php
-$options = get_option('newsletter');
 
-if (!isset($options['no_translation'])) {
-    $plugin_dir = basename(dirname(__FILE__));
-    load_plugin_textdomain('newsletter', 'wp-content/plugins/' . $plugin_dir . '/languages/');
-}
+@include_once 'commons.php';
+
+$options = get_option('newsletter');
 
 if ($_POST['a'] == 'resend' && check_admin_referer()) {
     newsletter_send_confirmation(newsletter_get_subscriber(newsletter_request('id')));
@@ -44,6 +42,9 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
     $list = newsletter_search(newsletter_request('text'), $status, $order);
 }
 
+$options = null;
+$nc = new NewsletterControls($options, 'manage');
+
 ?>
 <script type="text/javascript">
     function newsletter_detail(id)
@@ -78,7 +79,7 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
     }
     function newsletter_resend(id)
     {
-        if (!confirm("Resend the subscription confirmation email?")) return;
+        if (!confirm("<?php _e('Resend the subscription confirmation email?', 'newsletter'); ?>")) return;
         document.getElementById("action").value = "resend";
         document.getElementById("id").value = id;
         document.getElementById("channel").submit();
@@ -87,7 +88,7 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
 </script>
 
 <div class="wrap">
-    <h2>Newsletter Subscribers</h2>
+    <h2><?php _e('Newsletter Subscribers', 'newsletter'); ?></h2>
 
     <?php require_once 'header.php'; ?>
 
@@ -100,12 +101,12 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
         <div style="display: <?php if ($_POST['a'] == 'edit') echo 'none'; else echo 'block'; ?>">
             <table class="form-table">
                 <tr valign="top">
-                    <th scope="row"><label><?php _e('Search', 'newsletter'); ?></label></th>
+                    <th><?php _e('Search', 'newsletter'); ?></th>
                     <td>
                         <input name="text" type="text" size="50" value="<?php echo htmlspecialchars(newsletter_request('text'))?>"/>
-                        <input type="submit" value="<?php _e('Search', 'newsletter'); ?>" /> (press without filter to show all)
+                        <input type="submit" value="<?php _e('Search', 'newsletter'); ?>" />
                         <br />
-                        Max 100 results will be shown
+                        <?php _e('Press without filter to show all. Max 100 results will be shown. Use export panel to get all subscribers.', 'newsletter'); ?>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -116,7 +117,7 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
                     </td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row"><?php _e('Order', 'newsletter'); ?></th>
+                    <th><?php _e('Order', 'newsletter'); ?></th>
                     <td>
                         <select name="order">
                             <option value="id">id</option>
@@ -131,7 +132,7 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
         if ($_POST['a'] == 'edit' && check_admin_referer()) {
             $subscriber = newsletter_get_subscriber($_POST['id']);
             ?>
-        <input type="hidden" name="subscriber[id]" value="<?php echo $subscriber->id; ?>"/></td>
+        <input type="hidden" name="subscriber[id]" value="<?php echo $subscriber->id; ?>"/>
         <table class="form-table">
             <tr valign="top">
                 <th>Name</th>
@@ -142,7 +143,7 @@ if ($_POST['a'] == 'search' && check_admin_referer()) {
                 <td><input type="text" name="subscriber[email]" size="40" value="<?php echo htmlspecialchars($subscriber->email); ?>"/></td>
             </tr>
         </table>
-        <p class="submit"><input type="button" value="Save" onclick="newsletter_save()"/></a>
+        <p class="submit"><input type="button" value="Save" onclick="newsletter_save()"/></p>
 
             <?php } ?>
 
@@ -195,12 +196,7 @@ if ($list) {
             echo htmlspecialchars($field->name) . ': ' . htmlspecialchars($field->value) . '<br />';
         }
         echo 'Token: ' . $s->token;
-//        $profile = unserialize($s->profile);
-//        if (is_array($profile)) {
-//            foreach ($profile as $key=>$value) {
-//                echo htmlspecialchars($key) . ': ' . htmlspecialchars($value) . '<br />';
-//            }
-//        }
+
         echo '</small></td>';
 
         echo '</tr>';
