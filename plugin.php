@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-Version: 1.5.3
+Version: 1.5.4
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.5.2');
+define('NEWSLETTER', '1.5.4');
 
 $newsletter_options_main = get_option('newsletter_main', array());
 
@@ -459,10 +459,10 @@ function newsletter_send_test($recipients) {
 
         if ($x) {
             echo '[OK] -- ';
-            newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' failed');
+            newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' success');
         } else {
             echo '[KO] -- ';
-            newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' success');
+            newsletter_debug(__FUNCTION__, 'Sent to ' . $r->id . ' failed');
         }
     }
     if (newsletter_has_extras('1.0.4')) newsletter_close_mail();
@@ -1100,6 +1100,7 @@ if (is_admin()) {
                 add_submenu_page('newsletter/main.php', 'Feed by mail', 'Feed by mail', $level, 'newsletter/feed.php');
             }
             add_submenu_page('newsletter/main.php', 'Update', 'Update', $level, 'newsletter/convert.php');
+            //add_submenu_page('newsletter/main.php', 'Follow Up', 'Follow Up', $level, 'newsletter/followup.php');
         }
     }
 

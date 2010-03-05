@@ -16,8 +16,8 @@ class NewsletterControls {
     var $data;
     var $action = false;
 
-    function NewsletterControls(&$options=null) {
-        $this->data = &$options;
+    function NewsletterControls($options=null) {
+        $this->data = $options;
     }
 
     function yesno($name) {
