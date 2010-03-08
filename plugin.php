@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-Version: 1.5.4
+Version: 1.5.6
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.5.4');
+define('NEWSLETTER', '1.5.6');
 
 $newsletter_options_main = get_option('newsletter_main', array());
 
@@ -46,12 +46,6 @@ $newsletter_step = 'subscription';
 $newsletter_subscriber;
 
 function newsletter_init_labels() {
-    global $newsletter_labels;
-
-//    @include_once(dirname(__FILE__) . '/languages/en_US.php');
-//    if (WPLANG != '') @include_once(dirname(__FILE__) . '/languages/' . WPLANG . '.php');
-//    @include_once(ABSPATH . 'wp-content/plugins/newsletter-custom/languages/en_US.php');
-//    if (WPLANG != '') @include_once(ABSPATH . 'wp-content/plugins/newsletter-custom/languages/' . WPLANG . '.php');
 }
 
 function newsletter_label($name, $default='') {
@@ -747,79 +741,6 @@ function newsletter_init() {
         $newsletter_step = 'unsubscription';
     }
 
-/*
-    // Export for Zanzara
-    if ($action == 'z') {
-        if (!$_GET['nk'] || $_GET['nk'] != $options['key']) return;
-
-        $options_email = get_option('newsletter_email');
-        header('Content-Type: text/xml;charset=UTF-8');
-
-        echo '<' . '?xml version="1.0" encoding="UTF-8"?' . '>' . "\n";
-        echo '<java version="1.6.0_12" class="java.beans.XMLDecoder">' . "\n";
-        echo '<object class="zanzara.Newsletter">' . "\n";
-
-        echo '<void property="message">' . "\n";
-        echo '<string><![CDATA['. $options_email['message'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-        echo '<void property="newsletterUrl">' . "\n";
-        echo '<string><![CDATA['. $options['url'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-        echo '<void property="fromEmail">' . "\n";
-        echo '<string><![CDATA['. $options['from_email'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-        echo '<void property="fromName">' . "\n";
-        echo '<string><![CDATA['. $options['from_name'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-        echo '<void property="homeUrl">' . "\n";
-        echo '<string><![CDATA['. get_option('home') . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-        echo '<void property="blogTitle">' . "\n";
-        echo '<string><![CDATA['. get_option('blogname') . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-
-        echo '<void property="subject">' . "\n";
-        echo '<string><![CDATA[' . $options_email['subject'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-
-        echo '<void property="smtpHost">' . "\n";
-        echo '<string><![CDATA[' . $options['smtp_host'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-        echo '<void property="smtpUser">' . "\n";
-        echo '<string><![CDATA[' . $options['smtp_user'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-        echo '<void property="smtpPassword">' . "\n";
-        echo '<string><![CDATA[' . $options['smtp_password'] . ']]></string>' . "\n";
-        echo '</void>' . "\n";
-
-        echo '<void property="recipients">' . "\n";
-        echo '<string><![CDATA[';
-
-        $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
-        $recipients = $wpdb->get_results($query . " order by email");
-        for ($i=0; $i<count($recipients); $i++) {
-            echo $recipients[$i]->email . ';' . $recipients[$i]->name .
-                ';' . $recipients[$i]->token . ';' . $recipients[$i]->id . ';' . $recipients[$i]->group . "\n";
-        }
-        echo ']]></string>' . "\n";
-        echo '</void>' . "\n";
-
-        echo '<void property="testRecipients">' . "\n";
-        echo '<string><![CDATA[';
-        for ($i=1; $i<=10; $i++) {
-            if (!$options_email['test_email_' . $i]) continue;
-            echo $options_email['test_email_' . $i] . ';' . $options_email['test_name_' . $i] .
-                ';FAKETOKEN;0;0' . "\n";
-        }
-        echo ']]></string>' . "\n";
-        echo '</void>' . "\n";
-
-        echo '</object>' . "\n";
-        echo '</java>' . "\n";
-        die();
-    }
-*/
-
     // User confirmed he want to unsubscribe clicking the link on unsubscription
     // page
     if ($action == 'uc') {
@@ -971,7 +892,7 @@ function newsletter_notify_admin(&$subject, &$message) {
  * The function uses wp_mail() to really send the message.
  */
 function newsletter_mail($to, &$subject, &$message, $html=true) {
-    global $newsletter_mailer;
+    global $newsletter_mailer, $newsletter_options_main;
 
     if ($subject == '') {
         newsletter_debug(__FUNCTION__, 'Subject empty, skipped');
@@ -1096,11 +1017,7 @@ if (is_admin()) {
             add_submenu_page('newsletter/main.php', 'Statistics', 'Statistics', $level, 'newsletter/statistics.php');
             add_submenu_page('newsletter/main.php', 'Forms', 'Forms', $level, 'newsletter/forms.php');
             add_submenu_page('newsletter/main.php', 'SMTP', 'SMTP', $level, 'newsletter/smtp.php');
-            if (newsletter_has_extras('1.0.5')) {
-                add_submenu_page('newsletter/main.php', 'Feed by mail', 'Feed by mail', $level, 'newsletter/feed.php');
-            }
             add_submenu_page('newsletter/main.php', 'Update', 'Update', $level, 'newsletter/convert.php');
-            //add_submenu_page('newsletter/main.php', 'Follow Up', 'Follow Up', $level, 'newsletter/followup.php');
         }
     }
 

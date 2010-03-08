@@ -21,7 +21,7 @@ $nc = new NewsletterControls($options);
 
     <form method="post" action="">
         <?php wp_nonce_field(); ?>
-        <input type="hidden" value="<?php echo NEWSLETTER; ?>" name="version"/>
+        <input type="hidden" value="<?php echo NEWSLETTER; ?>" name="options[version]"/>
 
         <h3><?php _e('General parameters', 'newsletter'); ?></h3>
         <table class="form-table">
