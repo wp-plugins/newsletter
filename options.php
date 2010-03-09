@@ -223,7 +223,7 @@ unsubscription link', 'newsletter'); ?>
         </table>
 
         <p class="submit">
-            <input class="button" type="submit" name="save" value="<?php _e('Save', 'newsletter'); ?>"/>
+            <?php $nc->button('save', __('Save', 'newsletter')); ?>
         </p>
 
 
