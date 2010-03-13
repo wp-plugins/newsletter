@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.5.6');
+define('NEWSLETTER', '1.5.7');
 
 $newsletter_options_main = get_option('newsletter_main', array());
 
