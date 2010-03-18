@@ -19,6 +19,14 @@ $nc = new NewsletterControls($options);
 
     <?php require_once 'header.php'; ?>
 
+    <p>
+        <strong>Newsletter has an <a href="http://www.satollo.net/plugins/newsletter">official page</a> where
+        to find documentation on how it
+        works and how to configure it. Version history and tips are located on
+        <a href="http://www.satollo.net/tag/newsletter">this archive</a>. Questions can be submitted
+        on <a href="http://www.satollo.net/newsletter-help">this help page</a>.</strong>
+    </p>
+    
     <form method="post" action="">
         <?php wp_nonce_field(); ?>
         <input type="hidden" value="<?php echo NEWSLETTER; ?>" name="options[version]"/>
@@ -36,7 +44,7 @@ $nc = new NewsletterControls($options);
                 <td>
                     <?php $nc->yesno('no_translation'); ?>
                     <br />
-                    <?php _e('The author does NOT mainatin translations, so if you have a doubt about some texts, disable the translations', 'newsletter'); ?>
+                    <?php _e('The author does NOT maintain translations, so if you have a doubt about some texts, disable the translations', 'newsletter'); ?>
                 </td>
             </tr>
             <tr valign="top">

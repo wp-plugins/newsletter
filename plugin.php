@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-Version: 1.5.7
+Version: 1.5.8
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.5.7');
+define('NEWSLETTER', '1.5.8');
 
 $newsletter_options_main = get_option('newsletter_main', array());
 
@@ -132,8 +132,8 @@ function newsletter_call($attrs, $content=null) {
             else {
                 $buffer .= newsletter_label('subscription_form');
             }
-            if (!defined('NEWSLETTER_EXTRAS'))
-                $buffer .=  '<div style="text-align:right;padding:0 10px;margin:0;"><a style="font-size:9px;color:#bbb;text-decoration:none" href="http://www.satollo.net">by satollo.net</a></div>';
+            //if (!defined('NEWSLETTER_EXTRAS'))
+            //    $buffer .=  '<div style="text-align:right;padding:0 10px;margin:0;"><a style="font-size:9px;color:#bbb;text-decoration:none" href="http://www.satollo.net">by satollo.net</a></div>';
         }
 
     }
@@ -242,8 +242,20 @@ function newsletter_send_batch() {
     $simulate = (bool)$batch['simulate'];
     $scheduled = (bool)$batch['scheduled']; // Used to avoid echo
 
+    if ($scheduled) {
+        $max = $options_email['scheduler_max'];
+        if (!is_numeric($max)) $max = 10;
+    }
+    else {
+        $max = $options_email['max'];
+        if (!is_numeric($max)) $max = 0;
+    }
+
     $query = "select * from " . $wpdb->prefix . "newsletter where status='C' and list=" . $list .
         " and id>" . $id . " order by id";
+    if ($max > 0) {
+        $query .= " limit " . $max;
+    }
 
     $recipients = $wpdb->get_results($query);
 
@@ -251,7 +263,7 @@ function newsletter_send_batch() {
     if ($id == 0) {
         newsletter_delete_batch_file();
         wp_clear_scheduled_hook('newsletter_cron_hook');
-        $batch['total'] = count($recipients);
+        $batch['total'] = $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C' and list=" . $list);
         $batch['sent'] = 0;
         $batch['completed'] = false;
         $batch['message'] = '';
@@ -264,14 +276,7 @@ function newsletter_send_batch() {
     $max_time = (int)(ini_get('max_execution_time') * 0.8);
     $db_time = time();
 
-    if ($scheduled) {
-        $max = $options_email['scheduler_max'];
-        if (!is_numeric($max)) $max = 10;
-    }
-    else {
-        $max = $options_email['max'];
-        if (!is_numeric($max)) $max = 0;
-    }
+
 
     if (!$scheduled) {
         echo 'Sending to: <br />';
@@ -763,6 +768,8 @@ function newsletter_unsubscribe($id, $token) {
     $wpdb->query($wpdb->prepare("delete from " . $wpdb->prefix . "newsletter where id=%d" .
         " and token=%s", $id, $token));
 
+    $options = get_option('newsletter');
+    
     $html = newsletter_get_theme_html($options['theme']);
     if ($html == null) $html = '{message}';
     $message = str_replace('{message}', $options['unsubscribed_message'], $html);
@@ -1000,6 +1007,7 @@ function newsletter_activate() {
 if (is_admin()) {
     add_action('admin_menu', 'newsletter_admin_menu');
     function newsletter_admin_menu() {
+        global $newsletter_options_main;
         $options = get_option('newsletter');
         $level = ($newsletter_options_main['editor']==1)?7:10;
 
@@ -1011,12 +1019,12 @@ if (is_admin()) {
             add_submenu_page('newsletter/main.php', 'Configuration', 'Configuration', $level, 'newsletter/main.php');
             add_submenu_page('newsletter/main.php', 'Subscription', 'Subscription', $level, 'newsletter/options.php');
             add_submenu_page('newsletter/main.php', 'Composer', 'Composer', $level, 'newsletter/newsletter.php');
+            add_submenu_page('newsletter/main.php', 'Statistics', 'Statistics', $level, 'newsletter/statistics.php');
             add_submenu_page('newsletter/main.php', 'Subscribers', 'Subscribers', $level, 'newsletter/manage.php');
             add_submenu_page('newsletter/main.php', 'Import', 'Import', $level, 'newsletter/import.php');
             add_submenu_page('newsletter/main.php', 'Export', 'Export', $level, 'newsletter/export.php');
-            add_submenu_page('newsletter/main.php', 'Statistics', 'Statistics', $level, 'newsletter/statistics.php');
-            add_submenu_page('newsletter/main.php', 'Forms', 'Forms', $level, 'newsletter/forms.php');
-            add_submenu_page('newsletter/main.php', 'SMTP', 'SMTP', $level, 'newsletter/smtp.php');
+            //add_submenu_page('newsletter/main.php', 'Forms', 'Forms', $level, 'newsletter/forms.php');
+            //add_submenu_page('newsletter/main.php', 'SMTP', 'SMTP', $level, 'newsletter/smtp.php');
             add_submenu_page('newsletter/main.php', 'Update', 'Update', $level, 'newsletter/convert.php');
         }
     }

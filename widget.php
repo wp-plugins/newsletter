@@ -32,8 +32,11 @@ function widget_newsletter_init() {
         }
         $buffer = str_replace('{text}', $optionsw['text'], $buffer);
         $buffer = str_replace('{count}', newsletter_subscribers_count(), $buffer);
-        if (defined('NEWSLETTER_EXTRAS')) echo $buffer;
-        else echo $buffer . '<div style="text-align:right;padding:0 10px;margin:0;"><a style="font-size:9px;color:#bbb;text-decoration:none" href="http://www.satollo.net">by satollo.net</a></div>';
+
+        //if (defined('NEWSLETTER_EXTRAS')) echo $buffer;
+        //else echo $buffer . '<div style="text-align:right;padding:0 10px;margin:0;"><a style="font-size:9px;color:#bbb;text-decoration:none" href="http://www.satollo.net">by satollo.net</a></div>';
+
+        echo $buffer;
 
         echo $after_widget;
     }
