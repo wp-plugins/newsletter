@@ -3,7 +3,7 @@
 Plugin Name: Newsletter
 Plugin URI: http://www.satollo.net/plugins/newsletter
 Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-Version: 1.5.8
+Version: 1.5.9
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -26,7 +26,7 @@ Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('NEWSLETTER', '1.5.8');
+define('NEWSLETTER', '1.5.9');
 
 $newsletter_options_main = get_option('newsletter_main', array());
 
@@ -341,7 +341,7 @@ function newsletter_send_batch() {
             $batch['message'] = 'Temporary saved batch to avoid database timeout';
             if (!update_option('newsletter_batch', $batch)) {
                 newsletter_error(__FUNCTION__, 'Unable to save to database, saving on file system');
-                newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
+                newsletter_error(__FUNCTION__, "Batch:\n" . print_r($batch, true));
 
                 newsletter_save_batch_file($batch);
                 remove_action('phpmailer_init','newsletter_phpmailer_init');
@@ -356,7 +356,7 @@ function newsletter_send_batch() {
             $batch['message'] = 'Batch max emails limit reached (it is ok)';
             if (!update_option('newsletter_batch', $batch)) {
                 newsletter_error(__FUNCTION__, 'Unable to save to database, saving on file system');
-                newsletter_error(__FUNCTION__, "Batch:\n" . print_r($last, true));
+                newsletter_error(__FUNCTION__, "Batch:\n" . print_r($batch, true));
 
                 newsletter_save_batch_file($batch);
                 remove_action('phpmailer_init','newsletter_phpmailer_init');
@@ -1023,8 +1023,8 @@ if (is_admin()) {
             add_submenu_page('newsletter/main.php', 'Subscribers', 'Subscribers', $level, 'newsletter/manage.php');
             add_submenu_page('newsletter/main.php', 'Import', 'Import', $level, 'newsletter/import.php');
             add_submenu_page('newsletter/main.php', 'Export', 'Export', $level, 'newsletter/export.php');
-            //add_submenu_page('newsletter/main.php', 'Forms', 'Forms', $level, 'newsletter/forms.php');
-            //add_submenu_page('newsletter/main.php', 'SMTP', 'SMTP', $level, 'newsletter/smtp.php');
+            add_submenu_page('newsletter/main.php', 'Forms', 'Forms', $level, 'newsletter/forms.php');
+            add_submenu_page('newsletter/main.php', 'SMTP', 'SMTP', $level, 'newsletter/smtp.php');
             add_submenu_page('newsletter/main.php', 'Update', 'Update', $level, 'newsletter/convert.php');
         }
     }
