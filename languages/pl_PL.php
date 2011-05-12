@@ -1,59 +1,58 @@
 <?php
 
-// Subscription form (traslate "your name", "your email" and the button "subscribe me")
-$newsletter_labels['subscription_form'] =
-'<form method="post" action="" style="text-align: center">
-<input type="hidden" name="na" value="s"/>
-<table cellspacing="3" cellpadding="3" border="0" width="50%">
-<tr><td>Twoje&nbsp;imię</td><td><input type="text" name="nn" size="30"/></td></tr>
-<tr><td>Twój&nbsp;e-mail</td><td><input type="text" name="ne" size="30"/></td></tr>
-<tr><td colspan="2" style="text-align: center"><input type="submit" value="Zapisz mnie"/></td></tr>
-</table>
-</form>';
+$defaults_profile = array();
+$defaults_profile['email_error'] = 'Nieprawidłowy adres e-mail.';
+$defaults_profile['name_error'] = 'Imię nie może być puste.';
 
-$newsletter_labels['subscription_form_noname'] =
-'<form method="post" action="" style="text-align: center">
-<input type="hidden" name="na" value="s"/>
-<table cellspacing="3" cellpadding="3" border="0" width="50%">
-<tr><td>Twój&nbsp;e-mail</td><td><input type="text" name="ne" size="30"/></td></tr>
-<tr><td colspan="2" style="text-align: center"><input type="submit" value="Zapisz mnie"/></td></tr>
-</table>
-</form>';
+$defaults = array();
+// Subscription page introductory text (befor the subscription form)
+$defaults['subscription_text'] =
+"<p>Zapisz się do newslettera wypełniając pola poniżej.
+Postaramy się Cię uszczęśliwić.</p>
+<p>Zostanie wysłany do Ciebie e-mail potwierdzający:
+przeczytaj instrukcje w nim zawarte, aby potwierdzić subskrypcję.</p>";
 
-$newsletter_labels['widget_form'] =
-'<form action="{newsletter_url}" method="post">
-{text}
-<p><input type="text" name="nn" value="Twoje imię" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
-<p><input type="text" name="ne" value="Twój e-mail" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
-<p><input type="submit" value="Zapisz mnie"/></p>
-<input type="hidden" name="na" value="s"/>
-</form>';
+// Message show after a subbscription request has made.
+$defaults['subscribed_text'] =
+"<p>Zostałeś zapisany do subskrypcji.
+W ciągu kilku minut otrzymasz e-mail potwierdzający.
+Kliknij w odnośnik w nim zawarty aby potwierdzić subskrypcję. Jeśli e-mail nie pojawi się w Twojej skrzynce przez 15 minut - sprawdź folder spam.</p>";
 
-$newsletter_labels['widget_form_noname'] =
-'<form action="{newsletter_url}" method="post">
-{text}
-<p><input type="text" name="ne" value="Twój e-mail" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>
-<p><input type="submit" value="Zapisz mnie"/></p>
-<input type="hidden" name="na" value="s"/>
-</form>';
+// Confirmation email subject (double opt-in)
+$defaults['confirmation_subject'] =
+"{name}, potwierdź swoją subskrypcję w {blog_title}";
 
-$newsletter_labels['embedded_form'] =
-'<form action="{newsletter_url}" method="post">
-<p><input type="text" name="ne" value="Twój e-mail" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
-&nbsp;<input type="text" name="nn" value="Twoje imię" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
-<input type="submit" value="Zapisz mnie"/>
-<input type="hidden" name="na" value="s"/></p>
-</form>';
+// Confirmation email body (double opt-in)
+$defaults['confirmation_message'] =
+"<p>Witaj {name},</p>
+<p>Otrzymaliśmy prośbę o wpis do subskrypcji dla tego adresu e-mail. Możesz potwierdzić ją
+<a href=\"{subscription_confirm_url}\"><strong>klikając tutaj</strong></a>.
+Jeśli nie możesz kliknąć odnośnika, użyj poniższego linku:</p>
+<p>{subscription_confirm_url}</p>
+<p>Jeśli to nie Ty wpisywałeś się do subskrypcji, po prostu zignoruj tę wiadomość.</p>
+<p>Dziękujemy.</p>";
 
-$newsletter_labels['embedded_form_noname'] =
-'<form action="{newsletter_url}" method="post">
-<p><input type="text" name="ne" value="Twój e-mail" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/>
-<input type="submit" value="Zapisz mnie"/>
-<input type="hidden" name="na" value="s"/></p>
-</form>';
 
-// Errors on subscription
-$newsletter_labels['error_email'] = 'Nieprawidłowy adres e-mail. <a href="javascript:history.back()">Powrót</a>.';
-$newsletter_labels['error_name'] = 'Imię nie może być puste. <a href="javascript:history.back()">Powrót</a>.';
+// Subscription confirmed text (after a user clicked the confirmation link
+// on the email he received
+$defaults['confirmed_text'] =
+"<p>Twoja subskrypcja została potwierdzona!
+Dziękujemy {name}!</p>";
 
-?>
+$defaults['confirmed_subject'] =
+"Witaj, {name}";
+
+$defaults['confirmed_message'] =
+"<p>Wiadomość potwierdzająca subskyrpcję {blog_title}.</p>
+<p>Dziękujemy!</p>";
+
+// Unsubscription request introductory text
+$defaults['unsubscription_text'] =
+"<p>Proszę potwierdzić rezygnację z subskrypcji
+<a href=\"{unsubscription_confirm_url}\">klikając tutaj</a>.";
+
+// When you finally loosed your subscriber
+$defaults['unsubscribed_text'] =
+"<p>To smutne, ale usunęliśmy Twój e-mail z subskrypcji...</p>";
+
+

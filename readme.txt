@@ -2,29 +2,38 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail
 Requires at least: 2.7
-Tested up to: 2.9.2
+Tested up to: 3.1.2
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo
 
-Newsletter is a plug-in to collect subscribers and send out newsletters.
+Add a real newsletter service to your blog. In seconds. For free.
 
 == Description ==
 
 This plug-in lets you collect subscribers on your blog with a single or double opt-in
-subscription process. Double opt-in means the user has to confirm a subscription
+subscription process. Double opt-in is law compliant and it means the user has to confirm the subscription
 following simple standard instructions sent to him via email.
 
-Each step of subscribe and unsubscribe process is fully configurable.
+Each step of subscribe and cancel process is fully configurable and translatable.
 
-The plug-in has a simple visual composer to create your newsletter
-and send it to subscribers. The newsletter message can be auto composed starting
-with blog content and themes.
+Subscription form and profile form are easily configurable from administrative panels and you
+can translate every single label in your language.
 
-Emails are sent one-per-user, so subject and body can be customized
-with subscriber name.
+Create e-mails with a visual editor with the auto compose function which extract content
+for your blog. Auto composer themes can be customized.
 
-More on Newsletter plug-in official page (http://www.satollo.net/plugins/newsletter).
+Use the widget to let users to subscribe from anywhere in your blog or use a short code
+to embed the subscription form on posts and pages.
+
+Use the locked content feature to fire up the subscription rate.
+
+Any option has a "hints" box with instruction to set it and the full user guide is
+inside the administrative panels.
+
+Version 2.5 is a major update and need to be reconfigured! Pay attention.
+
+More about Newsletter plug-in official page (http://www.satollo.net/plugins/newsletter).
 
 == Installation ==
 
