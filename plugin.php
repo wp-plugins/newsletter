@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.0
+  Version: 2.5.1
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -49,7 +49,6 @@ class Newsletter {
         add_action('newsletter', array(&$this, 'hook_newsletter'), 1);
 
         // This specific event is created by "Feed by mail" panel on configuration
-        add_action('newsletter_feed', array(&$this, 'hook_newsletter_feed'));
         add_action('template_redirect', array(&$this, 'hook_template_redirect'));
         add_action('wp_head', array(&$this, 'hook_wp_head'));
         add_shortcode('newsletter', array(&$this, 'shortcode_newsletter'));
@@ -95,7 +94,7 @@ class Newsletter {
     function hook_newsletter() {
         global $wpdb;
 
-        $this->log();
+        //$this->log();
         if (!$this->check_transient('newsletter', 60)) return;
 
         $max = $this->options_main['scheduler_max'];
@@ -161,6 +160,14 @@ class Newsletter {
 
             if ($email->track == 1) $m = $this->relink($m, $email->id, $user->id);
 
+            // Add CSS
+            if ($email->theme[0] == '*') $file = 'newsletter-custom/themes/' . substr($email->theme, 1) . '/style.css';
+            else $file = 'newsletter/themes/' . $email->theme . '/style.css';
+            $css = @file_get_contents(ABSPATH . 'wp-content/plugins/' . $file);
+
+            $m = '<html><head><style type="text/css">' . $css .
+                '</style></head><body>' . $m . '</body></html>';
+            
             $s = $this->replace($email->subject, $user);
             $x = $this->mail($user->email, $s, $m, true, $headers, 2);
 

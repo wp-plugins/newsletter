@@ -8,7 +8,7 @@ if (isset($_GET['id'])) {
         $nc->data['status'] = 'new';
         $nc->data['subject'] = 'Here the email subject';
         $nc->data['message'] = '<p>An empty email to start.</p>';
-        $nc->data['track'] = 1;
+        $nc->data['theme'] = 'blank';
     }
 }
 else {
@@ -63,9 +63,9 @@ else {
     }
 
     if ($nc->is_action('compose')) {
-        if ($nc->data['_theme'][0] == '*') $file = ABSPATH . 'wp-content/plugins/newsletter-custom/themes/' . substr($nc->data['_theme'], 1) .
+        if ($nc->data['theme'][0] == '*') $file = ABSPATH . 'wp-content/plugins/newsletter-custom/themes/' . substr($nc->data['theme'], 1) .
                 '/theme.php';
-        else $file = dirname(__FILE__) . '/themes/' . $nc->data['_theme'] . '/theme.php';
+        else $file = dirname(__FILE__) . '/themes/' . $nc->data['theme'] . '/theme.php';
 
         ob_start();
         @include($file);
@@ -99,10 +99,23 @@ $themes[''] = 'Packaged themes';
 $themes['blank'] = 'Empty email';
 $themes['theme-1'] = 'Newsletter theme 1';
 //$themes['theme-2'] = 'Newsletter theme 2';
-//$themes['theme-3'] = 'Newsletter theme 3';
+$themes['theme-3'] = 'Newsletter theme 3';
 
 $nc->errors($errors);
 $nc->messages($messages);
+
+function newsletter_get_theme_file($theme) {
+    if ($theme[0] == '*') $file = ABSPATH . 'wp-content/plugins/newsletter-custom/themes/' . substr($theme, 1) . '/theme.php';
+    else $file = dirname(__FILE__) . '/themes/' . $theme . '/theme.php';
+}
+
+function newsletter_get_theme_css_url($theme) {
+    if ($theme[0] == '*') $file = 'newsletter-custom/themes/' . substr($theme, 1) . '/style.css';
+    else $file = 'newsletter/themes/' . $theme . '/style.css';
+    if (!file_exists(ABSPATH . 'wp-content/plugins/' . $file)) return get_option('siteurl') . '/wp-content/plugins/newsletter/themes/empty.css';
+    return get_option('siteurl') . '/wp-content/plugins/' . $file;
+}
+
 ?>
 
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
@@ -118,7 +131,8 @@ $nc->messages($messages);
         relative_urls : false,
         remove_script_host : false,
         theme_advanced_toolbar_location : "top",
-        document_base_url : "<?php echo get_option('home'); ?>/"
+        document_base_url : "<?php echo get_option('home'); ?>/",
+        content_css: "<?php echo newsletter_get_theme_css_url($nc->data['theme']) . '?' . time(); ?>"
     });
 </script>
 
@@ -135,16 +149,19 @@ $nc->messages($messages);
         <table class="form-table">
 
             <tr valign="top">
-                <th>Auto compose</th>
+                <th>Theme</th>
                 <td>
-                    <?php $nc->select_grouped('_theme', array(
+                    <?php $nc->select_grouped('theme', array(
                             array_merge(array(''=>'Custom themes'), newsletter_get_themes()),
-                            $themes
+                            $themes,
+                            $themes_panel
                             ));
                     ?>
-                    <?php $nc->button('compose', 'Auto compose'); ?>
+                    <?php $nc->button('compose', 'Change'); ?> (email content below will be regenerated)
                     <div class="hints">
-                        Auto composition does not save this email, remember to press save if you are satisfied of the result.
+                        Theme changing does not save this email, remember to press save if you are satisfied of the result. A theme can have a style file
+                        (style.css in theme folder): that style will be added to your emails, so when you change the theme you MUST press "change" to have
+                        in the editor the right content for the current theme style. No easy to explain. No all email readers respect the theme graphics!
                     </div>
                 </td>
             </tr>

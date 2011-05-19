@@ -7,7 +7,7 @@ add_submenu_page('newsletter/intro.php', 'User Guide', 'User Guide', $level, 'ne
 
 add_submenu_page('newsletter/intro.php', 'Main Configuration', 'Main Configuration', $level, 'newsletter/main.php');
 add_submenu_page('newsletter/intro.php', 'Subscription Process', 'Subscription Process', $level, 'newsletter/options.php');
-add_submenu_page('newsletter/intro.php', 'User Profile', 'User Profile', $level, 'newsletter/profile.php');
+add_submenu_page('newsletter/intro.php', 'Subscription Form', 'Subscription Form', $level, 'newsletter/profile.php');
 
 add_submenu_page('newsletter/intro.php', 'Emails', 'Emails', $level, 'newsletter/emails.php');
 add_submenu_page('newsletter/emails.php', 'Email Edit', 'Email Edit', $level, 'newsletter/emails-edit.php');

@@ -15,6 +15,24 @@ This plug-in lets you collect subscribers on your blog with a single or double o
 subscription process. Double opt-in is law compliant and it means the user has to confirm the subscription
 following simple standard instructions sent to him via email.
 
+Newsletter 2.5 works.
+
+Take the time to read the user guide, to configure
+it as if it would be a new installed plug-in, to enter the subscription form panel and
+configure it. Read the user guide about WordPress cron system and how it can affect
+the sending process. If you need to translate the subscription form, use the
+subscription form panel, please, do not hack the language files, they are
+used only on activation. On some WordPress installations the automatic update does not
+trigger the activation process. It's important, so try to deactivate and reactivate the
+plug-in if it does not saves e-mails. If you update manually uploading the plug-in
+with FTP, deactivate it first and the reactivate.
+
+Please, DO NOT hack the plug-in files and then, when things go wrong, try to solve
+the problem writing me... I have no time to answer to all. Reinstall if you're in doubt
+about the plug-in integrity.
+
+Thank you.
+
 Each step of subscribe and cancel process is fully configurable and translatable.
 
 Subscription form and profile form are easily configurable from administrative panels and you
@@ -43,10 +61,26 @@ More about Newsletter plug-in official page (http://www.satollo.net/plugins/news
 
 == Frequently Asked Questions ==
 
-**How can I submit a bug?**
-
-This is your page: (http://www.satollo.net/newsletter-help)
+None.
 
 == Screen shots ==
 
 No screen shots are available at this time.
+
+== Changelog ==
+
+= 2.5.1 =
+
+* Improved documentation about delivery engine, WordPress cron and multisite
+* New button to force a run of the delivery engine
+* Fixed images on theme 1
+* Fixed the widget field check
+* Renamed panel "user profile" in "subscription form" (since no one read the user guide.. may be due to my bad English... :-)
+* Updated theme documentation
+* Reintroduced theme CSS
+* Added CDATA on JavaScript
+* Added theme 3
+
+= 2.5.0 =
+
+* first major release after 1.5.9

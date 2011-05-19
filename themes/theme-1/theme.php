@@ -34,6 +34,9 @@ while ($posts->have_posts())
 ?>
           <tr>
               <td style="font-size: 14px; color: #666">
+                    <?php if ($image != null) { ?>
+                    <img src="<?php echo $image; ?>" alt="picture" align="left"/>
+                    <?php } ?>
                   <p><a href="<?php echo get_permalink(); ?>" style="font-size: 16px; color: #000; text-decoration: none"><?php the_title(); ?></a></p>
 
                   <?php the_excerpt(); ?>

@@ -1,15 +1,3 @@
-<script>
-    jQuery(document).ready(function () {
-
-        jQuery(".wrap h3").each(function () {
-            jQuery(this).nextUntil('h3').hide();
-        });
-
-        jQuery(".wrap h3").click(function () {
-            jQuery(this).nextUntil('h3').toggle();
-        });
-    });
-</script>
 <div class="wrap">
     <h2>Newsletter/Newsletter Pro User Guide</h2>
 
@@ -48,6 +36,30 @@
         stefano@satollo.net so I can complete it and clear any doubt</strong>.
     </p>
 
+    <h3>F.A.Q.</h3>
+    <p><strong>Nothing is working!</strong></p>
+    <p>
+        The plugin is working on my main site (<a href="http://www.satollo.net" target="_blank">www.satollo.net</a>),
+        I use there the <strong>free version</strong> just to be sure it
+        works for all. So, have you DEACTIVATED and REACTIVATED it after a manual update (with
+        WordPress automatic upgrade, WordPress takes care of it for you - but you can try that manually).
+    </p>
+    
+    <p><strong>Where is the version history?</strong></p>
+    <p>On readme.txt file.</p>
+
+    <p><strong>Email are not sent (but test emails are).</strong></p>
+    <p>
+        On email list panel there is a delivery engine next run. If it is negative or empty or zero (always)
+        the WordPress cron system is not working. Read below about delivery engine and the WordPress
+        cron system.
+    </p>
+
+    <p><strong>Multisite WordPress, nothing work.</strong></p>
+    <p>
+        It's a bit tricky: you must activate the plugin with your super admin account, then enter every blog dashboard,
+        and deactivate and reactivate the plugin.
+    </p>
 
     <h3>Newsletter configuration structure</h3>
 
@@ -67,7 +79,7 @@
             </ul>
         </li>
 
-        <li><strong>User Profile.</strong> Really important. It's where you set what user's data you want to collect on subscription. There
+        <li><strong>User Profile/Subscription Form.</strong> Really important. It's where you set what user's data you want to collect on subscription. There
             you can translate almost every thing of Newsletter.</li>
         <li><strong>Subscription Process.</strong> Really important. It's where you decide how the subscription process works. There you
             can set double or single opt in, emails and messages that are involved on subscription and cancellation.</li>
@@ -170,7 +182,7 @@
 
 
 
-    <h3>User profile</h3>
+    <h3>User profile/Subscription Form</h3>
 
     <p>
         User profile is the set of data you can collect about subscribers during the subscription or on their profile panel:
@@ -281,11 +293,11 @@
         When you abort an email sending, the email return to the "new" status and every sending progress information is reset.
     </p>
 
-    <h3>Email autocomposer and themes</h3>
+    <h3>Email auto composer and themes</h3>
     <p>
-        When a new email is create, it can composed starting from a blank sheet or can be auto composed with
-        a theme. I call it auto compose, because a theme can generate actual content getting it from the blog
-        (a list of latest posts, tag cloud and so on).
+        When a new email is create, it can be composed starting from a blank sheet or can be auto composed with
+        a theme. I call it auto compose because a theme can generate actual content getting it from the blog
+        (a list of latest posts, tag cloud and so on) or simply prepare an already structured content.
     </p>
     <p>
         Themes are PHP file stored under "themes" folder. There are some pre packaged themes that can be used as
@@ -307,8 +319,19 @@
         To start with an already working theme, start with "theme.php" file of "themes/theme-1" folder.
     </p>
 
+    <h4>Theme style file (style.css)</h4>
+    <p>
+        Theme used to compose an email is store with the email data. If a theme has a style.css file in
+        its folder, the <strong>content</strong> of this file is added to outgoing emails. Not all email readers
+        respect the style added in this way... GMail is an example of them.
+    </p>
+    <p>
+        The style.css file is used while editing the email too to make the visual editor show the content as looking
+        like the resulting email opened in a mail reader.
+    </p>
 
-    <h3>Follow up or autoresponder</h3>
+
+    <h3>Follow up or auto responder (only Pro version)</h3>
     <p>
         Follow up or auto-responder is when you send a sequence of emails to new subscribers. A follow up can be a series
         of lessons on a topic, a product/service presentation broken up on small parts or anything else.
@@ -353,7 +376,7 @@
     </p>
 
 
-    <h3>Feed by mail</h3>
+    <h3>Feed by mail (only Pro version)</h3>
 
     <p>
         Feed by mail is a Newsletter Pro service that sends an excerpt of last posts
@@ -401,6 +424,24 @@
         folder, because they do not work!
     </p>
 
+
+    <h3>Delivery engine and WordPress cron system</h3>
+    <p>
+        Newsletter relies on WordPress cron service to automatically send emails respecting the
+        emails per hour value you set on main configuration panel.
+    </p>
+    <p>
+        That WordPress service works only if your blog has traffic, if not it usually works bad. To make
+        it running as required, you must trigger it with a regular external call (very five minutes) to:</p>
+    <p>
+    <?php echo get_option('siteurl'); ?>/wp-cron.php
+    </p>
+    <p>
+        Any decent provider can setup that call or has a configurable cron service on it's panel, refer to your provider
+        support.
+    </p>
+
+
     <h3>Themes tech details</h3>
     <p>
         Themes for feed by mail and follow up e-mails are "executed" for each user when it's time to generate
@@ -422,6 +463,5 @@
         <tr><td>followup</td><td>follow up subscription status: 1 means he's subscribed</td></tr>
         <tr><td>feed</td><td>feed by mail subscription status: 1 means he's subscribed</td></tr>
     </table>
-    
 
 </div>

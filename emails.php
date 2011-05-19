@@ -1,8 +1,10 @@
 <?php
 @include_once 'commons.php';
+$nc = new NewsletterControls();
+
 $emails = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter_emails where type='email' order by id desc");
 
-if ($_GET['pippo']) {
+if ($nc->is_action('send')) {
     $newsletter->hook_newsletter();
 }
 ?>
@@ -11,8 +13,14 @@ if ($_GET['pippo']) {
 
 <h2>Messages</h2> 
 
+<form method="post" action="admin.php?page=newsletter/emails.php">
+    <?php $nc->init(); ?>
+
 <p><a href="admin.php?page=newsletter/emails-edit.php&amp;id=0" class="button">New message</a></p>
-<p>Delivery engine next run: <?php echo wp_next_scheduled('newsletter')-time(); ?> seconds</p>
+<p>
+    Delivery engine next run: <?php echo wp_next_scheduled('newsletter')-time(); ?> seconds
+    <?php $nc->button('send', 'Trigger now'); ?>
+</p>
 
     <table class="widefat">
         <thead>
@@ -39,4 +47,5 @@ if ($_GET['pippo']) {
             <?php } ?>
         </tbody>
     </table>
+</form>
 </div>

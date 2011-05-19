@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Newsletter widget version 2.0: it'll replace the old version left for compatibility.
- */
 class NewsletterWidget extends WP_Widget {
 
     function NewsletterWidget() {
@@ -24,14 +21,18 @@ class NewsletterWidget extends WP_Widget {
         $options = get_option('newsletter');
         $options_profile = get_option('newsletter_profile');
         if (stripos($instance['text'], '<form') === false) {
-            $form .= '<div class="newsletter newsletter-widget"><form action="' . $newsletter->options_main['url'] . '" method="post">';
+            $form .= '<div class="newsletter newsletter-widget"><form action="' . $newsletter->options_main['url'] . '" onsubmit="return newsletter_check(this)" method="post">';
             $form .= '<input type="hidden" name="na" value="s"/>';
             $form .= '<input type="hidden" name="nr" value="widget"/>';
+
             if ($options_profile['name_status'] == 2)
                 $form .= '<p><input type="text" name="nn" value="' . $options_profile['name'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
+
             if ($options_profile['surname_status'] == 2)
                 $form .= '<p><input type="text" name="ns" value="' . $options_profile['surname'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
+
             $form .= '<p><input type="text" name="ne" value="' . $options_profile['email'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
+
             if ($options_profile['sex_status'] == 2) {
                 $form .= '<p><select name="nx" class="newsletter-sex">';
                 $form .= '<option value="m">' . $options_profile['sex_male'] . '</option>';
@@ -44,8 +45,8 @@ class NewsletterWidget extends WP_Widget {
             else $buffer .= $form;
         }
         else {
-            $buffer = str_ireplace('<form', '<form method="post" action="' . $newsletter->options_main['url'] . '"', $buffer);
-            $buffer = str_ireplace('</form>', '<input type="hidden" name="na" value="s"/></form>', $buffer);
+            $buffer = str_ireplace('<form', '<form method="post" action="' . $newsletter->options_main['url'] . '" onsubmit="return newsletter_check(this)"', $buffer);
+            $buffer = str_ireplace('</form>', '<input type="hidden" name="na" value="s"/><input type="hidden" name="nr" value="widget"/></form>', $buffer);
         }
 
         echo $buffer;
