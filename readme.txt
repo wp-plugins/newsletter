@@ -69,6 +69,13 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.1.1 =
+
+* added {date} tag and {date_'format'} tag, where 'format' can be any of the PHP date formats
+* added {blog_description} tag
+* updated custom forms documentation
+* fixed extended subscriber profile collection
+
 = 2.5.1 =
 
 * Improved documentation about delivery engine, WordPress cron and multisite

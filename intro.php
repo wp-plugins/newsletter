@@ -217,6 +217,40 @@
         Check the hints in the panel for detailed explanation of every single field.
     </p>
 
+ <h3>Tags</h3>
+ <p>
+     Subscritpion texts, email bodies, email subjects and so on accept (usually) a set of tag that will be replaced
+     with user specific content (like her name).
+ </p>
+    <ul>
+        <li><strong>{name}</strong> The user name</li>
+        <li><strong>{surname}</strong> The user surname</li>
+        <li><strong>{email}</strong> The user email</li>
+        <li><strong>{ip}</strong> The IP address from where the subscription started</li>
+        <li><strong>{id}</strong> The user id</li>
+        <li><strong>{token}</strong> The user secret token</li>
+        <li><strong>{profile_N}</strong> The user profile field number N (from 1 to 19)</li>
+        <li><strong>{date}</strong> the current date formatted as specified on WordPress general options</li>
+        <li><strong>{date_'format'}</strong> the current date formatted with 'format' format compatible with PHP date formatting specifications.
+    </ul>
+
+    <h4>Action URLs and forms</h4>
+    <p>
+        <strong>{subscription_confirm_url}</strong>
+        URL to build a link to confirmation of subscription when double opt-in is used. To be used on confirmation email.<br />
+        <strong>{unsubscription_url}</strong>
+        URL to build a link to start the cancellation process. To be used on every newsletter to let the user to cancel.<br />
+        <strong>{unsubscription_confirm_url}</strong>
+        URL to build a link to an immediate cancellation action. Can be used on newsletters if you want an immediate cancellation or
+        on cancellation page (displayed on {unsubscription_url}) to ask a cancellation confirmation.<br />
+        <strong>{profile_url}</strong>
+        URL to build a link to user's profile page (see the User Profile panel)<br />
+        <strong>{unlock_url}</strong>
+        Special URL to build a link that on click unlocks protected contents. See Main Configuration panel.<br />
+        <strong>{profile_form}</strong>
+        Insert the profile form with user's data. Usually it make sense only on welcome page.<br />
+    </p>
+
 
     <h3>Custom forms</h3>
     <p>
@@ -247,13 +281,14 @@
         The field names you can add to a custom form are:
     </p>
     <ul>
-        <li>ne - is the user email</li>
-        <li>nn - is the user name (first name or complete name)</li>
-        <li>ns - is the user surname/last name</li>
-        <li>npN - where N go from 1 to 19, are the custom profile fields (be aware they
+        <li><strong>ne</strong> is the user email</li>
+        <li><strong>nn</strong> is the user name (first name or complete name)</li>
+        <li><strong>ns</strong> is the user surname/last name</li>
+        <li><strong>nx</strong> is the user sex (can assume f, m, n values) and usually it should be a "select"
+        <li><strong>npN</strong> where N go from 1 to 19, are the custom profile fields (be aware they
             are not the same thing of profile fields in Newsletter Pro 2.1)</li>
-        <li>nl[] - must be checkbox fields name when they represent a list/option/topic and the list/option/topic number (1 to 9)
-            must be the field value (see below).</li>
+        <li><strong>nl[]</strong> (as written!)) must be check box field name when they represent a list/option/topic; the field value must be a number from
+            1 to 9 (the lists)</li>
     </ul>
     <p>
         For lists on a custom form you can ask the user to check what lists he want to subscribe or

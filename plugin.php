@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.1
+  Version: 2.5.1.1
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -504,6 +504,8 @@ class Newsletter {
                 if (!empty($_REQUEST['nx'])) $user['sex'] = $_REQUEST['nx'][0];
                 $user['referrer'] = $_REQUEST['nr'];
 
+                $options_profile = get_option('newsletter_profile');
+
                 // New profiles
                 for ($i = 1; $i <= 19; $i++) {
                     if ($options_profile['profile_' . $i . '_status'] == 0) continue;
@@ -512,7 +514,6 @@ class Newsletter {
 
                 // Lists (field names are nl[] and values the list number so special forms with radio button can work)
                 if (is_array($_REQUEST['nl'])) {
-                    $options_profile = get_option('newsletter_profile');
                     for ($i = 1; $i <= 9; $i++) {
                         if ($options_profile['list_' . $i . '_status'] != 2) continue;
                         if (in_array($i, $_REQUEST['nl'])) $user['list_' . $i] = 1;
@@ -752,6 +753,18 @@ class Newsletter {
         if (is_array($user)) $user = $this->get_user($user['id']);
         $text = str_replace('{home_url}', get_option('home'), $text);
         $text = str_replace('{blog_title}', get_option('blogname'), $text);
+        $text = str_replace('{date}', date_i18n(get_option('date_format')), $text);
+        $text = str_replace('{blog_description}', get_option('blogdescription'), $text);
+        
+        // Date processing
+        $x = 0;
+        while (($x = strpos($text, '{date_', $x)) !== false) {
+            $y = strpos($text, '}', $x);
+            if ($y === false) continue;
+            $f = substr($text, $x+6, $y-$x-6);
+            $text = substr($text, 0, $x) . date($f) . substr($text, $y+1);
+        }
+
         if ($user != null) {
             $text = str_replace('{email}', $user->email, $text);
             $text = str_replace('{name}', $user->name, $text);
