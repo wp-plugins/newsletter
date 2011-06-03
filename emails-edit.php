@@ -228,7 +228,10 @@ function newsletter_get_theme_css_url($theme) {
             <?php if ($nc->data['status'] != 'sending') $nc->button('save', 'Save'); ?>
             <?php if ($nc->data['status'] != 'sending') $nc->button_confirm('test', 'Save and test', 'Save and send test emails to test addresses?'); ?>
 
-            <?php if ($nc->data['status'] == 'new') $nc->button_confirm('send', 'Send', 'Start a real delivery?'); ?>
+            <?php if ($nc->data['status'] == 'new') {
+                $nc->button_confirm('send', 'Send', 'Start a real delivery?');
+                $nc->button_confirm('send-now', 'Instant send', 'Start a real delivery?');
+            } ?>
             <?php if ($nc->data['status'] == 'sending') $nc->button_confirm('pause', 'Pause', 'Pause the delivery?'); ?>
             <?php if ($nc->data['status'] == 'paused') $nc->button_confirm('continue', 'Continue', 'Continue the delivery?'); ?>
             <?php if ($nc->data['status'] != 'new') $nc->button_confirm('abort', 'Abort', 'Abort the delivery?'); ?>

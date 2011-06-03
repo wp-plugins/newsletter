@@ -41,7 +41,7 @@ $options_profile = get_option('newsletter_profile');
             <tr valign="top">
                 <th>Name and email</th>
                 <td>
-                    name: <?php $nc->text('name', 30); ?> surname: <?php $nc->text('surname', 30); ?>
+                    first name: <?php $nc->text('name', 30); ?> last name: <?php $nc->text('surname', 30); ?>
                     email: <?php $nc->text('email', 40); ?> sex: <?php $nc->select('sex', array('n'=>'Not specified', 'f'=>'female', 'm'=>'male')); ?>
                 </td>
             </tr>

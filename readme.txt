@@ -69,6 +69,15 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.1.2 =
+
+* fixed unsubscription administrator notifications
+* replaced sex with gender in notification emails
+* fixed the confirm/unconfirm button on user list
+* fixed some labels
+* subscription form html
+
+
 = 2.5.1.1 =
 
 * added {date} tag and {date_'format'} tag, where 'format' can be any of the PHP date formats

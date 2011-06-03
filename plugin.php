@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.1.1
+  Version: 2.5.1.2
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -376,7 +376,7 @@ class Newsletter {
             $buffer .= '<tr><th>' . $options_profile['name'] . '</th><td><input type="text" name="nn" size="30"/></td></tr>';
         }
         if ($options_profile['surname_status'] == 2) {
-            $buffer .= '<tr><th>' . $options_profile['surname'] . '</td><th><input type="text" name="ns" size="30"/></td></tr>';
+            $buffer .= '<tr><th>' . $options_profile['surname'] . '</th><td><input type="text" name="ns" size="30"/></td></tr>';
         }
 
         $buffer .= '<tr><th>' . $options_profile['email'] . '</th><td align="left"><input type="text" name="ne" size="30"/></td></tr>';
@@ -527,22 +527,8 @@ class Newsletter {
                 $wpdb->insert($wpdb->prefix . 'newsletter', $user);
                 $user = $this->get_user($wpdb->insert_id); // back to an object
                 // Notification to admin (only for new subscriptions)
-                if ($this->options_main['notify'] == 1 && $user->status == 'C') {
-                    $this->log('Notification');
-                    $message = "Subscriber details:\n\n" .
-                            "name: " . $user->name . "\n" .
-                            "surname: " . $user->surname . "\n" .
-                            "sex: " . $user->sex . "\n" .
-                            "email: " . $user->email . "\n" .
-                            "id: " . $user->id . "\n" .
-                            "token: " . $user->token . "\n" .
-                            "status: " . $user->status . "\n" .
-                            "\nYours, Newsletter Pro.";
-
-                    $r = wp_mail(get_option('admin_email'), '[' . get_option('blogname') . '] Newsletter subscription', $message, "Content-type: text/plain; charset=UTF-8\n");
-                    if ($r == false) {
-                        $this->log('Notification error');
-                    }
+                if ($user->status == 'C') {
+                    $this->notify_admin($user, 'Newsletter subscription');
                 }
             }
 
@@ -605,23 +591,8 @@ class Newsletter {
 
             $this->mail($user->email, $this->replace($options['confirmed_subject'], $user), $this->replace($options['confirmed_message'], $user));
 
-            if ($this->options_main['notify'] == 1) {
-                $this->log('Notification');
-                $message = "Subscriber details:\n\n" .
-                        "name: " . $user->name . "\n" .
-                        "surname: " . $user->surname . "\n" .
-                        "sex: " . $user->sex . "\n" .
-                        "email: " . $user->email . "\n" .
-                        "id: " . $user->id . "\n" .
-                        "token: " . $user->token . "\n" .
-                        "status: " . $user->status . "\n" .
-                        "\nYours, Newsletter.";
+            $this->notify_admin($user, 'Newsletter subscription');
 
-                $r = wp_mail(get_option('admin_email'), '[' . get_option('blogname') . '] Newsletter subscription', $message, "Content-type: text/plain; charset=UTF-8\n");
-                if ($r == false) {
-                    $this->log('Notification error');
-                }
-            }
             if (!empty($options['confirmed_url'])) {
                 header('Location: ' . $options['confirmed_url']);
                 die();
@@ -642,21 +613,7 @@ class Newsletter {
             $wpdb->query($wpdb->prepare("delete from " . $wpdb->prefix . "newsletter where id=%d" . " and token=%s", $user->id, $user->token));
             $this->message = $this->replace($options['unsubscribed_text'], $user);
             $this->mail($user->email, $this->replace($options['unsubscribed_subject'], $user), $this->replace($options['unsubscribed_message'], $user));
-
-            if ($newsletter->options_main['notify'] == 1) {
-                $message = "Subscriber details:\n\n" .
-                        "name: " . $user->name . "\n" .
-                        "surname: " . $user->surname . "\n" .
-                        "sex: " . $user->sex . "\n" .
-                        "email: " . $user->email . "\n" .
-                        "id: " . $user->id . "\n" .
-                        "token: " . $user->token . "\n" .
-                        "status: " . $user->status . "\n" .
-                        "\nYours, Newsletter.";
-
-                wp_mail(get_option('admin_email'), '[' . get_option('blogname') . '] Newsletter cancellation', $message, "Content-type: text/plain; charset=UTF-8\n");
-            }
-
+            $this->notify_admin($user, 'Newsletter cancellation');
             return;
         }
 
@@ -836,11 +793,13 @@ class Newsletter {
     }
 
     function shortcode_newsletter_lock($attrs, $content=null) {
-        global $hyper_cache_stop;
+        global $hyper_cache_stop, $lite_cache_stop;
+
+        $hyper_cache_stop = true;
+        $lite_cache_stop = true;
 
         $user = $this->check_user();
         if ($user != null && $user->status == 'C') {
-            $hyper_cache_stop = true;
             return do_shortcode($content);
         }
 
@@ -888,6 +847,29 @@ class Newsletter {
 
         $this->log($query, 3);
         return $wpdb->query($query);
+    }
+
+    function notify_admin($user, $subject) {
+        if ($this->options_main['notify'] != 1) return;
+        $message = "Subscriber details:\n\n" .
+            "email: " . $user->email . "\n" .
+            "first name: " . $user->name . "\n" .
+            "last name: " . $user->surname . "\n" .
+            "gender: " . $user->sex . "\n";
+
+        $options_profile = get_option('newsletter_profile');
+
+        for ($i=0; $i<NEWSLETTER_PROFILE_MAX; $i++) {
+            if ($options_profile['profile_' . $i] == '') continue;
+            $field = 'profile_' . $i;
+            $message .= $options_profile['profile_' . $i] . ': ' . $user->$field . "\n";
+        }
+
+        $message .= "token: " . $user->token . "\n" .
+            "status: " . $user->status . "\n" .
+            "\nYours, Newsletter Pro.";
+
+        wp_mail(get_option('admin_email'), '[' . get_option('blogname') . '] ' . $subject, $message, "Content-type: text/plain; charset=UTF-8\n");
     }
 
 }

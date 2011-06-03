@@ -328,6 +328,12 @@ function newsletter_set_status_all($status) {
     $wpdb->query("update " . $wpdb->prefix . "newsletter set status='" . $status . "'");
 }
 
+function newsletter_set_status($id, $status) {
+    global $wpdb;
+
+    $wpdb->query($wpdb->prepare("update " . $wpdb->prefix . "newsletter set status=%s where id=%d", $status, $id));
+}
+
 function newsletter_date($time=null, $now=false, $left=false) {
     if (is_null($time)) $time = time();
     if ($time === false) $buffer = 'none';

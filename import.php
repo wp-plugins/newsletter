@@ -105,8 +105,8 @@ for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
     </p>
     <p>
         Import list format is:<br /><br />
-        <b>email</b><i>[separator]</i><b>name</b><i>[new line]</i><br />
-        <b>email</b><i>[separator]</i><b>name</b><i>[new line]</i><br />
+        <b>email 1</b><i>[separator]</i><b>first name 1</b><i>[separator]</i><b>last name 1</b><i>[new line]</i><br />
+        <b>email 2</b><i>[separator]</i><b>first name 2</b><i>[separator]</i><b>last name 2</b><i>[new line]</i><br />
         <br />
         where the [separator] must be selected from the available ones. The "name" field is optional, while the "email" field is
         mandatory. Empty lines and lines starting with "#" will be skipped.
