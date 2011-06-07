@@ -283,7 +283,7 @@ function newsletter_search($text, $status='', $order='email', $list = null, $lin
 
     $query .= ' order by ' . $order;
 
-    if (empty($link)) $query .= ' limit 100';
+    //if (empty($link)) $query .= ' limit 100';
 
     $recipients = $wpdb->get_results($query);
 

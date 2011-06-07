@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.1.2
+  Version: 2.5.1.3
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -478,12 +478,13 @@ class Newsletter {
     }
 
     function hook_init() {
-        global $hyper_cache_stop, $wpdb;
+        global $cache_stop, $hyper_cache_stop, $wpdb;
 
         $action = $_REQUEST['na'];
         if (empty($action) || is_admin()) return;
 
         $hyper_cache_stop = true;
+        $cache_stop = true;
 
         $this->log($action);
 

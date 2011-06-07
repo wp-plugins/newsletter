@@ -11,6 +11,9 @@ if (isset($_GET['id'])) {
 }
 else {
     if ($nc->is_action('save')) {
+        for($i=1; $i<=NEWSLETTER_LIST_MAX; $i++) {
+            if (!isset($nc->data['list_' . $i])) $nc->data['list_' . $i] = 0;
+        }
         $nc->save($wpdb->prefix . 'newsletter');
     }
 }

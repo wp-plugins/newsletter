@@ -69,6 +69,12 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.1.3 =
+
+* added compatibility with lite cache
+* fixed the list checkboxes on user edit panel
+* removed the 100 users limit on search panel
+
 = 2.5.1.2 =
 
 * fixed unsubscription administrator notifications
