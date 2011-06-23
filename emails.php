@@ -11,7 +11,9 @@ if ($nc->is_action('send')) {
 
 <div class="wrap">
 
-<h2>Messages</h2> 
+<h2>Messages</h2>
+
+<?php include dirname(__FILE__) . '/header.php'; ?>
 
 <form method="post" action="admin.php?page=newsletter/emails.php">
     <?php $nc->init(); ?>

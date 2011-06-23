@@ -70,21 +70,12 @@ else {
 $nc->errors($errors);
 $nc->messages($messages);
 ?>
-<script>
-    jQuery(document).ready(function () {
 
-       jQuery(".wrap h3").each(function () {
-           jQuery(this).nextUntil('h3').hide();
-       });
-
-       jQuery(".wrap h3").click(function () {
-           jQuery(this).nextUntil('h3').toggle();
-       });
-    });
-</script>
 <div class="wrap">
 
     <h2>Newsletter Main Configuration</h2>
+
+    <?php include dirname(__FILE__) . '/header.php'; ?>
 
     <p><a href="javascript:void(jQuery('.hints').toggle())">Show/hide detailed documentation</a></p>
 

@@ -69,6 +69,16 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.1.5 =
+
+* main configuration panel all options open because people was missing to expand panels
+* subscriber panel does not more show up the full list on first open
+* fixed privacy check box on widget
+
+= 2.5.1.4 =
+
+* fixed a missing form element on subscriber list panel that caused some buttons to not work
+
 = 2.5.1.3 =
 
 * added compatibility with lite cache

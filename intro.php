@@ -1,6 +1,8 @@
 <div class="wrap">
     <h2>Newsletter/Newsletter Pro User Guide</h2>
 
+    <?php include dirname(__FILE__) . '/header.php'; ?>
+
     <p>Welcome to Newsletter/Neswletter Pro from Stefano Lissa.</p>
     <p>
         I hope Newsletter/Neswletter Pro will be a powerful tool for your business. I made the whole configuration

@@ -75,8 +75,12 @@ if ($action == 'list_manage') {
 }
 
 
-
-$list = newsletter_search($options['search_text'], $options['search_status'], $options['search_order'], $options['search_list'], $options['search_link']);
+if ($action == 'search') {
+    $list = newsletter_search($options['search_text'], $options['search_status'], $options['search_order'], $options['search_list'], $options['search_link']);
+}
+else {
+    $list = array();
+}
 
 $nc = new NewsletterControls($options);
 $nc->errors($errors);
@@ -154,7 +158,8 @@ $nc->messages($messages);
     <form id="channel" method="post" action="">
         <?php $nc->init(); ?>
         <input type="hidden" name="options[subscriber_id]"/>
-
+        <input type="hidden" name="options[subscriber_status]"/>
+        
         <?php
             $tmp = $wpdb->get_results($wpdb->prepare("select distinct newsletter, url from " . $wpdb->prefix . "newsletter_stats order by newsletter,url"));
             $links = array(''=>'Unfiltered');
@@ -181,13 +186,9 @@ $nc->messages($messages);
         </table>
 
 
-
-
-
+<?php if (!empty($list)) { ?>
 
 <h3>Search results</h3>
-
-<?php if ($list) { ?>
 
 <table class="widefat">
     <thead>

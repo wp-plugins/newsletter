@@ -44,6 +44,9 @@ $status = array(0=>'Disabled', 1=>'Only on profile page', 2=>'Even on subscripti
 <div class="wrap">
 
     <h2>Newsletter Profile</h2>
+
+    <?php include dirname(__FILE__) . '/header.php'; ?>
+    
     <p>
         User profile is the whole set of user data that he can edit accessing the profile page (usually via the {profile_url} link you
         should add in any newsletter or welcome message.<br />

@@ -39,6 +39,11 @@ class NewsletterWidget extends WP_Widget {
                 $form .= '<option value="f">' . $options_profile['sex_female'] . '</option>';
                 $form .= '</select></p>';
             }
+
+            if ($options_profile['privacy_status'] == 1) {
+                $form .= '<p><input type="checkbox" name="ny"/>&nbsp;' . $options_profile['privacy'] . '</p>';
+            }
+            
             $form .= '<p><input type="submit" value="' . $options_profile['subscribe'] . '"/></p>';
             $form .= '</form></div>';
             if (strpos($buffer, '{subscription_form}') !== false) $buffer = str_replace('{subscription_form}', $form, $buffer);
