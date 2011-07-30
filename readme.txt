@@ -2,7 +2,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail
 Requires at least: 2.7
-Tested up to: 3.1.2
+Tested up to: 3.2.1
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo
@@ -69,8 +69,17 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.1.7 =
+
+* fixed the widget which was no showing the lists and extra fields
+
+= 2.5.1.6 =
+
+* fixed {unlock_url} tag
+
 = 2.5.1.5 =
 
+* fixed issues on multi email sending
 * main configuration panel all options open because people was missing to expand panels
 * subscriber panel does not more show up the full list on first open
 * fixed privacy check box on widget

@@ -40,6 +40,29 @@ class NewsletterWidget extends WP_Widget {
                 $form .= '</select></p>';
             }
 
+            // Extra profile fields
+            for ($i = 1; $i <= 19; $i++) {
+                if ($options_profile['profile_' . $i . '_status'] != 2) continue;
+                if ($options_profile['profile_' . $i . '_type'] == 'text') {
+                    $form .= '<p><input class="newsletter-profile newsletter-profile-' . $i . '" type="text" name="np' . $i . '" value="' . $options_profile['profile_' . $i] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
+                }
+                if ($options_profile['profile_' . $i . '_type'] == 'select') {
+                    $form .= '<p>' . $options_profile['profile_' . $i] . '<br /><select class="newsletter-profile newsletter-profile-' . $i . '" name="np' . $i . '">';
+                    $opts = explode(',', $options_profile['profile_' . $i . '_options']);
+                    for ($i = 0; $i < count($opts); $i++) {
+                        $form .= '<option>' . trim($opts[$i]) . '</option>';
+                    }
+                    $form .= '</select></p>';
+                }
+            }
+
+            $lists = '';
+            for ($i = 1; $i <= 9; $i++) {
+                if ($options_profile['list_' . $i . '_status'] != 2) continue;
+                $lists .= '<input type="checkbox" name="nl[]" value="' . $i . '"/>&nbsp;' . $options_profile['list_' . $i] . '<br />';
+            }
+            if (!empty($lists)) $form .= '<p>' . $lists . '</p>';
+
             if ($options_profile['privacy_status'] == 1) {
                 $form .= '<p><input type="checkbox" name="ny"/>&nbsp;' . $options_profile['privacy'] . '</p>';
             }

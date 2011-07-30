@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.1.5
+  Version: 2.5.1.7
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -114,6 +114,8 @@ class Newsletter {
         global $wpdb;
 
         $this->log();
+        
+        if ($this->limits_exceeded()) return false;
 
         if ($users == null) {
             // Fake value representing the WordPress users target
@@ -555,33 +557,6 @@ class Newsletter {
             return;
         }
 
-        if ($action == 'api-add') {
-            $key = stripslashes($_REQUEST['nk']);
-            if (empty($newsletter->options_main['api_key']) || $key != $newsletter->options_main['api_key']) die('Wrong API key');
-
-            if (!is_email($_REQUEST['ne'])) die('Wrong email');
-            $subscriber = array();
-            $subscriber['name'] = stripslashes($_REQUEST['nn']);
-            $subscriber['surname'] = stripslashes($_REQUEST['ns']);
-            $subscriber['email'] = stripslashes($_REQUEST['ne']);
-
-            // Only one list
-            if (!empty($_REQUEST['nl'])) $subscriber['list_' . $_REQUEST['nl']] = 1;
-            $subscriber['status'] = 'C';
-            $subscriber['token'] = md5(rand());
-            $wpdb->insert($wpdb->prefix . 'newsletter', $user);
-            die('ok');
-        }
-
-        if ($action == 'api-delete') {
-            $key = stripslashes($_REQUEST['nk']);
-            if (empty($newsletter->options_main['api_key']) || $key != $newsletter->options_main['api_key']) die('Wrong API key');
-
-            $email = $this->normalize_email(stripslashes($_REQUEST['ne']));
-            $r = $wpdb->query($wpdb->prepare("delete from " . $wpdb->prefix . "newsletter where email=%s", $email));
-            die($r = 0 ? 'ko' : 'ok');
-        }
-
         // Actions below need a user. This code loads the user checking parameter or cookies.
         $user = $this->check_user();
         if ($user == null) die('No user');
@@ -755,7 +730,7 @@ class Newsletter {
             $text = $this->replace_url($text, 'UNSUBSCRIPTION_URL', $this->add_qs($base, 'na=u' . $id_token));
             $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', $this->add_qs($base, 'na=uc' . $id_token));
             $text = $this->replace_url($text, 'PROFILE_URL', $this->add_qs($base, 'na=pe' . $id_token));
-            $text = $this->replace_url($text, 'UNLOCK_URL', $this->add_qs($base, 'na=m' . $id_token));
+            $text = $this->replace_url($text, 'UNLOCK_URL', $this->add_qs($this->options_main['url'], 'na=m' . $id_token));
 
             for ($i = 1; $i <= 9; $i++) {
                 $text = $this->replace_url($text, 'LIST_' . $i . '_SUBSCRIPTION_URL', $this->add_qs($base, 'na=ls&amp;nl=' . $i . $id_token));
