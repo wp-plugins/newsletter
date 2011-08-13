@@ -69,6 +69,12 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.2 =
+
+* important change on subscription confirmation and unsubscription confirmation to avoid multiple emails
+* number of subscriber overview on subscriber panel
+* fix on profile form showing "no user"
+
 = 2.5.1.7 =
 
 * fixed the widget which was no showing the lists and extra fields

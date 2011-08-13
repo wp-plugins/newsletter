@@ -33,12 +33,12 @@ if ($action == 'remove_unconfirmed') {
     $wpdb->query("delete from " . $wpdb->prefix . "newsletter where status='S'");
 }
 
-if ($action == 'remove_bounced') {
-    $wpdb->query("delete from " . $wpdb->prefix . "newsletter where status='B'");
+if ($action == 'remove_unsubscribed') {
+    $wpdb->query("delete from " . $wpdb->prefix . "newsletter where status='U'");
 }
 
 if ($action == 'confirm_all') {
-    $wpdb->query("update " . $wpdb->prefix . "newsletter set status='C'");
+    $wpdb->query("update " . $wpdb->prefix . "newsletter set status='C' where status='S'");
 }
 
 if ($action == 'remove_all') {
@@ -121,17 +121,57 @@ $nc->messages($messages);
 
     <p><a href="admin.php?page=newsletter/users-edit.php&amp;id=0" class="button">Create a new user</a></p>
 
-    <form method="post" action="">
+    <form method="post" action="">    
         <?php $nc->init(); ?>
+        
+        <table class="widefat" style="width: 300px;">
+            <thead><tr><th>Status</th><th>Total</th><th>Actions</th></thead>
+            <tr>
+                <td>Confirmed</td>
+                <td>
+                    <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C'"); ?>
+                </td>
+                <td nowrap>
+                </td>
+            </tr>
+            <tr>
+                <td>Not confirmed</td>
+                <td>
+                    <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='S'"); ?>
+                </td>
+                <td nowrap>
+                    <?php $nc->button_confirm('remove_unconfirmed', 'Delete all not confirmed', 'Are you sure you want to delete ALL not confirmed subscribers?'); ?>
+                    <?php $nc->button_confirm('confirm_all', 'Confirm all', 'Are you sure you want to mark ALL subscribers as confirmed?'); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Subscribed to feed by mail</td>
+                <td nowrap>
+                    <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C' and feed=1"); ?>
+                    (only for <a href="http://www.satollo.net/plugins/newsletter" target="_blank">Newsletter Pro</a>)
+                </td>
+                <td nowrap>
+                </td>
+            </tr>
+            <tr>
+                <td>Unsubscribed</td>
+                <td>
+                    <?php echo $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='U'"); ?>
+                </td>
+                <td>
+                    <?php $nc->button_confirm('remove_unsubscribed', 'Delete all unsubscribed', 'Are you sure you want to delete ALL unsubscribed?'); ?>
+                </td>
+            </tr>
+        </table>
+    
+
+
         <h3>Massive actions</h3>
         <table class="form-table">
             <tr>
                 <th>General actions on subscribers</th>
                 <td>
-                    <?php $nc->button_confirm('remove_unconfirmed', 'Delete all not confirmed', 'Are you sure you want to delete ALL not confirmed subscribers?'); ?>
-                    <?php //$nc->button('remove_bounced', 'Remove bounced', 'Are you sure you want to remove bounced subscribers?'); ?>
                     <?php $nc->button_confirm('remove_all', 'Delete all', 'Are you sure you want to remove ALL subscribers?'); ?>
-                    <?php $nc->button_confirm('confirm_all', 'Confirm all', 'Are you sure you want to mark ALL subscribers as confirmed?'); ?>
                 </td>
             </tr>
             <tr>
@@ -185,10 +225,14 @@ $nc->messages($messages);
             </tr>
         </table>
 
+        <h3>Search results</h3>
+
+<?php if (empty($list)) { ?>
+<p>No search results (or you did not search at all)</p>
+<?php } ?>
+
 
 <?php if (!empty($list)) { ?>
-
-<h3>Search results</h3>
 
 <table class="widefat">
     <thead>

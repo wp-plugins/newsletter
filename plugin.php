@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.1.7
+  Version: 2.5.2
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -307,7 +307,9 @@ class Newsletter {
         $options = get_option('newsletter_profile');
 
         $buffer .= '<div class="newsletter newsletter-profile">';
-        $buffer .= '<form action="" method="post"><input type="hidden" name="na" value="ps"/>';
+        $buffer .= '<form action="' . $this->options_main['url'] . '" method="post"><input type="hidden" name="na" value="ps"/>';
+        $buffer .= '<input type="hidden" name="ni" value="' . $user->id . '"/>';
+        $buffer .= '<input type="hidden" name="nt" value="' . $user->token . '"/>';
         $buffer .= '<table>';
         $buffer .= '<tr><th align="right">' . $options['email'] . '</th><td><input type="text" size="30" name="ne" value="' . htmlspecialchars($user->email) . '"/></td></tr>';
         if ($options['name_status'] >= 1) {
@@ -563,11 +565,6 @@ class Newsletter {
 
         if ($action == 'c') {
             setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
-            $wpdb->query("update " . $wpdb->prefix . "newsletter set status='C' where id=" . $user->id);
-
-            $this->mail($user->email, $this->replace($options['confirmed_subject'], $user), $this->replace($options['confirmed_message'], $user));
-
-            $this->notify_admin($user, 'Newsletter subscription');
 
             if (!empty($options['confirmed_url'])) {
                 header('Location: ' . $options['confirmed_url']);
@@ -586,10 +583,7 @@ class Newsletter {
         // Unsubscription confirm
         if ($action == 'uc') {
             setcookie("newsletter", "", time() - 3600);
-            $wpdb->query($wpdb->prepare("delete from " . $wpdb->prefix . "newsletter where id=%d" . " and token=%s", $user->id, $user->token));
             $this->message = $this->replace($options['unsubscribed_text'], $user);
-            $this->mail($user->email, $this->replace($options['unsubscribed_subject'], $user), $this->replace($options['unsubscribed_message'], $user));
-            $this->notify_admin($user, 'Newsletter cancellation');
             return;
         }
 
@@ -726,9 +720,10 @@ class Newsletter {
             if ($base == '') $base = get_option('home');
             $id_token = '&amp;ni=' . $user->id . '&amp;nt=' . $user->token;
 
-            $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', $this->add_qs($base, 'na=c' . $id_token));
+            $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', $this->add_qs(plugins_url('do.php', __FILE__), 'a=c' . $id_token));
+            $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', $this->add_qs(plugins_url('do.php', __FILE__), 'a=uc' . $id_token));
+
             $text = $this->replace_url($text, 'UNSUBSCRIPTION_URL', $this->add_qs($base, 'na=u' . $id_token));
-            $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', $this->add_qs($base, 'na=uc' . $id_token));
             $text = $this->replace_url($text, 'PROFILE_URL', $this->add_qs($base, 'na=pe' . $id_token));
             $text = $this->replace_url($text, 'UNLOCK_URL', $this->add_qs($this->options_main['url'], 'na=m' . $id_token));
 
