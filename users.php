@@ -199,14 +199,6 @@ $nc->messages($messages);
         <?php $nc->init(); ?>
         <input type="hidden" name="options[subscriber_id]"/>
         <input type="hidden" name="options[subscriber_status]"/>
-        
-        <?php
-            $tmp = $wpdb->get_results($wpdb->prepare("select distinct newsletter, url from " . $wpdb->prefix . "newsletter_stats order by newsletter,url"));
-            $links = array(''=>'Unfiltered');
-            foreach ($tmp as $t) {
-                $links[$t->newsletter . '|' . $t->url] = $t->newsletter . ': ' . substr($t->url, 0, min(strlen($t->url), 50)) . '...';
-            }
-        ?>
 
         <h3>Search</h3>
         <table class="form-table">

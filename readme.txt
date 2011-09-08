@@ -69,6 +69,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.2.1 =
+
+* fixed an error on subscriber panels claiming an unexisting table
+
 = 2.5.2 =
 
 * important change on subscription confirmation and unsubscription confirmation to avoid multiple emails
