@@ -51,7 +51,7 @@ $options_profile = get_option('newsletter_profile');
             <tr valign="top">
                 <th>Status</th>
                 <td>
-                    <?php $nc->select('status', array('C'=>'Confirmed', 'S'=>'Not confirmed', 'B'=>'Bounce')); ?>
+                    <?php $nc->select('status', array('C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed')); ?>
                 </td>
             </tr>
             <tr valign="top">

@@ -247,7 +247,16 @@ $nc->messages($messages);
     <a href="admin.php?page=newsletter/users-edit.php&amp;id=<?php echo $s->id; ?>"><?php echo $s->email; ?><br /><?php echo $s->name; ?> <?php echo $s->surname; ?></a>
 </td>
 <td><small>
-Confirmed:&nbsp;<?php echo ($s->status=='S'?'NO':'YES'); ?>
+        <?php
+        switch ($s->status) {
+            case 'S': echo 'NOT CONFIRMED'; break;
+            case 'C': echo 'CONFIRMED'; break;
+            case 'U': echo 'UNSUBSCRIBED'; break;
+        }
+        ?>
+        <br />
+        Feed: only Pro version<br />
+        Follow Up: only Pro version        
 </small></td>
 
 <td>

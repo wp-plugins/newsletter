@@ -69,6 +69,17 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.2.3 =
+
+* Fixed extra field of type "list" not showing up correctly (when more than one)
+* removed the collapsed sub panel on some configuration panel (people did not realized that a click would open them)
+* fixed the unconfirmed status display on users panel
+* fixed the status list on user edit panel
+
+= 2.5.2.2 =
+
+* removed the backtrace on log (some PHP installations have problems with it)
+
 = 2.5.2.1 =
 
 * fixed an error on subscriber panels claiming an unexisting table
