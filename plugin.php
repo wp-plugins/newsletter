@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.2
+  Version: 2.5.2.3
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -269,7 +269,7 @@ class Newsletter {
     function log($text='', $level=2) {
         if ((int) $this->options_main['logs'] < $level) return;
 
-        $db = debug_backtrace(false);
+        //$db = debug_backtrace(false);
         $time = date('d-m-Y H:i:s ');
         switch ($level) {
             case 1: $time .= '- ERROR';
@@ -280,7 +280,7 @@ class Newsletter {
                 break;
         }
         if (is_array($text) || is_object($text)) $text = print_r($text, true);
-        file_put_contents(dirname(__FILE__) . '/log.txt', $time . ' - ' . $db[1]['function'] . ' - ' . $text . "\n", FILE_APPEND | FILE_TEXT);
+        file_put_contents(dirname(__FILE__) . '/log.txt', $time . ' - ' . $text . "\n", FILE_APPEND | FILE_TEXT);
     }
 
     function hook_activate() {
@@ -342,11 +342,11 @@ class Newsletter {
             if ($options['profile_' . $i . '_type'] == 'select') {
                 $buffer .= '<select name="np' . $i . '">';
                 $opts = explode(',', $options['profile_' . $i . '_options']);
-                for ($i = 0; $i < count($opts); $i++) {
-                    $opts[$i] = trim($opts[$i]);
+                for ($j = 0; $j < count($opts); $j++) {
+                    $opts[$j] = trim($opts[$j]);
                     $buffer .= '<option';
-                    if ($opts[$i] == $user->$field) $buffer .= ' selected';
-                    $buffer .= '>' . $opts[$i] . '</option>';
+                    if ($opts[$j] == $user->$field) $buffer .= ' selected';
+                    $buffer .= '>' . $opts[$j] . '</option>';
                 }
                 $buffer .= '</select>';
             }
@@ -407,8 +407,8 @@ class Newsletter {
             if ($options_profile['profile_' . $i . '_type'] == 'select') {
                 $buffer .= '<tr><th>' . $options_profile['profile_' . $i] . '</th><td><select name="np' . $i . '">';
                 $opts = explode(',', $options_profile['profile_' . $i . '_options']);
-                for ($i = 0; $i < count($opts); $i++) {
-                    $buffer .= '<option>' . trim($opts[$i]) . '</option>';
+                for ($j = 0; $j < count($opts); $j++) {
+                    $buffer .= '<option>' . trim($opts[$j]) . '</option>';
                 }
                 $buffer .= '</select></td></tr>';
             }

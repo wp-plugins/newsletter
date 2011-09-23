@@ -199,14 +199,6 @@ $nc->messages($messages);
         <?php $nc->init(); ?>
         <input type="hidden" name="options[subscriber_id]"/>
         <input type="hidden" name="options[subscriber_status]"/>
-        
-        <?php
-            $tmp = $wpdb->get_results($wpdb->prepare("select distinct newsletter, url from " . $wpdb->prefix . "newsletter_stats order by newsletter,url"));
-            $links = array(''=>'Unfiltered');
-            foreach ($tmp as $t) {
-                $links[$t->newsletter . '|' . $t->url] = $t->newsletter . ': ' . substr($t->url, 0, min(strlen($t->url), 50)) . '...';
-            }
-        ?>
 
         <h3>Search</h3>
         <table class="form-table">
@@ -255,7 +247,16 @@ $nc->messages($messages);
     <a href="admin.php?page=newsletter/users-edit.php&amp;id=<?php echo $s->id; ?>"><?php echo $s->email; ?><br /><?php echo $s->name; ?> <?php echo $s->surname; ?></a>
 </td>
 <td><small>
-Confirmed:&nbsp;<?php echo ($s->status=='S'?'NO':'YES'); ?>
+        <?php
+        switch ($s->status) {
+            case 'S': echo 'NOT CONFIRMED'; break;
+            case 'C': echo 'CONFIRMED'; break;
+            case 'U': echo 'UNSUBSCRIBED'; break;
+        }
+        ?>
+        <br />
+        Feed: only Pro version<br />
+        Follow Up: only Pro version        
 </small></td>
 
 <td>
