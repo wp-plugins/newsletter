@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.2.3
+  Version: 2.5.2.4
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -83,6 +83,7 @@ class Newsletter {
     }
 
     function check_transient($name, $time) {
+        usleep(rand(0, 1000000));
         if (get_transient($name) !== false) {
             $this->log('Called too quickly');
             return false;

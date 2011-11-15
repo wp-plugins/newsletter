@@ -69,6 +69,11 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.2.4 =
+
+* Import now consider 19 fields after the last name as extended profile data
+* A possible fix for better concurrency management while sending
+
 = 2.5.2.3 =
 
 * Fixed extra field of type "list" not showing up correctly (when more than one)
