@@ -49,6 +49,7 @@ $sql = "CREATE TABLE `" . $wpdb->prefix . "newsletter` (
       `profile_19` varchar(255) NOT NULL DEFAULT '',
       `referrer` varchar(50) NOT NULL DEFAULT '',
       `ip` varchar(50) NOT NULL DEFAULT '',
+      `test` tinyint(4) NOT NULL DEFAULT 0,
       PRIMARY KEY (`id`),
       UNIQUE KEY `email` (`email`)
     ) $charset_collate;";

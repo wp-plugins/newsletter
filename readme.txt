@@ -1,8 +1,8 @@
 
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail
-Requires at least: 2.7
-Tested up to: 3.2.1
+Requires at least: 2.8
+Tested up to: 3.3.1
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo
@@ -68,6 +68,13 @@ None.
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 2.5.2.5 =
+
+* Added the "test" flag on subscriber so a real subscriber can be used while sending test emails
+* Upgraded tinymce
+* Graphical button for submit
+* Emails like aaa@q.com are now accepted
 
 = 2.5.2.4 =
 

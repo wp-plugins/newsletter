@@ -124,6 +124,9 @@ $status = array(0=>'Disabled', 1=>'Only on profile page', 2=>'Even on subscripti
                 <th>Buttons</th>
                 <td>
                     "subscribe": <?php $nc->text('subscribe'); ?> "profile save": <?php $nc->text('save'); ?>
+                    <div class="hints">
+                    For "subscribe" insert an URL to an image (http://...) to use it as a graphical button.
+                    </div>
                 </td>
             </tr>
         </table>

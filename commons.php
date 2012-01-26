@@ -98,11 +98,13 @@ class NewsletterControls {
 
         foreach ($groups as $group) {
             echo '<optgroup label="' . htmlspecialchars($group['']) . '">';
+            if (!empty($group)) {
             foreach ($group as $key => $label) {
                 if ($key == '') continue;
                 echo '<option value="' . $key . '"';
                 if ($value == $key) echo ' selected';
                 echo '>' . htmlspecialchars($label) . '</option>';
+            }
             }
             echo '</optgroup>';
         }
@@ -308,7 +310,13 @@ function newsletter_get_test_subscribers() {
             $subscribers[] = $subscriber;
         }
     }
-    return $subscribers;
+    $others = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter where test=1");
+    if (!empty($others)) {
+        foreach ($others as &$other) {
+            $subscribers[] = $other;
+        }
+    }
+    return $subscribers;    
 }
 
 function newsletter_delete_all($status=null) {

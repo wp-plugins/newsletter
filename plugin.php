@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.2.4
+  Version: 2.5.2.5
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -419,7 +419,11 @@ class Newsletter {
         if ($options_profile['privacy_status'] == 1) {
             $buffer .= '<input type="checkbox" name="ny"/>&nbsp;' . $options_profile['privacy'] . '<br />';
         }
-        $buffer .= '<input type="submit" value="' . $options_profile['subscribe'] . '"/></td></tr>';
+        if (strpos($options_profile['subscribe'], 'http://') !== false) {
+            $buffer .= '<input type="image" src="' . $options_profile['subscribe'] . '"/></td></tr>';
+        } else {
+            $buffer .= '<input type="submit" value="' . $options_profile['subscribe'] . '"/></td></tr>';
+        }
         $buffer .= '</table></form></div>';
         return $buffer;
     }

@@ -2,7 +2,7 @@
 <script type="text/javascript">
 //<![CDATA[
 function newsletter_check(f) {
-    var re = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-]{2,})+\.)+([a-zA-Z0-9]{2,})+$/;
+    var re = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-]{1,})+\.)+([a-zA-Z0-9]{2,})+$/;
     if (!re.test(f.elements["ne"].value)) {
         alert("<?php echo addslashes($options['email_error']); ?>");
         return false;

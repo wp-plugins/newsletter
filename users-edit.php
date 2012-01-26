@@ -55,6 +55,15 @@ $options_profile = get_option('newsletter_profile');
                 </td>
             </tr>
             <tr valign="top">
+                <th>Test subscriber?</th>
+                <td>
+                    <?php $nc->yesno('test'); ?>
+                    <div class="hints">
+                        A test subscriber is a normal subscriber that is used when sending test are made, too.
+                    </div>
+                </td>
+            </tr>            
+            <tr valign="top">
                 <th>Lists</th>
                 <td>
                     <table>
