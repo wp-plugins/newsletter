@@ -69,6 +69,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.2.6 =
+
+* Fix the new test subscriber extraction
+
 = 2.5.2.5 =
 
 * Added the "test" flag on subscriber so a real subscriber can be used while sending test emails

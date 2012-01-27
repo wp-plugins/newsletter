@@ -294,7 +294,7 @@ function newsletter_search($text, $status='', $order='email', $list = null, $lin
 }
 
 function newsletter_get_test_subscribers() {
-    global $newsletter;
+    global $newsletter, $wpdb;
     $subscribers = array();
     for ($i = 0; $i < 5; $i++) {
         if (!empty($newsletter->options_main['test_email_' . $i])) {
