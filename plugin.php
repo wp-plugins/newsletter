@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.2.6
+  Version: 2.5.2.7
   Author: Satollo
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -115,7 +115,7 @@ class Newsletter {
         global $wpdb;
 
         $this->log();
-        
+
         if ($this->limits_exceeded()) return false;
 
         if ($users == null) {
@@ -170,7 +170,7 @@ class Newsletter {
 
             $m = '<html><head><style type="text/css">' . $css .
                 '</style></head><body>' . $m . '</body></html>';
-            
+
             $s = $this->replace($email->subject, $user);
             $x = $this->mail($user->email, $s, $m, true, $headers, 2);
 
@@ -624,7 +624,8 @@ class Newsletter {
 
             $wpdb->update($wpdb->prefix . 'newsletter', $data, array('id' => $user->id));
             $url = empty($this->options_main['url']) ? get_option('home') : $this->options_main['url'];
-            header('Location: ' . $url . '/?na=pe&ni=' . $user->id . '&nt=' . $user->token);
+            $url = $this->add_qs($url, 'na=pe&ni=' . $user->id . '&nt=' . $user->token, false);
+            header('Location: ' . $url);
             die();
         }
 
@@ -687,7 +688,7 @@ class Newsletter {
         $text = str_replace('{blog_title}', get_option('blogname'), $text);
         $text = str_replace('{date}', date_i18n(get_option('date_format')), $text);
         $text = str_replace('{blog_description}', get_option('blogdescription'), $text);
-        
+
         // Date processing
         $x = 0;
         while (($x = strpos($text, '{date_', $x)) !== false) {

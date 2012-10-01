@@ -11,7 +11,7 @@ Add a real newsletter service to your blog. In seconds. For free.
 
 == Description ==
 
-This plug-in lets you collect subscribers on your blog with a single or double opt-in
+This plug-in lets you to collect subscribers on your blog with a single or double opt-in
 subscription process. Double opt-in is law compliant and it means the user has to confirm the subscription
 following simple standard instructions sent to him via email.
 
@@ -68,6 +68,10 @@ None.
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 2.5.2.7 =
+
+* Fixed the profile save redirector on blogs without permalinks
 
 = 2.5.2.6 =
 
