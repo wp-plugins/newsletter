@@ -2,9 +2,9 @@
 /*
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
-  Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 2.5.2.7
-  Author: Satollo
+  Description: Newsletter build you list and send newsletters. All from your blog. <strong>Newsletter 3.0 is almost here with great changes! When you'll see the update notice be prepared to some reconfiguration or wait for fixing releases</strong>. Updates on www.satollo.net (you can subscribe the newsletter).
+  Version: 2.5.2.8
+  Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 
@@ -43,7 +43,7 @@ class Newsletter {
 
         add_action('init', array(&$this, 'hook_init'));
         add_action('admin_init', array(&$this, 'hook_admin_init'));
-        add_action('mailer_bounce_email', array(&$this, 'mailer_bounce_email'));
+        //add_action('mailer_bounce_email', array(&$this, 'mailer_bounce_email'));
 
         add_filter('cron_schedules', array(&$this, 'hook_cron_schedules'), 1000);
         add_action('newsletter', array(&$this, 'hook_newsletter'), 1);
@@ -357,7 +357,7 @@ class Newsletter {
 
         // Lists
         $buffer .= '<tr><th>&nbsp;</th><td>';
-        for ($i = 1; $i <= 9; $i++) {
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
             if ($options['list_' . $i . '_status'] == 0) continue;
             $buffer .= '<input type="checkbox" name="nl[]" value="' . $i . '"';
             $list = 'list_' . $i;
@@ -393,7 +393,7 @@ class Newsletter {
             $buffer .= '</select></td></tr>';
         }
         $lists = '';
-        for ($i = 1; $i <= 9; $i++) {
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
             if ($options_profile['list_' . $i . '_status'] != 2) continue;
             $lists .= '<input type="checkbox" name="nl[]" value="' . $i . '"/>&nbsp;' . $options_profile['list_' . $i] . '<br />';
         }
@@ -428,8 +428,8 @@ class Newsletter {
         return $buffer;
     }
 
-    function mailer_bounce_email($email) {
-    }
+//    function mailer_bounce_email($email) {
+//    }
 
     function hook_template_redirect() {
         if (!empty($this->message) && empty($this->options_main['url'])) {
@@ -478,7 +478,7 @@ class Newsletter {
         $form = str_replace('{newsletter_url}', $this->options_main['url'], $options['form_' . $number]);
 
         $lists = '';
-        for ($i = 1; $i <= 9; $i++) {
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
             if ($options_profile['list_' . $i . '_status'] != 2) continue;
             $lists .= '<input type="checkbox" name="nl[]" value="' . $i . '"/>&nbsp;' . $options_profile['list_' . $i] . '<br />';
         }
@@ -524,8 +524,8 @@ class Newsletter {
 
                 // Lists (field names are nl[] and values the list number so special forms with radio button can work)
                 if (is_array($_REQUEST['nl'])) {
-                    for ($i = 1; $i <= 9; $i++) {
-                        if ($options_profile['list_' . $i . '_status'] != 2) continue;
+                    for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+                        if ($options_profile['list_' . $i . '_status'] == 0) continue;
                         if (in_array($i, $_REQUEST['nl'])) $user['list_' . $i] = 1;
                     }
                 }
@@ -610,7 +610,7 @@ class Newsletter {
 
             // Lists
             if (is_array($_REQUEST['nl'])) {
-                for ($i = 1; $i <= 9; $i++) {
+                for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
                     if ($options_profile['list_' . $i . '_status'] == 0) continue;
                     $data['list_' . $i] = in_array($i, $_REQUEST['nl']) ? 1 : 0;
                 }
@@ -733,7 +733,7 @@ class Newsletter {
             $text = $this->replace_url($text, 'PROFILE_URL', $this->add_qs($base, 'na=pe' . $id_token));
             $text = $this->replace_url($text, 'UNLOCK_URL', $this->add_qs($this->options_main['url'], 'na=m' . $id_token));
 
-            for ($i = 1; $i <= 9; $i++) {
+            for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
                 $text = $this->replace_url($text, 'LIST_' . $i . '_SUBSCRIPTION_URL', $this->add_qs($base, 'na=ls&amp;nl=' . $i . $id_token));
                 $text = $this->replace_url($text, 'LIST_' . $i . '_UNSUBSCRIPTION_URL', $this->add_qs($base, 'na=lu&amp;nl=' . $i . $id_token));
             }

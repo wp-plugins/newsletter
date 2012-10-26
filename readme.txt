@@ -1,11 +1,10 @@
 
 === Newsletter ===
-Tags: newsletter,email,subscription,mass mail
-Requires at least: 2.8
-Tested up to: 3.3.1
+Tags: newsletter,email,subscription,mass mail,list building,contacts
+Requires at least: 3.0.0
+Tested up to: 3.4.2
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
-Contributors: satollo
 
 Add a real newsletter service to your blog. In seconds. For free.
 
@@ -68,6 +67,10 @@ None.
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 2.5.2.8 =
+
+* Fixed the list displaying on administration panel when there are more than 9 lists
 
 = 2.5.2.7 =
 

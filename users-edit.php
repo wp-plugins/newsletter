@@ -62,7 +62,7 @@ $options_profile = get_option('newsletter_profile');
                         A test subscriber is a normal subscriber that is used when sending test are made, too.
                     </div>
                 </td>
-            </tr>            
+            </tr>
             <tr valign="top">
                 <th>Lists</th>
                 <td>
@@ -70,14 +70,7 @@ $options_profile = get_option('newsletter_profile');
                         <tr>
                             <td valign="top">
                                 <?php
-                                for ($i=1; $i<=5; $i++) {
-                                    $nc->checkbox('list_' . $i, '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]) . '<br />');
-                                }
-                                ?>
-                            </td>
-                            <td valign="top">
-                                <?php
-                                for ($i=6; $i<=9; $i++) {
+                                for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++) {
                                     $nc->checkbox('list_' . $i, '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]) . '<br />');
                                 }
                                 ?>

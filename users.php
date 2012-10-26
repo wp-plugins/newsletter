@@ -7,7 +7,7 @@ $options_lists = get_option('newsletter_profile');
 $options_main = get_option('newsletter_main');
 
 $lists = array();
-for ($i=1; $i<=9; $i++)
+for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++)
 {
     $lists[''.$i] = '(' . $i . ') ' . $options_lists['list_' . $i];
 }
@@ -121,9 +121,9 @@ $nc->messages($messages);
 
     <p><a href="admin.php?page=newsletter/users-edit.php&amp;id=0" class="button">Create a new user</a></p>
 
-    <form method="post" action="">    
+    <form method="post" action="">
         <?php $nc->init(); ?>
-        
+
         <table class="widefat" style="width: 300px;">
             <thead><tr><th>Status</th><th>Total</th><th>Actions</th></thead>
             <tr>
@@ -163,7 +163,7 @@ $nc->messages($messages);
                 </td>
             </tr>
         </table>
-    
+
 
 
         <h3>Massive actions</h3>
@@ -256,7 +256,7 @@ $nc->messages($messages);
         ?>
         <br />
         Feed: only Pro version<br />
-        Follow Up: only Pro version        
+        Follow Up: only Pro version
 </small></td>
 
 <td>

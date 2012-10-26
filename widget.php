@@ -57,7 +57,7 @@ class NewsletterWidget extends WP_Widget {
             }
 
             $lists = '';
-            for ($i = 1; $i <= 9; $i++) {
+            for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
                 if ($options_profile['list_' . $i . '_status'] != 2) continue;
                 $lists .= '<input type="checkbox" name="nl[]" value="' . $i . '"/>&nbsp;' . $options_profile['list_' . $i] . '<br />';
             }
@@ -66,7 +66,7 @@ class NewsletterWidget extends WP_Widget {
             if ($options_profile['privacy_status'] == 1) {
                 $form .= '<p><input type="checkbox" name="ny"/>&nbsp;' . $options_profile['privacy'] . '</p>';
             }
-            
+
             $form .= '<p><input type="submit" value="' . $options_profile['subscribe'] . '"/></p>';
             $form .= '</form></div>';
             if (strpos($buffer, '{subscription_form}') !== false) $buffer = str_replace('{subscription_form}', $form, $buffer);

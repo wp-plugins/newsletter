@@ -46,7 +46,7 @@ $status = array(0=>'Disabled', 1=>'Only on profile page', 2=>'Even on subscripti
     <h2>Newsletter Profile</h2>
 
     <?php include dirname(__FILE__) . '/header.php'; ?>
-    
+
     <p>
         User profile is the whole set of user data that he can edit accessing the profile page (usually via the {profile_url} link you
         should add in any newsletter or welcome message.<br />
@@ -77,7 +77,7 @@ $status = array(0=>'Disabled', 1=>'Only on profile page', 2=>'Even on subscripti
             </tr>
         </table>
         <p class="submit"><?php $nc->button('save', 'Save'); ?></p>
-        
+
 
         <h3>Main profile fields</h3>
         <table class="form-table">
@@ -131,7 +131,7 @@ $status = array(0=>'Disabled', 1=>'Only on profile page', 2=>'Even on subscripti
             </tr>
         </table>
         <p class="submit"><?php $nc->button('save', 'Save'); ?></p>
-        
+
 
         <h3>Extra profile fields</h3>
 
@@ -184,7 +184,7 @@ $status = array(0=>'Disabled', 1=>'Only on profile page', 2=>'Even on subscripti
                         <th>Field</th><th>When/Where</th><th>Configuration</th>
                     </tr>
                         </thead>
-                    <?php for ($i=1; $i<=9; $i++) { ?>
+                    <?php for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++) { ?>
                         <tr><td>List <?php echo $i; ?></td><td><?php $nc->select('list_' . $i . '_status', $status); ?></td><td>label: <?php $nc->text('list_' . $i); ?></td></tr>
                     <?php } ?>
                     </table>
@@ -197,6 +197,6 @@ $status = array(0=>'Disabled', 1=>'Only on profile page', 2=>'Even on subscripti
         </table>
         <p class="submit"><?php $nc->button('save', 'Save'); ?></p>
 
-       
+
     </form>
 </div>
