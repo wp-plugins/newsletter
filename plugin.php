@@ -3,7 +3,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter build you list and send newsletters. All from your blog. <strong>Newsletter 3.0 is almost here with great changes! When you'll see the update notice be prepared to some reconfiguration or wait for fixing releases</strong>. Updates on www.satollo.net (you can subscribe the newsletter).
-  Version: 2.5.2.8
+  Version: 2.5.2.9
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.

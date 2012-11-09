@@ -68,6 +68,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 2.5.2.9 =
+
+* Fixed the import when lists are specified
+
 = 2.5.2.8 =
 
 * Fixed the list displaying on administration panel when there are more than 9 lists

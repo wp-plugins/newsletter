@@ -13,17 +13,18 @@ if ($action == 'import') {
 
     $error = array();
     // Subscriber array with base user data from selected lists and other default values
-    $subscriber = array();
-    for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++)
-    {
-        $list = 'list_' . $i;
-        if (isset($options[$list])) $subscriber[$list] = 1;
-        else {
-            if ($options['mode'] == 'overwrite') $subscriber[$list] = 0;
-        }
-    }
 
     foreach ($lines as $line) {
+        $subscriber = array('status'=>'C');
+        for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++)
+        {
+            $list = 'list_' . $i;
+            if (isset($options[$list])) $subscriber[$list] = 1;
+            else {
+                if ($options['mode'] == 'overwrite') $subscriber[$list] = 0;
+            }
+        }
+
         // Parse the CSV line
         $line = trim($line);
         if ($line == '') continue;
@@ -42,11 +43,11 @@ if ($action == 'import') {
         }
         $subscriber['name'] = $newsletter->normalize_name($data[1]);
         $subscriber['surname'] = $newsletter->normalize_name($data[2]);
-        
+
         for ($i=1; $i<=NEWSLETTER_PROFILE_MAX; $i++) {
             if (isset($data[$i+2])) $subscriber['profile_' . $i] = $data[$i+2];
         }
-        
+
         // May by here for a previous saving
         unset($subscriber['id']);
 
