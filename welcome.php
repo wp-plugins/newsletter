@@ -48,12 +48,16 @@ if ($x === false) {
     <?php $controls->show(); ?>
 
     <form method="post" action="">
-        <?php $controls->init(); ?> 
+        <?php $controls->init(); ?>
 
         <p>
             Thank you to use Newsletter plugin. Newsletter counts more than
-            <a href="http://wordpress.org/extend/plugins/newsletter/stats/" target="_blank">350.000 downloads</a> and
+            <a href="http://wordpress.org/extend/plugins/newsletter/stats/" target="_blank">400.000 downloads</a> and
             that number is a clear sign of how much useful it is to many bloggers. Or at least I hope that.
+        </p>
+
+        <p>
+            <strong>Old 2.5.2.7 version is still available <a href="http://www.satollo.net/wp-content/uploads/newsletter-2.5.2.7.zip">here</a>.</strong>
         </p>
 
         <h3>Version 3.0</h3>

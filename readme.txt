@@ -1,56 +1,39 @@
-
 === Newsletter ===
-Tags: newsletter,email,subscription,mass mail,list building,contacts
+Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.0.0
 Tested up to: 3.4.2
-Stable tag: 2.5.2.7
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
+Stable tag: trunk
+Donate link: http://www.satollo.net/donations
 
-Add a real newsletter service to your blog. In seconds. For free.
+Add a real newsletter to your blog. In seconds. For free.
 
 == Description ==
 
-This plug-in lets you to collect subscribers on your blog with a single or double opt-in
-subscription process. Double opt-in is law compliant and it means the user has to confirm the subscription
-following simple standard instructions sent to him via email.
+This plug-in lets you collect subscribers on your blog with a single or double opt-in (law compliant)
+subscription process. Perfect for list building, you can create cool emails with visual editor, send and
+track them.
 
-Newsletter 2.5 works.
+Unlimited subscribers, unlimited emails.
 
-Take the time to read the user guide, to configure
-it as if it would be a new installed plug-in, to enter the subscription form panel and
-configure it. Read the user guide about WordPress cron system and how it can affect
-the sending process. If you need to translate the subscription form, use the
-subscription form panel, please, do not hack the language files, they are
-used only on activation. On some WordPress installations the automatic update does not
-trigger the activation process. It's important, so try to deactivate and reactivate the
-plug-in if it does not saves e-mails. If you update manually uploading the plug-in
-with FTP, deactivate it first and the reactivate.
+Key features:
 
-Please, DO NOT hack the plug-in files and then, when things go wrong, try to solve
-the problem writing me... I have no time to answer to all. Reinstall if you're in doubt
-about the plug-in integrity.
+* unlimited subscribers (the database is your, why should I limit you?)
+* unlimited emails
+* single and double opt-in plus privacy acceptance checkbox (as per European laws)
+* subscriber preferences to fine target your campaigns
+* SMTP ready
+* html and text version messages
+* a real delivery engine to manage huge lists with configurable speed
+* configurable themes
+* easy to develop themes (for coders)
+* every message fully translatable from administrative panels
+* diagnostic panel
 
-Thank you.
+Visit the [Newsletter official page](http://www.satollo.net/plugins/newsletter).
 
-Each step of subscribe and cancel process is fully configurable and translatable.
+Previous version is available [here](http://www.satollo.net/wp-content/uploads/newsletter-2.5.2.7.zip).
 
-Subscription form and profile form are easily configurable from administrative panels and you
-can translate every single label in your language.
-
-Create e-mails with a visual editor with the auto compose function which extract content
-for your blog. Auto composer themes can be customized.
-
-Use the widget to let users to subscribe from anywhere in your blog or use a short code
-to embed the subscription form on posts and pages.
-
-Use the locked content feature to fire up the subscription rate.
-
-Any option has a "hints" box with instruction to set it and the full user guide is
-inside the administrative panels.
-
-Version 2.5 is a major update and need to be reconfigured! Pay attention.
-
-More about Newsletter plug-in official page (http://www.satollo.net/plugins/newsletter).
+Thank you, Stefano Lissa (Satollo).
 
 == Installation ==
 
@@ -60,7 +43,12 @@ More about Newsletter plug-in official page (http://www.satollo.net/plugins/news
 
 == Frequently Asked Questions ==
 
-None.
+See the [Newsletter FAQ](http://www.satollo.net/plugins/newsletter/newsletter-faq) or the
+[Newsletter Forum](http://www.satollo.net/forums).
+
+For documentation start from [Newsletter official page](http://www.satollo.net/plugins/newsletter).
+
+Thank you, Stefano Lissa (Satollo).
 
 == Screen shots ==
 
@@ -68,108 +56,136 @@ No screen shots are available at this time.
 
 == Changelog ==
 
-= 2.5.2.9 =
+= 3.0.0 =
 
-* Fixed the import when lists are specified
+* Release
 
-= 2.5.2.8 =
+= 2.6.2 =
 
-* Fixed the list displaying on administration panel when there are more than 9 lists
+* Added the user massive management panel
 
-= 2.5.2.7 =
+= 2.5.3.3 =
 
-* Fixed the profile save redirector on blogs without permalinks
+* Updated to 20 lists instead of 9
+* Max lists can be set on wp-config.php with define('NEWSLETTER_LIST_MAX', [number])
+* Default preferences ocnfigurable on subscription panel
 
-= 2.5.2.6 =
+= 2.5.3.2 =
 
-* Fix the new test subscriber extraction
+* fixed the profile fields generation on subscription form
 
-= 2.5.2.5 =
+= 2.5.3.1 =
 
-* Added the "test" flag on subscriber so a real subscriber can be used while sending test emails
-* Upgraded tinymce
-* Graphical button for submit
-* Emails like aaa@q.com are now accepted
+* fixed javascript email check
+* fixed rewrite of link that are anchors
+* possible patch to increase concurrency detection while sending
+* fixed warning message on email composer panel
 
-= 2.5.2.4 =
+= 2.5.3 =
 
-* Import now consider 19 fields after the last name as extended profile data
-* A possible fix for better concurrency management while sending
+* changed the confirmation and cancellation URLs to a direct call to Newsletter Pro to avoid double emails
+* mail opening now tracked
+* fixed the add api
+* feed by mail settings added: categories and max posts
+* feed by mail themes change to use the new settings
+* unsubscribed users are marked as unsubscribed and not removed
+* api now respect follow up and feed by mail subscription options
+* fixed the profile form to add the user id and token
+* subscribers' panel changed
+* optimizations
+* main url fixed everywhere
+* small changes to the email composer
+* small changes to the blank theme
 
 = 2.5.2.3 =
 
-* Fixed extra field of type "list" not showing up correctly (when more than one)
-* removed the collapsed sub panel on some configuration panel (people did not realized that a click would open them)
-* fixed the unconfirmed status display on users panel
-* fixed the status list on user edit panel
+* subscribers panel now show the profile data
+* search can be ordered by profile data
+* result limit on search can be specified
+* {unlock_url} fixed (it was not pointing to the right configured url)
 
 = 2.5.2.2 =
 
-* removed the backtrace on log (some PHP installations have problems with it)
+* fixed the concurrent email sending problem
+* added WordPress media gallery integration inside email composer
 
 = 2.5.2.1 =
 
-* fixed an error on subscriber panels claiming an unexisting table
-
-= 2.5.2 =
-
-* important change on subscription confirmation and unsubscription confirmation to avoid multiple emails
-* number of subscriber overview on subscriber panel
-* fix on profile form showing "no user"
-
-= 2.5.1.7 =
-
-* fixed the widget which was no showing the lists and extra fields
-
-= 2.5.1.6 =
-
-* fixed {unlock_url} tag
-
-= 2.5.1.5 =
-
-* fixed issues on multi email sending
-* main configuration panel all options open because people was missing to expand panels
-* subscriber panel does not more show up the full list on first open
+* added the add_user method
+* fixed the API (was not working) and added multilist on API (thankyou betting-tips-uk.com)
 * fixed privacy check box on widget
 
-= 2.5.1.4 =
-
-* fixed a missing form element on subscriber list panel that caused some buttons to not work
-
-= 2.5.1.3 =
+= 2.5.2 =
 
 * added compatibility with lite cache
 * fixed the list checkboxes on user edit panel
 * removed the 100 users limit on search panel
+* category an max posts selection on email composer
 
-= 2.5.1.2 =
+= 2.5.1.5 =
 
-* fixed unsubscription administrator notifications
+* improved the url tag replacement for some particular blog installation
+* fixed the unsubscription administrator notification
 * replaced sex with gender in notification emails
 * fixed the confirm/unconfirm button on user list
 * fixed some labels
-* subscription form html
+* subscription form table HTML
 
-
-= 2.5.1.1 =
+= 2.5.1.4 =
 
 * added {date} tag and {date_'format'} tag, where 'format' can be any of the PHP date formats
 * added {blog_description} tag
+* fixed the feed reset button
+* added one day back button to the feed
 * updated custom forms documentation
-* fixed extended subscriber profile collection
+* fixed the trigger button on emails panel
+* changed both feed by mail themes (check them if you create your own theme)
+* fixed the custom profile field generation (important!)
+* fixed documentation about custom forms
 
-= 2.5.1 =
+Version 2.5.1.3
+- fix the feed email test id (not important, it only generates PHP error logs)
+- feed by mail send now now force the sending if in a non sending day
+- changed the way feed by mail themes extract the posts: solves the sticky posts problem
+- added the feed last check time reset button
+- fixed the confirm and cancel buttons on user list
+- fixed the welcome email when using a custom thank you page
+- added images to theme 1
+- added button to trigger the delivery engine
+- fixed the widget mail check
+- reintroduced style.css for themes
+- updated theme documentation
+- added CDATA on JavaScript
+- fixed theme 1 which was not adding the images
+- added theme 3
 
-* Improved documentation about delivery engine, WordPress cron and multisite
-* New button to force a run of the delivery engine
-* Fixed images on theme 1
-* Fixed the widget field check
-* Renamed panel "user profile" in "subscription form" (since no one read the user guide.. may be due to my bad English... :-)
-* Updated theme documentation
-* Reintroduced theme CSS
-* Added CDATA on JavaScript
-* Added theme 3
+Version 2.5.1.2
+- fixed the old profile fields saving
 
-= 2.5.0 =
+Version 2.5.1.1
+- new fr_FR file
+- fixed test of SMTP configuration which was sending to test address 2 instead of test address 1
+- bounced voice remove on search filter
+- added action "of" which return only the subscription form and fire a subcription of type "os"
+- added action "os" that subscribe the user and show only the welcome/confirmation required message
+- fixed issue with main page url configuration
 
-* first major release after 1.5.9
+Version 2.5.1
+- Fixed the widget that was not using the extended fields
+- Fixed the widget that was not using the lists
+- Added the class "newsletter-profile" and "newsletter-profile-[number]" to the widget form
+- Added the class "newsletter-profile" and "newsletter-profile-[number]" to the main subscription form
+- Added the class "newsletter-profile" and "newsletter-profile-[number]" to the profile form
+- Added the classes "newsletter-email", "newsletter-firstname", "newsletter-surname" to the respective fields on every form
+- Removed email theme option on subscription panel (was not used)
+- Fixed the welcome email on double opt in process
+- Subscription notifications to admin only for confirmed subscription
+- Fixed subscription process panel for double opt in (layout problems)
+- Improved subscription process panel
+
+
+Version 2.5.0.1
+- Fix unsubscription process not working
+
+Version 2.5.0
+- Official first release
