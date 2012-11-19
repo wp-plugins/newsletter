@@ -289,7 +289,7 @@ class Newsletter extends NewsletterModule {
         // TODO: move on subscription module
         $profile_options = get_option('newsletter_profile');
         if ($profile_options['style'] != '') {
-            echo '<link href="' . NewsletterSubscription::instance()->get_style_url($profile_options['style']) . '" type="text/css" rel="stylesheet">\n';
+            echo '<link href="' . NewsletterSubscription::instance()->get_style_url($profile_options['style']) . '" type="text/css" rel="stylesheet">';
         }
     }
 
