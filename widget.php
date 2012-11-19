@@ -77,19 +77,6 @@ class NewsletterWidget extends WP_Widget {
             }
 
             if ($options_profile['privacy_status'] == 1) {
-                $form .= "<tr>\n\t" . '<td colspan="2" class="newsletter-td-privacy">' . "\n";
-                $form .= "\t\t" . '<input type="checkbox" name="ny"/>&nbsp;';
-                if (!empty($options_profile['privacy_url'])) {
-                    $form .= '<a target="_blank" href="' . $options_profile['privacy_url'] . '">';
-                    $form .= $options_profile['privacy'] . '</a>';
-                } else {
-                    $form .= $options_profile['privacy'];
-                }
-                $form .= "\n\t</td>\n</tr>\n\n";
-            }
-
-
-            if ($options_profile['privacy_status'] == 1) {
                 if (!empty($options_profile['privacy_url'])) {
                     $form .= '<p><input type="checkbox" name="ny"/>&nbsp;<a target="_blank" href="' . $options_profile['privacy_url'] . '">' . $options_profile['privacy'] . '</a></p>';
                 }
