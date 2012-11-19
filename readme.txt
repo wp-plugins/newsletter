@@ -3,7 +3,7 @@
 Tags: newsletter,email,subscription,mass mail,list building,contacts
 Requires at least: 3.0.0
 Tested up to: 3.4.2
-Stable tag: trunk
+Stable tag: 2.5.2.7
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 
 Add a real newsletter service to your blog. In seconds. For free.
