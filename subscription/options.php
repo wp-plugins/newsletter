@@ -57,6 +57,12 @@ if ($controls->is_action()) {
     }
 } else {
     $controls->data = get_option('newsletter', array());
+
+    // Patch
+    if (isset($controls->data['subscribed_text'])) {
+        $controls->data['confirmation_text'] = $controls->data['subscribed_text'];
+        unset($controls->data['subscribed_text']);
+    }
 }
 ?>
 
@@ -93,8 +99,11 @@ if ($controls->is_action()) {
 
     <p>
         In this panel you can configure the subscription and cancellation process, setting every message, the single or double opt in and
-        even a customized subscription form.<br />
-        All tags that can be used on texts below are listed under <a href="#documentation">documentation</a> paragraph.
+        even a customized subscription form.
+    </p>
+    <p>
+        Emails sent during subscription process are themed with the file subscription/email.php which contains instructions on
+        how customize it.
     </p>
 
 
