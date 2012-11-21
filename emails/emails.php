@@ -5,7 +5,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterEmails extends NewsletterModule {
 
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.7';
 
     /**
      * @var NewsletterThemes
@@ -32,9 +32,10 @@ class NewsletterEmails extends NewsletterModule {
 
     function upgrade() {
         global $wpdb, $charset_collate;
-
-        $wpdb->query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column token varchar(10) not null default ''");
-        $wpdb->query("alter table " . NEWSLETTER_EMAILS_TABLE . " drop column visibility");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " change column `type` `type` varchar(50) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column token varchar(10) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " drop column visibility");
+        $this->upgrade_query("update " . NEWSLETTER_EMAILS_TABLE . " set type='message' where type=''");
 
         // Force a token to email without one already set.
         $token = self::get_token();

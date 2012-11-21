@@ -56,6 +56,9 @@ if ($controls->is_action('create') || $controls->is_action('test')) {
     <script>
         location.href="admin.php?page=newsletter/emails/edit.php&id=<?php echo $email->id; ?>";
     </script>
+    <div class="wrap">
+    <p>If you are not automatically redirect to the composer, <a href="admin.php?page=newsletter/emails/edit.php&id=<?php echo $email->id; ?>">click here</a>.</p>
+    </div>
     <?php
         return;
     }
@@ -143,12 +146,12 @@ function newsletter_emails_get_theme_options($theme) {
 
 
             <div id="tabs-2">
-                <iframe src="<?php echo NEWSLETTER_URL; ?>/emails/preview.php?<?php echo time(); ?>" width="100%" height="500"></iframe>
+                <iframe src="<?php echo wp_nonce_url(NEWSLETTER_URL . '/emails/preview.php?' . time()); ?>" width="100%" height="500"></iframe>
             </div>
 
 
             <div id="tabs-3">
-                <iframe src="<?php echo NEWSLETTER_URL; ?>/emails/preview-text.php?<?php echo time(); ?>" width="100%" height="500"></iframe>
+                <iframe src="<?php echo wp_nonce_url(NEWSLETTER_URL . '/emails/preview-text.php?' . time()); ?>" width="100%" height="500"></iframe>
             </div>
 
             <div id="tabs-4">

@@ -749,22 +749,29 @@ function newsletter_shortcode($attrs, $content) {
     // Now check what form must be added
     if ($message_key == 'subscription') {
 
-        if (strpos($message, '{subscription_form') === false) {
-            $message .= '{subscription_form}';
-        }
-
-        if (strpos($message, '{subscription_form}') !== false) {
-            // TODO: Remove on version 3.1. For compatibility.
-            if (isset($attrs['form'])) {
-                $message = str_replace('{subscription_form}', $module->get_form($attrs['form']), $message);
-            } else {
-                $message = str_replace('{subscription_form}', $module->get_subscription_form(), $message);
-            }
+        // Compatibility check
+        if (stripos($message, '<form') !== false) {
+            $message .= $module->get_form_javascript();
+            $message = str_ireplace('<form', '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '" onsubmit="return newsletter_check(this)"', $message);
         } else {
-            for ($i = 1; $i <= 10; $i++) {
-                if (strpos($message, "{subscription_form_$i}") !== false) {
-                    $message = str_replace("{subscription_form_$i}", $module->get_form($i), $message);
-                    break;
+
+            if (strpos($message, '{subscription_form') === false) {
+                $message .= '{subscription_form}';
+            }
+
+            if (strpos($message, '{subscription_form}') !== false) {
+                // TODO: Remove on version 3.1. For compatibility.
+                if (isset($attrs['form'])) {
+                    $message = str_replace('{subscription_form}', $module->get_form($attrs['form']), $message);
+                } else {
+                    $message = str_replace('{subscription_form}', $module->get_subscription_form(), $message);
+                }
+            } else {
+                for ($i = 1; $i <= 10; $i++) {
+                    if (strpos($message, "{subscription_form_$i}") !== false) {
+                        $message = str_replace("{subscription_form_$i}", $module->get_form($i), $message);
+                        break;
+                    }
                 }
             }
         }

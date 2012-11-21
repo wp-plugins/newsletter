@@ -56,6 +56,16 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.0.1 =
+
+* Fixed an extra character on head when including the form css
+* Fixed the double privacy check on subscription widget
+* Fixed the charset of subscription/page.php
+* Fixed the theme preview with wp_nonce_url
+* Added compatibility code for forms directly coded inside the subscription message
+* Added link to composer when the javascript redirect fails on creation of a new newsletter
+* Fixed the old email list and conversion
+
 = 3.0.0 =
 
 * Release

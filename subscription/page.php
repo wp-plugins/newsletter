@@ -20,6 +20,8 @@ $message_key = $module->get_message_key_from_request();
 $message = $newsletter->replace($module->options[$message_key . '_text'], $user);
 $alert = stripslashes($_REQUEST['alert']);
 
+// Force the UTF-8 charset
+header('Content-Type: text/html;charset=UTF-8');
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/subscription/page.php')) {
     include WP_CONTENT_DIR . '/extensions/newsletter/subscription/page.php';
