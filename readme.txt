@@ -56,6 +56,11 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.0.2 =
+
+* Documented how to customize the subscription/email.php file (see inside the file) for subscription messages
+* Fixed the confirmation message lost (only for who do not already save the subscription options...)
+
 = 3.0.1 =
 
 * Fixed an extra character on head when including the form css

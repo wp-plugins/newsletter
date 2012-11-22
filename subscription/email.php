@@ -1,6 +1,19 @@
 <?php
-
-// TODO: Explain how to customize.
+/*
+ * To customize this file, do not edit it. Instead use the sample alternative email-alternative.php
+ * and copy it on
+ *
+ * wp-content/extensions/newsletter/subscription/email.php
+ *
+ * creating the folders as needed. Then customize that file.
+ *
+ * Remember to keep at least the line of code
+ *
+ * <?php echo $message; ?>
+ *
+ * which prints the current email body created by Newsletter based on te current subscription
+ * process step.
+ */
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/subscription/email.php')) {
   include WP_CONTENT_DIR . '/extensions/newsletter/subscription/email.php';
