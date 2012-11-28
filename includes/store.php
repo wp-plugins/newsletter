@@ -32,7 +32,7 @@ class NewsletterStore {
 
     function get_field($table, $id, $field_name) {
         global $wpdb;
-        $r = $wpdb->get_var("select $field_name from $table where id=" . (int)$id . " limit 1");
+        $r = $wpdb->get_var("select $field_name from $table where id=" . (int) $id . " limit 1");
         if ($wpdb->last_error) {
             $this->logger->error($wpdb->last_error);
             return false;
@@ -68,7 +68,7 @@ class NewsletterStore {
      * @param type $format
      * @return boolean|mixed
      */
-    function get_single_by_query($query, $format=OBJECT) {
+    function get_single_by_query($query, $format = OBJECT) {
         global $wpdb;
         $r = $wpdb->get_row($query, $format);
         if ($wpdb->last_error) {
@@ -123,9 +123,19 @@ class NewsletterStore {
         return $result;
     }
 
+    /**
+     * Deletes one or more rows by id (or an array of id)
+     *
+     * @param int|array $id
+     * @return int Number of rows deleted
+     */
     function delete($table, $id) {
         global $wpdb;
-        $wpdb->delete($table, array('id' => $id));
+        if (is_array($id)) {
+            $wpdb->query("delete from " . $table . " where id in (" . implode(',', $id) . ")");
+        } else {
+            $wpdb->delete($table, array('id' => $id));
+        }
         if ($wpdb->last_error) {
             $this->logger->error($wpdb->last_error);
             return false;
@@ -141,7 +151,7 @@ class NewsletterStore {
      * @param type $format
      * @return type
      */
-    function get_all($table, $where=null, $format = OBJECT) {
+    function get_all($table, $where = null, $format = OBJECT) {
         global $wpdb;
         if ($where == null) {
             $result = $wpdb->get_results("select * from $table", $format);
@@ -151,8 +161,7 @@ class NewsletterStore {
         return $result;
     }
 
-    function set_field($table, $id, $field, $value)
-    {
+    function set_field($table, $id, $field, $value) {
         global $wpdb;
         $result = $wpdb->query($wpdb->prepare("update $table set $field=%s where id=$id", $value));
 
@@ -162,8 +171,8 @@ class NewsletterStore {
         }
 
         return $result;
-
     }
+
     function query($query) {
         global $wpdb;
         $result = $wpdb->query($query);

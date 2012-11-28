@@ -6,9 +6,9 @@
 // WordPress page to be used to show messages and when there are no alternative
 // URLs specified on single messages.
 //
-// To create an alternative to this file, just copy the subscription-page-alternative.php on
+// To create an alternative to this file, just copy the page-alternative.php on
 //
-//   wp-content/newsletter/subscription/page.php
+//   wp-content/extensions/newsletter/subscription/page.php
 //
 // and modify that copy.
 

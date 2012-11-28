@@ -26,10 +26,7 @@ class NewsletterControls {
 
                     $time = gmmktime($_REQUEST[$name . '_hour'], 0, 0,
                             $_REQUEST[$name . '_month'], $_REQUEST[$name . '_day'], $_REQUEST[$name . '_year']);
-                    echo $_REQUEST[$name . '_year'];
                     $time -= get_option('gmt_offset') * 3600;
-//echo date('Y-m-j', $time);
-  //                  echo $time;
                     $this->data[$name] = $time;
                 }
             }

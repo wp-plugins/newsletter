@@ -56,6 +56,16 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.0.3 =
+
+* Fixed documentation on subscription panel and on subscription/page.php file
+* Fixed the statistics module URL rewriting
+* Fixed a "echo" on module.php datetime method
+* Fixed the multi-delete on newsletter list
+* Fixed eval() usage on add_menu_page and add_admin_page function
+* Fixed a number of ob_end_clean() called wht not required and interfering with other output buffering
+* Fixed the editor access level
+
 = 3.0.2 =
 
 * Documented how to customize the subscription/email.php file (see inside the file) for subscription messages

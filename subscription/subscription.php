@@ -4,7 +4,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterSubscription extends NewsletterModule {
 
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
     const MESSAGE_CONFIRMED = 'confirmed';
 
     static $instance;
@@ -54,6 +54,8 @@ class NewsletterSubscription extends NewsletterModule {
             $options['url'] = Newsletter::instance()->options['url'];
             update_option('newsletter', $options);
         }
+
+        wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter/subscription');
         return true;
     }
 
@@ -206,7 +208,6 @@ class NewsletterSubscription extends NewsletterModule {
         ob_start();
         include NEWSLETTER_DIR . '/subscription/email.php';
         $message = ob_get_clean();
-        ob_end_clean();
 
         Newsletter::instance()->mail($to, $subject, $message);
     }

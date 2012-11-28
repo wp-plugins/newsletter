@@ -105,6 +105,10 @@ if ($controls->is_action()) {
         Emails sent during subscription process are themed with the file subscription/email.php which contains instructions on
         how customize it.
     </p>
+    <p>
+        Page layout where messages are shown is managed by subscription/page.php file which contains instruction on how to
+        customize it OR use a WordPress page for messages as described on subscription configuration.
+    </p>
 
 
     <form method="post" action="">

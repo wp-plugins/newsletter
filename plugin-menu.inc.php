@@ -1,6 +1,6 @@
 <?php
 
-$level = $this->options_main['editor'] ? 7 : 10;
+$level = $this->options['editor'] ? 7 : 10;
 
 add_menu_page('Newsletter', 'Newsletter', $level, 'newsletter/welcome.php', '', '');
 //add_submenu_page('newsletter/welcome.php', 'User Guide', 'User Guide', $level, 'newsletter/main.php');

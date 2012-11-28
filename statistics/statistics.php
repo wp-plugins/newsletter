@@ -64,10 +64,10 @@ class NewsletterStatistics extends NewsletterModule {
     }
 
     function relink_callback($matches) {
+        $href = str_replace('&amp;', '&', $matches[2]);
         // Do not replace the tracking or subscription/unsubscription links.
         if (strpos($href, '/newsletter/') !== false) return $matches[0];
         if (substr($href, 0, 1) == '#') return $matches[0];
-        $href = str_replace('&amp;', '&', $matches[2]);
 
         $anchor = '';
         if ($this->options['anchor'] == 1) {

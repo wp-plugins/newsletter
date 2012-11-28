@@ -84,7 +84,6 @@ if (!$controls->is_action()) {
         $mail->Send();
         $mail->SmtpClose();
         $debug = htmlspecialchars(ob_get_clean());
-        ob_end_clean();
 
         if ($mail->IsError()) $controls->errors = $mail->ErrorInfo;
         else $controls->messages = 'Success.';

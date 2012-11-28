@@ -42,12 +42,10 @@ if ($controls->is_action('create') || $controls->is_action('test')) {
         ob_start();
         include $module->get_current_theme_file_path('theme.php');
         $email['message'] = ob_get_clean();
-        ob_end_clean();
 
         ob_start();
         include $module->get_current_theme_file_path('theme-text.php');
         $email['message_text'] = ob_get_clean();
-        ob_end_clean();
 
         $email['type'] = 'message';
         $email['send_on'] = time();
@@ -57,7 +55,7 @@ if ($controls->is_action('create') || $controls->is_action('test')) {
         location.href="admin.php?page=newsletter/emails/edit.php&id=<?php echo $email->id; ?>";
     </script>
     <div class="wrap">
-    <p>If you are not automatically redirect to the composer, <a href="admin.php?page=newsletter/emails/edit.php&id=<?php echo $email->id; ?>">click here</a>.</p>
+    <p>If you are not automatically redirected to the composer, <a href="admin.php?page=newsletter/emails/edit.php&id=<?php echo $email->id; ?>">click here</a>.</p>
     </div>
     <?php
         return;

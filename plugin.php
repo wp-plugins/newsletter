@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.0.2
+  Version: 3.0.3
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.0.2');
+define('NEWSLETTER_VERSION', '3.0.3');
 
 global $wpdb, $newsletter;
 
@@ -840,8 +840,8 @@ class Newsletter extends NewsletterModule {
             $file = NEWSLETTER_DIR . '/' . $module . '/' . $page . '.php';
         }
         $name = 'newsletter_' . $module . '_' . $page;
-        eval('function ' . $name . '(){global $newsletter;require "' . $file . '";}');
-        add_submenu_page('newsletter/welcome.php', $title, $title, 10, $name, $name);
+        eval('function ' . $name . '(){global $newsletter;require \'' . $file . '\';}');
+        add_submenu_page('newsletter/welcome.php', $title, $title, $this->options['editor'] ? 7 : 10, $name, $name);
     }
 
     function add_admin_page($module, $page, $title) {
@@ -852,8 +852,8 @@ class Newsletter extends NewsletterModule {
         }
 
         $name = 'newsletter_' . $module . '_' . $page;
-        eval('function ' . $name . '(){global $newsletter;require "' . $file . '";}');
-        add_submenu_page(null, $title, $title, 10, $name, $name);
+        eval('function ' . $name . '(){global $newsletter;require \'' . $file . '\';}');
+        add_submenu_page(null, $title, $title, $this->options['editor'] ? 7 : 10, $name, $name);
     }
 
     function get_emails($type = null, $format = OBJECT) {
@@ -888,6 +888,8 @@ class Newsletter extends NewsletterModule {
     }
 
     /**
+     * NEVER CHANGE THIS METHOD SIGNATURE, USER BY THIRD PARTY PLUGINS.
+     *
      * Saves a new user on the database. Return false if the email (that must be unique) is already
      * there. For a new users set the token and creation time if not passed.
      *
