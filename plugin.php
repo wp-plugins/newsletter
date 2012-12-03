@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.0.3
+  Version: 3.0.4
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.0.3');
+define('NEWSLETTER_VERSION', '3.0.4');
 
 global $wpdb, $newsletter;
 
@@ -56,7 +56,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/themes.php';
 
 class Newsletter extends NewsletterModule {
 
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.9';
 
     // Limits to respect to avoid memory, time or provider limits
     var $time_limit;
@@ -148,7 +148,8 @@ class Newsletter extends NewsletterModule {
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column send_on int not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column track tinyint not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column editor tinyint not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sex char(1) not null default 'n'");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sex varchar(10) not null default 'n'");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails change column sex sex varchar(10) not null default 'n'");
 
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column query text");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column preferences text");
@@ -723,6 +724,15 @@ class Newsletter extends NewsletterModule {
                 $text = $this->replace_url($text, 'LIST_' . $i . '_SUBSCRIPTION_URL', self::add_qs($base, 'nm=ls&amp;nl=' . $i . $id_token));
                 $text = $this->replace_url($text, 'LIST_' . $i . '_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=lu&amp;nl=' . $i . $id_token));
             }
+
+            // Profile fields change links
+            $text = $this->replace_url($text, 'SET_SEX_MALE', NEWSLETTER_CHANGE_URL . '?nk=' . $nk . '&nf=sex&nv=m');
+            $text = $this->replace_url($text, 'SET_SEX_FEMALE', NEWSLETTER_CHANGE_URL . '?nk=' . $nk . '&nf=sex&nv=f');
+            $text = $this->replace_url($text, 'SET_FEED', NEWSLETTER_CHANGE_URL . '?nk=' . $nk . '&nf=feed');
+            for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+                $text = $this->replace_url($text, 'SET_PREFERENCE_' . $i, NEWSLETTER_CHANGE_URL . '?nk=' . $nk . '&nf=preference_' . $i);
+            }
+
         }
         return $text;
     }

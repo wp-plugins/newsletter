@@ -322,13 +322,13 @@ class NewsletterSubscription extends NewsletterModule {
         // Add exceptions for "profile" key.
         // Is there a custom url?
         if (!empty($this->options[$key . '_url'])) {
-            header('Location: ' . self::add_qs($this->options[$key . '_url'], 'nk=' . $user->id . '-' . $user->token) . $params);
+            header('Location: ' . self::add_qs($this->options[$key . '_url'], 'nk=' . $user->id . '-' . $user->token, false) . $params);
             die();
         }
 
         // Is there a dedicated page?
         if (!empty($this->options['url'])) {
-            header('Location: ' . self::add_qs($this->options['url'], 'nm=' . $key . '&nk=' . $user->id . '-' . $user->token) . $params);
+            header('Location: ' . self::add_qs($this->options['url'], 'nm=' . $key . '&nk=' . $user->id . '-' . $user->token, false) . $params);
             die();
         }
 
@@ -803,8 +803,8 @@ function newsletter_subscription_user_register($user_id) {
         return;
     }
     $user = array();
-    $user['email'] = $module->normalize_email($wp_user['user_email']);
-    $user['name'] = $wp_user['user_login'];
+    $user['email'] = $module->normalize_email($wp_user->user_email);
+    $user['name'] = $wp_user->user_login;
     $user['status'] = 'C';
     $user['wp_user_id'] = $wp_user->ID;
 

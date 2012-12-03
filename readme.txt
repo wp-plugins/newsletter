@@ -56,6 +56,20 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.0 (not released) =
+
+* Added link to change preferences/sex from emails
+
+= 3.0.4 =
+
+* Fixed the alternative email template for subscription messages
+* Added user statistics by referrer (field nr passed during subscription)
+* Added user statistics by http referer (one r missing according to the http protocol)
+* Fixed the preview for themes without textual version
+* Fixed the subscription redirect for blogs without permalink
+* Fixed the "sex" column on database so email configuration is correctly stored
+* Fixed the wp user integration
+
 = 3.0.3 =
 
 * Fixed documentation on subscription panel and on subscription/page.php file

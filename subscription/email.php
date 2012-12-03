@@ -17,7 +17,7 @@
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/subscription/email.php')) {
   include WP_CONTENT_DIR . '/extensions/newsletter/subscription/email.php';
-  die();
+  return;
 }
 
 ?>

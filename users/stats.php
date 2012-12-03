@@ -65,6 +65,28 @@
     <?php } ?>
 </table>
 
+<h3>Referrer</h3>
+<?php
+    $list = $wpdb->get_results("select referrer, count(*) as total from " . $wpdb->prefix . "newsletter where status='C' group by referrer order by referrer");
+?>
+<table class="widefat" style="width: 300px">
+    <thead><tr><th>Referrer</th><th>Total</th></thead>
+    <?php foreach($list as $row) { ?>
+    <tr><td><?php echo $row->referrer; ?></td><td><?php echo $row->total; ?></td></tr>
+    <?php } ?>
+</table>
+
+<h3>Source</h3>
+<?php
+    $list = $wpdb->get_results("select http_referer, count(*) as total from " . $wpdb->prefix . "newsletter where status='C' group by http_referer order by http_referer");
+?>
+<table class="widefat" style="width: 300px">
+    <thead><tr><th>URL</th><th>Total</th></thead>
+    <?php foreach($list as $row) { ?>
+    <tr><td><?php echo $row->http_referer; ?></td><td><?php echo $row->total; ?></td></tr>
+    <?php } ?>
+</table>
+
 <h3>Sex</h3>
 <?php
     $male_count = $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where sex='m'");
