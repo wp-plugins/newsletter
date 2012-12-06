@@ -1,9 +1,7 @@
 <?php
 
-$options = array();
-
 // Message show after a subbscription request has made.
-$options['subscribed_text'] =
+$options['confirmation_text'] =
 "<p>Je hebt je ingeschreven op de nieuwsbrief.</p>
 <p>Binnen enkele minuten zal je een bevestigingsmail ontvangen. Volg de link in die mail om jouw inschrijving te bevestigen. Indien je problemen hebt met het ontvangen van de bevestigingsmail kan je ons via het contactformulier bereiken.</p>";
 

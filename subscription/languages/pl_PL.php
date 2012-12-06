@@ -1,9 +1,7 @@
 <?php
 
-$options = array();
-
 // Message show after a subbscription request has made.
-$options['subscribed_text'] =
+$options['confirmation_text'] =
 "<p>Zostałeś zapisany do subskrypcji.
 W ciągu kilku minut otrzymasz e-mail potwierdzający.
 Kliknij w odnośnik w nim zawarty aby potwierdzić subskrypcję. Jeśli e-mail nie pojawi się w Twojej skrzynce przez 15 minut - sprawdź folder spam.</p>";

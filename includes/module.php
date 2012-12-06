@@ -94,10 +94,15 @@ class NewsletterModule {
 
     function get_default_options($sub = '') {
         if ($sub != '') $sub .= '-';
-        @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . '/en_US.php';
+        @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
         if (!is_array($options)) return array();
         return $options;
+    }
+    
+    function reset_options($sub = '') {
+        $this->save_options(array_merge($this->get_options($sub), $this->get_default_options($sub)), $sub);
+        return $this->get_options($sub);
     }
 
     function save_options($options, $sub = '') {

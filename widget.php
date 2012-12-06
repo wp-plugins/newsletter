@@ -37,7 +37,7 @@ class NewsletterWidget extends WP_Widget {
             if ($options_profile['surname_status'] == 2)
                     $form .= '<p><input class="newsletter-lastname" type="text" name="ns" value="' . $options_profile['surname'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
 
-            $form .= '<p><input class="newsletter-email" type="text" name="ne" value="' . $options_profile['email'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
+            $form .= '<p><input class="newsletter-email" type="email" required name="ne" value="' . $options_profile['email'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
 
             if ($options_profile['sex_status'] == 2) {
                 $form .= '<p><select name="nx" class="newsletter-sex">';
@@ -84,9 +84,9 @@ class NewsletterWidget extends WP_Widget {
             }
 
             if (strpos($options_profile['subscribe'], 'http://') !== false) {
-                $form .= '<p><input type="image" src="' . $options_profile['subscribe'] . '"/></p>';
+                $form .= '<p><input class="newsletter-submit" type="image" src="' . $options_profile['subscribe'] . '"/></p>';
             } else {
-                $form .= '<p><input type="submit" value="' . $options_profile['subscribe'] . '"/></p>';
+                $form .= '<p><input class="newsletter-submit" type="submit" value="' . $options_profile['subscribe'] . '"/></p>';
             }
 
             $form .= '</form></div>';

@@ -1,10 +1,7 @@
 <?php
 
-
-$options = array();
-
 // Mostrar mensaje despues de una solicitud de suscripcion hecha.
-$options['subscribed_text'] =
+$options['confirmation_text'] =
 "<p>Con exito suscrito a mi boletín informativo.
 Usted recibirá en pocos minutos un email de confirmacion. Siga el enlace
 en el para confirmar la suscripcion. Si el correo tarda mas de 15

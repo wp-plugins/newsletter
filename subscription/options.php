@@ -9,26 +9,53 @@ $options = get_option('newsletter', array());
 if ($controls->is_action()) {
     if ($controls->is_action('save')) {
 
+        $defaults = $module->get_default_options();
+        
         if (empty($controls->data['profile_text'])) {
-            $defaults = $module->get_default_options();
             $controls->data['profile_text'] = $defaults['profile_text'];
         }
 
         // Without the last curly bracket since there can be a form number apended
         if (empty($controls->data['subscription_text'])) {
-            $defaults = $module->get_default_options();
             $controls->data['subscription_text'] = $defaults['subscription_text'];
+        }
+
+        if (empty($controls->data['confirmation_text'])) {
+            $controls->data['confirmation_text'] = $defaults['confirmation_text'];
+        }
+        
+        if (empty($controls->data['confirmation_subject'])) {
+            $controls->data['confirmation_subject'] = $defaults['confirmation_subject'];
+        }
+        
+        if (empty($controls->data['confirmation_message'])) {
+            $controls->data['confirmation_message'] = $defaults['confirmation_message'];
+        }
+
+        if (empty($controls->data['confirmed_text'])) {
+            $controls->data['confirmed_text'] = $defaults['confirmed_text'];
+        }
+        
+        if (empty($controls->data['confirmed_subject'])) {
+            $controls->data['confirmed_subject'] = $defaults['confirmed_subject'];
+        }
+        
+        if (empty($controls->data['confirmed_message'])) {
+            $controls->data['confirmed_message'] = $defaults['confirmed_message'];
+        }
+
+        if (empty($controls->data['unsubscribed_text'])) {
+            $controls->data['unsubscribed_text'] = $defaults['unsubscribed_text'];
         }
 
         $controls->data['confirmed_url'] = trim($controls->data['confirmed_url']);
         $controls->data['confirmation_url'] = trim($controls->data['confirmation_url']);
-        update_option('newsletter', $controls->data);
+        $module->save_options($controls->data);
         $controls->messages = 'Saved.';
     }
 
-    if ($action == 'reset') {
-        $controls->data = $module->get_default_options();
-        $module->save_options($controls->data);
+    if ($controls->is_action('reset')) {
+        $controls->data = $module->reset_options();
     }
 
     if ($controls->is_action('align_wp_users')) {

@@ -1,10 +1,7 @@
 <?php
 
-
-$options = array();
-
 // Message show after a subbscription request has made.
-$options['subscribed_text'] =
+$options['confirmation_text'] =
 "<p>Sie haben sich in unseren Newsletter eingetragen.
 In wenigen Minuten erhalten Sie eine Best&auml;tigungs-Email. Folgen Sie dem Link um die Anmeldung zu best&auml;tigen. Sollte die Email nicht innerhalb der n&auml;chsten 15 Minuten in Ihrem Posteingang erscheinen, &uuml;berpr&uuml;fen Sie Ihren Spam-Ordner.</p>";
 

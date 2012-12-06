@@ -100,7 +100,11 @@ $emails = Newsletter::instance()->get_emails('message');
             <td><?php echo htmlspecialchars($email->subject); ?></td>
             <td><?php echo $module->date($email->send_on); ?></td>
             <td>
+                <?php if ($email->status == 'new' && $email->send_on > time()) { ?>
+                    planned
+                <?php } else { ?>
               <?php echo $email->status; ?>
+                <?php } ?>
               (<?php echo $email->sent; ?>/<?php echo $email->total; ?>)
             </td>
             <td><a class="button" href="admin.php?page=newsletter/emails/edit.php&amp;id=<?php echo $email->id; ?>">Edit</a></td>

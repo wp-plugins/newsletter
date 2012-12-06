@@ -10,12 +10,13 @@ else {
     if ($controls->is_action('save')) {
         update_option('newsletter_profile', $controls->data);
     }
+    
     if ($controls->is_action('reset')) {
-        @include NEWSLETTER_DIR . '/languages/en_US.php';
-        if (defined(WPLANG) && WPLANG != '')
-          @include NEWSLETTER_DIR . '/languages/' . WPLANG . '.php';
-        update_option('newsletter_profile', $defaults_profile);
-        $controls->data = $defaults_profile;
+        // TODO: Move this inside the module
+        @include NEWSLETTER_DIR . '/subscription/languages/profile-en_US.php';
+        @include NEWSLETTER_DIR . '/subscription/languages/profile-' . WPLANG . '.php';
+        update_option('newsletter_profile', array_merge(get_option('newsletter_profile', array()), $options));
+        $controls->data = get_option('newsletter_profile');
     }
 }
 
@@ -228,12 +229,28 @@ $rules = array(0=>'Optional', 1=>'Required');
                 <div class="tab-preamble">
                 <p></p>
                 </div>
+                 <table class="form-table">
+                    <tr>
+                        <th>Subscription form style</th>
+                        <td>
                 <?php $controls->select('style', $module->get_styles()); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Widget style</th>
+                        <td>
+                <?php $controls->select('widget_style', $module->get_styles()); ?>
+                        </td>
+                    </tr>
+                 </table>
             </div>
 
         </div>
 
-        <p class="submit"><?php $controls->button('save', 'Save'); ?></p>
+        <p class="submit">
+            <?php $controls->button('save', 'Save'); ?>
+            <?php $controls->button_confirm('reset', 'Reset all', 'Are you sure you want to reset all?'); ?>
+        </p>
 
     </form>
 </div>

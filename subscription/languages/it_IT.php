@@ -1,10 +1,7 @@
 <?php
 
-
-$options = array();
-
 // Subscription registration message
-$options['subscribed_text'] =
+$options['confirmation_text'] =
 "<p>L'iscrizione è quasi completa: controlla la tua
 casella di posta, c'è un messaggio per te con il quale confermare l'iscrizione.</p>";
 

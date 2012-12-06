@@ -59,12 +59,20 @@ class NewsletterSubscription extends NewsletterModule {
         return true;
     }
 
+    function save_options($options, $sub) {
+        if ($sub == '') {
+            // For compatibility the options are wrongly named
+            return update_option('newsletter', $options);
+        }
+        return parent::save_options($sub);
+    }
+    
     function get_options($sub = '') {
         if ($sub == '') {
             // For compatibility the options are wrongly named
             return get_option('newsletter', array());
         }
-        parent::get_options($sub);
+        return parent::get_options($sub);
     }
 
     /**
@@ -642,7 +650,14 @@ class NewsletterSubscription extends NewsletterModule {
             $buffer .= $x['field'] . "\n\t</td>\n</tr>\n\n";
         }
 
-        $buffer .= '<tr><td colspan="2" class="newsletter-td-submit"><input type="submit" class="newsletter-submit" value="' . $options['save'] . '"/></td></tr>';
+        $buffer .= '<tr><td colspan="2" class="newsletter-td-submit">';
+        
+        if (strpos($options['save'], 'http://') !== false) {
+            $buffer .= '<input class="newsletter-submit" type="image" src="' . $options['save'] . '"/></td></tr>';
+        } else {
+            $buffer .= '<input class="newsletter-submit" type="submit" value="' . $options['save'] . '"/></td></tr>';
+        }
+        
         $buffer .= '</table></form></div>';
 
         return $buffer;

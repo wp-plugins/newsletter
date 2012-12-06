@@ -1,9 +1,7 @@
 <?php
 
-$options = array();
-
 // Message show after a subbscription request has made.
-$options['subscribed_text'] =
+$options['confirmation_text'] =
 "<p>Votre demande d'inscription est enregistr&eacute;e. Merci ! Un e-mail de confirmation vous a été envoyé. V&eacute;rifier &eacute;galement votre dossier spam.</p>";
 
 // Confirmation email subject (double opt-in)
