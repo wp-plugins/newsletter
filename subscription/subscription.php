@@ -59,7 +59,7 @@ class NewsletterSubscription extends NewsletterModule {
         return true;
     }
 
-    function save_options($options, $sub) {
+    function save_options($options, $sub='') {
         if ($sub == '') {
             // For compatibility the options are wrongly named
             return update_option('newsletter', $options);
@@ -96,10 +96,16 @@ class NewsletterSubscription extends NewsletterModule {
 
         $user = NewsletterUsers::instance()->get_user($email);
 
-        // This address is new?
-        if ($user == null || $user->status == 'S') {
+        if ($user != null && $user->status == 'B') {
+            $this->logger->error('Subscription attempo of a bounced address');
+            echo 'This address is bounced, cannot be subscribed. Contact the blog owner.';
+            die();
+        }
+        
+        // This address is new or was it previously collected but never confirmed?
+        if ($user == null || $user->status == 'S' || $user->status == 'U') {
 
-            if ($user->status == 'S') {
+            if ($user != null) {
                 $this->logger->info("Email address subscribed but not confirmed");
                 $user = array('id' => $user->id);
             } else {
@@ -453,6 +459,12 @@ class NewsletterSubscription extends NewsletterModule {
         if ($options_profile['name_status'] == 2 && $options_profile['name_rules'] == 1) {
             $buffer .= '    if (f.elements["nn"] && (f.elements["nn"].value == "" || f.elements["nn"].value == f.elements["nn"].defaultValue)) {' . "\n";
             $buffer .= '        alert("' . addslashes($options_profile['name_error']) . '");' . "\n";
+            $buffer .= '        return false;' . "\n";
+            $buffer .= '    }' . "\n";
+        }
+        if ($options_profile['surname_status'] == 2 && $options_profile['surname_rules'] == 1) {
+            $buffer .= '    if (f.elements["ns"] && (f.elements["ns"].value == "" || f.elements["ns"].value == f.elements["ns"].defaultValue)) {' . "\n";
+            $buffer .= '        alert("' . addslashes($options_profile['surname_error']) . '");' . "\n";
             $buffer .= '        return false;' . "\n";
             $buffer .= '    }' . "\n";
         }

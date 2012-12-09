@@ -3,8 +3,8 @@
 /*
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
-  Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.0.5
+  Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. Please, do not update while the plugin is delivering a newsletter.
+  Version: 3.0.6
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.0.5');
+define('NEWSLETTER_VERSION', '3.0.6');
 
 global $wpdb, $newsletter;
 
@@ -56,7 +56,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/themes.php';
 
 class Newsletter extends NewsletterModule {
 
-    const VERSION = '1.0.9';
+    const VERSION = '1.1.0';
 
     // Limits to respect to avoid memory, time or provider limits
     var $time_limit;
@@ -148,8 +148,8 @@ class Newsletter extends NewsletterModule {
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column send_on int not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column track tinyint not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column editor tinyint not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sex varchar(10) not null default 'n'");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails change column sex sex varchar(10) not null default 'n'");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sex varchar(10) not null default ''");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails change column sex sex varchar(10) not null default ''");
 
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column query text");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column preferences text");

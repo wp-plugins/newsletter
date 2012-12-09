@@ -373,6 +373,20 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 ?>
                             </td>
                         </tr>
+                        <tr>
+                            <td>File permissions</td>
+                            <td>
+                                <?php
+                                $index_permissions = fileperms(ABSPATH . '/index.php');
+                                $subscribe_permissions = fileperms(NEWSLETTER_DIR . '/do/subscribe.php');
+                                if ($index_permissions != $subscribe_permissions) {
+                                    echo 'Plugin file permissions differ from blog index.php permissions, that may compromise the subscription process';
+                                }else {
+                                    echo 'OK';
+                                }
+                                ?>
+                            </td>
+                        </tr>                        
                     </tbody>
                 </table>
 

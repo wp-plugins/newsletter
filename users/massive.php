@@ -264,7 +264,6 @@ if ($controls->is_action('bounces')) {
               Set preference <?php $controls->select('list_feed', $lists); ?> to feed by mail subscribers
               <?php $controls->button_confirm('feed', 'Go!', 'Are you sure?'); ?>
               <div class="hints">
-                Useful to migrate from feed by mail to <a href="http://www.satollo.net/plugins/newsletter-updates" target="_blank">Newsletter Updates module</a>.
               </div>
             </td>
           </tr>

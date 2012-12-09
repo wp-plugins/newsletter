@@ -59,7 +59,18 @@ No screen shots are available at this time.
 = 3.1.0 (not released) =
 
 * Added link to change preferences/sex from emails
+* Added tag reference on email composer
 * Added "negative" preference selection on email targeting
+* Improved the subscription during WordPress user registration
+
+= 3.0.6 =
+* Added file permissions check on diagnostic panel
+* Fixed the default value for "sex" on email at database level
+* Fixed the checking of required surname
+* Fixed a warning on subscription panel
+* Improved the subscription management for bounced or unsubscribed addresses
+* Removed the simple theme of tinymce to reduce the number of files
+* Added neutral style for subscription form
 
 = 3.0.5 =
 
