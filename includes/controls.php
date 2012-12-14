@@ -235,12 +235,12 @@ class NewsletterControls {
     }
 
     function textarea($name, $width = '100%', $height = '50') {
-        echo '<textarea class="dymanic" name="options[' . $name . ']" wrap="off" style="width:' . $width . ';height:' . $height . '">';
+        echo '<textarea class="dynamic" name="options[' . $name . ']" wrap="off" style="width:' . $width . ';height:' . $height . '">';
         echo htmlspecialchars($this->data[$name]);
         echo '</textarea>';
     }
 
-    function textarea_fixed($name, $width = '100%', $height = '50') {
+    function textarea_fixed($name, $width = '100%', $height = '200') {
         echo '<textarea name="options[' . $name . ']" wrap="off" style="width:' . $width . ';height:' . $height . 'px">';
         echo htmlspecialchars($this->data[$name]);
         echo '</textarea>';

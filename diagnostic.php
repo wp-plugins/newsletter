@@ -14,6 +14,11 @@ if ($controls->is_action('trigger')) {
     $controls->messages = 'Delivery engine triggered.';
 }
 
+if ($controls->is_action('undismiss')) {
+    update_option('newsletter_dismissed', array());
+    $controls->messages = 'Notices restored.';
+}
+
 if ($controls->is_action('trigger_followup')) {
     NewsletterFollowup::instance()->send();
     $controls->messages = 'Follow up delivery engine triggered.';
@@ -142,7 +147,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                 <li><a href="#tabs-1">Modules and logging</a></li>
                 <li><a href="#tabs-2">Sempahores and Crons</a></li>
                 <li><a href="#tabs-4">System</a></li>
-                <li><a href="#tabs-upgrade">Upgrade</a></li>
+                <li><a href="#tabs-upgrade">Maintainance</a></li>
             </ul>
 
             <div id="tabs-1">
@@ -392,13 +397,19 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
 
             </div>
             <div id="tabs-upgrade">
-                <h3>Upgrade</h3>
                 <p>
                     Plugin and modules are able to upgrade them self when needed. If you urgently need to try to force an upgrade, press the
                     button below.
                 </p>
                 <p>
                     <?php $controls->button('upgrade', 'Force an upgrade'); ?>
+                </p>
+                
+                <p>
+                    Restore al dismissed messages
+                </p>
+                <p>
+                    <?php $controls->button('undismiss', 'Restore'); ?>
                 </p>
             </div>
         </div>

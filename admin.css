@@ -756,6 +756,21 @@ table.clicks {
 }
 */
 
+.newsletter-notice {
+    background-color: lightYellow;
+    border-color: #E6DB55;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+    padding: .6em;
+    margin-bottom: .6em;
+    margin-top: .6em;
+}
+
+.newsletter-dismiss {
+    float: right;
+}
+
 .newsletter-message {
     background-color: lightYellow;
     border-color: #E6DB55;
@@ -764,6 +779,7 @@ table.clicks {
     border-width: 1px;
     padding: .6em;
     margin-bottom: .6em;
+
 }
 
 .newsletter-error {

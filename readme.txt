@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.0.0
-Tested up to: 3.4.2
+Tested up to: 3.5
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -63,7 +63,13 @@ No screen shots are available at this time.
 * Added "negative" preference selection on email targeting
 * Improved the subscription during WordPress user registration
 
+= 3.0.7 =
+
+* Fixed a warning in WP 3.5
+* Fixed the visual editor on/off on composer panel
+
 = 3.0.6 =
+
 * Added file permissions check on diagnostic panel
 * Fixed the default value for "sex" on email at database level
 * Fixed the checking of required surname

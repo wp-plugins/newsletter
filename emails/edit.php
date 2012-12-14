@@ -73,8 +73,14 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     $email['sent'] = 0;
     $email['last_id'] = 0;
     $email['send_on'] = $controls->data['send_on'];
+    
+    if ($controls->is_action('editor')) {
+        $email['editor'] = $email['editor'] == 0?1:0;
+    }
 
     Newsletter::instance()->save_email($email);
+    
+    $controls->data['message'] = $email['message'];
 }
 
 if ($controls->is_action('send')) {
@@ -205,7 +211,7 @@ if ($email['editor'] == 0) {
                         <th>Message</th>
                         <td>
                             <input id="upload_image_button" type="button" value="Choose or upload an image" />
-                            <?php $email['editor'] == 0 ? $controls->editor('message', 30) : $controls->textarea_fixed('message', '100%'); ?>
+                            <?php $email['editor'] == 0 ? $controls->editor('message', 30) : $controls->textarea_fixed('message', '100%', '400'); ?>
                             <div class="hints">
                                 Tags: <strong>{name}</strong> receiver name;
                                 <strong>{unsubscription_url}</strong> unsubscription URL;
