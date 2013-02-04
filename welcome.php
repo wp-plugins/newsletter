@@ -57,37 +57,25 @@ if ($x === false) {
         </p>
 
         <p>
-            <strong>Old 2.5.2.7 version is still available <a href="http://www.satollo.net/wp-content/uploads/newsletter-2.5.2.7.zip">here</a>.</strong>
-        </p>
-
-        <h3>Version 3.0</h3>
-        <p>
-            Many reasons lead me to create a totally new version: Newsletter needed more modularity,
-            more compatibility, more functions. As for version 2.5, this is a big step forward on both
-            configuration organization and functionalities and improvements.
-        </p>
-        <p>
-            The great amount of rework, even if made will all possible attentions, could generate new bugs,
-            little incompatibilities and other kinds of issues. I would ask you to be patince and to notify me
-            every anomality you encounter, using the support options below.
+            <strong>Old 2.5.2.7 version is available <a href="http://www.satollo.net/wp-content/uploads/newsletter-2.5.2.7.zip">here</a>.</strong>
         </p>
 
         <h3>First steps</h3>
         <p>
-            <strong>Newsletter works out of box</strong>. You don't need to create lists or evenly configure it. Just use your WordPress
-            appearance panel, enter the widgets panel and ass the Newsletter widget.
+            <strong>Newsletter works out of box</strong>. You don't need to create lists or configure it. Just use your WordPress
+            appearance panel, enter the widgets panel and add the Newsletter widget to your sidebar.
         </p>
         <p>
-            To get the most out of Newsletter, to translate messages and so on, it's important to understand the single panels of Newsletter:
+            To get the most out of Newsletter, to translate messages and so on, it's important to understand the single configuration panels:
         </p>
         <ol>
             <li>
-                <strong>Configuration</strong>: is where you find the main setting, like the SMTP, the sender address,
+                <strong>Configuration</strong>: is where you find the main setting, like the SMTP, the sender address and name,
                 the delivery engine speed and so on.
             </li>
             <li>
                 <strong>Subscription</strong>: is where you configure the subscription process and it's one of the most important panel
-                to explore and to understand. Subscription is not limited to collect email addresses! There you define the fields of the
+                to explore and understand. Subscription is not limited to collect email addresses! There you define the fields of the
                 subscription box, optionally a dedicated page for subscription and profile edit and so on.
             </li>
             <li>

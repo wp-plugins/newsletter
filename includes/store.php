@@ -32,7 +32,7 @@ class NewsletterStore {
 
     function get_field($table, $id, $field_name) {
         global $wpdb;
-        $r = $wpdb->get_var("select $field_name from $table where id=" . (int) $id . " limit 1");
+        $r = $wpdb->get_var($wpdb->prepare("select $field_name from $table where id=%d limit 1", $id));
         if ($wpdb->last_error) {
             $this->logger->error($wpdb->last_error);
             return false;
@@ -41,7 +41,8 @@ class NewsletterStore {
     }
 
     function get_single($table, $id, $format = OBJECT) {
-        return $this->get_single_by_query("select * from $table where id=$id limit 1", $format);
+        global $wpdb;
+        return $this->get_single_by_query($wpdb->prepare("select * from $table where id=%d limit 1", $id), $format);
     }
 
     function get_single_by_field($table, $field_name, $field_value) {
@@ -163,7 +164,8 @@ class NewsletterStore {
 
     function set_field($table, $id, $field, $value) {
         global $wpdb;
-        $result = $wpdb->query($wpdb->prepare("update $table set $field=%s where id=$id", $value));
+        // For security check the field name
+        $result = $wpdb->query($wpdb->prepare("update $table set $field=%s where id=%d", $value, $id));
 
         if ($wpdb->last_error) {
             $this->logger->error($wpdb->last_error);

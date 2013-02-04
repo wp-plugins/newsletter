@@ -63,6 +63,14 @@ No screen shots are available at this time.
 * Added "negative" preference selection on email targeting
 * Improved the subscription during WordPress user registration
 
+= 3.0.9 =
+
+* Fixed an important bug
+
+= 3.0.8 =
+
+* Fixed the charset on some pages and previews for umlaut characters
+
 = 3.0.7 =
 
 * Fixed a warning in WP 3.5

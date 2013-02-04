@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. Please, do not update while the plugin is delivering a newsletter.
-  Version: 3.0.7
+  Version: 3.0.9
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.0.7');
+define('NEWSLETTER_VERSION', '3.0.9');
 
 global $wpdb, $newsletter;
 
@@ -209,8 +209,7 @@ class Newsletter extends NewsletterModule {
         $x = wp_next_scheduled('newsletter');
         if ($x === false) {
             $warnings .= 'The delivery engine is off (it should never be off). See the System Check below to reactivate it.<br>';
-        }
-        else if (time() - $x > 900) {
+        } else if (time() - $x > 900) {
             $warnings .= 'The cron system seems not running correctly. See <a href="http://www.satollo.net/how-to-make-the-wordpress-cron-work" target="_blank">this page</a> for more information.<br>';
         }
 
@@ -277,7 +276,6 @@ class Newsletter extends NewsletterModule {
         do_action('newsletter_admin_menu');
 
         add_submenu_page('newsletter/welcome.php', 'Diagnostic', 'Diagnostic', $level, 'newsletter/diagnostic.php');
-
     }
 
     function hook_wp_head() {
@@ -426,8 +424,7 @@ class Newsletter extends NewsletterModule {
 
             $wpdb->query("set session wait_timeout=300");
             // From default-constants.php
-            if (function_exists('memory_get_usage') && ( (int) @ini_get('memory_limit') < 128 ))
-                    @ini_set('memory_limit', '256M');
+            if (function_exists('memory_get_usage') && ( (int) @ini_get('memory_limit') < 128 )) @ini_set('memory_limit', '256M');
 
             $this->limits_set = true;
         }
@@ -468,8 +465,7 @@ class Newsletter extends NewsletterModule {
         if (!is_array($message)) {
             $this->mailer->IsHTML(true);
             $this->mailer->Body = $message;
-        }
-        else {
+        } else {
             // Only html is present?
             if (empty($message['text'])) {
                 $this->mailer->IsHTML(true);
@@ -479,8 +475,7 @@ class Newsletter extends NewsletterModule {
             else if (empty($message['html'])) {
                 $this->mailer->IsHTML(false);
                 $this->mailer->Body = $message['text'];
-            }
-            else {
+            } else {
                 $this->mailer->IsHTML(true);
 
                 $this->mailer->Body = $message['html'];
@@ -531,8 +526,7 @@ class Newsletter extends NewsletterModule {
         }
         else $this->mailer->IsMail();
 
-        if (!empty($this->options['content_transfer_encoding']))
-                $this->mailer->Encoding = $this->options['content_transfer_encoding'];
+        if (!empty($this->options['content_transfer_encoding'])) $this->mailer->Encoding = $this->options['content_transfer_encoding'];
 
         $this->mailer->CharSet = 'UTF-8';
         $this->mailer->From = $this->options['sender_email'];
@@ -679,8 +673,7 @@ class Newsletter extends NewsletterModule {
             $text = str_replace('{key}', $user->id . '-' . $user->token, $text);
             $text = str_replace('%7Bkey%7D', $user->id . '-' . $user->token, $text);
 
-            if (strpos($text, '{profile_form}') !== false)
-                    $text = str_replace('{profile_form}', NewsletterSubscription::instance()->get_profile_form($user), $text);
+            if (strpos($text, '{profile_form}') !== false) $text = str_replace('{profile_form}', NewsletterSubscription::instance()->get_profile_form($user), $text);
 
             for ($i = 1; $i < NEWSLETTER_PROFILE_MAX; $i++) {
                 $p = 'profile_' . $i;
@@ -712,10 +705,8 @@ class Newsletter extends NewsletterModule {
             $text = $this->replace_url($text, 'FEED_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=eu' . $id_token));
 
             $options_profile = get_option('newsletter_profile');
-            if (empty($options_profile['profile_url']))
-                    $text = $this->replace_url($text, 'PROFILE_URL', NEWSLETTER_PROFILE_URL . '?nk=' . $nk);
-            else
-                    $text = $this->replace_url($text, 'PROFILE_URL', self::add_qs($options_profile['profile_url'], 'ni=' . $user->id . '&amp;nt=' . $user->token));
+            if (empty($options_profile['profile_url'])) $text = $this->replace_url($text, 'PROFILE_URL', NEWSLETTER_PROFILE_URL . '?nk=' . $nk);
+            else $text = $this->replace_url($text, 'PROFILE_URL', self::add_qs($options_profile['profile_url'], 'ni=' . $user->id . '&amp;nt=' . $user->token));
 
             //$text = $this->replace_url($text, 'UNLOCK_URL', self::add_qs($this->options_main['lock_url'], 'nm=m' . $id_token));
             $text = $this->replace_url($text, 'UNLOCK_URL', NEWSLETTER_UNLOCK_URL . '?nk=' . $nk);
@@ -735,7 +726,6 @@ class Newsletter extends NewsletterModule {
             for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
                 $text = $this->replace_url($text, 'SET_PREFERENCE_' . $i, NEWSLETTER_CHANGE_URL . '?nk=' . $nk . '&nf=preference_' . $i);
             }
-
         }
         return $text;
     }
@@ -909,7 +899,7 @@ class Newsletter extends NewsletterModule {
      * @param type $user
      * @return type
      */
-    function save_user($user, $return_format=OBJECT) {
+    function save_user($user, $return_format = OBJECT) {
         if (is_object($user)) $user = (array) $user;
         if (empty($user['id'])) {
             if (empty($user['token'])) $user['token'] = NewsletterModule::get_token();
@@ -937,7 +927,7 @@ class Newsletter extends NewsletterModule {
      * @param type $format
      * @return boolean
      */
-    function get_user($id_or_email, $format=OBJECT) {
+    function get_user($id_or_email, $format = OBJECT) {
         global $wpdb;
 
         // To simplify the reaload of a user passing the user it self.
@@ -963,7 +953,7 @@ class Newsletter extends NewsletterModule {
         global $wpdb;
         $r = $this->store->delete(NEWSLETTER_USERS_TABLE, $id);
         if ($r !== false) {
-            $wpdb->delete(NEWSLETTER_STATS_TABLE, array('user_id'=>$id));
+            $wpdb->delete(NEWSLETTER_STATS_TABLE, array('user_id' => $id));
         }
     }
 
@@ -983,7 +973,6 @@ class Newsletter extends NewsletterModule {
         }
         return $r;
     }
-
 
 }
 

@@ -112,7 +112,7 @@ class NewsletterModule {
     }
 
     function backup_options($sub) {
-        $options = $this->get_options();
+        $options = $this->get_options($sub);
         add_option($this->get_prefix($sub) . '_backup', '', null, 'no');
         update_option($this->get_prefix($sub) . '_backup', $options);
     }

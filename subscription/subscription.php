@@ -29,8 +29,21 @@ class NewsletterSubscription extends NewsletterModule {
         parent::upgrade();
 
         // Migrate the profile_text from profile to subscription options
-        $options_profile = get_option('newsletter_profile');
-        $options = get_option('newsletter');
+        $options_profile = $this->get_options('profile');
+        
+        if (empty($options_profile)) {
+            update_option('newsletter_profile', $this->get_default_options('profile'));
+        }
+        
+        $options = $this->get_options();
+        if (empty($options)) {
+            update_option('newsletter', $this->get_default_options());
+        }
+                
+        
+        $options = get_option('newsletter', array()); 
+        
+        
         if (isset($options_profile['profile_text'])) {
             $options['profile_text'] = $options_profile['profile_text'];
             update_option('newsletter', $options);
@@ -64,6 +77,9 @@ class NewsletterSubscription extends NewsletterModule {
             // For compatibility the options are wrongly named
             return update_option('newsletter', $options);
         }
+        if ($sub == 'profile') {
+            return update_option('newsletter_profile', $options);
+        }
         return parent::save_options($sub);
     }
     
@@ -71,6 +87,10 @@ class NewsletterSubscription extends NewsletterModule {
         if ($sub == '') {
             // For compatibility the options are wrongly named
             return get_option('newsletter', array());
+        }
+        if ($sub == 'profile') {
+            // For compatibility the options are wrongly named
+            return get_option('newsletter_profile', array());
         }
         return parent::get_options($sub);
     }
@@ -848,7 +868,7 @@ function newsletter_subscription_user_register($user_id) {
 
 function newsletter_form($number = null) {
     if ($number != null) {
-        echo NewsletterSubscription::instance()->get_form($attrs[$number]);
+        echo NewsletterSubscription::instance()->get_form($number);
     } else {
         echo NewsletterSubscription::instance()->get_subscription_form();
     }

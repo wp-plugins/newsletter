@@ -233,6 +233,10 @@ class NewsletterControls {
         echo htmlspecialchars($this->data[$name]);
         echo '</textarea>';
     }
+    
+    function wp_editor($name, $settings = array()) {
+        wp_editor($this->data[$name], $name, array_merge(array('textarea_name'=>'options[' . $name . ']', 'wpautop'=>false), $settings)); 
+    }
 
     function textarea($name, $width = '100%', $height = '50') {
         echo '<textarea class="dynamic" name="options[' . $name . ']" wrap="off" style="width:' . $width . ';height:' . $height . '">';

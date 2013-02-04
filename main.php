@@ -32,10 +32,10 @@ if (!$controls->is_action()) {
             $controls->errors .= 'Return path email is not correct.<br />';
         }
 
-        $controls->data['test_email'] = $newsletter->normalize_email($controls->data['test_email']);
-        if (!$newsletter->is_email($controls->data['test_email'], true)) {
-            $controls->errors .= 'Test email is not correct.<br />';
-        }
+        //$controls->data['test_email'] = $newsletter->normalize_email($controls->data['test_email']);
+        //if (!$newsletter->is_email($controls->data['test_email'], true)) {
+        //    $controls->errors .= 'Test email is not correct.<br />';
+        //}
 
         $controls->data['reply_to'] = $newsletter->normalize_email($controls->data['reply_to']);
         if (!$newsletter->is_email($controls->data['reply_to'], true)) {
@@ -79,7 +79,7 @@ if (!$controls->is_action()) {
 
         $mail->SMTPKeepAlive = true;
         $mail->ClearAddresses();
-        $mail->AddAddress($controls->data['test_email']);
+        $mail->AddAddress($controls->data['smtp_test_email']);
         ob_start();
         $mail->Send();
         $mail->SmtpClose();
@@ -290,6 +290,15 @@ if (!$controls->is_action()) {
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <th>Test email address</th>
+                        <td>
+                            <?php $controls->text('smtp_test_email', 30); ?>
+                            <div class="hints">
+                                SMTP test will be addressed to this email
+                            </div>
+                        </td>
+                    </tr>                    
                 </table>
                 <?php $controls->button('smtp_test', 'Test'); ?>
 

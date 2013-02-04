@@ -6,7 +6,7 @@
 include '../../../../wp-load.php';
 
 // TODO: Change to Newsletter::instance()->get:email(), not urgent
-$email = Newsletter::instance()->get_email($_GET['id']);
+$email = Newsletter::instance()->get_email((int)$_GET['id']);
 if (empty($email)) die('Email not found');
 
 $user = NewsletterSubscription::instance()->get_user_from_request();
