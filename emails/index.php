@@ -58,7 +58,7 @@ $emails = Newsletter::instance()->get_emails('message');
 
   <?php $controls->show(); ?>
 
-  <form method="post" action="admin.php?page=newsletter/emails/index.php">
+  <form method="post" action="">
     <?php $controls->init(); ?>
 
     <?php if ($module->has_old_emails()) { ?>
@@ -77,7 +77,7 @@ $emails = Newsletter::instance()->get_emails('message');
     <p>
       <a href="<?php echo $module->get_admin_page_url('new'); ?>" class="button">New message</a>
       <?php $controls->button_confirm('delete_selected', 'Delete selected messages', 'Proceed?'); ?>
-      <?php $controls->button('send', 'Trigger now'); ?>
+      <!--<?php $controls->button('send', 'Trigger now'); ?>-->
     </p>
     <table class="widefat" style="width: auto">
       <thead>

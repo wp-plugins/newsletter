@@ -25,6 +25,11 @@ if ($controls->is_action('remove_bounced')) {
   $controls->messages = $r . ' bounced deleted.';
 }
 
+if ($controls->is_action('unconfirm_all')) {
+  $r = $wpdb->query("update " . NEWSLETTER_USERS_TABLE . " set status='S' where status='C'");
+  $controls->messages = $r . ' unconfirmed.';
+}
+
 if ($controls->is_action('confirm_all')) {
   $r = $wpdb->query("update " . NEWSLETTER_USERS_TABLE . " set status='C' where status='S'");
   $controls->messages = $r . ' confirmed.';
@@ -137,7 +142,7 @@ if ($controls->is_action('bounces')) {
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
   <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-    
+
     <h2>Massive Actions on Subscribers</h2>
   <p>A bug or an error using this panel can scramble the subscribers database. Please, backup before run a massive operation.</p>
 
@@ -179,6 +184,7 @@ if ($controls->is_action('bounces')) {
             <td>Confirmed</td>
             <td>
               <?php echo $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='C'"); ?>
+              <?php $controls->button_confirm('unconfirm_all', 'Unconfirm all', 'Are you sure? No way back.'); ?>
             </td>
             <td nowrap>
             </td>

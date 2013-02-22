@@ -240,7 +240,7 @@ else {
 <?php } ?>
 
 <td>
-    <a class="button-secondary" href="admin.php?page=newsletter/users/edit.php&amp;id=<?php echo $s->id; ?>">Edit</a>
+    <a class="button-secondary" href="admin.php?page=newsletter_users_edit&amp;id=<?php echo $s->id; ?>">Edit</a>
     <?php $controls->button_confirm('remove', 'Remove', 'Proceed?', $s->id); ?>
 
     <?php //$controls->button('status', 'Confirm', 'newsletter_set_status(this.form,' . $s->id . ',\'C\')'); ?>
@@ -252,7 +252,7 @@ else {
 </td>
 <td><small>
         date: <?php echo $s->created; ?><br />
-      
+
 </small></td>
 
 <?php if ($options['search_clicks'] == 1) { ?>

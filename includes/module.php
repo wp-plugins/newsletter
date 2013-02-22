@@ -78,12 +78,21 @@ class NewsletterModule {
         }
     }
 
-    /** 
+    /**
      * Return, eventually, the version of this moduke available on satollo.net.
      * @return string
      */
     static function get_available_version($module_id) {
-        return @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $module_id);
+        $version = get_option('newsletter_module_' . $module_id . '_version', '');
+        $time = get_option('newsletter_module_' . $module_id . '_last_check', 0);
+        if (empty($version) || $time < time()-86400) {
+            $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $module_id);
+            add_option('newsletter_module_' . $module_id . '_last_check', time(), '', 'no');
+            update_option('newsletter_module_' . $module_id . '_last_check', time());
+            add_option('newsletter_module_' . $module_id . '_version', $version);
+            update_option('newsletter_module_' . $module_id . '_version', $version);
+        }
+        return $version;
     }
 
     /** Returns a prefix to be used for option names and other things which need to be uniquely named. The parameter
@@ -347,9 +356,9 @@ class NewsletterModule {
         else
             return NEWSLETTER_URL . '/' . $this->module . '/styles/' . $style;
     }
-    
+
     function admin_menu() {
-        
+
     }
 
     function add_menu_page($page, $title) {
@@ -373,7 +382,7 @@ class NewsletterModule {
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
         add_submenu_page(null, $title, $title, $this->options['editor'] ? 7 : 10, $name, $name);
     }
-    
+
     function get_admin_page_url($page) {
         return '?page=newsletter_' . $this->module . '_' . $page;
     }

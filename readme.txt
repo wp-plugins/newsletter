@@ -56,6 +56,14 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.1 =
+
+* Fixed the copy and delete buttons on newsletter list
+* Removed the old trigger button on newsletter list
+* Fixed the edit button on old user search
+* Improved the module version checking
+* Added the "unconfirm" button on massive subscriber management panel
+
 = 3.1.0 =
 
 * Added link to change preferences/sex from emails
@@ -286,7 +294,7 @@ should be done in this way:
 
 For example, when I released the version 3.0 of this plugin, I should have created
 a 3.0 folder inside the branches and fixed it when bug were reported. From time to
-time from that branch I should have created a tag, for example 3.0.4. 
+time from that branch I should have created a tag, for example 3.0.4.
 
 Actually, to make this tag available it should have been reported on the readme.txt
 committed on the trunk.

@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.1.0
+  Version: 3.1.1
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.1.0');
+define('NEWSLETTER_VERSION', '3.1.1');
 
 global $wpdb, $newsletter;
 
@@ -170,7 +170,7 @@ class Newsletter extends NewsletterModule {
 
         // TODO: To be moved on users module.
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter convert to character set utf8");
-        
+
         $this->upgrade_query("update " . $wpdb->prefix . "newsletter set sex='n' where sex=''");
 
         // Some setting check to avoid the common support request for mis-configurations
@@ -244,7 +244,7 @@ class Newsletter extends NewsletterModule {
             wp_enqueue_style('thickbox');
         }
         }
-        
+
         $action = $_REQUEST['na'];
         if (empty($action) || is_admin())
             return;
@@ -537,7 +537,7 @@ class Newsletter extends NewsletterModule {
         require_once ABSPATH . WPINC . '/class-phpmailer.php';
         require_once ABSPATH . WPINC . '/class-smtp.php';
         $this->mailer = new PHPMailer();
-        
+
         $smtp_options = array();
         $smtp_options['enabled'] = $this->options['smtp_enabled'];
         $smtp_options['host'] = $this->options['smtp_host'];
@@ -545,7 +545,7 @@ class Newsletter extends NewsletterModule {
         $smtp_options['user'] = $this->options['smtp_user'];
         $smtp_options['pass'] = $this->options['smtp_pass'];
         $smtp_options['secure'] = $this->options['smtp_secure'];
-        
+
         $smtp_options = apply_filters('newsletter_smtp', $smtp_options);
 
         if ($smtp_options['enabled'] == 1) {
@@ -644,7 +644,7 @@ class Newsletter extends NewsletterModule {
         }
 
         return null;
-        
+
         /*
         if ($this->options_main['wp_integration'] != 1) {
             return null;
@@ -700,12 +700,12 @@ class Newsletter extends NewsletterModule {
      */
     function replace($text, $user = null, $email_id = null, $referrer = null) {
         global $wpdb;
-        
+
         $this->logger->debug('Replace start');
         if (is_array($user)) {
             $user = NewsletterUsers::instance()->get_user($user['id']);
         }
-        
+
         $text = str_replace('{home_url}', get_option('home'), $text);
         $text = str_replace('{blog_title}', get_option('blogname'), $text);
         $text = str_replace('{blog_description}', get_option('blogdescription'), $text);
@@ -732,7 +732,7 @@ class Newsletter extends NewsletterModule {
 
             if (strpos($text, '{profile_form}') !== false)
                 $text = str_replace('{profile_form}', NewsletterSubscription::instance()->get_profile_form($user), $text);
-            
+
             for ($i = 1; $i < NEWSLETTER_PROFILE_MAX; $i++) {
                 $p = 'profile_' . $i;
                 $text = str_replace('{profile_' . $i . '}', $user->$p, $text);
@@ -789,7 +789,7 @@ class Newsletter extends NewsletterModule {
                 $text = $this->replace_url($text, 'UNSET_PREFERENCE_' . $i, NEWSLETTER_CHANGE_URL . '?nk=' . $nk . '&nv=0&nf=preference_' . $i);
             }
         }
-        
+
         if (strpos($text, '{subscription_form}') !== false) {
             $text = str_replace('{subscription_form}', NewsletterSubscription::instance()->get_subscription_form($referrer), $text);
         }
@@ -801,7 +801,7 @@ class Newsletter extends NewsletterModule {
                 }
             }
         }
-            
+
         $this->logger->debug('Replace end');
         return $text;
     }
@@ -827,11 +827,11 @@ class Newsletter extends NewsletterModule {
 
     function hook_the_content($content) {
         global $post, $cache_stop;
-                        
+
         if ($this->lock_found || !is_singular()) {
             return $content;
         }
-        
+
         $ids = explode(',', $this->options['lock_ids']);
 
         if (!empty($ids) && (has_tag($ids) || in_category($ids) || in_array($post->post_name, $ids))) {
@@ -852,7 +852,7 @@ class Newsletter extends NewsletterModule {
         $this->logger->debug('Lock short code start');
         $hyper_cache_stop = true;
         $cache_stop = true;
-                
+
         $this->lock_found = true;
 
         $user = $this->check_user();
@@ -870,7 +870,7 @@ class Newsletter extends NewsletterModule {
 
         $buffer = do_shortcode($buffer);
         $this->logger->debug('Lock short code end');
-        
+
         return '<div class="newsletter-lock">' . $buffer . '</div>';
     }
 
