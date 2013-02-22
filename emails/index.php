@@ -48,7 +48,9 @@ $emails = Newsletter::instance()->get_emails('message');
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
-    <h2>Newsletters Module</h2>
+    <h5>Newsletters Module</h5>
+
+    <h2>Newsletter List</h2>
 
   <div class="preamble">
   <p>Here you can manage your messages: compose, deliver, monitor.</p>
@@ -73,7 +75,7 @@ $emails = Newsletter::instance()->get_emails('message');
     <?php } ?>
 
     <p>
-      <a href="admin.php?page=newsletter/emails/new.php" class="button">New message</a>
+      <a href="<?php echo $module->get_admin_page_url('new'); ?>" class="button">New message</a>
       <?php $controls->button_confirm('delete_selected', 'Delete selected messages', 'Proceed?'); ?>
       <?php $controls->button('send', 'Trigger now'); ?>
     </p>
@@ -107,7 +109,7 @@ $emails = Newsletter::instance()->get_emails('message');
                 <?php } ?>
               (<?php echo $email->sent; ?>/<?php echo $email->total; ?>)
             </td>
-            <td><a class="button" href="admin.php?page=newsletter/emails/edit.php&amp;id=<?php echo $email->id; ?>">Edit</a></td>
+            <td><a class="button" href="<?php echo $module->get_admin_page_url('edit'); ?>&amp;id=<?php echo $email->id; ?>">Edit</a></td>
             <td>
                 <a class="button" href="<?php echo NewsletterStatistics::instance()->get_statistics_url($email->id); ?>">Statistics</a>
             </td>

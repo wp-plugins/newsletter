@@ -1,7 +1,6 @@
-<h2>Subscription</h2>
+<h5>Subscription Module</h5>
 <div id="newsletter-nav">
-    <a class="button" href="?page=newsletter/subscription/options.php">Subscription and unsubscription</a>
-    <a class="button" href="?page=newsletter/subscription/profile.php">Form fields and layout</a>
-    <!--<a class="button" href="?page=newsletter/subscription/form-code.php">The form code</a>-->
-    <a class="button" href="?page=newsletter/subscription/forms.php">Other forms</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('options'); ?>">Subscription and unsubscription</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('profile'); ?>">Form fields and layout</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('forms'); ?>">Alternative forms</a>
 </div>

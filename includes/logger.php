@@ -46,7 +46,7 @@ class NewsletterLogger {
         if (is_array($text) || is_object($text)) $text = print_r($text, true);
 
         // The "logs" dir is created on Newsletter constructor.
-        file_put_contents($this->file, $time . ' - ' . $text . "\n", FILE_APPEND | FILE_TEXT);
+        file_put_contents($this->file, $time . ' - ' . memory_get_usage() . ' - ' . $text . "\n", FILE_APPEND | FILE_TEXT);
     }
 
     function error($text) {

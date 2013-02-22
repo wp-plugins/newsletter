@@ -121,7 +121,8 @@ if ($controls->is_action()) {
 
     <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
 
-
+    <h2>Subscription and Unsubscription Configuration</h2>
+    
     <?php $controls->show(); ?>
 
     <p>
@@ -186,9 +187,15 @@ if ($controls->is_action()) {
                     <tr valign="top">
                         <th>Automatically subscribe WordPress users</th>
                         <td>
-                            <?php $controls->yesno('subscribe_wp_users'); ?>
+                            <?php //$controls->yesno('subscribe_wp_users'); ?>
+                            <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option')); ?>
+                            <br>
+                            checkbox label: <?php $controls->text('subscribe_wp_users_label', 30); ?>
+                            
+                            
                             <div class="hints">
-                                It works only on new registration. To align old registration, press the alignment button.
+                                It works only on new registration. If you use the double opt in the activation email is sent to the user.
+                                To align old registration, press the alignment button.
                                 <?php $controls->button_confirm('align_wp_users', 'Align WP Users', 'Proceed?'); ?>
                             </div>
                         </td>

@@ -38,10 +38,15 @@ if ($controls->is_action('create') || $controls->is_action('test')) {
 
         $theme_options = $module->get_current_theme_options();
         $theme_url = $module->get_current_theme_url();
+        $theme_subject = '';
 
         ob_start();
         include $module->get_current_theme_file_path('theme.php');
         $email['message'] = ob_get_clean();
+        
+        if (!empty($theme_subject)) {
+            $email['subject'] = $theme_subject;
+        }
 
         ob_start();
         include $module->get_current_theme_file_path('theme-text.php');
@@ -52,10 +57,10 @@ if ($controls->is_action('create') || $controls->is_action('test')) {
         $email = Newsletter::instance()->save_email($email);
     ?>
     <script>
-        location.href="admin.php?page=newsletter/emails/edit.php&id=<?php echo $email->id; ?>";
+        location.href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>";
     </script>
     <div class="wrap">
-    <p>If you are not automatically redirected to the composer, <a href="admin.php?page=newsletter/emails/edit.php&id=<?php echo $email->id; ?>">click here</a>.</p>
+    <p>If you are not automatically redirected to the composer, <a href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>">click here</a>.</p>
     </div>
     <?php
         return;
@@ -102,8 +107,10 @@ function newsletter_emails_get_theme_options($theme) {
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
-    <h2>Newsletters Module</h2>
+    
+    <h5>Newsletters Module</h5>
 
+    <h2>New Newsletter</h2>
 
     <?php $controls->show(); ?>
 
@@ -114,7 +121,7 @@ function newsletter_emails_get_theme_options($theme) {
     </p>
     -->
 
-    <form method="post" action="admin.php?page=newsletter/emails/new.php" id="newsletter-form">
+    <form method="post" action="<?php echo $module->get_admin_page_url('new'); ?>" id="newsletter-form">
         <?php $controls->init(); ?>
         <div style="padding: .6em; border: 1px solid #ddd; background-color: #f4f4f4; border-radius: 3px;">
             <strong>Choose a theme</strong>

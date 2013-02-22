@@ -71,6 +71,12 @@ class NewsletterSubscription extends NewsletterModule {
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter/subscription');
         return true;
     }
+    
+    function admin_menu() {
+        $this->add_menu_page('options', 'Subscription');
+        $this->add_admin_page('profile', 'Profile');
+        $this->add_admin_page('forms', 'Forms');
+    }
 
     function save_options($options, $sub='') {
         if ($sub == '') {
@@ -281,10 +287,7 @@ class NewsletterSubscription extends NewsletterModule {
         setcookie('newsletter', '', time() - 3600);
         NewsletterUsers::instance()->set_user_status($user->id, 'U');
 
-        $options = get_option('newsletter', array());
-        $options_main = get_option('newsletter_main', array());
-
-        $newsletter->mail($user->email, $newsletter->replace($options['unsubscribed_subject'], $user), $newsletter->replace($options['unsubscribed_message'], $user));
+        $this->mail($user->email, $newsletter->replace($this->options['unsubscribed_subject'], $user), $newsletter->replace($this->options['unsubscribed_message'], $user));
         $this->notify_admin($user, 'Newsletter unsubscription');
 
         return $user;
@@ -312,14 +315,16 @@ class NewsletterSubscription extends NewsletterModule {
             if ($data['sex'] != 'm' && $data['sex'] != 'f' && $data['sex'] != 'n') die('Wrong sex field');
         }
 
-        // Lists
-        if (is_array($_REQUEST['nl'])) {
-            for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-                if ($options_profile['list_' . $i . '_status'] == 0) continue;
-                $data['list_' . $i] = in_array($i, $_REQUEST['nl']) ? 1 : 0;
-            }
+        // Lists. If not list is present or there is no list to choose or all are unchecked.
+        $nl = $_REQUEST['nl'];
+        if (!is_array($nl)) $nl = array();
+        
+        // For each preference which an be edited (and so is present on profile form)...
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+            if ($options_profile['list_' . $i . '_status'] == 0) continue;
+            $data['list_' . $i] = in_array($i, $_REQUEST['nl']) ? 1 : 0;
         }
-
+        
         // Profile
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
             if ($options_profile['profile_' . $i . '_status'] == 0) continue;
@@ -505,7 +510,7 @@ class NewsletterSubscription extends NewsletterModule {
      *
      * @return string The html code of the subscription form
      */
-    function get_subscription_form() {
+    function get_subscription_form($referrer = null) {
         $options_profile = get_option('newsletter_profile');
         $options = get_option('newsletter');
 
@@ -518,22 +523,27 @@ class NewsletterSubscription extends NewsletterModule {
         } else {
             $buffer .= '<form method="post" action="' . $action . '" onsubmit="return newsletter_check(this)">' . "\n\n";
         }
+        if (!empty($referrer)) {
+            $buffer .= "<input type='hidden' name='nr' value='$referrer'>\n";
+        }
         $buffer .= '<table cellspacing="0" cellpadding="3" border="0">' . "\n\n";
         if ($options_profile['name_status'] == 2) {
             $buffer .= "<!-- first name -->\n";
-            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['name'] . '</th>' . "\n\t" . '<td><input class="newsletter-firstname" type="text" name="nn" size="30"/></td>' . "\n" . '</tr>' . "\n\n";
+            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['name'] . '</th>' . "\n\t" . '<td><input class="newsletter-firstname" type="text" name="nn" size="30"' . ($options_profile['name_rules'] == 1?'required':'') . '></td>' . "\n" . '</tr>' . "\n\n";
         }
+        
         if ($options_profile['surname_status'] == 2) {
             $buffer .= "<!-- last name -->\n";
-            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['surname'] . '</th>' . "\n\t" . '<td><input class="newsletter-lastname" type="text" name="ns" size="30"/></td>' . "\n" . '</tr>' . "\n\n";
+            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['surname'] . '</th>' . "\n\t" . '<td><input class="newsletter-lastname" type="text" name="ns" size="30"' . ($options_profile['surname_rules'] == 1?'required':'') . '></td>' . "\n" . '</tr>' . "\n\n";
         }
 
         $buffer .= "<!-- email -->\n";
-        $buffer .= "<tr>\n\t" . '<th>' . $options_profile['email'] . '</th>' . "\n\t" . '<td align="left"><input class="newsletter-email" type="text" name="ne" size="30"/></td>' . "\n" . '</tr>' . "\n\n";
+        $buffer .= "<tr>\n\t" . '<th>' . $options_profile['email'] . '</th>' . "\n\t" . '<td align="left"><input class="newsletter-email" type="email" name="ne" size="30" required></td>' . "\n" . '</tr>' . "\n\n";
 
         if ($options_profile['sex_status'] == 2) {
             $buffer .= "<!-- sex -->\n";
-            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['sex'] . "</th>\n\t<td>\n\t" . '<select name="nx" class="newsletter-sex">' . "\n";
+            $buffer .= "<tr>\n\t<th>" . $options_profile['sex'] . "</th>\n";
+            $buffer .= "\t<td>\n\t" . '<select name="nx" class="newsletter-sex">' . "\n";
             $buffer .= "\t\t" . '<option value="m">' . $options_profile['sex_male'] . '</option>' . "\n";
             $buffer .= "\t\t" . '<option value="f">' . $options_profile['sex_female'] . '</option>' . "\n";
             $buffer .= "\t</select>\n\t</td></tr>\n";
@@ -576,7 +586,7 @@ class NewsletterSubscription extends NewsletterModule {
 
         if ($options_profile['privacy_status'] == 1) {
             $buffer .= "<tr>\n\t" . '<td colspan="2" class="newsletter-td-privacy">' . "\n";
-            $buffer .= "\t\t" . '<input type="checkbox" name="ny"/>&nbsp;';
+            $buffer .= "\t\t" . '<input type="checkbox" name="ny" required>&nbsp;';
             if (!empty($options_profile['privacy_url'])) {
                 $buffer .= '<a target="_blank" href="' . $options_profile['privacy_url'] . '">';
                 $buffer .= $options_profile['privacy'] . '</a>';
@@ -589,7 +599,7 @@ class NewsletterSubscription extends NewsletterModule {
         $buffer .= "<tr>\n\t" . '<td colspan="2" class="newsletter-td-submit">' . "\n";
 
         if (strpos($options_profile['subscribe'], 'http://') !== false) {
-            $buffer .= "\t\t" . '<input class="newsletter-submit" type="image" src="' . $options_profile['subscribe'] . '"/>' . "\n\t</td>\n</tr>\n\n";
+            $buffer .= "\t\t" . '<input class="newsletter-submit-image" type="image" src="' . $options_profile['subscribe'] . '"/>' . "\n\t</td>\n</tr>\n\n";
         } else {
             $buffer .= "\t\t" . '<input class="newsletter-submit" type="submit" value="' . $options_profile['subscribe'] . '"/>' . "\n\t</td>\n</tr>\n\n";
         }
@@ -666,14 +676,12 @@ class NewsletterSubscription extends NewsletterModule {
         $buffer .= '</td></tr>';
 
         // Follow up
-        if (defined('NEWSLETTER_FOLLOWUP_VERSION')) {
-            $options_followup = get_option('newsletter_followup');
-            if ($options_followup['enabled'] == 1 && $options['followup_status'] >= 1) {
-                $buffer .= '<tr><th align="right">' . $options['followup'] . '</th><td>';
-                $buffer .= '<input type="checkbox" name="followup"';
-                if ($user->followup == 1) $buffer .= ' checked';
-                $buffer .= '/></td></tr>';
-            }
+        $options_followup = get_option('newsletter_followup');
+        if ($options_followup['enabled'] == 1) {
+            $buffer .= '<tr><th align="right">&nbsp;</th><td>';
+            $buffer .= '<input type="checkbox" name="followup"';
+            if ($user->followup == 1) $buffer .= ' checked';
+            $buffer .= '/>&nbsp;' . $options_followup['name'] . '</td></tr>';
         }
 
         $extra = apply_filters('newsletter_profile_extra', array(), $user);
@@ -683,13 +691,13 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         $buffer .= '<tr><td colspan="2" class="newsletter-td-submit">';
-        
+
         if (strpos($options['save'], 'http://') !== false) {
             $buffer .= '<input class="newsletter-submit" type="image" src="' . $options['save'] . '"/></td></tr>';
         } else {
             $buffer .= '<input class="newsletter-submit" type="submit" value="' . $options['save'] . '"/></td></tr>';
         }
-        
+
         $buffer .= '</table></form></div>';
 
         return $buffer;
@@ -765,6 +773,9 @@ class NewsletterSubscription extends NewsletterModule {
 
 }
 
+
+NewsletterSubscription::instance();
+
 // TODO: Remove in version 3.5. For compatibility.
 add_shortcode('newsletter_embed', 'newsletter_shortcode_form');
 
@@ -792,7 +803,7 @@ function newsletter_shortcode($attrs, $content) {
     $message_key = $module->get_message_key_from_request();
     $alert = stripslashes($_REQUEST['alert']);
 
-    $message = $newsletter->replace($module->options[$message_key . '_text'], $user);
+    
 
     // Now check what form must be added
     if ($message_key == 'subscription') {
@@ -812,18 +823,13 @@ function newsletter_shortcode($attrs, $content) {
                 if (isset($attrs['form'])) {
                     $message = str_replace('{subscription_form}', $module->get_form($attrs['form']), $message);
                 } else {
-                    $message = str_replace('{subscription_form}', $module->get_subscription_form(), $message);
+                    $message = str_replace('{subscription_form}', $module->get_subscription_form('page'), $message);
                 }
-            } else {
-                for ($i = 1; $i <= 10; $i++) {
-                    if (strpos($message, "{subscription_form_$i}") !== false) {
-                        $message = str_replace("{subscription_form_$i}", $module->get_form($i), $message);
-                        break;
-                    }
-                }
-            }
+            } 
         }
     }
+    
+    $message = $newsletter->replace($module->options[$message_key . '_text'], $user, null, 'page');
 
     if (!empty($alert)) {
         $message .= '<script>alert("' . addslashes($alert) . '");</script>';
@@ -841,7 +847,10 @@ function newsletter_subscription_user_register($user_id) {
 
     $module = NewsletterSubscription::instance();
 
-    if ($module->options['subscribe_wp_users'] != 1) return;
+    if ($module->options['subscribe_wp_users'] == 0) return;
+
+    if ($module->options['subscribe_wp_users'] == 2 && !isset($_REQUEST['newsletter'])) return;
+
 
     $module->logger->info('Adding a registered WordPress user (' . $user_id . ')');
     $wp_user = $wpdb->get_row($wpdb->prepare("select * from $wpdb->users where id=%d limit 1", $user_id));
@@ -849,19 +858,26 @@ function newsletter_subscription_user_register($user_id) {
         $module->logger->error('User not found?!');
         return;
     }
-    $user = array();
-    $user['email'] = $module->normalize_email($wp_user->user_email);
-    $user['name'] = $wp_user->user_login;
-    $user['status'] = 'C';
-    $user['wp_user_id'] = $wp_user->ID;
 
-    if (is_array($module->options['preferences'])) {
-        foreach ($module->options['preferences'] as $p) {
-            $user['list_' . $p] = 1;
-        }
-    }
+    $_REQUEST['ne'] = $module->normalize_email($wp_user->user_email);
+    $_REQUEST['nr'] = 'registration';
+    // Upon registration there is no last name and first name, sorry.
+    
+    $module->subscribe();
 
-    NewsletterUsers::instance()->save_user($user);
+//    $user = array();
+//    $user['email'] = $module->normalize_email($wp_user->user_email);
+//    $user['name'] = $wp_user->user_login;
+//    $user['status'] = 'C';
+//    $user['wp_user_id'] = $wp_user->ID;
+//
+//    if (is_array($module->options['preferences'])) {
+//        foreach ($module->options['preferences'] as $p) {
+//            $user['list_' . $p] = 1;
+//        }
+//    }
+//
+//    NewsletterUsers::instance()->save_user($user);
 }
 
 // Compatibility code
@@ -874,29 +890,39 @@ function newsletter_form($number = null) {
     }
 }
 
-if ($_REQUEST['na'] == 's') {
+add_action('register_form', 'newsletter_register_form');
+
+function newsletter_register_form() {
+    $module = NewsletterSubscription::instance();
+    if ($module->options['subscribe_wp_users'] == 2) {
+        echo '<p>';
+        echo '<input type="checkbox" value="1" name="newsletter">&nbsp;';
+        echo $module->options['subscribe_wp_users_label'];
+        echo '</p>';
+    }
+}
+
+$newsletter_action = isset($_REQUEST['na'])?$_REQUEST['na']:'';
+
+if ($newsletter_action == 's') {
     $user = NewsletterSubscription::instance()->subscribe();
     if ($user->status == 'C') NewsletterSubscription::instance()->show_message('confirmation', $user->id);
     if ($user->status == 'S') NewsletterSubscription::instance()->show_message('confirmed', $user->id);
 }
-
-if ($_REQUEST['na'] == 'c') {
+else if ($newsletter_action == 'c') {
     $user = NewsletterSubscription::instance()->confirm();
     NewsletterSubscription::instance()->show_message('confirmed', $user);
 }
-
-if ($_REQUEST['na'] == 'u') {
+else if ($newsletter_action == 'u') {
     $user = NewsletterSubscription::instance()->get_user_from_request();
     if ($user == null) die('No subscriber found.');
     NewsletterSubscription::instance()->show_message('unsubscription', $user->id);
 }
-
-if ($_REQUEST['na'] == 'uc') {
+else if ($newsletter_action == 'uc') {
     $user = NewsletterSubscription::instance()->unsubscribe();
     NewsletterSubscription::instance()->show_message('unsubscribed', $user);
 }
-
-if ($_REQUEST['na'] == 'p' || $_REQUEST['na'] == 'pe') {
+else if ($newsletter_action == 'p' || $newsletter_action == 'pe') {
     $user = NewsletterSubscription::instance()->get_user_from_request();
     if ($user == null) die('No subscriber found.');
     NewsletterSubscription::instance()->show_message('profile', $user);

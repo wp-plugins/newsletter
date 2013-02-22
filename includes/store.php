@@ -32,6 +32,10 @@ class NewsletterStore {
 
     function get_field($table, $id, $field_name) {
         global $wpdb;
+        if (preg_match('/^[a-zA-Z]+$/', $field_name) == 0) {
+            $this->logger->error('Invalis field name: ' . $field_name);
+            return false;
+        }
         $r = $wpdb->get_var($wpdb->prepare("select $field_name from $table where id=%d limit 1", $id));
         if ($wpdb->last_error) {
             $this->logger->error($wpdb->last_error);
@@ -164,7 +168,10 @@ class NewsletterStore {
 
     function set_field($table, $id, $field, $value) {
         global $wpdb;
-        // For security check the field name
+        if (preg_match('/^[a-zA-Z]+$/', $field) == 0) {
+            $this->logger->error('Invalis field name: ' . $field_name);
+            return false;
+        }
         $result = $wpdb->query($wpdb->prepare("update $table set $field=%s where id=%d", $value, $id));
 
         if ($wpdb->last_error) {

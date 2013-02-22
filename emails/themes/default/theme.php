@@ -1,7 +1,14 @@
 <?php
-// TODO: Documentation!!!
+/*
+ * Some variables are already defined:
+ *
+ * - $theme_options An array with all theme options
+ * - $theme_url Is the absolute URL to the theme folder used to reference images
+ * - $theme_subject Will be the email subject if set by this theme
+ *
+ */
 
-global $newsletter;
+global $newsletter, $post;
 
 $color = $theme_options['theme_color'];
 if (empty($color)) $color = '#0088cc';
@@ -11,6 +18,7 @@ if (isset($theme_options['theme_posts'])) $posts = get_posts(array('shoposts'=>1
 ?><!DOCTYPE html>
 <html>
     <head>
+        <!-- Not all email client take care of styles inserted here -->
         <style type="text/css" media="all">
             a {
                 text-decoration: none;

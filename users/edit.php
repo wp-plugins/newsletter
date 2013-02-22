@@ -24,7 +24,7 @@ if ($controls->is_action('save')) {
 
 if ($controls->is_action('delete')) {
   $module->delete_user($id);
-  $controls->js_redirect('admin.php?page=newsletter/users/index.php');
+  $controls->js_redirect($module->get_admin_page_url('index'));
   return;
 }
 
@@ -38,10 +38,12 @@ $options_profile = get_option('newsletter_profile');
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
   <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    
+        <h2>Subscriber Edit</h2>
 
   <?php $controls->show(); ?>
 
-  <form method="post" action="admin.php?page=newsletter/users/edit.php&id=<?php echo $id; ?>">
+  <form method="post" action="">
     <?php $controls->init(); ?>
 
     <div id="tabs">

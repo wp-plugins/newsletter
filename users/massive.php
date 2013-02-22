@@ -2,6 +2,7 @@
 @include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 
 $controls = new NewsletterControls();
+$module = NewsletterUsers::instance();
 
 $options_profile = get_option('newsletter_profile');
 
@@ -136,7 +137,8 @@ if ($controls->is_action('bounces')) {
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
   <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-
+    
+    <h2>Massive Actions on Subscribers</h2>
   <p>A bug or an error using this panel can scramble the subscribers database. Please, backup before run a massive operation.</p>
 
   <?php $controls->show(); ?>

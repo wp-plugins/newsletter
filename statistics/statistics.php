@@ -5,7 +5,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 class NewsletterStatistics extends NewsletterModule {
 
     const VERSION = '1.0.2';
-
+   
     static $instance;
 
     /**
@@ -19,7 +19,7 @@ class NewsletterStatistics extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('statistics', self::VERSION);
+        parent::__construct('statistics', self::VERSION, 34);
     }
 
     function upgrade() {
@@ -47,10 +47,15 @@ class NewsletterStatistics extends NewsletterModule {
         $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column anchor varchar(200) not null default ''");
 
         // Stores the link of every email to create short links
-        $this->upgrade_query("create table if not exists {$wpdb->prefix}newsletter_links (id int auto_increment, primary key (id)) $charset_collate");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column email_id int not null default 0");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column token varchar(10) not null default ''");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column text varchar(255) not null default ''");
+//        $this->upgrade_query("create table if not exists {$wpdb->prefix}newsletter_links (id int auto_increment, primary key (id)) $charset_collate");
+//        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column email_id int not null default 0");
+//        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column token varchar(10) not null default ''");
+//        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column text varchar(255) not null default ''");
+    }
+
+    function admin_menu() {
+        $this->add_menu_page('index', 'Statistics');
+        $this->add_admin_page('view', 'Statistics');
     }
 
     function relink($text, $email_id, $user_id) {
@@ -66,8 +71,10 @@ class NewsletterStatistics extends NewsletterModule {
     function relink_callback($matches) {
         $href = str_replace('&amp;', '&', $matches[2]);
         // Do not replace the tracking or subscription/unsubscription links.
-        if (strpos($href, '/newsletter/') !== false) return $matches[0];
-        if (substr($href, 0, 1) == '#') return $matches[0];
+        if (strpos($href, '/newsletter/') !== false)
+            return $matches[0];
+        if (substr($href, 0, 1) == '#')
+            return $matches[0];
 
         $anchor = '';
         if ($this->options['anchor'] == 1) {
@@ -85,7 +92,8 @@ class NewsletterStatistics extends NewsletterModule {
     }
 
     function get_statistics_url($email_id) {
-        return 'admin.php?page=newsletter_statistics_view&amp;id=' . $email_id;
+        $page = apply_filters('newsletter_statistics_view', 'newsletter_statistics_view');
+        return 'admin.php?page=' . $page . '&amp;id=' . $email_id;
     }
 
     function get_read_count($email_id) {
@@ -96,15 +104,5 @@ class NewsletterStatistics extends NewsletterModule {
 
 }
 
-add_action('newsletter_admin_menu', 'newsletter_statistics_admin_menu');
-
-/**
- * Add menu pages for this module.
- * @global Newsletter $newsletter
- */
-function newsletter_statistics_admin_menu() {
-    global $newsletter;
-    $newsletter->add_menu_page('statistics', 'index', 'Statistics');
-    $newsletter->add_admin_page('statistics', 'view', 'Statistics');
-}
+NewsletterStatistics::instance();
 

@@ -31,11 +31,9 @@ class NewsletterWidget extends WP_Widget {
             // Referrer
             $form .= '<input type="hidden" name="nr" value="widget"/>';
 
-            if ($options_profile['name_status'] == 2)
-                    $form .= '<p><input class="newsletter-firstname" type="text" name="nn" value="' . $options_profile['name'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
+            if ($options_profile['name_status'] == 2) $form .= '<p><input class="newsletter-firstname" type="text" name="nn" value="' . $options_profile['name'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
 
-            if ($options_profile['surname_status'] == 2)
-                    $form .= '<p><input class="newsletter-lastname" type="text" name="ns" value="' . $options_profile['surname'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
+            if ($options_profile['surname_status'] == 2) $form .= '<p><input class="newsletter-lastname" type="text" name="ns" value="' . $options_profile['surname'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
 
             $form .= '<p><input class="newsletter-email" type="email" required name="ne" value="' . $options_profile['email'] . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
 
@@ -90,8 +88,7 @@ class NewsletterWidget extends WP_Widget {
             }
 
             $form .= '</form></div>';
-            if (strpos($buffer, '{subscription_form}') !== false)
-                    $buffer = str_replace('{subscription_form}', $form, $buffer);
+            if (strpos($buffer, '{subscription_form}') !== false) $buffer = str_replace('{subscription_form}', $form, $buffer);
             else $buffer .= $form;
         }
         else {

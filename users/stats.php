@@ -1,11 +1,17 @@
 <?php
     $all_count = $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter");
     $options_profile = get_option('newsletter_profile');
+    
+    $module = NewsletterUsers::instance();
 ?>
+
+
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    
+    <h2>Subscriber Statistics</h2>
 
 <p>Counts are limited to confirmed subscribers.</p>
 
@@ -78,7 +84,7 @@
 
 <h3>Source</h3>
 <?php
-    $list = $wpdb->get_results("select http_referer, count(*) as total from " . $wpdb->prefix . "newsletter where status='C' group by http_referer order by http_referer");
+    $list = $wpdb->get_results("select http_referer, count(*) as total from " . $wpdb->prefix . "newsletter where status='C' group by http_referer order by count(*) desc");
 ?>
 <table class="widefat" style="width: 300px">
     <thead><tr><th>URL</th><th>Total</th></thead>
@@ -101,24 +107,18 @@
 </table>
 
 <p>
-    <img alt="chart" src="http://chart.apis.google.com/chart?chtt=Sex&chds=0,<?php echo $all_count; ?>&cht=p3&chco=00ff00,0000ff&chs=600x300&chd=t:<?php echo $male_count; ?>,<?php echo $female_count; ?>,<?php echo $other_count; ?>&chl=Male|Female|Other" />
+    <div id="sex-chart" style="width:400; height:300"></div>
 </p>
+
 
     <h3>Subscriptions over time</h3>
 
     <h4>Subscriptions by month</h4>
     <?php
-    $list = $wpdb->get_results("select count(*) as c, concat(year(created), '-', date_format(created, '%m')) as d from " . $wpdb->prefix . "newsletter where status='C' group by concat(year(created), '-', date_format(created, '%m')) order by d desc limit 24");
-    $max = 0;
-    for ($i=count($list)-1; $i>=0; $i--) {
-        $month = $list[$i];
-        $y .= $month->c . ','; $x .= substr($month->d, 5) . '|';
-        $max = max($max, $month->c);
-    }
+    $months = $wpdb->get_results("select count(*) as c, concat(year(created), '-', date_format(created, '%m')) as d from " . $wpdb->prefix . "newsletter where status='C' group by concat(year(created), '-', date_format(created, '%m')) order by d desc limit 24");
     ?>
-    <p>
-        <img alt="chart" src="http://chart.apis.google.com/chart?chds=0,<?php echo $max; ?>&chtt=Subscription rate&cht=bvg&chco=00ff00,0000ff&chs=600x300&chd=t:<?php echo substr($y, 0, -1); ?>&chl=<?php echo substr($x, 0, -1); ?>" />
-    </p>
+    
+    <div id="months-chart" style="width:400; height:300"></div>
 
     <table class="widefat" style="width: 300px">
         <thead>
@@ -127,7 +127,7 @@
             <th>Subscribers</th>
         </tr>
         </thead>
-        <?php foreach ($list as $day) { ?>
+        <?php foreach ($months as $day) { ?>
         <tr valign="top">
             <td><?php echo $day->d; ?></td>
             <td><?php echo $day->c; ?></td>
@@ -157,3 +157,48 @@
 
 
 </div>
+
+ <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+  // Load the Visualization API and the piechart package.
+  google.load('visualization', '1.0', {'packages':['corechart']});
+
+  // Set a callback to run when the Google Visualization API is loaded.
+  google.setOnLoadCallback(drawChart);
+  
+      function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      data.addRows([
+        ['None', <?php echo $other_count; ?>],
+        ['Female', <?php echo $female_count; ?>],
+        ['Male', <?php echo $male_count; ?>]
+      ]);
+
+      // Set chart options
+      var options = {'title':'Gender',
+                     'width':400,
+                     'height':300};
+
+      var chart = new google.visualization.PieChart(document.getElementById('sex-chart'));
+      chart.draw(data, options);
+      
+      var months = new google.visualization.DataTable();
+      months.addColumn('string', 'Topping');
+      months.addColumn('number', 'Slices');
+      
+      <?php foreach ($months as $day) { ?>
+      months.addRow(['<?php echo $day->d; ?>', <?php echo $day->c; ?>]);
+      <?php } ?>
+          
+      var options = {'title':'By months', 'width':400, 'height':300};
+
+      var chart = new google.visualization.BarChart(document.getElementById('months-chart'));
+      chart.draw(months, options);
+    }
+
+</script>

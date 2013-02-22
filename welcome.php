@@ -50,16 +50,6 @@ if ($x === false) {
     <form method="post" action="">
         <?php $controls->init(); ?>
 
-        <p>
-            Thank you to use Newsletter plugin. Newsletter counts more than
-            <a href="http://wordpress.org/extend/plugins/newsletter/stats/" target="_blank">400.000 downloads</a> and
-            that number is a clear sign of how much useful it is to many bloggers. Or at least I hope that.
-        </p>
-
-        <p>
-            <strong>Old 2.5.2.7 version is available <a href="http://www.satollo.net/wp-content/uploads/newsletter-2.5.2.7.zip">here</a>.</strong>
-        </p>
-
         <h3>First steps</h3>
         <p>
             <strong>Newsletter works out of box</strong>. You don't need to create lists or configure it. Just use your WordPress
@@ -90,6 +80,88 @@ if ($x === false) {
                 are accessible directly from email lists.
             </li>
         </ol>
+
+        <h3>Modules</h3>
+        <p>
+            Below the list of available modules that can be used with Newsletter plugin. Some modules are "core" part
+            of Newsletter and are automatically updated with Newsletter official updates. Other modules are extensions and
+            can be downloaded from <a href="http://www.satollo.net/downloads" target="_blank">www.satollo.net/downloads</a>.
+            Some of them are commercial and other still on development (here for testers).
+        </p>
+
+        <table class="widefat" style="width: auto">
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Version</th>
+                    <th>Available version</th>
+                </tr>
+            </thead>
+            <!-- TODO: Should be a cicle of installed modules -->
+            <tbody>
+                <tr>
+                    <td>Main<br><small>The main configuration of Newsletter and some minor features</small></td>
+                    <td><?php echo Newsletter::VERSION; ?></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Subscription<br><small>All about the subscription and unsubscription processes</small></td>
+                    <td><?php echo NewsletterSubscription::VERSION; ?></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Subscribers<br><small>The subscribers management tool</small></td>
+                    <td><?php echo NewsletterUsers::VERSION; ?></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Newsletters<br><small>The newsletters composer with themes</small></td>
+                    <td><?php echo NewsletterEmails::VERSION; ?></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Statistics<br><small>Statistics collector</small></td>
+                    <td><?php echo NewsletterStatistics::instance()->version; ?></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Reports<br><small>Extends the statistics system with a better report</small></td>
+                    <?php if (class_exists('NewsletterReports')) { ?>
+                        <td><?php echo NewsletterReports::instance()->version; ?></td>
+                    <?php } else { ?>
+                        <td>Not installed</td>
+                    <?php } ?>
+                    <td><?php echo NewsletterModule::get_available_version(34); ?></td>
+                </tr>   
+                <tr>
+                    <td>Feed by Mail (test version)<br><small>Automatically generate and send email with blog contents</small></td>
+                    <?php if (class_exists('NewsletterFeed')) { ?>
+                        <td><?php echo NewsletterFeed::instance()->version; ?></td>
+                    <?php } else { ?>
+                        <td>Not installed</td>
+                    <?php } ?>
+                    <td><?php echo NewsletterModule::get_available_version(35); ?></td>
+                </tr> 
+                <tr>
+                    <td>Follow Up (test version))<br><small>Sends email serie after subscriber sign up</small></td>
+                    <?php if (class_exists('NewsletterFollowup')) { ?>
+                        <td><?php echo NewsletterFollowup::instance()->version; ?></td>
+                    <?php } else { ?>
+                        <td>Not installed</td>
+                    <?php } ?>
+                    <td><?php echo NewsletterModule::get_available_version(37); ?></td>
+                </tr>     
+                <tr>
+                    <td>MailJet (test version)</td>
+                    <?php if (class_exists('NewsletterMailjet')) { ?>
+                        <td><?php echo NewsletterMailjet::instance()->version; ?></td>
+                    <?php } else { ?>
+                        <td>Not installed</td>
+                    <?php } ?>
+                    <td><?php echo NewsletterModule::get_available_version(38); ?></td>
+                </tr>
+            </tbody>
+        </table>        
 
 
         <h3>Support</h3>

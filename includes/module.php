@@ -40,19 +40,22 @@ class NewsletterModule {
         $this->version = $version;
         $this->prefix = 'newsletter_' . $module;
 
-        $this->options = $this->get_options();
 
         $this->logger = new NewsletterLogger($module);
+        $this->options = $this->get_options();
         $this->store = NewsletterStore::singleton();
 
         //$this->logger->debug($module . ' constructed');
-
         // Version check
-        if ($this->compare_version($this->version) != 0) {
-            $this->logger->info('Version changed from ' . $this->get_version() . ' to ' . $this->version);
-            // Do all the stuff for this version change
-            $this->upgrade();
-            $this->save_version($this->version);
+        if (is_admin()) {
+            $old_version = get_option($this->prefix . '_version', '');
+            if (strcmp($old_version, $new_version) != 0) {
+                $this->logger->info('Version changed from ' . $old_version . ' to ' . $this->version);
+                // Do all the stuff for this version change
+                $this->upgrade();
+                update_option($this->prefix . '_version', $version);
+            }
+            add_action('admin_menu', array($this, 'admin_menu'));
         }
     }
 
@@ -70,7 +73,17 @@ class NewsletterModule {
 
         $this->logger->info('upgrade_query> Executing ' . $query);
         $wpdb->query($query);
-        if ($wpdb->last_error) $this->logger->error($wpdb->last_error);
+        if ($wpdb->last_error) {
+            $this->logger->error($wpdb->last_error);
+        }
+    }
+
+    /** 
+     * Return, eventually, the version of this moduke available on satollo.net.
+     * @return string
+     */
+    static function get_available_version($module_id) {
+        return @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $module_id);
     }
 
     /** Returns a prefix to be used for option names and other things which need to be uniquely named. The parameter
@@ -88,27 +101,34 @@ class NewsletterModule {
      */
     function get_options($sub = '') {
         $options = get_option($this->get_prefix($sub));
-        if ($options == false) return array();
+        if ($options == false)
+            return array();
         return $options;
     }
 
     function get_default_options($sub = '') {
-        if ($sub != '') $sub .= '-';
+        if ($sub != '')
+            $sub .= '-';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . 'en_US.php';
+        @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
-        if (!is_array($options)) return array();
+        @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
+        if (!is_array($options)) {
+            return array();
+        }
         return $options;
     }
-    
+
     function reset_options($sub = '') {
         $this->save_options(array_merge($this->get_options($sub), $this->get_default_options($sub)), $sub);
-        return $this->get_options($sub);
+        return $this->options;
     }
 
     function save_options($options, $sub = '') {
+        $this->options = $options;
         update_option($this->get_prefix($sub), $options);
         if (isset($options['log_level']))
-                update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
+            update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
     }
 
     function backup_options($sub) {
@@ -128,18 +148,6 @@ class NewsletterModule {
     function add_to_last_run($delta, $sub = '') {
         $time = $this->get_last_run($sub);
         $this->save_last_run($time + $delta, $sub);
-    }
-
-    function get_version() {
-        return get_option($this->prefix . '_version');
-    }
-
-    function save_version($version) {
-        update_option($this->prefix . '_version', $version);
-    }
-
-    function compare_version($new_version) {
-        return strcmp($this->get_version(), $new_version);
     }
 
     function delete_transient($sub = '') {
@@ -175,15 +183,19 @@ class NewsletterModule {
 
     static function add_qs($url, $qs, $amp = true) {
         if (strpos($url, '?') !== false) {
-            if ($amp) return $url . '&amp;' . $qs;
-            else return $url . '&' . $qs;
+            if ($amp)
+                return $url . '&amp;' . $qs;
+            else
+                return $url . '&' . $qs;
         }
-        else return $url . '?' . $qs;
+        else
+            return $url . '?' . $qs;
     }
 
     static function normalize_email($email) {
         $email = strtolower(trim($email));
-        if (!is_email($email)) return null;
+        if (!is_email($email))
+            return null;
         return $email;
     }
 
@@ -195,12 +207,17 @@ class NewsletterModule {
 
     static function is_email($email, $empty_ok = false) {
         $email = strtolower(trim($email));
-        if ($empty_ok && $email == '') return true;
+        if ($empty_ok && $email == '')
+            return true;
 
-        if (!is_email($email)) return false;
-        if (strpos($email, 'mailinator.com') !== false) return false;
-        if (strpos($email, 'guerrillamailblock.com') !== false) return false;
-        if (strpos($email, 'emailtemporanea.net') !== false) return false;
+        if (!is_email($email))
+            return false;
+        if (strpos($email, 'mailinator.com') !== false)
+            return false;
+        if (strpos($email, 'guerrillamailblock.com') !== false)
+            return false;
+        if (strpos($email, 'emailtemporanea.net') !== false)
+            return false;
         return true;
     }
 
@@ -220,17 +237,22 @@ class NewsletterModule {
     }
 
     static function date($time = null, $now = false, $left = false) {
-        if (is_null($time)) $time = time();
-        if ($time == false) $buffer = 'none';
-        else
-                $buffer = gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
+        if (is_null($time)) {
+            $time = time();
+        }
+        if ($time == false) {
+            $buffer = 'none';
+        }
+        else {
+            $buffer = gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
+        }
         if ($now) {
             $buffer .= ' (now: ' . gmdate(get_option('date_format') . ' ' .
                             get_option('time_format'), time() + get_option('gmt_offset') * 3600);
-            if ($left) {
-                $buffer .= ', ' . gmdate('H:i:s', $time - time()) . ' left';
-            }
             $buffer .= ')';
+        }
+        if ($left) {
+            $buffer .= ', ' . gmdate('H:i:s', $time - time()) . ' left';
         }
         return $buffer;
     }
@@ -245,8 +267,10 @@ class NewsletterModule {
     static function split_posts(&$posts, $time = 0) {
         $result = array(array(), array());
         foreach ($posts as &$post) {
-            if (self::is_post_old($post, $time)) $result[1][] = $post;
-            else $result[0][] = $post;
+            if (self::is_post_old($post, $time))
+                $result[1][] = $post;
+            else
+                $result[0][] = $post;
         }
         return $result;
     }
@@ -258,8 +282,10 @@ class NewsletterModule {
     static function get_post_image($post_id = null, $size = 'thumbnail', $alternative = null) {
         global $post;
 
-        if (empty($post_id)) $post_id = $post->ID;
-        if (empty($post_id)) return $alternative;
+        if (empty($post_id))
+            $post_id = $post->ID;
+        if (empty($post_id))
+            return $alternative;
 
         $image_id = function_exists('get_post_thumbnail_id') ? get_post_thumbnail_id($post_id) : false;
         if ($image_id) {
@@ -281,15 +307,17 @@ class NewsletterModule {
 
     function get_styles() {
 
-        $list = array(''=>'none');
+        $list = array('' => 'none');
 
         $dir = NEWSLETTER_DIR . '/' . $this->module . '/styles';
         $handle = @opendir($dir);
 
         if ($handle !== false) {
             while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') continue;
-                if (substr($file, -4) != '.css') continue;
+                if ($file == '.' || $file == '..')
+                    continue;
+                if (substr($file, -4) != '.css')
+                    continue;
                 $list[$file] = substr($file, 0, strlen($file) - 4);
             }
             closedir($handle);
@@ -300,9 +328,12 @@ class NewsletterModule {
 
         if ($handle !== false) {
             while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') continue;
-                if (isset($list[$file])) continue;
-                if (substr($file, -4) != '.css') continue;
+                if ($file == '.' || $file == '..')
+                    continue;
+                if (isset($list[$file]))
+                    continue;
+                if (substr($file, -4) != '.css')
+                    continue;
                 $list[$file] = substr($file, 0, strlen($file) - 4);
             }
             closedir($handle);
@@ -312,8 +343,39 @@ class NewsletterModule {
 
     function get_style_url($style) {
         if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/styles/' . $style))
-                return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/styles/' . $style;
-        else return NEWSLETTER_URL . '/' . $this->module . '/styles/' . $style;
+            return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/styles/' . $style;
+        else
+            return NEWSLETTER_URL . '/' . $this->module . '/styles/' . $style;
+    }
+    
+    function admin_menu() {
+        
+    }
+
+    function add_menu_page($page, $title) {
+        $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
+        if (!is_file($file)) {
+            $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
+        }
+        $name = 'newsletter_' . $this->module . '_' . $page;
+        eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
+        add_submenu_page('newsletter/welcome.php', $title, $title, $this->options['editor'] ? 7 : 10, $name, $name);
+    }
+
+    function add_admin_page($page, $title) {
+
+        $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
+        if (!is_file($file)) {
+            $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
+        }
+
+        $name = 'newsletter_' . $this->module . '_' . $page;
+        eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
+        add_submenu_page(null, $title, $title, $this->options['editor'] ? 7 : 10, $name, $name);
+    }
+    
+    function get_admin_page_url($page) {
+        return '?page=newsletter_' . $this->module . '_' . $page;
     }
 
 }

@@ -12,43 +12,55 @@ if ($controls->is_action('save')) {
 
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/statistics-module'; ?>
+
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
-    <h2>Statistics Module</h2>
-    <p><em>This is a brief introduction waiting for an official page.</em></p>
+
+    <h5>Statistics Module</h5>
+    
+    <h2>Configuration and Email List</h2>
+
     <p>
-        The Newsletter Statistics Module adds to Newsletter the ability to collect messages opening and link clicks on
-        those messages.
+        This module is a core part of Newsletter that collects statistics about sent emails: how many have
+        been read, how many have been clicked and so on.
     </p>
     <p>
-        Statistic data is collected per email, so on panels listing emals there should always be a "statistics" button
-        which leads to the analytics panel for that email.
+        To see the statistics of each single email, you should click the "statistics" button
+        you will find near each message where they are listed (like on Newsletters panel). For your
+        convenience, below there is a list of each email sent by Newsletter till now.
+    </p>
+    <p>
+        A more advanced report for each email can be generated installing the Advanced Statistics Module
+        from <a href="http://www.satollo.net/downloads" target="_blank">this page</a>.
     </p>
 
-    <h3>Summary of collected data</h3>
-    <p><em>To do...</em></p>
     <table class="widefat" style="width: auto">
         <thead>
             <tr>
-            <th>Parameter</th>
-            <th>Value</th>
+                <th>Id</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
 
         <tbody>
-            <tr>
-                <td>Total email sent</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td>Total clicks</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td>Total unique users which read or clicked</td>
-                <td>-</td>
-            </tr>
+            <?php foreach ($emails as &$email) { ?>
+                <tr>
+                    <td><?php echo $email->id; ?></td>
+                    <td><?php echo htmlspecialchars($email->subject); ?></td>
+                    <td><?php echo $email->date; ?></td>
+                    <td><?php echo $email->type; ?></td>
+                    <td>
+                        <?php echo $email->status; ?>
+                        (<?php echo $email->sent; ?>/<?php echo $email->total; ?>)
+                    </td>
+                    <td>
+                        <a class="button" href="<?php echo NewsletterStatistics::instance()->get_statistics_url($email->id); ?>">statistics</a>
+                    </td>
+                </tr>
+            <?php } ?>
         </tbody>
-    </table>
-
-
+    </table>    
 </div>

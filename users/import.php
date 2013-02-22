@@ -1,6 +1,7 @@
 <?php
 require_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
+$module = NewsletterUsers::instance();
 
 $options_profile = get_option('newsletter_profile');
 
@@ -97,6 +98,9 @@ if ($controls->is_action('import')) {
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
     <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    
+        <h2>Import</h2>
+        
     <?php $controls->show(); ?>
 
     <p>

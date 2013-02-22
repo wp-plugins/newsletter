@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Move this file inside the /wp_content/newsletter folder to activate it and rename it
  * "config.php".

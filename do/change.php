@@ -15,26 +15,25 @@ switch ($field) {
         break;
     // Should be managed by Feed by Mail
     case 'feed':
-        //if (isset($value) && ($value === '0' || $value === '1')) {
+        if (isset($value) && ($value === '0' || $value === '1')) {
             NewsletterUsers::instance()->set_user_field($user->id, 'feed', $value);
-        //} else die('Invalid feed value');
+        } else die('Invalid feed value');
         break;
 }
 
 if (strpos($field, 'preference_') === 0) {
     $idx = (int) substr($field, 11);
-    //echo $idx;
     $options_profile = get_option('newsletter_profile');
 
     if ($options_profile['list_' . $idx . '_status'] == 0) {
         die('Not allowed field.');
     }
-    //die($value);
-    //if (isset($value) && ($value === '0' || $value === '1')) {
+
+    if (isset($value) && ($value === '0' || $value === '1')) {
         NewsletterUsers::instance()->set_user_field($user->id, 'list_' . $idx, $value);
-    //} else {
-    //    die('Invalid preference value');
-    //}
+    } else {
+        die('Invalid preference value');
+    }
 }
 
 if (isset($url)) {

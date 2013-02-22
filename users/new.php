@@ -11,7 +11,7 @@ if ($controls->is_action('save')) {
     if ($user === false) {
         $controls->errors = 'This email already exists.';
     } else {
-        $controls->js_redirect('admin.php?page=newsletter/users/edit.php&id=' . $user->id);
+        $controls->js_redirect($module->get_admin_page_url('edit') . '&id=' . $user->id);
         return;
     }
 }
@@ -20,6 +20,8 @@ if ($controls->is_action('save')) {
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
     <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    
+    <h2>New subscriber</h2>
 
     <?php $controls->show(); ?>
 

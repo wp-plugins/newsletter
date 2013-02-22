@@ -43,7 +43,15 @@ class NewsletterEmails extends NewsletterModule {
 
         return true;
     }
-
+    
+    function admin_menu() {
+        $this->add_menu_page('index', 'Newsletters');
+        $this->add_admin_page('list', 'Email List');
+        $this->add_admin_page('new', 'Email New');
+        $this->add_admin_page('edit', 'Email Edit');
+        $this->add_admin_page('theme', 'Email List');
+    }
+    
     function save_options($options) {
         $this->options = $options;
         parent::save_options($options);
@@ -110,3 +118,5 @@ class NewsletterEmails extends NewsletterModule {
     }
 
 }
+
+NewsletterEmails::instance();

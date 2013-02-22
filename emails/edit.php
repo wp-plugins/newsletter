@@ -14,6 +14,10 @@ if (!$controls->is_action()) {
     $controls->data = $email;
     if (!empty($email['preferences'])) $controls->data['preferences'] = explode(',', $email['preferences']);
     if (!empty($email['sex'])) $controls->data['sex'] = explode(',', $email['sex']);
+    $email_options = unserialize($email['options']);
+    if (is_array($email_options)) {
+        $controls->data = array_merge($controls->data, $email_options);
+    }
 }
 
 if ($controls->is_action('test') || $controls->is_action('save') || $controls->is_action('send') || $controls->is_action('editor')) {
@@ -33,7 +37,15 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     $email['message_text'] = $controls->data['message_text'];
     $email['subject'] = $controls->data['subject'];
     $email['track'] = $controls->data['track'];
+    
+    // Builds the extended options
+    $email['options'] = array();
+    $email['options']['preferences_status'] = $controls->data['preferences_status'];
+    $email['options']['preferences'] = $controls->data['preferences'];
+    $email['options']['sex'] = $controls->data['sex'];
 
+    $email['options'] = serialize($email['options']);
+    
     if (is_array($controls->data['preferences'])) $email['preferences'] = implode(',', $controls->data['preferences']);
     else $email['preferences'] = '';
 
@@ -46,12 +58,24 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
 
     $preferences = $controls->data['preferences'];
     if (is_array($preferences)) {
-        $query .= " and (";
-        foreach ($preferences as $x) {
-            $query .= "list_" . $x . "=1 or ";
+        
+        // Not set one of the preferences specified
+        if ($controls->data['preferences_status'] == 1) {
+            $query .= " and (";
+            foreach ($preferences as $x) {
+                $query .= "list_" . $x . "=0 or ";
+            }
+            $query = substr($query, 0, -4);
+            $query .= ")";
+        } 
+        else {
+            $query .= " and (";
+            foreach ($preferences as $x) {
+                $query .= "list_" . $x . "=1 or ";
+            }
+            $query = substr($query, 0, -4);
+            $query .= ")";
         }
-        $query = substr($query, 0, -4);
-        $query .= ")";
     }
 
     $sex = $controls->data['sex'];
@@ -78,7 +102,10 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
         $email['editor'] = $email['editor'] == 0?1:0;
     }
 
-    Newsletter::instance()->save_email($email);
+    $res = Newsletter::instance()->save_email($email);
+    if ($res === false) {
+        $controls->errors = 'Unable to save. Try to deactivate and reactivate the plugin may be the database is out of sync.';
+    }
     
     $controls->data['message'] = $email['message'];
 }
@@ -87,7 +114,7 @@ if ($controls->is_action('send')) {
 
     $wpdb->update($wpdb->prefix . 'newsletter_emails', array('status' => 'sending'), array('id' => $email_id));
     $email['status'] = 'sending';
-    $controls->messages = "Email added to the queue.";
+    $controls->messages .= "Email added to the queue.";
 }
 
 if ($controls->is_action('pause')) {
@@ -115,7 +142,7 @@ if ($controls->is_action('test')) {
         $controls->errors = 'There is no test subscribers to who send this email. Mark some subscribers as test subscriber from the Subscriber panel.';
     } else {
         Newsletter::instance()->send(Newsletter::instance()->get_email($email_id), $users);
-        $controls->messages = 'Test emails sent to ' . count($users) . ' test users.';
+        $controls->messages .= 'Test emails sent to ' . count($users) . ' test users.';
     }
 }
 
@@ -171,7 +198,9 @@ if ($email['editor'] == 0) {
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
-    <h2>Newsletters Module</h2>
+    <h5>Newsletters Module</h5>
+
+    <h2>Edit Newsletter</h2>
 
     <?php $controls->show(); ?>
 
@@ -195,6 +224,7 @@ if ($email['editor'] == 0) {
                 <li><a href="#tabs-2">Message (textual)</a></li>
                 <li><a href="#tabs-3">Who will receive it</a></li>
                 <li><a href="#tabs-4">Status</a></li>
+                <!--<li><a href="#tabs-5">Documentation</a></li>-->
             </ul>
 
 
@@ -250,12 +280,21 @@ if ($email['editor'] == 0) {
                             $query = "select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='C'";
 
                             if (is_array($controls->data['preferences'])) {
-                                $query .= " and (";
-                                foreach ($controls->data['preferences'] as $x) {
-                                    $query .= "list_" . $x . "=1 or ";
+                                if ($controls->data['preferences_status'] == 1) {
+                                    $query .= " and (";
+                                    foreach ($controls->data['preferences'] as $x) {
+                                        $query .= "list_" . $x . "=0 or ";
+                                    }
+                                    $query = substr($query, 0, -4);
+                                    $query .= ")";
+                                } else {
+                                    $query .= " and (";
+                                    foreach ($controls->data['preferences'] as $x) {
+                                        $query .= "list_" . $x . "=1 or ";
+                                    }
+                                    $query = substr($query, 0, -4);
+                                    $query .= ")";
                                 }
-                                $query = substr($query, 0, -4);
-                                $query .= ")";
                             }
 
                             if (is_array($controls->data['sex'])) {
@@ -288,10 +327,15 @@ if ($email['editor'] == 0) {
                     <tr valign="top">
                         <th>Preferences</th>
                         <td>
+                            Subscribers with at least one preference 
+                            <?php $controls->select('preferences_status', array(0=>'ACTIVE', 1=>'NOT ACTIVE')); ?>
+                            between the selected ones:
+                            
                             <?php $controls->preferences_group('preferences', true); ?>
-                            <div style="clear: both"></div>
                             <div class="hints">
-                                Leaving all preferences unselected means to NOT filter by preference.
+                                You can address the newsletter to subscribers who selected at least one of the options or to who
+                                has not selected at least one of the options. 
+                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Read more about the "NOT ACTIVE" usage</a>.
                             </div>
                         </td>
                     </tr>
@@ -327,7 +371,28 @@ if ($email['editor'] == 0) {
                     </tr>
                 </table>
             </div>
-
+            
+            <!--
+            <div id="tabs-5">
+                <p>Tags documented below can be used on newsletter body. Some of them can be used on subject as well.</p>
+               
+                <p>
+                    Special tags, like the preference setting tag, can be used to highly interact with your subscribers, see
+                    the Newsletter Preferences page for examples.
+                </p>
+                --
+                
+                <dl>
+                    <dt>{set_preference_N}</dt>
+                    <dd>
+                        This tag creates a URL which, once clicked, set the preference numner N on the user profile and redirecting the
+                        subscriber to his profile panel. Preferences can be configured on Subscription/Form fields panel.
+                    </dd>
+                </dl>
+                        
+                </ul>
+            </div>
+            -->
 
         </div>
 

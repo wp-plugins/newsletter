@@ -6,7 +6,7 @@
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Theming/API
- */
+*/
 
 /* Layout helpers
 ----------------------------------*/
@@ -47,7 +47,7 @@
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Accordion#theming
- */
+*/
 /* IE/Win - Fix animation bug - #4615 */
 .ui-accordion { width: 100%; }
 .ui-accordion .ui-accordion-header { cursor: pointer; position: relative; margin-top: 1px; zoom: 1; }
@@ -66,7 +66,7 @@
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Autocomplete#theming
- */
+*/
 .ui-autocomplete { position: absolute; cursor: default; }
 
 /* workarounds */
@@ -80,36 +80,36 @@
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Menu#theming
- */
+*/
 .ui-menu {
-	list-style:none;
-	padding: 2px;
-	margin: 0;
-	display:block;
-	float: left;
+    list-style:none;
+    padding: 2px;
+    margin: 0;
+    display:block;
+    float: left;
 }
 .ui-menu .ui-menu {
-	margin-top: -3px;
+    margin-top: -3px;
 }
 .ui-menu .ui-menu-item {
-	margin:0;
-	padding: 0;
-	zoom: 1;
-	float: left;
-	clear: left;
-	width: 100%;
+    margin:0;
+    padding: 0;
+    zoom: 1;
+    float: left;
+    clear: left;
+    width: 100%;
 }
 .ui-menu .ui-menu-item a {
-	text-decoration:none;
-	display:block;
-	padding:.2em .4em;
-	line-height:1.5;
-	zoom:1;
+    text-decoration:none;
+    display:block;
+    padding:.2em .4em;
+    line-height:1.5;
+    zoom:1;
 }
 .ui-menu .ui-menu-item a.ui-state-hover,
 .ui-menu .ui-menu-item a.ui-state-active {
-	font-weight: normal;
-	margin: -1px;
+    font-weight: normal;
+    margin: -1px;
 }
 /*
  * jQuery UI Button 1.8.16
@@ -119,7 +119,7 @@
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Button#theming
- */
+*/
 .ui-button { display: inline-block; position: relative; padding: 0; margin-right: .1em; text-decoration: none !important; cursor: pointer; text-align: center; zoom: 1; overflow: visible; } /* the overflow property removes extra width in IE */
 .ui-button-icon-only { width: 2.2em; } /* to make room for the icon, a width needs to be set here */
 button.ui-button-icon-only { width: 2.4em; } /* button elements seem to need a little more width */
@@ -157,7 +157,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Datepicker#theming
- */
+*/
 .ui-datepicker { width: 17em; padding: .2em .2em 0; display: none; }
 .ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; }
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { position:absolute; top: 2px; width: 1.8em; height: 1.8em; }
@@ -224,7 +224,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Dialog#theming
- */
+*/
 .ui-dialog { position: absolute; padding: .2em; width: 300px; overflow: hidden; }
 .ui-dialog .ui-dialog-titlebar { padding: .4em 1em; position: relative;  }
 .ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .1em 0; }
@@ -245,7 +245,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Progressbar#theming
- */
+*/
 .ui-progressbar { height:2em; text-align: left; }
 .ui-progressbar .ui-progressbar-value {margin: -1px; height:100%; }/*
  * jQuery UI Resizable 1.8.16
@@ -255,7 +255,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Resizable#theming
- */
+*/
 .ui-resizable { position: relative;}
 .ui-resizable-handle { position: absolute;font-size: 0.1px;z-index: 99999; display: block; }
 .ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
@@ -274,7 +274,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Selectable#theming
- */
+*/
 .ui-selectable-helper { position: absolute; z-index: 100; border:1px dotted black; }
 /*
  * jQuery UI Slider 1.8.16
@@ -284,7 +284,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Slider#theming
- */
+*/
 .ui-slider { position: relative; text-align: left; }
 .ui-slider .ui-slider-handle { position: absolute; z-index: 2; width: 1.2em; height: 1.2em; cursor: default; }
 .ui-slider .ui-slider-range { position: absolute; z-index: 1; font-size: .7em; display: block; border: 0; background-position: 0 0; }
@@ -307,7 +307,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://jquery.org/license
  *
  * http://docs.jquery.com/UI/Tabs#theming
- */
+*/
 .ui-tabs { position: relative; padding: .2em; zoom: 1; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
 .ui-tabs .ui-tabs-nav { margin: 0; padding: .2em .2em 0; }
 .ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0 .2em 1px 0; border-bottom: 0 !important; padding: 0; white-space: nowrap; }
@@ -327,7 +327,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://docs.jquery.com/UI/Theming/API
  *
  * To view and modify this theme, visit http://jqueryui.com/themeroller/
- */
+*/
 
 
 /* Component containers
@@ -568,12 +568,12 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 /* Admin header */
 #newsletter-header {
-  text-align: left;
-  background-color: #f4f4f4;
-  padding: 5px;
-  padding-left: 15px;
-  border-radius: 3px;
-  text-transform: uppercase;
+    text-align: left;
+    background-color: #f4f4f4;
+    padding: 5px;
+    padding-left: 15px;
+    border-radius: 3px;
+    text-transform: uppercase;
 }
 
 #newsletter-header a {
@@ -590,6 +590,9 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 .wrap h2 {
     color: #21759B;
+    font-size: 20px;
+    margin: 10px 0;
+    padding: 0;
 }
 
 .wrap h3 {
@@ -601,6 +604,13 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     font-weight: bold;
     font-family: Georgia;
     font-style: italic;
+}
+
+.wrap h5 {
+    color: #666;
+    font-size: 16px;
+    padding: 0;
+    margin: 10px 0;
 }
 
 .wrap li {
@@ -699,27 +709,27 @@ table.clicks {
 }
 
 .nl-checkbox-group {
-  float: left;
-  margin-right: 5px;
-  border: 1px solid #ccc;
-  background-color: #f4f4f4;
-  width: 200px;
-  margin-bottom: 5px;
-  padding: 5px;
-  white-space: nowrap;
-  overflow: hidden;
+    float: left;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+    width: 200px;
+    margin-bottom: 5px;
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .newsletter-preferences-item {
-  float: left;
-  margin-right: 5px;
-  border: 1px solid #ccc;
-  background-color: #f4f4f4;
-  width: 200px;
-  margin-bottom: 5px;
-  padding: 5px;
-  white-space: nowrap;
-  overflow: hidden;
+    float: left;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+    width: 200px;
+    margin-bottom: 5px;
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .newsletter-preferences-item label {
@@ -727,26 +737,26 @@ table.clicks {
 }
 
 .form-table td .nl-checkbox-group label {
-  display: inline;
+    display: inline;
 }
 
 #tabs .form-table {
-  border: 0;
-  font-size: 12px;
+    border: 0;
+    font-size: 12px;
 }
 
 #tabs .form-table th {
-  font-size: 12px;
+    font-size: 12px;
 }
 
 .ui-tabs .ui-tabs-nav li a {
-  font-size: 12px;
+    font-size: 12px;
 }
 
 
 
 .widefat td, .widefat th {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 /*
@@ -814,5 +824,10 @@ table.clicks {
 .tab-preamble p {
     font-size: .9em;
     color: #777;
+}
+
+.newsletter-paginator {
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 

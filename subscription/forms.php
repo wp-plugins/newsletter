@@ -1,6 +1,7 @@
 <?php
 @include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
+$module = NewsletterSubscription::instance();
 
 if (!$controls->is_action()) {
     $controls->data = get_option('newsletter_forms');
@@ -17,6 +18,8 @@ if ($controls->is_action('save')) {
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
     <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
+    
+    <h2>Alternative Hand-Coded Forms</h2>
 
     <?php $controls->show(); ?>
 

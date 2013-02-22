@@ -56,12 +56,23 @@ No screen shots are available at this time.
 
 == Changelog ==
 
-= 3.1.0 (not released) =
+= 3.1.0 =
 
 * Added link to change preferences/sex from emails
 * Added tag reference on email composer
 * Added "negative" preference selection on email targeting
 * Improved the subscription during WordPress user registration
+* Fixed the preference saving from profile page
+* Fixed the default value for the gender field to "n"
+* Added loading of the Feed by Mail module
+* Added loading of the Follow Up module
+* Added loading of the MailJet module
+* Changed the administrative page header
+* Changed the subscriber list and search panel
+* Improved the locked content feature
+* Fixed the good bye email not using the standard email template
+* Changed the diagnostics panel with module versions checking
+* Fixed some code on NewsletterModule
 
 = 3.0.9 =
 

@@ -4,8 +4,8 @@
 $controls = new NewsletterControls();
 
 if ($controls->is_action('save')) {
-        update_option('newsletter_log_level', $controls->data['log_level']);
-        update_option('newsletter_diagnostic', $controls->data);
+    update_option('newsletter_log_level', $controls->data['log_level']);
+    update_option('newsletter_diagnostic', $controls->data);
     $controls->messages = 'Loggin levels saved.';
 }
 
@@ -76,16 +76,14 @@ if ($controls->is_action('send_test')) {
 
 
     if ($r) $controls->messages .= 'Newsletter TEXT test email sent.<br />';
-    else
-            $controls->errors .= 'Newsletter TEXT test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+    else $controls->errors .= 'Newsletter TEXT test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
 
     $text = '<p>This is a <strong>html</strong> email sent using the <i>sender data</i> set on Newsletter main setting.</p>';
     $text .= '<p>You should see some "mark up", like bold and italic characters.</p>';
     $text .= '<p>You should see it to come from the email address you set on basic Newsletter plugin setting.</p>';
     $r = $newsletter->mail($controls->data['test_email'], 'Newsletter: pure html email', $text);
     if ($r) $controls->messages .= 'Newsletter HTML test email sent.<br />';
-    else
-            $controls->errors .= 'Newsletter HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+    else $controls->errors .= 'Newsletter HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
 
 
     $text = array();
@@ -93,12 +91,10 @@ if ($controls->is_action('send_test')) {
     $text['text'] = 'This is a textual test email part sent using the sender data set on Newsletter main setting.';
     $r = $newsletter->mail($controls->data['test_email'], 'Newsletter: both textual and html email', $text);
     if ($r) $controls->messages .= 'Newsletter: both textual and html test email sent.<br />';
-    else
-            $controls->errors .= 'Newsletter both TEXT and HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+    else $controls->errors .= 'Newsletter both TEXT and HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
 }
 
 if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic');
-
 ?>
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletter-diagnostic'; ?>
@@ -134,6 +130,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                 </td>
             </tr>
         </table>
+        
 
         <h3>System Check and Upgrade</h3>
         <p>
@@ -144,50 +141,25 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
         <div id="tabs">
 
             <ul>
-                <li><a href="#tabs-1">Modules and logging</a></li>
+                <li><a href="#tabs-1">Logging</a></li>
                 <li><a href="#tabs-2">Sempahores and Crons</a></li>
                 <li><a href="#tabs-4">System</a></li>
                 <li><a href="#tabs-upgrade">Maintainance</a></li>
             </ul>
 
+            
             <div id="tabs-1">
-                <h4>Modules</h4>
-
-                <p>Logs are store on wp-content/logs folder.</p>
+                
+                <h4>Logging</h4>
+                <p>
+                    The logging feature of Newsletter, when enabled, writes detailed information of the working
+                    status inside some (so called) log files. Log files, one per module, are stored inside the folder
+                    <code>wp-content/logs/newsletter</code>.
+                </p>
 
                 <?php $controls->log_level('log_level'); ?>
 
-                <table class="widefat" style="width: auto">
-                    <thead>
-                        <tr>
-                            <th>Module</th>
-                            <th>Version</th>
-                        </tr>
-                    </thead>
-                    <!-- TODO: Should be a cicle of installed modules -->
-                    <tbody>
-                        <tr>
-                            <td>Main</td>
-                            <td><?php echo Newsletter::VERSION; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Users</td>
-                            <td><?php echo NewsletterUsers::VERSION; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Subscription</td>
-                            <td><?php echo NewsletterSubscription::VERSION; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Newsletters</td>
-                            <td><?php echo NewsletterEmails::VERSION; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Statistics</td>
-                            <td><?php echo NewsletterStatistics::VERSION; ?></td>
-                        </tr>
-                    </tbody>
-                </table>
+                
                 <?php $controls->button('save', 'Save'); ?>
             </div>
             <div id="tabs-2">
@@ -233,8 +205,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                             </td>
                             <td>
                                 <?php
-                                if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON)
-                                        echo 'DISABLED. (really bad, see <a href="http://www.satollo.net/?p=2015" target="_tab">this page)</a>';
+                                if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) echo 'DISABLED. (really bad, see <a href="http://www.satollo.net/?p=2015" target="_tab">this page)</a>';
                                 else echo "ENABLED. (it's ok)";
                                 ?>
                             </td>
@@ -253,8 +224,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 echo 'next run on ';
                                 if ($x > 0) echo $x - time();
                                 echo ' seconds';
-                                if ($x < -1000)
-                                        echo ' (not good, see <a href="http://www.satollo.net/?p=2015" target="_tab">this page)</a>)';
+                                if ($x < -1000) echo ' (not good, see <a href="http://www.satollo.net/?p=2015" target="_tab">this page)</a>)';
                                 ?>
                                 <?php $controls->button('trigger', 'Trigger now'); ?>
                             </td>
@@ -299,6 +269,16 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 }
                                 ?>
                                 <?php $controls->button('trigger_followup', 'Trigger now'); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                MailJet bounce checking
+                            </td>
+                            <td>
+                                <?php echo NewsletterModule::date(wp_next_scheduled('newsletter_mailjet_bounce'), false, true); ?>
+
+                                <?php //$controls->button('trigger_followup', 'Trigger now');  ?>
                             </td>
                         </tr>
                     </tbody>
@@ -368,8 +348,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 else {
                                     foreach ($filters as &$filter) {
                                         foreach ($filter as &$entry) {
-                                            if (is_array($entry['function']))
-                                                    echo get_class($entry['function'][0]) . '->' . $entry['function'][1];
+                                            if (is_array($entry['function'])) echo get_class($entry['function'][0]) . '->' . $entry['function'][1];
                                             else echo $entry['function'];
                                             echo '<br />';
                                         }
@@ -386,7 +365,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 $subscribe_permissions = fileperms(NEWSLETTER_DIR . '/do/subscribe.php');
                                 if ($index_permissions != $subscribe_permissions) {
                                     echo 'Plugin file permissions differ from blog index.php permissions, that may compromise the subscription process';
-                                }else {
+                                } else {
                                     echo 'OK';
                                 }
                                 ?>
@@ -404,7 +383,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                 <p>
                     <?php $controls->button('upgrade', 'Force an upgrade'); ?>
                 </p>
-                
+
                 <p>
                     Restore al dismissed messages
                 </p>

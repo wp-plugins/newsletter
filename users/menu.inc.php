@@ -1,10 +1,11 @@
-<h2>Subscribers Module</h2>
+<h5>Subscribers Management Module</h5>
 
 <div id="newsletter-nav">
-    <a class="button" href="?page=newsletter/users/index.php">Search and edit</a>
-    <a class="button" href="?page=newsletter/users/new.php">New subscriber</a>
-    <a class="button" href="?page=newsletter/users/massive.php">Massive changes</a>
-    <a class="button" href="?page=newsletter/users/stats.php">Statistics</a>
-    <a class="button" href="?page=newsletter/users/import.php">Import</a>
-    <a class="button" href="?page=newsletter/users/export.php">Export</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('index'); ?>">Search</a>
+    <!--<a class="button" href="<?php echo $module->get_admin_page_url('index'); ?>">Old search</a>-->
+    <a class="button" href="<?php echo $module->get_admin_page_url('new'); ?>">New subscriber</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('massive'); ?>">Massive changes</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('stats'); ?>">Statistics</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('import'); ?>">Import</a>
+    <a class="button" href="<?php echo $module->get_admin_page_url('export'); ?>">Export</a>
 </div>

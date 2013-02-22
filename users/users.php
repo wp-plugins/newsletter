@@ -64,14 +64,18 @@ class NewsletterUsers extends NewsletterModule {
 
         // TODO: Flow module should add that it self (?)
         $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column flow tinyint(4) not null default 0");
+    }
 
-        // This is an old table that should be no more used
-//$sql = 'create table if not exists ' . $wpdb->prefix . 'newsletter_profiles (
-//        `newsletter_id` int NOT NULL,
-//        `name` varchar (100) NOT NULL DEFAULT \'\',
-//        `value` text,
-//        primary key (newsletter_id, name)
-//        ) DEFAULT charset=utf8';
+    function admin_menu() {
+        $this->add_menu_page('index', 'Subscribers');
+        $this->add_admin_page('new', 'New subscriber');
+        $this->add_admin_page('edit', 'Subscribers Edit');
+
+        $this->add_admin_page('massive', 'Massive Management');
+        $this->add_admin_page('export', 'Export');
+        $this->add_admin_page('import', 'Import');
+        $this->add_admin_page('stats', 'Statistics');
+        //$this->add_admin_page('index', 'Old search');
     }
 
     function export() {
@@ -79,8 +83,6 @@ class NewsletterUsers extends NewsletterModule {
 
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="newsletter-subscribers.csv"');
-
-        $keys = $wpdb->get_results("select distinct name from " . $wpdb->prefix . "newsletter_profiles order by name");
 
         // CSV header
         echo '"Email";"Name";"Surname";"Sex";"Status";"Date";"Token";';
@@ -97,11 +99,6 @@ class NewsletterUsers extends NewsletterModule {
 
         echo '"Feed by mail";"Follow up"';
 
-        // Old profiles
-        foreach ($keys as $key) {
-            // Remove some keys?
-            echo $key->name . ';';
-        }
         echo "\n";
 
         $page = 0;
@@ -136,16 +133,12 @@ class NewsletterUsers extends NewsletterModule {
                     $map[$field->name] = $field->value;
                 }
 
-                foreach ($keys as $key) {
-                    if (isset($map[$key->name])) {
-                        echo '"' . $this->sanitize_csv($map[$key->name]) . '";';
-                    }
-                    else echo '"";';
-                }
+
                 echo "\n";
                 flush();
             }
-            if (count($recipients) < 500) break;
+            if (count($recipients) < 500)
+                break;
             $page++;
         }
         die();
@@ -167,7 +160,7 @@ class NewsletterUsers extends NewsletterModule {
      * @param type $user
      * @return type
      */
-    function save_user($user, $return_format=OBJECT) {
+    function save_user($user, $return_format = OBJECT) {
         global $newsletter;
         return $newsletter->save_user($user, $return_format);
     }
@@ -191,7 +184,7 @@ class NewsletterUsers extends NewsletterModule {
      * @param type $format
      * @return boolean
      */
-    function get_user($id_or_email, $format=OBJECT) {
+    function get_user($id_or_email, $format = OBJECT) {
         global $wpdb, $newsletter;
         return $newsletter->get_user($id_or_email, $format);
     }
@@ -221,4 +214,6 @@ class NewsletterUsers extends NewsletterModule {
     }
 
 }
+
+NewsletterUsers::instance();
 

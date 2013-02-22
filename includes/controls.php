@@ -223,9 +223,14 @@ class NewsletterControls {
         }
     }
 
-    function button_confirm($action, $label, $message, $data = '') {
-        echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';if (confirm(\'' .
-        htmlspecialchars($message) . '\')) this.form.submit()"/>';
+    function button_confirm($action, $label, $message='', $data = '') {
+        if (empty($message)) {
+            echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';this.form.submit()"/>';            
+        }
+        else {
+            echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';if (confirm(\'' .
+            htmlspecialchars($message) . '\')) this.form.submit()"/>';
+        }
     }
 
     function editor($name, $rows = 5, $cols = 75) {
@@ -287,6 +292,25 @@ class NewsletterControls {
         echo '</div>';
     }
 
+    function preferences_selects($name = 'preferences', $skip_empty = false) {
+        $options_profile = get_option('newsletter_profile');
+
+        echo '<div class="newsletter-preferences-group">';
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+            if (empty($options_profile['list_' . $i])) continue;
+            
+            echo '<div class="newsletter-preferences-item">';
+            
+            $this->select($name . '_' . $i, array(0=>'Any', 1=>'Yes', 2=>'No'));
+            echo '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]);
+            
+            echo '</div>';
+        }
+        echo '<div style="clear: both"></div>';
+        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
+        echo '</div>';
+    }
+    
     function preferences($name = 'preferences', $skip_empty = false) {
         $options_profile = get_option('newsletter_profile');
         echo '<div class="newsletter-preferences-group">';

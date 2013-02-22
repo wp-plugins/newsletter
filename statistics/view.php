@@ -5,10 +5,10 @@ $email = Newsletter::instance()->get_email($_GET['id']);
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/statistics-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    
+    <h5>Statistics Module</h5>
 
-    <h2>Statistics Module</h2>
-
-    <h3><?php echo esc_html($email->subject); ?></h3>
+    <h2>Statistics for "<?php echo esc_html($email->subject); ?>"</h2>
 
     <table class="widefat" style="width: auto">
         <thead>

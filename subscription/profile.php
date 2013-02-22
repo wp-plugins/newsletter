@@ -20,7 +20,7 @@ else {
     }
 }
 
-$status = array(0=>'Disabled/Private', 1=>'Only on profile page', 2=>'Even on subscription page');
+$status = array(0=>'Disabled/Private', 1=>'Only on profile page', 2=>'Even on subscription forms');
 $rules = array(0=>'Optional', 1=>'Required');
 ?>
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
@@ -46,6 +46,8 @@ $rules = array(0=>'Optional', 1=>'Required');
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
   <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
+    
+    <h2>Subscription Form Fields and Layout</h2>
 
     <div class="preamble">
     <p>

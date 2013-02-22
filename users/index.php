@@ -3,6 +3,7 @@
 require_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 
 $controls = new NewsletterControls();
+$module = NewsletterUsers::instance();
 
 $options = stripslashes_deep($_POST['options']);
 $options_lists = get_option('newsletter_profile');
@@ -35,57 +36,68 @@ if ($controls->is_action('remove')) {
     unset($controls->data['subscriber_id']);
 }
 
-if ($action == 'status') {
-    newsletter_set_status($controls->data['subscriber_id'], $controls->data['subscriber_status']);
+// We build the query condition
+$where = "where 1=1";
+$text = $wpdb->escape(trim($controls->data['search_text']));
+if ($text != '') {
+    $where .= " and (email like '%$text%' or name like '%$text%' or surname like '%$text%')";
 }
 
+//if (isset($controls->data['search_test'])) {
+//    $where .= " and test=1";
+//}
 
-if ($controls->is_action('search')) {
+if (!empty($controls->data['search_status'])) {
+    if ($controls->data['search_status'] == 'T') {
+        $where .= " and test=1";
+    } else {
+        $where .= " and status='" . $wpdb->escape($controls->data['search_status']) . "'";
+    }
+}
+    
+// Total items, total pages
+$items_per_page = 20;
+$count = Newsletter::instance()->store->get_count($wpdb->prefix . 'newsletter', $where);
+$last_page = floor($count / $items_per_page) - ($count % $items_per_page == 0 ? 1 : 0);
+if ($last_page < 0) $last_page = 0;
 
-  if (empty($controls->data['search_order'])) $order = 'email';
-  if ($controls->data['search_order'] == 'id') $order = 'id desc';
-
-  $query = "select * from " . $wpdb->prefix . "newsletter where 1=1";
-
-  if (!empty($controls->data['search_status'])) {
-    $query .= " and status='" . $wpdb->escape($controls->data['search_status']) . "'";
-  }
-
-  if (!empty($controls->data['search_test'])) {
-    $query .= " and test=1";
-  }
-
-  if (trim($controls->data['search_text']) != '') {
-    $query .= " and (email like '%" .
-            $wpdb->escape($controls->data['search_text']) . "%' or name like '%" . $wpdb->escape($controls->data['search_text']) . "%')";
-  }
-
-  if (!empty($controls->data['search_list'])) {
-    $query .= " and list_" . ((int) $controls->data['search_list']) . "=1";
-  }
-
-  if (!empty($controls->data['search_link'])) {
-    list($newsletter, $url) = explode('|', $link);
-    $query .= " and id in (select distinct user_id from " . $wpdb->prefix . "newsletter_stats where newsletter='" .
-            $wpdb->escape($newsletter) . "' and url='" . $wpdb->escape($url) . "')";
-  }
-
-  $query .= ' order by ' . $order;
-
-  if (!empty($options['search_limit'])) {
-    $query .= ' limit ' . $limit;
-  }
-
-  //if (empty($link)) $query .= ' limit 100';
-
-
-  $list = $wpdb->get_results($query);
-
+// Move to base zero
+if ($controls->is_action()) {
+    $controls->data['search_page'] = (int)$controls->data['search_page']-1;
+    $module->save_options($controls->data, 'search');
 }
 else {
-    $list = array();
+    $controls->data = $module->get_options('search');
+    if (empty($controls->data['search_page'])) $controls->data['search_page'] = 0;
 }
 
+if ($controls->is_action('last')) {
+    $controls->data['search_page'] = $last_page;
+}
+if ($controls->is_action('first')) {
+    $controls->data['search_page'] = 0;
+}
+if ($controls->is_action('next')) {
+    $controls->data['search_page'] = (int)$controls->data['search_page']+1;
+}
+if ($controls->is_action('prev')) {
+    $controls->data['search_page'] = (int)$controls->data['search_page']-1;
+}
+if ($controls->is_action('search')) {
+    $controls->data['search_page'] = 0;
+}
+
+// Eventually fix the page
+if ($controls->data['search_page'] < 0) $controls->data['search_page'] = 0;
+if ($controls->data['search_page'] > $last_page) $controls->data['search_page'] = $last_page;
+
+
+$query .= "select * from " . $wpdb->prefix . "newsletter " . $where . " order by id desc";
+$query .= " limit " . ($controls->data['search_page']*$items_per_page) . "," . $items_per_page;
+$list = $wpdb->get_results($query);
+
+// Move to base 1
+$controls->data['search_page']++;
 ?>
 
 <div class="wrap">
@@ -94,73 +106,31 @@ else {
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
     <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    
+    <h2>Subscriber Search</h2>
 
     <?php $controls->show(); ?>
 
     <form id="channel" method="post" action="">
         <?php $controls->init(); ?>
-        <input type="hidden" name="options[subscriber_id]"/>
-        <input type="hidden" name="options[subscriber_status]"/>
-
-        <?php
-            $tmp = $wpdb->get_results("select distinct newsletter, url from " . $wpdb->prefix . "newsletter_stats order by newsletter,url");
-            $links = array(''=>'Unfiltered');
-            foreach ($tmp as $t) {
-                $links[$t->newsletter . '|' . $t->url] = $t->newsletter . ': ' . substr($t->url, 0, min(strlen($t->url), 50)) . '...';
-            }
-        ?>
 
         <div style="padding: .6em; border: 1px solid #ddd; background-color: #f4f4f4; border-radius: 3px;">
-        <?php $controls->text('search_text', 80); ?>
-        <?php $controls->button('search', 'Search'); ?>
+            <?php $controls->text('search_text', 80); ?>
+            
+            <!--<?php $controls->checkbox('search_test'); ?> show subscriber with "test" flag on-->
+            <?php $controls->select('search_status', array(''=>'Any status', 'T'=>'Test subscribers', 'C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed', 'B'=>'Bounced')); ?>
+            <?php $controls->button('search', 'Search'); ?>
         </div>
 
-        <table class="form-table">
-            <tr valign="top">
-                <td>
-                    <?php $controls->select('search_status', array(''=>'Any status', 'C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed', 'B'=>'Bounced')); ?>
-                    <?php
-                        $order_fields = array('id'=>'Order by id', 'email'=>'Order by email', 'name'=>'Order by name');
-                        for ($i=1; $i<20; $i++) {
-                            if ($options_profile['profile_' . $i] == '') continue;
-                            $order_fields['profile_' . $i] = $options_profile['profile_' . $i];
-                        }
-                    ?>
 
-                    <?php $controls->select('search_order', $order_fields); ?>
-
-                    <?php $controls->select('search_limit', array(100=>'Max 100 results', '1000'=>'Max 1000 result', ''=>'No limit')); ?>
-
-                    <?php $controls->select('search_list', $lists); ?>
-                    <?php $controls->checkbox('search_test'); ?> Test subscribers
-                    <br />
-                    <?php _e('show clicks', 'newsletter'); ?>:&nbsp;<?php $controls->yesno('search_clicks'); ?>
-                    who&nbsp;clicked:&nbsp;&nbsp;
-                    <?php $controls->select('search_link', $links); ?>
-
-                    <div class="hints">
-                    Press without filter to show all. Max 100 results will be shown. Use export panel to get all subscribers.
-                    </div>
-                </td>
-            </tr>
-            <tr valign="top">
-              <td>
-                <?php $controls->checkbox('show_profile', 'Show profile fields'); ?>
-                <?php $controls->checkbox('show_preferences', 'Show preferences'); ?>
-              </td>
-            </tr>
-        </table>
-
-
-<h3>Search results</h3>
-
-<?php if (empty($list)) { ?>
-<p>No search results (or you did not search at all)</p>
-<?php } ?>
-
-
-<?php if (!empty($list)) { ?>
-
+<div class="newsletter-paginator">
+<?php echo $count ?> subscribers found   
+<?php $controls->button('first', '«'); ?>
+<?php $controls->button('prev', '‹'); ?>
+<?php $controls->text('search_page', 3); ?> of <?php echo $last_page+1 ?> <?php $controls->button('go', 'Go'); ?>
+<?php $controls->button('next', '›'); ?>
+<?php $controls->button('last', '»'); ?>
+</div>
 <table class="widefat">
     <thead>
 <tr>
@@ -174,7 +144,6 @@ else {
       <th>Preferences</th>
     <?php } ?>
     <th>Actions</th>
-    <th>Others</th>
     <?php if ($options['search_clicks'] == 1) { ?>
     <th>Clicks</th>
     <?php } ?>
@@ -219,9 +188,6 @@ else {
             case 'B': echo 'BOUNCED'; break;
         }
         ?>
-        <br />
-        Feed: <?php echo ($s->feed!=1?'NO':'YES'); ?><br />
-        Follow Up: <?php echo ($s->followup!=1?'NO':'YES'); ?> (<?php echo $s->followup_step; ?>)
     </small>
 </td>
 
@@ -239,7 +205,7 @@ else {
 <?php } ?>
 
 <td>
-    <a class="button-secondary" href="admin.php?page=newsletter/users/edit.php&amp;id=<?php echo $s->id; ?>">Edit</a>
+    <a class="button-secondary" href="<?php echo $module->get_admin_page_url('edit'); ?>&amp;id=<?php echo $s->id; ?>">Edit</a>
     <?php $controls->button_confirm('remove', 'Remove', 'Proceed?', $s->id); ?>
 
     <?php //$controls->button('status', 'Confirm', 'newsletter_set_status(this.form,' . $s->id . ',\'C\')'); ?>
@@ -249,31 +215,11 @@ else {
     <?php $controls->button_confirm('resend_welcome', 'Resend welcome', 'Proceed?', $s->id); ?>
     <a href="<?php echo NEWSLETTER_PROFILE_URL; ?>?nk=<?php echo $s->id . '-' . $s->token; ?>" class="button" target="_blank">Profile page</a>
 </td>
-<td><small>
-        date: <?php echo $s->created; ?><br />
-        <?php
-        $query = $wpdb->prepare("select name,value from " . $wpdb->prefix . "newsletter_profiles where newsletter_id=%d", $s->id);
-        $profile = $wpdb->get_results($query);
-        foreach ($profile as $field) {
-            echo htmlspecialchars($field->name) . ': ' . htmlspecialchars($field->value) . '<br />';
-        }
-?>
-</small></td>
 
-<?php if ($options['search_clicks'] == 1) { ?>
-    <td><small>
-    <?php
-    $clicks = $wpdb->get_results($wpdb->prepare("select * from " . $wpdb->prefix . "newsletter_stats where user_id=%d order by newsletter", $s->id));
-    foreach ($clicks as &$click) {
-    ?>
-    <?php echo $click->newsletter; ?>: <?php echo $click->url; ?><br />
-    <?php } ?>
-    </small></td>
-<?php } ?>
 
 </tr>
 <?php } ?>
 </table>
-<?php } ?>
+
     </form>
 </div>
