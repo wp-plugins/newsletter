@@ -32,6 +32,9 @@ class NewsletterEmails extends NewsletterModule {
 
     function upgrade() {
         global $wpdb, $charset_collate;
+
+        parent::upgrade();
+
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " change column `type` `type` varchar(50) not null default ''");
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column token varchar(10) not null default ''");
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " drop column visibility");
@@ -43,7 +46,7 @@ class NewsletterEmails extends NewsletterModule {
 
         return true;
     }
-    
+
     function admin_menu() {
         $this->add_menu_page('index', 'Newsletters');
         $this->add_admin_page('list', 'Email List');
@@ -51,7 +54,7 @@ class NewsletterEmails extends NewsletterModule {
         $this->add_admin_page('edit', 'Email Edit');
         $this->add_admin_page('theme', 'Email List');
     }
-    
+
     function save_options($options) {
         $this->options = $options;
         parent::save_options($options);

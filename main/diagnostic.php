@@ -130,7 +130,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                 </td>
             </tr>
         </table>
-        
+
 
         <h3>System Check and Upgrade</h3>
         <p>
@@ -147,9 +147,9 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                 <li><a href="#tabs-upgrade">Maintainance</a></li>
             </ul>
 
-            
+            <!-- LOGGING -->
             <div id="tabs-1">
-                
+
                 <h4>Logging</h4>
                 <p>
                     The logging feature of Newsletter, when enabled, writes detailed information of the working
@@ -157,11 +157,45 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                     <code>wp-content/logs/newsletter</code>.
                 </p>
 
-                <?php $controls->log_level('log_level'); ?>
+                <table class="widefat" style="width: auto">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Active since</th>
+                        </tr>
+                    </thead>
 
-                
-                <?php $controls->button('save', 'Save'); ?>
+                    <tbody>
+                        <tr>
+                            <td>
+                                Log level
+                            </td>
+                            <td>
+                                <?php $controls->log_level('log_level'); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Log folder
+                            </td>
+                            <td>
+                                <?php
+                                $dir = WP_CONTENT_DIR . '/logs/newsletter';
+                                if (is_dir($dir)) {
+                                    echo '<span class="newsletter-error-span">The log folder does not exists, no logging possible!</span>';
+                                } else {
+                                    echo 'The log folder exists.';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><?php $controls->button('save', 'Save'); ?></p>
             </div>
+
+            <!-- SEMAPHORES -->
             <div id="tabs-2">
                 <h4>Semaphores</h4>
                 <table class="widefat" style="width: auto">
@@ -284,6 +318,8 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                     </tbody>
                 </table>
             </div>
+
+            <!-- SYSTEM -->
             <div id="tabs-4">
                 <h4>System parameters</h4>
 
@@ -329,7 +365,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                         <tr>
                             <td>Tables Prefix</td>
                             <td>
-                                <?php echo $table_prefix; ?>
+                                <?php echo $wpdb->prefix; ?>
                             </td>
                         </tr>
                         <tr>
@@ -370,7 +406,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 }
                                 ?>
                             </td>
-                        </tr>                        
+                        </tr>
                     </tbody>
                 </table>
 

@@ -49,11 +49,11 @@ class NewsletterModule {
         // Version check
         if (is_admin()) {
             $old_version = get_option($this->prefix . '_version', '');
-            if (strcmp($old_version, $new_version) != 0) {
+            if (strcmp($old_version, $this->version) != 0) {
                 $this->logger->info('Version changed from ' . $old_version . ' to ' . $this->version);
                 // Do all the stuff for this version change
                 $this->upgrade();
-                update_option($this->prefix . '_version', $version);
+                update_option($this->prefix . '_version', $this->version);
             }
             add_action('admin_menu', array($this, 'admin_menu'));
         }
@@ -362,17 +362,18 @@ class NewsletterModule {
     }
 
     function add_menu_page($page, $title) {
+        global $newsletter;
         $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
         if (!is_file($file)) {
             $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
         }
         $name = 'newsletter_' . $this->module . '_' . $page;
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
-        add_submenu_page('newsletter/welcome.php', $title, $title, $this->options['editor'] ? 7 : 10, $name, $name);
+        add_submenu_page('newsletter_main_index', $title, $title, $newsletter->options['editor'] ? 7 : 10, $name, $name);
     }
 
     function add_admin_page($page, $title) {
-
+        global $newsletter;
         $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
         if (!is_file($file)) {
             $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
@@ -380,7 +381,7 @@ class NewsletterModule {
 
         $name = 'newsletter_' . $this->module . '_' . $page;
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
-        add_submenu_page(null, $title, $title, $this->options['editor'] ? 7 : 10, $name, $name);
+        add_submenu_page(null, $title, $title, $newsletter->options['editor'] ? 7 : 10, $name, $name);
     }
 
     function get_admin_page_url($page) {

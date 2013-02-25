@@ -133,13 +133,14 @@ class Newsletter extends NewsletterModule {
         add_shortcode('newsletter_profile', array(&$this, 'shortcode_newsletter_profile'));
 
         if (is_admin()) {
-            add_action('admin_menu', array(&$this, 'hook_admin_menu'));
             add_action('admin_head', array(&$this, 'hook_admin_head'));
         }
     }
 
     function upgrade() {
         global $wpdb, $charset_collate;
+
+        parent::upgrade();
 
         $this->upgrade_query("create table if not exists " . $wpdb->prefix . "newsletter_emails (id int auto_increment, primary key (id)) $charset_collate");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column message longtext");
@@ -210,6 +211,15 @@ class Newsletter extends NewsletterModule {
         wp_mkdir_p(WP_CONTENT_DIR . '/cache/newsletter');
 
         return true;
+    }
+
+    function admin_menu() {
+        // This adds the main menu page
+        add_menu_page('Newsletter', 'Newsletter', $this->options['editor'] ? 7 : 10, 'newsletter_main_index');
+
+        $this->add_menu_page('index', 'Welcome');
+        $this->add_menu_page('main', 'Configuration');
+        $this->add_menu_page('diagnostic', 'Diagnostic');
     }
 
     /**
@@ -286,14 +296,6 @@ class Newsletter extends NewsletterModule {
             echo '<link type="text/css" rel="stylesheet" href="' . NEWSLETTER_URL . '/admin.css?' . NEWSLETTER_VERSION . '"/>';
             echo '<script src="' . NEWSLETTER_URL . '/admin.js?' . NEWSLETTER_VERSION . '"></script>';
         }
-    }
-
-    function hook_admin_menu() {
-        include 'plugin-menu.inc.php';
-
-        do_action('newsletter_admin_menu');
-
-        add_submenu_page('newsletter/welcome.php', 'Diagnostic', 'Diagnostic', $level, 'newsletter/diagnostic.php');
     }
 
     function hook_wp_head() {

@@ -56,6 +56,15 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.2 =
+
+* Fixed the access control for editors
+* Improved to the log system to block it when the log folder cannot be created
+* Moved all menu voices to the new format
+* Improved the diagnostic panel
+* Added ability to send and email to not confirmed subscribers
+* Fixed a problem with internal module versions
+
 = 3.1.1 =
 
 * Fixed the copy and delete buttons on newsletter list

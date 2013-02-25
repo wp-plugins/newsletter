@@ -37,15 +37,16 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     $email['message_text'] = $controls->data['message_text'];
     $email['subject'] = $controls->data['subject'];
     $email['track'] = $controls->data['track'];
-    
+
     // Builds the extended options
     $email['options'] = array();
     $email['options']['preferences_status'] = $controls->data['preferences_status'];
     $email['options']['preferences'] = $controls->data['preferences'];
     $email['options']['sex'] = $controls->data['sex'];
+    $email['options']['status'] = $controls->data['status'];
 
     $email['options'] = serialize($email['options']);
-    
+
     if (is_array($controls->data['preferences'])) $email['preferences'] = implode(',', $controls->data['preferences']);
     else $email['preferences'] = '';
 
@@ -54,11 +55,15 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
 
     // Before send, we build the query to extract subscriber, so the delivery engine does not
     // have to worry about the email parameters
-    $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
+    if ($controls->data['status'] == 'S') {
+        $query = "select * from " . $wpdb->prefix . "newsletter where status='S'";
+    } else {
+        $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
+    }
 
     $preferences = $controls->data['preferences'];
     if (is_array($preferences)) {
-        
+
         // Not set one of the preferences specified
         if ($controls->data['preferences_status'] == 1) {
             $query .= " and (";
@@ -67,7 +72,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
             }
             $query = substr($query, 0, -4);
             $query .= ")";
-        } 
+        }
         else {
             $query .= " and (";
             foreach ($preferences as $x) {
@@ -97,7 +102,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     $email['sent'] = 0;
     $email['last_id'] = 0;
     $email['send_on'] = $controls->data['send_on'];
-    
+
     if ($controls->is_action('editor')) {
         $email['editor'] = $email['editor'] == 0?1:0;
     }
@@ -106,8 +111,10 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     if ($res === false) {
         $controls->errors = 'Unable to save. Try to deactivate and reactivate the plugin may be the database is out of sync.';
     }
-    
+
     $controls->data['message'] = $email['message'];
+
+    $controls->messages .= 'Saved.<br>';
 }
 
 if ($controls->is_action('send')) {
@@ -157,6 +164,7 @@ if ($email['editor'] == 0) {
         $controls->data['message'] = substr($controls->data['message'], $x + 1, $y - $x - 1);
     }
 }
+
 ?>
 
 <script type="text/javascript" src="<?php echo NEWSLETTER_URL; ?>/tiny_mce/tiny_mce.js"></script>
@@ -201,6 +209,11 @@ if ($email['editor'] == 0) {
     <h5>Newsletters Module</h5>
 
     <h2>Edit Newsletter</h2>
+    <?php
+    if ($controls->data['status'] == 'S') {
+        echo '<div class="newsletter-message">Warning! This email is configured to be sent to NOT CONFIRMED subscribers.</div>';
+    }
+    ?>
 
     <?php $controls->show(); ?>
 
@@ -276,36 +289,7 @@ if ($email['editor'] == 0) {
                         <th>Approximative number of receivers</th>
                         <td>
                             <?php
-                            // Compute the receivers ids that should  receive that email
-                            $query = "select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='C'";
-
-                            if (is_array($controls->data['preferences'])) {
-                                if ($controls->data['preferences_status'] == 1) {
-                                    $query .= " and (";
-                                    foreach ($controls->data['preferences'] as $x) {
-                                        $query .= "list_" . $x . "=0 or ";
-                                    }
-                                    $query = substr($query, 0, -4);
-                                    $query .= ")";
-                                } else {
-                                    $query .= " and (";
-                                    foreach ($controls->data['preferences'] as $x) {
-                                        $query .= "list_" . $x . "=1 or ";
-                                    }
-                                    $query = substr($query, 0, -4);
-                                    $query .= ")";
-                                }
-                            }
-
-                            if (is_array($controls->data['sex'])) {
-                                $query .= " and sex in (";
-                                foreach ($controls->data['sex'] as $x) {
-                                    $query .= "'" . $x . "', ";
-                                }
-                                $query = substr($query, 0, -2);
-                                $query .= ")";
-                            }
-                            echo $wpdb->get_var($query);
+                            echo $wpdb->get_var(str_replace('*', 'count(*)', $email['query']));
                             ?>
                             <div class="hints">
                             If you change selections below, save the email to update this values.
@@ -327,14 +311,14 @@ if ($email['editor'] == 0) {
                     <tr valign="top">
                         <th>Preferences</th>
                         <td>
-                            Subscribers with at least one preference 
+                            Subscribers with at least one preference
                             <?php $controls->select('preferences_status', array(0=>'ACTIVE', 1=>'NOT ACTIVE')); ?>
                             between the selected ones:
-                            
+
                             <?php $controls->preferences_group('preferences', true); ?>
                             <div class="hints">
                                 You can address the newsletter to subscribers who selected at least one of the options or to who
-                                has not selected at least one of the options. 
+                                has not selected at least one of the options.
                                 <a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Read more about the "NOT ACTIVE" usage</a>.
                             </div>
                         </td>
@@ -346,6 +330,19 @@ if ($email['editor'] == 0) {
                             <div class="hints">
                                 When this option is enabled, each link in the email text will be rewritten and clicks
                                 on them intercepted.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Status</th>
+                        <td>
+                            <?php $controls->select('status', array('C'=>'Confirmed', 'S'=>'Not confirmed')); ?>
+
+                            <div class="hints">
+                                <strong>Warning! Use this option with care!</strong>
+                                <br>
+                                You should NEVER send emails to not confirmed subscribers, but if you need to send them
+                                an email to ask for confirmation, you can use this option.
                             </div>
                         </td>
                     </tr>
@@ -369,19 +366,23 @@ if ($email['editor'] == 0) {
                         <th>Email sent</th>
                         <td><?php echo $email['sent']; ?> of <?php echo $email['total']; ?></td>
                     </tr>
+                    <tr valign="top">
+                        <th>Query</th>
+                        <td><?php echo $email['query']; ?></td>
+                    </tr>
                 </table>
             </div>
-            
+
             <!--
             <div id="tabs-5">
                 <p>Tags documented below can be used on newsletter body. Some of them can be used on subject as well.</p>
-               
+
                 <p>
                     Special tags, like the preference setting tag, can be used to highly interact with your subscribers, see
                     the Newsletter Preferences page for examples.
                 </p>
                 --
-                
+
                 <dl>
                     <dt>{set_preference_N}</dt>
                     <dd>
@@ -389,7 +390,7 @@ if ($email['editor'] == 0) {
                         subscriber to his profile panel. Preferences can be configured on Subscription/Form fields panel.
                     </dd>
                 </dl>
-                        
+
                 </ul>
             </div>
             -->

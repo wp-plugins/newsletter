@@ -25,6 +25,8 @@ class NewsletterUsers extends NewsletterModule {
     function upgrade() {
         global $wpdb, $charset_collate;
 
+        parent::upgrade();
+
         $this->upgrade_query("create table if not exists " . $wpdb->prefix . "newsletter (id int auto_increment, `email` varchar(100) not null default '', primary key (id), unique key email (email)) $charset_collate");
 
         // User personal data

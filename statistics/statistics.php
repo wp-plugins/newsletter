@@ -5,7 +5,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 class NewsletterStatistics extends NewsletterModule {
 
     const VERSION = '1.0.2';
-   
+
     static $instance;
 
     /**
@@ -25,6 +25,7 @@ class NewsletterStatistics extends NewsletterModule {
     function upgrade() {
         global $wpdb, $charset_collate;
 
+        parent::upgrade();
 
         // This before table creation or update for compatibility
         $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats change column newsletter_id user_id int not null default 0");

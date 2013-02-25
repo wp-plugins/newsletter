@@ -76,7 +76,7 @@ if ($controls->is_action('resend_all')) {
 
     if ($list) {
         $controls->messages = 'Confirmation email sent to: ';
-        foreach ($list as $user) {
+        foreach ($list as &$user) {
             $controls->messages .= $user->email . ' ';
             $newsletter->mail($user->email, $newsletter->replace($opts['confirmation_subject'], $user), $newsletter->replace($opts['confirmation_message'], $user));
         }
