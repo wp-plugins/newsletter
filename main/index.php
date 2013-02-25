@@ -132,7 +132,7 @@ if ($x === false) {
                         <td>Not installed</td>
                     <?php } ?>
                     <td><?php echo NewsletterModule::get_available_version(34); ?></td>
-                </tr>   
+                </tr>
                 <tr>
                     <td>Feed by Mail (test version)<br><small>Automatically generate and send email with blog contents</small></td>
                     <?php if (class_exists('NewsletterFeed')) { ?>
@@ -141,7 +141,7 @@ if ($x === false) {
                         <td>Not installed</td>
                     <?php } ?>
                     <td><?php echo NewsletterModule::get_available_version(35); ?></td>
-                </tr> 
+                </tr>
                 <tr>
                     <td>Follow Up (test version))<br><small>Sends email serie after subscriber sign up</small></td>
                     <?php if (class_exists('NewsletterFollowup')) { ?>
@@ -150,7 +150,16 @@ if ($x === false) {
                         <td>Not installed</td>
                     <?php } ?>
                     <td><?php echo NewsletterModule::get_available_version(37); ?></td>
-                </tr>     
+                </tr>
+                <tr>
+                    <td>SendGrid (test version)<br><small>Integration with <a href="http://www.satollo.net/affiliate/sendgrid">SendGrid</a> SMTP and bounce report</small></td>
+                    <?php if (class_exists('NewsletterSendgrid')) { ?>
+                        <td><?php echo NewsletterSendgrid::instance()->version; ?></td>
+                    <?php } else { ?>
+                        <td>Not installed</td>
+                    <?php } ?>
+                    <td><?php echo NewsletterModule::get_available_version(40); ?></td>
+                </tr>
                 <tr>
                     <td>MailJet (test version)</td>
                     <?php if (class_exists('NewsletterMailjet')) { ?>
@@ -161,7 +170,7 @@ if ($x === false) {
                     <td><?php echo NewsletterModule::get_available_version(38); ?></td>
                 </tr>
             </tbody>
-        </table>        
+        </table>
 
 
         <h3>Support</h3>

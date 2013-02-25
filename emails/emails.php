@@ -26,8 +26,8 @@ class NewsletterEmails extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('emails', self::VERSION);
         $this->themes = new NewsletterThemes('emails');
+        parent::__construct('emails', self::VERSION);
     }
 
     function upgrade() {

@@ -56,6 +56,11 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.3 =
+
+* Added support for SendGrid Module
+* Fixed a fatal error on new installations on emails.php
+
 = 3.1.2 =
 
 * Fixed the access control for editors
