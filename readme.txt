@@ -56,6 +56,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.4 =
+
+* Fixed a bug on post/page preview
+
 = 3.1.3 =
 
 * Added support for SendGrid Module
