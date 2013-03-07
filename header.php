@@ -35,5 +35,15 @@ if (isset($_REQUEST['dismiss']) && check_admin_referer()) {
 </div>
 <?php } ?>
 
+<?php if ($dismissed['newsletter-page'] != 1 && empty($newsletter->options['url'])) { ?>
+<div class="newsletter-notice">
+    Do you know you can create a page in your blog used to show all Newsletter messages to subscribers? Go to the 
+    <a href="?page=newsletter_subscription_options">subscription panel</a> to 
+    configure it.
+    <div class="newsletter-dismiss"><a href="<?php echo wp_nonce_url($_SERVER['REQUEST_URI'] . '&dismiss=newsletter-page')?>">Dismiss</a></div>
+    <div style="clear: both"></div>
+</div>
+<?php } ?>
+
 
 <?php $newsletter->warnings(); ?>

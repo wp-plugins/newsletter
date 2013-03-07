@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.1.4
+  Version: 3.1.5
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.1.4');
+define('NEWSLETTER_VERSION', '3.1.5');
 
 global $wpdb, $newsletter;
 
@@ -705,7 +705,7 @@ class Newsletter extends NewsletterModule {
 
         $this->logger->debug('Replace start');
         if (is_array($user)) {
-            $user = NewsletterUsers::instance()->get_user($user['id']);
+            $user = $this->get_user($user['id']);
         }
 
         $text = str_replace('{home_url}', get_option('home'), $text);
@@ -830,7 +830,7 @@ class Newsletter extends NewsletterModule {
     function hook_the_content($content) {
         global $post, $cache_stop;
 
-        if ($this->lock_found || !is_singular()) {
+        if ($this->lock_found || !is_singular() || is_user_logged_in()) {
             return $content;
         }
 
@@ -860,7 +860,7 @@ class Newsletter extends NewsletterModule {
         $this->lock_found = true;
 
         $user = $this->check_user();
-        if ($user != null && $user->status == 'C') {
+        if (is_user_logged_in() || ($user != null && $user->status == 'C')) {
             return do_shortcode($content);
         }
 
@@ -939,7 +939,7 @@ class Newsletter extends NewsletterModule {
             $id = (int) $_REQUEST['ni'];
             $token = $_REQUEST['nt'];
         }
-        $user = NewsletterUsers::instance()->get_user($id);
+        $user = $this->get_user($id);
 
         if ($user == null || $token != $user->token) {
             if ($required)
@@ -1076,8 +1076,8 @@ class Newsletter extends NewsletterModule {
 $newsletter = Newsletter::instance();
 
 // Module loading
-require_once NEWSLETTER_DIR . '/subscription/subscription.php';
 require_once NEWSLETTER_DIR . '/users/users.php';
+require_once NEWSLETTER_DIR . '/subscription/subscription.php';
 require_once NEWSLETTER_DIR . '/emails/emails.php';
 require_once NEWSLETTER_DIR . '/statistics/statistics.php';
 

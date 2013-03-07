@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.0.0
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -55,6 +55,15 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.1.5 =
+
+* Content locking deactivated if a user is logged in
+* Added a button to create a newsletter dedicated page
+* Added top message is the newsletter dedicated page is not configured
+* Fixed the subscription process with the old "na" action
+* Added a new option with wp registration integration
+* Added the opt-in mode to wp registration integration
 
 = 3.1.4 =
 

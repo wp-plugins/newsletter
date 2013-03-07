@@ -53,6 +53,23 @@ if ($controls->is_action()) {
         $module->save_options($controls->data);
         $controls->messages = 'Saved.';
     }
+    
+if ($controls->is_action('create')) {
+        $page = array();
+        $page['post_title'] = 'Newsletter';
+        $page['post_content'] = '[newsletter]';
+        $page['post_status'] = 'publish';
+        $page['post_type'] = 'page';
+        $page['comment_status'] = 'closed';
+        $page['ping_status'] = 'closed';
+        $page['post_category'] = array(1);
+
+        // Insert the post into the database
+        $page_id = wp_insert_post($page);
+
+        $controls->data['url'] = get_permalink($page_id);
+        $module->save_options($controls->data);
+     }    
 
     if ($controls->is_action('reset')) {
         $controls->data = $module->reset_options();
@@ -121,17 +138,16 @@ if ($controls->is_action()) {
 
     <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
 
-    <h2>Subscription and Unsubscription Configuration</h2>
+    <h2>Subscription, Unsubscription, Profile Page Configuration</h2>
     
     <?php $controls->show(); ?>
 
     <p>
-        In this panel you can configure the subscription and cancellation process, setting every message, the single or double opt in and
+        In this panel you can configure the subscription and cancellation process, set up every message, the single or double opt in and
         even a customized subscription form.
     </p>
     <p>
-        Emails sent during subscription process are themed with the file subscription/email.php which contains instructions on
-        how customize it.
+        Emails sent during subscription process are themed with the file subscription/email.php. Open that file to learn how to customize it.
     </p>
     <p>
         Page layout where messages are shown is managed by subscription/page.php file which contains instruction on how to
@@ -169,13 +185,24 @@ if ($controls->is_action()) {
                     <tr valign="top">
                         <th>WordPress page URL for messages</th>
                         <td>
-                            <?php $controls->text('url', 70); ?> (eg. <?php echo get_option('home') . '/newsletter'; ?>, optional)
+                            <?php $controls->text('url', 70); ?> (eg. <?php echo get_option('home') . '/newsletter'; ?>, optional, read below)
+                            <?php 
+                            if (empty($controls->data['url'])) { 
+                                $controls->button('create', 'Create a page for me');
+                            } 
+                            ?>
 
                             <div class="hints">
-                                Newsletter Pro needs to interact with subscribers: subscription form, welcome messages, cancellation messages,
-                                profile editing form. If you want all those interactions within you blog theme, create a WordPress page and put
-                                in its body <strong>only</strong> the short code [newsletter] (as is). Then open that page in your browser and copy the
-                                page address (URL) in this field.<br />
+                                Here you can specify the URL of a blog page to be used to show messages (subscription form,
+                                confirmation and welcome message, and so on). If not specified Newsletter will use a neutral blank page.
+                                <br>
+                                The page must have in its body <strong>only</strong> the short code <strong>[newsletter]</strong> (as is).
+                                
+                                <?php if (!empty($controls->data['url'])) { ?>
+                                <br>
+                                If something is not working as expected you can empty the field above and save: a button will appear 
+                                to create thast page automatically.
+                                <?php } ?>
                             </div>
                         </td>
                     </tr>
@@ -188,9 +215,9 @@ if ($controls->is_action()) {
                         <th>Automatically subscribe WordPress users</th>
                         <td>
                             <?php //$controls->yesno('subscribe_wp_users'); ?>
-                            <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option')); ?>
+                            <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
                             <br>
-                            checkbox label: <?php $controls->text('subscribe_wp_users_label', 30); ?>
+                            opt in check box label: <?php $controls->text('subscribe_wp_users_label', 30); ?>
                             
                             
                             <div class="hints">
@@ -200,6 +227,12 @@ if ($controls->is_action()) {
                             </div>
                         </td>
                     </tr>
+                    <tr valign="top">
+                        <th>Opt-in mode for WordPress registrated users</th>
+                        <td>
+                            <?php $controls->select('optin_wp_users', array(0=>'As for regular subscriptions', 1=>'Force single opt-in')); ?>
+                        </td>
+                    </tr>                    
             <tr valign="top">
                 <th>Notifications</th>
                 <td>
