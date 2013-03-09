@@ -56,6 +56,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.6 =
+
+* Fixed the subscription form absent on some configurations
+
 = 3.1.5 =
 
 * Content locking deactivated if a user is logged in

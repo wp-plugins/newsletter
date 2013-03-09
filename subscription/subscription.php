@@ -799,6 +799,15 @@ function newsletter_shortcode_form($attrs, $content) {
 
 add_shortcode('newsletter', 'newsletter_shortcode');
 
+/**
+ *
+ * @global type $wpdb
+ * @global boolean $cache_stop
+ * @global Newsletter $newsletter
+ * @param type $attrs
+ * @param type $content
+ * @return string
+ */
 function newsletter_shortcode($attrs, $content) {
     global $wpdb, $cache_stop, $newsletter;
 
@@ -809,7 +818,7 @@ function newsletter_shortcode($attrs, $content) {
     $message_key = $module->get_message_key_from_request();
     $alert = stripslashes($_REQUEST['alert']);
 
-
+    $message = $module->options[$message_key . '_text'];
 
     // Now check what form must be added
     if ($message_key == 'subscription') {
@@ -824,18 +833,15 @@ function newsletter_shortcode($attrs, $content) {
                 $message .= '{subscription_form}';
             }
 
-            if (strpos($message, '{subscription_form}') !== false) {
-                // TODO: Remove on version 3.1. For compatibility.
-                if (isset($attrs['form'])) {
-                    $message = str_replace('{subscription_form}', $module->get_form($attrs['form']), $message);
-                } else {
-                    $message = str_replace('{subscription_form}', $module->get_subscription_form('page'), $message);
-                }
+            if (isset($attrs['form'])) {
+                $message = str_replace('{subscription_form}', $module->get_form($attrs['form']), $message);
+            } else {
+                $message = str_replace('{subscription_form}', $module->get_subscription_form('page'), $message);
             }
         }
     }
 
-    $message = $newsletter->replace($module->options[$message_key . '_text'], $user, null, 'page');
+    $message = $newsletter->replace($message, $user, null, 'page');
 
     if (!empty($alert)) {
         $message .= '<script>alert("' . addslashes($alert) . '");</script>';
@@ -852,7 +858,7 @@ function newsletter_subscription_user_register($user_id) {
     global $wpdb;
 
     $module = NewsletterSubscription::instance();
-    
+
     if (!isset($_REQUEST['newsletter'])) return;
 
 //    if ($module->options['subscribe_wp_users'] == 0) return;
