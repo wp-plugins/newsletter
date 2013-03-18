@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.1.6
+  Version: 3.1.7
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.1.6');
+define('NEWSLETTER_VERSION', '3.1.7');
 
 global $wpdb, $newsletter;
 
@@ -59,7 +59,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/themes.php';
 
 class Newsletter extends NewsletterModule {
 
-    const VERSION = '1.1.2';
+    const VERSION = '1.1.4';
 
     // Limits to respect to avoid memory, time or provider limits
     var $time_limit;
@@ -102,7 +102,7 @@ class Newsletter extends NewsletterModule {
         $this->time_limit = time() + $max_time;
 
         // Here because the upgrade is called by the parent constructor and uses the scheduler
-        add_filter('cron_schedules', array(&$this, 'hook_cron_schedules'), 1000);
+        add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
         parent::__construct('main', self::VERSION);
 
@@ -111,11 +111,11 @@ class Newsletter extends NewsletterModule {
             $max = 100;
         $this->max_emails = max(floor($max / 12), 1);
 
-        add_action('init', array(&$this, 'hook_init'));
-        add_action('newsletter', array(&$this, 'hook_newsletter'), 1);
+        add_action('init', array($this, 'hook_init'));
+        add_action('newsletter', array($this, 'hook_newsletter'), 1);
 
         // This specific event is created by "Feed by mail" panel on configuration
-        add_action('shutdown', array(&$this, 'hook_shutdown'));
+        add_action('shutdown', array($this, 'hook_shutdown'));
 
         if (defined('DOING_CRON') && DOING_CRON)
             return;
@@ -124,16 +124,16 @@ class Newsletter extends NewsletterModule {
         //register_activation_hook(__FILE__, array(&$this, 'hook_activate'));
         //register_deactivation_hook(__FILE__, array(&$this, 'hook_deactivate'));
 
-        add_action('admin_init', array(&$this, 'hook_admin_init'));
+        add_action('admin_init', array($this, 'hook_admin_init'));
 
-        add_action('wp_head', array(&$this, 'hook_wp_head'));
+        add_action('wp_head', array($this, 'hook_wp_head'));
 
-        add_shortcode('newsletter_lock', array(&$this, 'shortcode_newsletter_lock'));
-        add_filter('the_content', array(&$this, 'hook_the_content'), 99);
-        add_shortcode('newsletter_profile', array(&$this, 'shortcode_newsletter_profile'));
+        add_shortcode('newsletter_lock', array($this, 'shortcode_newsletter_lock'));
+        add_filter('the_content', array($this, 'hook_the_content'), 99);
+        add_shortcode('newsletter_profile', array($this, 'shortcode_newsletter_profile'));
 
         if (is_admin()) {
-            add_action('admin_head', array(&$this, 'hook_admin_head'));
+            add_action('admin_head', array($this, 'hook_admin_head'));
         }
     }
 
@@ -157,8 +157,8 @@ class Newsletter extends NewsletterModule {
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column send_on int not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column track tinyint not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column editor tinyint not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sex varchar(10) not null default 'n'");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails change column sex sex varchar(10) not null default 'n'");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sex char(1) not null default ''");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails change column sex sex char(1) not null default ''");
 
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column query text");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column preferences text");
@@ -172,7 +172,7 @@ class Newsletter extends NewsletterModule {
         // TODO: To be moved on users module.
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter convert to character set utf8");
 
-        $this->upgrade_query("update " . $wpdb->prefix . "newsletter set sex='n' where sex=''");
+        $this->upgrade_query("update " . $wpdb->prefix . "newsletter set sex='n' where sex='' or sex=' '");
 
         // Some setting check to avoid the common support request for mis-configurations
         $options = $this->get_options();
@@ -199,13 +199,6 @@ class Newsletter extends NewsletterModule {
 
         wp_clear_scheduled_hook('newsletter');
         wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
-
-//        $sql = 'create table if not exists ' . $wpdb->prefix . 'newsletter_profiles (
-//        `newsletter_id` int NOT NULL,
-//        `name` varchar (100) NOT NULL DEFAULT \'\',
-//        `value` text,
-//        primary key (newsletter_id, name)
-//        ) DEFAULT charset=utf8';
 
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter');
         wp_mkdir_p(WP_CONTENT_DIR . '/cache/newsletter');
@@ -927,7 +920,7 @@ class Newsletter extends NewsletterModule {
 
         $message .= "token: " . $user->token . "\n" .
                 "status: " . $user->status . "\n" .
-                "\nYours, Newsletter Pro.";
+                "\nYours, Newsletter.";
 
         wp_mail(get_option('admin_email'), '[' . get_option('blogname') . '] ' . $subject, $message, "Content-type: text/plain; charset=UTF-8\n");
     }
@@ -988,8 +981,7 @@ class Newsletter extends NewsletterModule {
      * Saves a new user on the database. Return false if the email (that must be unique) is already
      * there. For a new users set the token and creation time if not passed.
      *
-     * @param type $user
-     * @return type
+     * @param array|object $user
      */
     function save_user($user, $return_format = OBJECT) {
         if (is_object($user))

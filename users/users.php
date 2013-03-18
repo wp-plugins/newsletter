@@ -4,7 +4,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterUsers extends NewsletterModule {
 
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     static $instance;
 
@@ -32,7 +32,8 @@ class NewsletterUsers extends NewsletterModule {
         // User personal data
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column name varchar(100) not null default ''");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column surname varchar(100) not null default ''");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column sex char(1) not null default ''");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column sex char(1) not null default 'n'");
+        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter change column sex sex char(1) not null default 'n'");
 
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column status char(1) not null default 'S'");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column created timestamp not null default current_timestamp");

@@ -6,6 +6,7 @@ $module = NewsletterUsers::instance();
 if ($controls->is_action('save')) {
 
     $controls->data['status'] = 'C';
+    $controls->data['sex'] = 'n';
 
     $user = $module->save_user($controls->data);
     if ($user === false) {
@@ -20,7 +21,7 @@ if ($controls->is_action('save')) {
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
     <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-    
+
     <h2>New subscriber</h2>
 
     <?php $controls->show(); ?>

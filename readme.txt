@@ -56,6 +56,14 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.7 =
+
+* Added better support for Follow Up for Newsletter
+* Fixed integration with Feed by Mail for Newsletter
+* Fixed a bug on profile save
+* Fixed a message about log folder on diagnostic panel
+* Fixed the sex field on user creation
+
 = 3.1.6 =
 
 * Fixed the subscription form absent on some configurations

@@ -320,7 +320,7 @@ class NewsletterSubscription extends NewsletterModule {
         // For each preference which an be edited (and so is present on profile form)...
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
             if ($options_profile['list_' . $i . '_status'] == 0) continue;
-            $data['list_' . $i] = in_array($i, $_REQUEST['nl']) ? 1 : 0;
+            $data['list_' . $i] = in_array($i, $nl) ? 1 : 0;
         }
 
         // Profile
@@ -329,18 +329,13 @@ class NewsletterSubscription extends NewsletterModule {
             $data['profile_' . $i] = stripslashes($_REQUEST['np' . $i]);
         }
 
-// Follow up
-        $options_followup = get_option('newsletter_followup');
-        if ($options_followup['enabled'] == 1 && $options_profile['followup_status'] > 0) {
-            if (isset($_POST['followup'])) $data['followup'] = 1;
-            else $data['followup'] = 0;
-        }
         $data['id'] = $user->id;
 
         // Feed by Mail service is saved here
         $data = apply_filters('newsletter_profile_save', $data);
+        //var_dump($data);
 
-        $user = NewsletterUsers::instance()->save_user($data);
+        $user = $newsletter->save_user($data);
         return $user;
     }
 
@@ -680,15 +675,6 @@ class NewsletterSubscription extends NewsletterModule {
             $buffer .= '/> ' . htmlspecialchars($options['list_' . $i]) . '<br />';
         }
         $buffer .= '</td></tr>';
-
-        // Follow up
-        $options_followup = get_option('newsletter_followup');
-        if ($options_followup['enabled'] == 1) {
-            $buffer .= '<tr><th align="right">&nbsp;</th><td>';
-            $buffer .= '<input type="checkbox" name="followup"';
-            if ($user->followup == 1) $buffer .= ' checked';
-            $buffer .= '/>&nbsp;' . $options_followup['name'] . '</td></tr>';
-        }
 
         $extra = apply_filters('newsletter_profile_extra', array(), $user);
         foreach ($extra as &$x) {

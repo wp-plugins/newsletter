@@ -720,6 +720,22 @@ table.clicks {
     overflow: hidden;
 }
 
+.newsletter-checkboxes-item {
+    float: left;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    background-color: #f4f4f4;
+    width: 200px;
+    margin-bottom: 5px;
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.newsletter-checkboxes-item label {
+    display: inline;
+}
+
 .newsletter-preferences-item {
     float: left;
     margin-right: 5px;

@@ -299,10 +299,7 @@ if ($email['editor'] == 0) {
                     <tr valign="top">
                         <th>Sex</th>
                         <td>
-                            <div class="nl-checkbox-group"><?php $controls->checkbox_group('sex', 'f', 'Women'); ?></div>
-                            <div class="nl-checkbox-group"><?php $controls->checkbox_group('sex', 'm', 'Men'); ?></div>
-                            <div class="nl-checkbox-group"><?php $controls->checkbox_group('sex', 'n', 'Not specified'); ?></div>
-                            <div style="clear: both"></div>
+                            <?php $controls->checkboxes_group('sex', array('f'=>'Women', 'm'=>'Men', 'n'=>'Not specified')); ?>
                             <div class="hints">
                                 Leaving all sex options unselected means to NOT filter by sex.
                             </div>

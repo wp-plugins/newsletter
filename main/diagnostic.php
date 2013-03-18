@@ -105,8 +105,9 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
     <?php $controls->show(); ?>
 
     <p>
-        If something is not working, here there are test procedures and diagnostic data. But before start take a little time to
-        write down a list of modifications you coulf have made recently. Sender email or name? Return path? Reply to?
+        If something is not working, here are some test procedures and diagnostics. But before you try these,
+        write down any modifications or configuration changes that you may have made.
+        For example: Did you use sender email or name? What was the return path? What was the reply to?
     </p>
 
     <form method="post" action="">
@@ -181,7 +182,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                             <td>
                                 <?php
                                 $dir = WP_CONTENT_DIR . '/logs/newsletter';
-                                if (is_dir($dir)) {
+                                if (!is_dir($dir)) {
                                     echo '<span class="newsletter-error-span">The log folder does not exists, no logging possible!</span>';
                                 } else {
                                     echo 'The log folder exists.';

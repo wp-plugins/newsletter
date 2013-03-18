@@ -99,12 +99,42 @@ class NewsletterControls {
         echo '</select>';
     }
 
+    /**
+     * Creates a checkbox named $name and checked if the internal data contains under
+     * the key $name an array containig the passed value.
+     */
     function checkbox_group($name, $value, $label = '') {
         echo '<input type="checkbox" id="' . $name . '" name="options[' . $name . '][]" value="' . $value . '"';
         if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
                 echo ' checked="checked"';
         echo '/>';
         if ($label != '') echo ' <label for="' . $name . '">' . $label . '</label>';
+    }
+
+    /**
+     * Creates a set of checkbox all named as $name with values and labels extracted from
+     * $values_labels. A checkbox will be checked if internal data under key $name is an array
+     * and contains the value of the current (echoing) checkbox.
+     *
+     * On submit it produces an array under the name $name IF at least one checkbox has
+     * been checked. Otherwise the key won't be present.
+     *
+     * @param array $values
+     * @param string $name
+     * @param array $values_labels
+     */
+    function checkboxes_group($name, $values_labels) {
+        echo "<div class='newsletter-checkboxes-group'>";
+        foreach($values_labels as $value=>$label) {
+            echo "<div class='newsletter-checkboxes-item'>";
+            echo "<input type='checkbox' id='$name' name='options[$name][]' value='$value'";
+            if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
+                echo " checked";
+            echo '/>';
+            if ($label != '') echo " <label for='$name'>$label</label>";
+            echo "</div>";
+        }
+        echo "</div><div style='clear: both'></div>";
     }
 
     function select_group($name, $options) {
@@ -225,7 +255,7 @@ class NewsletterControls {
 
     function button_confirm($action, $label, $message='', $data = '') {
         if (empty($message)) {
-            echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';this.form.submit()"/>';            
+            echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';this.form.submit()"/>';
         }
         else {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';if (confirm(\'' .
@@ -238,9 +268,9 @@ class NewsletterControls {
         echo htmlspecialchars($this->data[$name]);
         echo '</textarea>';
     }
-    
+
     function wp_editor($name, $settings = array()) {
-        wp_editor($this->data[$name], $name, array_merge(array('textarea_name'=>'options[' . $name . ']', 'wpautop'=>false), $settings)); 
+        wp_editor($this->data[$name], $name, array_merge(array('textarea_name'=>'options[' . $name . ']', 'wpautop'=>false), $settings));
     }
 
     function textarea($name, $width = '100%', $height = '50') {
@@ -255,11 +285,17 @@ class NewsletterControls {
         echo '</textarea>';
     }
 
-    function email($prefix) {
+    function email($prefix, $editor = null) {
         echo 'Subject:<br />';
         $this->text($prefix . '_subject', 70);
         echo '<br />Message:<br />';
-        $this->editor($prefix . '_message');
+        if ($editor == 'wordpress') {
+            $this->wp_editor($prefix . '_message');
+        } else if ($editor == 'textarea') {
+            $this->textarea($prefix . '_message');
+        } else {
+            $this->editor($prefix . '_message');
+        }
     }
 
     function checkbox($name, $label = '') {
@@ -298,19 +334,19 @@ class NewsletterControls {
         echo '<div class="newsletter-preferences-group">';
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
             if (empty($options_profile['list_' . $i])) continue;
-            
+
             echo '<div class="newsletter-preferences-item">';
-            
+
             $this->select($name . '_' . $i, array(0=>'Any', 1=>'Yes', 2=>'No'));
             echo '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]);
-            
+
             echo '</div>';
         }
         echo '<div style="clear: both"></div>';
         echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
         echo '</div>';
     }
-    
+
     function preferences($name = 'preferences', $skip_empty = false) {
         $options_profile = get_option('newsletter_profile');
         echo '<div class="newsletter-preferences-group">';
