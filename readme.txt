@@ -56,7 +56,7 @@ No screen shots are available at this time.
 
 == Changelog ==
 
-= 3.1.8 =
+= 3.1.9 =
 
 * Added the NEWSLETTER_MAX_EXECUTION_TIME
 * Added the NEWSLETTER_CRON_INTERVAL
