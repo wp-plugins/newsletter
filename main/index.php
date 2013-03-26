@@ -3,42 +3,9 @@
 
 $controls = new NewsletterControls();
 
-if ($controls->is_action('trigger')) {
-    $newsletter->hook_newsletter();
-    $controls->messages = 'Delivery engine triggered.';
-}
-
-if ($controls->is_action('trigger_followup')) {
-    NewsletterFollowup::instance()->send();
-    $controls->messages = 'Follow up delivery engine triggered.';
-}
-
-if ($controls->is_action('engine_on')) {
-    wp_clear_scheduled_hook('newsletter');
-    wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
-    $controls->messages = 'Delivery engine reactivated.';
-}
-
-if ($controls->is_action('upgrade')) {
-    // TODO: Compact them in a call to Newsletter which should be able to manage the installed modules
-    Newsletter::instance()->upgrade();
-    NewsletterUsers::instance()->upgrade();
-    NewsletterSubscription::instance()->upgrade();
-    NewsletterEmails::instance()->upgrade();
-    $controls->messages = 'Upgrade forced!';
-}
-
-if ($controls->is_action('delete_transient')) {
-    delete_transient($_POST['btn']);
-    $controls->messages = 'Deleted.';
-}
-
-$x = wp_next_scheduled('newsletter');
-if ($x === false) {
-    $controls->errors = 'The delivery engine is off (it should never be off). See the System Check below to reactivate it.';
-}
 ?>
-<div class="wrap">
+<div class="wrap main-index">
+
 
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
@@ -50,34 +17,74 @@ if ($x === false) {
     <form method="post" action="">
         <?php $controls->init(); ?>
 
-        <h3>First steps</h3>
+        <h3>Documentation?</h3>
+
         <p>
-            <strong>Newsletter works out of box</strong>. You don't need to create lists or configure it. Just use your WordPress
-            appearance panel, enter the widgets panel and add the Newsletter widget to your sidebar.
+            With my horrible English, everything can be found starting from <a href="http://www.satollo.net/plugins/newsletter" target="_blank">Newsletter Official page</a>
+            and every configuration panel has some included documentation just to avoid the most common mistakes.
         </p>
-        <p>
-            To get the most out of Newsletter, to translate messages and so on, it's important to understand the single configuration panels:
-        </p>
+
+        <h3>Few minutes to get the most from Newsletter</h3>
+
         <ol>
             <li>
-                <strong>Configuration</strong>: is where you find the main setting, like the SMTP, the sender address and name,
-                the delivery engine speed and so on.
+                <em>It (should) work!</em> Newsletter <strong>works out of box</strong>, you should only
+                <a href="widgets.php"><strong>add the Newsletter Widget</strong></a> to the siderbar and subscriptions will start to get in.
+            </li>
+
+            <li>
+                <em>Subscription page.</em> If you feel more confortable with a <strong>subscription page</strong>, let Newsletter to create one for you: on
+                <a href="admin.php?page=newsletter_subscription_options">subscription configuration panel</a>. You can keep both the
+                widget and the page, of course.
+            </li>
+
+            <li>
+                <em>Translations.</em> The <strong>administrative panels</strong> are only in (my bad) English but any other public
+                message and label and button can be translated on <a href="admin.php?page=newsletter_subscription_options">subscription configuration panel</a>:
+                please <strong>explore it</strong>.
+            </li>
+
+            <li>
+                <em>More about subscription.</em> The subscription and unsubscription processes to a mailing
+                list <strong>must be clear</strong> to the blog owner. <a href="http://www.satollo.net/plugins/newsletter/subscription-module" target="_blank">You can find more on Satollo.net</a>.
+            </li>
+        </ol>
+
+        <h3>Something is not working (it could happen)</h3>
+
+        <ol>
+            <li>
+                <em>No emails are sent.</em> This mostly a problem of your provider. <strong>Make a test</strong> using the instructions you find on
+                diagnostic panel.
             </li>
             <li>
-                <strong>Subscription</strong>: is where you configure the subscription process and it's one of the most important panel
-                to explore and understand. Subscription is not limited to collect email addresses! There you define the fields of the
-                subscription box, optionally a dedicated page for subscription and profile edit and so on.
+                <em>I get a 500/fatal error during subscription.</em> This mostly a problem of file permissions. On diagnostic
+                panel there is a check about it ad on <a target="_blank" href="http://www.satollo.net/plugins/newsletter/subscription-module#errors">Satollo.net there are some solutions</a>.
+            </li>
+        </ol>
+
+        <h3>I want to create and send a newsletter</h3>
+
+        <ol>
+            <li>
+                <em>I want to create a newsletter.</em> Use the <a href="http://www.satollo.net/wp-admin/admin.php?page=newsletter_emails_index">newsletters panel</a>
+                <strong>choose a theme</strong>, preview, twick if needed and create your message.
             </li>
             <li>
-                <strong>Newsletters</strong>: is where you create and send messages to your subscribers. You choose a theme,
-                set some parameters, preview the message and finally compose it.
+                <em>I want to test my newsletter.</em> Save the newsletter and move to the
+                <a href="http://www.satollo.net/wp-admin/admin.php?page=newsletter_users_index">subscribers panel</a>.
+                Create some subscribers by hand using your email addresses and mark them as test subscribers. They will be
+                used for newsletter tests.
             </li>
             <li>
-                <strong>Subscribers</strong>: is where you manage your subscribers like edit, create, export/import and so on.
+                <em>I want to send my newsletter.</em> Simple, press the send button. The email is created and put on
+                <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">delivery engine queue</a>.
+                On newsletter list, it will be shown as "sending".
             </li>
             <li>
-                <strong>Statistics</strong>: is where you configure the statistic system; statistics of single email (open, clicks)
-                are accessible directly from email lists.
+                <em>The newsletter is going out too slowly.</em> The <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">delivery engine</a> sends
+                emails as quickly as configured, see the <a href="admin.php?page=newsletter_main_main">main
+                configuration panel</a>. Look at your provider documentation as well, since it surely has a hourly limit.
             </li>
         </ol>
 
@@ -106,17 +113,17 @@ if ($x === false) {
                 </tr>
                 <tr>
                     <td>Subscription<br><small>All about the subscription and unsubscription processes</small></td>
-                    <td><?php echo NewsletterSubscription::VERSION; ?></td>
+                    <td><?php echo NewsletterSubscription::instance()->version; ?></td>
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
                     <td>Subscribers<br><small>The subscribers management tool</small></td>
-                    <td><?php echo NewsletterUsers::VERSION; ?></td>
+                    <td><?php echo NewsletterUsers::instance()->version; ?></td>
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
                     <td>Newsletters<br><small>The newsletters composer with themes</small></td>
-                    <td><?php echo NewsletterEmails::VERSION; ?></td>
+                    <td><?php echo NewsletterEmails::instance()->version; ?></td>
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
@@ -215,9 +222,9 @@ if ($x === false) {
 
             <li><a href="http://www.satollo.net/plugins/newsletter/subscribers-module" target="_blank">Subscribers Module</a></li>
             <li><a href="http://www.satollo.net/plugins/newsletter/statistics-module" target="_blank">Statistics Module</a></li>
-            <!--
+
             <li><a href="http://www.satollo.net/plugins/newsletter/feed-by-mail-module" target="_blank">Feed by Mail Module</a></li>
-            <li><a href="http://www.satollo.net/plugins/newsletter/follow-up-module" target="_blank">Follow Up Module</a></li>
+            <!--<li><a href="http://www.satollo.net/plugins/newsletter/follow-up-module" target="_blank">Follow Up Module</a></li>
             -->
         </ul>
 

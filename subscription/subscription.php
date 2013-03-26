@@ -4,7 +4,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterSubscription extends NewsletterModule {
 
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
     const MESSAGE_CONFIRMED = 'confirmed';
 
     static $instance;
@@ -35,9 +35,15 @@ class NewsletterSubscription extends NewsletterModule {
             update_option('newsletter_profile', $this->get_default_options('profile'));
         }
 
+        $default_options = $this->get_default_options();
         $options = $this->get_options();
         if (empty($options)) {
-            update_option('newsletter', $this->get_default_options());
+            update_option('newsletter', $default_options);
+        }
+
+        if (empty($options['error_text'])) {
+            $options['error_text'] = $default_options['error_text'];
+            update_option('newsletter', $default_options);
         }
 
 
@@ -78,7 +84,7 @@ class NewsletterSubscription extends NewsletterModule {
         $this->add_admin_page('forms', 'Forms');
     }
 
-    function save_options($options, $sub='') {
+    function save_options($options, $sub = '') {
         if ($sub == '') {
             // For compatibility the options are wrongly named
             return update_option('newsletter', $options);
@@ -106,7 +112,7 @@ class NewsletterSubscription extends NewsletterModule {
      *
      * @global Newsletter $newsletter
      */
-    function subscribe($force_single_opt_in=false) {
+    function subscribe($force_single_opt_in = false) {
         global $newsletter;
 
         $options = get_option('newsletter', array());
@@ -120,14 +126,29 @@ class NewsletterSubscription extends NewsletterModule {
 
         $user = $newsletter->get_user($email);
 
-        if ($user != null && $user->status == 'B') {
-            $this->logger->error('Subscription attempo of a bounced address');
-            echo 'This address is bounced, cannot be subscribed. Contact the blog owner.';
-            die();
+        if ($user != null) {
+            if ($user->status == 'B') {
+                $this->logger->error('Subscription attempt of a bounced address');
+                //echo 'This address is bounced, cannot be subscribed. Contact the blog owner.';
+                //die();
+            }
+            if ($user->status == 'U') {
+                $this->logger->error('Subscription attempt of an unsubscribed address');
+                //echo 'This address ishas been unsubscribed in the past, cannot be subscribed again. Contact the blog owner.';
+                //die();
+            }
+            if ($user->status == 'C') {
+                $this->logger->error('Subscription attempt of a confirmed address');
+                //echo 'This address has already been confirmed, cannot be subscribed again. Look at the welcome email on your mailbox or contact the blog owner for further support.';
+                //die();
+            }
+            // Fake status to communicate an error condition
+            $user->status = 'E';
+            return $user;
         }
 
         // This address is new or was it previously collected but never confirmed?
-        if ($user == null || $user->status == 'S' || $user->status == 'U') {
+        if ($user == null || $user->status == 'S') {
 
             if ($user != null) {
                 $this->logger->info("Email address subscribed but not confirmed");
@@ -280,9 +301,15 @@ class NewsletterSubscription extends NewsletterModule {
     function unsubscribe() {
         global $newsletter;
         $user = $this->get_user_from_request();
-        if ($user == null) die('No subscriber found.');
-
         setcookie('newsletter', '', time() - 3600);
+        if ($user == null) {
+            die('Subscriber not found');
+        }
+        if ($user->status != 'C') {
+            $user->status = 'E';
+            return $user;
+        }
+
         NewsletterUsers::instance()->set_user_status($user->id, 'U');
 
         $this->mail($user->email, $newsletter->replace($this->options['unsubscribed_subject'], $user), $newsletter->replace($this->options['unsubscribed_message'], $user));
@@ -530,12 +557,12 @@ class NewsletterSubscription extends NewsletterModule {
         $buffer .= '<table cellspacing="0" cellpadding="3" border="0">' . "\n\n";
         if ($options_profile['name_status'] == 2) {
             $buffer .= "<!-- first name -->\n";
-            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['name'] . '</th>' . "\n\t" . '<td><input class="newsletter-firstname" type="text" name="nn" size="30"' . ($options_profile['name_rules'] == 1?'required':'') . '></td>' . "\n" . '</tr>' . "\n\n";
+            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['name'] . '</th>' . "\n\t" . '<td><input class="newsletter-firstname" type="text" name="nn" size="30"' . ($options_profile['name_rules'] == 1 ? 'required' : '') . '></td>' . "\n" . '</tr>' . "\n\n";
         }
 
         if ($options_profile['surname_status'] == 2) {
             $buffer .= "<!-- last name -->\n";
-            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['surname'] . '</th>' . "\n\t" . '<td><input class="newsletter-lastname" type="text" name="ns" size="30"' . ($options_profile['surname_rules'] == 1?'required':'') . '></td>' . "\n" . '</tr>' . "\n\n";
+            $buffer .= "<tr>\n\t" . '<th>' . $options_profile['surname'] . '</th>' . "\n\t" . '<td><input class="newsletter-lastname" type="text" name="ns" size="30"' . ($options_profile['surname_rules'] == 1 ? 'required' : '') . '></td>' . "\n" . '</tr>' . "\n\n";
         }
 
         $buffer .= "<!-- email -->\n";
@@ -555,8 +582,7 @@ class NewsletterSubscription extends NewsletterModule {
             if ($options_profile['list_' . $i . '_status'] != 2) continue;
             $lists .= "\t\t" . '<input type="checkbox" name="nl[]" value="' . $i . '"/>&nbsp;' . $options_profile['list_' . $i] . '<br />' . "\n";
         }
-        if (!empty($lists))
-                $buffer .= "<!-- preferences -->\n<tr>\n\t<th>&nbsp;</th>\n\t<td>\n" . $lists . "\t</td>\n</tr>\n\n";
+        if (!empty($lists)) $buffer .= "<!-- preferences -->\n<tr>\n\t<th>&nbsp;</th>\n\t<td>\n" . $lists . "\t</td>\n</tr>\n\n";
 
         // Extra profile fields
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
@@ -765,7 +791,6 @@ class NewsletterSubscription extends NewsletterModule {
 
 }
 
-
 NewsletterSubscription::instance();
 
 // TODO: Remove in version 3.5. For compatibility.
@@ -904,7 +929,7 @@ function newsletter_register_form() {
     }
 }
 
-$newsletter_action = isset($_REQUEST['na'])?$_REQUEST['na']:'';
+$newsletter_action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
 
 if ($newsletter_action == 's') {
     $user = NewsletterSubscription::instance()->subscribe();
@@ -914,8 +939,7 @@ if ($newsletter_action == 's') {
 else if ($newsletter_action == 'c') {
     $user = NewsletterSubscription::instance()->confirm();
     NewsletterSubscription::instance()->show_message('confirmed', $user);
-}
-else if ($newsletter_action == 'u') {
+} else if ($newsletter_action == 'u') {
     $user = NewsletterSubscription::instance()->get_user_from_request();
     if ($user == null) die('No subscriber found.');
     NewsletterSubscription::instance()->show_message('unsubscription', $user->id);
@@ -923,8 +947,7 @@ else if ($newsletter_action == 'u') {
 else if ($newsletter_action == 'uc') {
     $user = NewsletterSubscription::instance()->unsubscribe();
     NewsletterSubscription::instance()->show_message('unsubscribed', $user);
-}
-else if ($newsletter_action == 'p' || $newsletter_action == 'pe') {
+} else if ($newsletter_action == 'p' || $newsletter_action == 'pe') {
     $user = NewsletterSubscription::instance()->get_user_from_request();
     if ($user == null) die('No subscriber found.');
     NewsletterSubscription::instance()->show_message('profile', $user);

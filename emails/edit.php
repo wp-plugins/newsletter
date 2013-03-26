@@ -146,10 +146,10 @@ if ($controls->is_action('abort')) {
 if ($controls->is_action('test')) {
     $users = NewsletterUsers::instance()->get_test_users();
     if (count($users) == 0) {
-        $controls->errors = 'There is no test subscribers to who send this email. Mark some subscribers as test subscriber from the Subscriber panel.';
+        $controls->errors = 'There are no test subscribers. Read more about test subscribers <a href="http://www.satollo.net/plugins/newsletter/subscribers-module#test" target="_blank">here</a>.';
     } else {
         Newsletter::instance()->send(Newsletter::instance()->get_email($email_id), $users);
-        $controls->messages .= 'Test emails sent to ' . count($users) . ' test users.';
+        $controls->messages .= 'Test emails sent to ' . count($users) . ' test subscribers. Read more about test subscribers <a href="http://www.satollo.net/plugins/newsletter/subscribers-module#test" target="_blank">here</a>.';
     }
 }
 

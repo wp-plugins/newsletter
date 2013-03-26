@@ -566,6 +566,25 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .ui-widget-shadow { margin: -8px/*{offsetTopShadow}*/ 0 0 -8px/*{offsetLeftShadow}*/; padding: 8px/*{thicknessShadow}*/; background: #aaaaaa/*{bgColorShadow}*/ url(images/ui-bg_flat_0_aaaaaa_40x100.png)/*{bgImgUrlShadow}*/ 50%/*{bgShadowXPos}*/ 50%/*{bgShadowYPos}*/ repeat-x/*{bgShadowRepeat}*/; opacity: .3;filter:Alpha(Opacity=30)/*{opacityShadow}*/; -moz-border-radius: 8px/*{cornerRadiusShadow}*/; -khtml-border-radius: 8px/*{cornerRadiusShadow}*/; -webkit-border-radius: 8px/*{cornerRadiusShadow}*/; border-radius: 8px/*{cornerRadiusShadow}*/; }
 
 
+
+
+
+
+
+
+.ui-tabs {
+border-color: #ddd;
+}
+
+.ui-tabs-nav {
+background-image: none;
+background-color: #fff;
+border: 0;
+border-bottom: 1px solid #ddd;
+border-radius: 0;
+}
+
+
 /* Admin header */
 #newsletter-header {
     text-align: left;
@@ -574,6 +593,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     padding-left: 15px;
     border-radius: 3px;
     text-transform: uppercase;
+    font-size: 12px;
 }
 
 #newsletter-header a {
@@ -588,15 +608,32 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     margin-bottom: 15px;
 }
 
+.wrap {
+    font-size: 14px;
+    line-height: 150%;
+    font-family: sans-serif;
+
+}
+
+.wrap td, .wrap th {
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+.main-index a {
+    font-weight: bold;
+}
+
 .wrap h2 {
     color: #21759B;
     font-size: 20px;
     margin: 10px 0;
     padding: 0;
+    font-family: Georgia;
 }
 
 .wrap h3 {
-
+font-family: Georgia;
 }
 
 .wrap h4 {
@@ -608,20 +645,18 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 .wrap h5 {
     color: #666;
-    font-size: 16px;
+    font-size: 14px;
     padding: 0;
     margin: 10px 0;
 }
 
-.wrap li {
+.wrap ul li {
     margin-left: 20px;
     list-style-type: disc;
 }
 
 .form-table {
-    xborder: 1px solid #ccc;
     background-color: #fff;
-    border: 3px solid #ddd;
 }
 
 .form-table th {
@@ -682,14 +717,12 @@ table.clicks {
 }
 
 .hints {
-    border: 1px solid #ccc;
-    background-color: #f7f7f7;
+    border: 1px solid #e4e4ee;
+    background-color: #f4f4ff;
     padding: 5px;
     margin-top: 10px;
     border-radius: 4px 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    font-size: 11px;
+    font-size: 12px;
     color: #666;
 }
 
@@ -756,15 +789,6 @@ table.clicks {
     display: inline;
 }
 
-#tabs .form-table {
-    border: 0;
-    font-size: 12px;
-}
-
-#tabs .form-table th {
-    font-size: 12px;
-}
-
 .ui-tabs .ui-tabs-nav li a {
     font-size: 12px;
 }
@@ -805,7 +829,10 @@ table.clicks {
     border-width: 1px;
     padding: .6em;
     margin-bottom: .6em;
-
+    background-image: url("images/messages.png");
+    padding-left: 30px;
+    background-repeat: no-repeat;
+    background-position: left center;
 }
 
 .newsletter-error-span {
@@ -820,7 +847,11 @@ table.clicks {
     border-style: solid;
     border-width: 1px;
     padding: .6em;
+    padding-left: 30px;
     margin-bottom: .6em;
+    background-image: url("images/messages.png");
+    background-repeat: no-repeat;
+    background-position: left center;
 }
 
 #newsletter-warnings {
@@ -833,22 +864,52 @@ table.clicks {
     margin-bottom: .6em;
 }
 
+.newsletter-buttons {
+    margin-top: 1em;
+    padding: 1em;
+}
+
+.newsletter-buttons-bottom {
+    xborder-top: 1px solid #ddd;
+}
+
 /* Text under the panel title to explain the panel purpose. */
 .preamble {
     margin-bottom: 15px;
+    border-radius: 3px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    background-image: url("images/preamble.png");
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 65px;
+    font-size: 13px;
+    font-family: sans-serif;
 }
 
 .preamble p {
-    font-size: 12px;
+    margin: 0;
+}
+
+.tab-preamble {
+    margin-bottom: 15px;
+    border-radius: 3px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: left;
+    font-size: 13px;
+    line-height: normal;
+    font-family: sans-serif;
 }
 
 .tab-preamble p {
-    font-size: .9em;
-    color: #777;
+    margin: 0;
 }
 
 .newsletter-paginator {
     margin-top: 10px;
     margin-bottom: 5px;
 }
+
 

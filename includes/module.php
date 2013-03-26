@@ -35,6 +35,11 @@ class NewsletterModule {
      */
     var $prefix;
 
+    /**
+     * @var NewsletterThemes
+     */
+    var $themes;
+
     function __construct($module, $version) {
         $this->module = $module;
         $this->version = $version;
@@ -59,10 +64,15 @@ class NewsletterModule {
         }
     }
 
+    /**
+     * Does a basic upgrade work, checking if the options is already present and if not (first
+     * installation), recovering the defaults, saving them on database and initializing the
+     * internal $options.
+     */
     function upgrade() {
         $this->logger->info('upgrade> Start');
 
-        if (empty($this->options)) {
+        if (empty($this->options) || !is_array($this->options)) {
             $this->options = $this->get_default_options();
             $this->save_options($this->options);
         }
@@ -74,7 +84,7 @@ class NewsletterModule {
         $this->logger->info('upgrade_query> Executing ' . $query);
         $wpdb->query($query);
         if ($wpdb->last_error) {
-            $this->logger->error($wpdb->last_error);
+            $this->logger->info($wpdb->last_error);
         }
     }
 
@@ -102,7 +112,7 @@ class NewsletterModule {
      * @return string The prefix for names
      */
     function get_prefix($sub = '') {
-        return $this->prefix . ($sub != '' ? '_' : '') . $sub;
+        return $this->prefix . (!empty($sub) ? '_' : '') . $sub;
     }
 
     /**
@@ -116,7 +126,7 @@ class NewsletterModule {
     }
 
     function get_default_options($sub = '') {
-        if ($sub != '')
+        if (!empty($sub))
             $sub .= '-';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . 'en_US.php';
@@ -136,6 +146,11 @@ class NewsletterModule {
     function save_options($options, $sub = '') {
         $this->options = $options;
         update_option($this->get_prefix($sub), $options);
+
+        if (isset($this->themes) && isset($options['theme'])) {
+            $this->themes->save_options($options['theme'], $options);
+        }
+
         if (isset($options['log_level']))
             update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
     }
@@ -159,10 +174,6 @@ class NewsletterModule {
         $this->save_last_run($time + $delta, $sub);
     }
 
-    function delete_transient($sub = '') {
-        delete_transient($this->get_prefix($sub));
-    }
-
     /**
      * Checks if the semaphore of that name (for this module) is still red giving that it should last only
      * $time seconds.
@@ -179,6 +190,10 @@ class NewsletterModule {
         }
         set_transient($this->get_prefix() . '_' . $name, time(), $time);
         return true;
+    }
+
+    function delete_transient($sub = '') {
+        delete_transient($this->get_prefix($sub));
     }
 
     /** Returns a random token of the specified size (or 10 characters if size is not specified).
@@ -214,6 +229,12 @@ class NewsletterModule {
         return $name;
     }
 
+    static function normalize_sex($sex) {
+        $sex = trim(strtolower($sex));
+        if ($sex != 'f' && $sex != 'm') $sex = 'n';
+        return $sex;
+    }
+
     static function is_email($email, $empty_ok = false) {
         $email = strtolower(trim($email));
         if ($empty_ok && $email == '')
@@ -243,6 +264,11 @@ class NewsletterModule {
         $d = explode('-', $s[0]);
         $t = explode(':', $s[1]);
         return gmmktime((int) $t[0], (int) $t[1], (int) $t[2], (int) $d[1], (int) $d[2], (int) $d[0]);
+    }
+
+    static function format_date($time) {
+        if (empty($time)) return '-';
+        return gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
     }
 
     static function date($time = null, $now = false, $left = false) {
@@ -386,6 +412,35 @@ class NewsletterModule {
 
     function get_admin_page_url($page) {
         return '?page=newsletter_' . $this->module . '_' . $page;
+    }
+
+    /** Returns all the emails of the give type (message, feed, followup, ...) and in the given format
+     * (default as objects). Return false on error or at least an empty array. Errors should never
+     * occur.
+     *
+     * @global wpdb $wpdb
+     * @param string $type
+     * @return boolean|array
+     */
+    function get_emails($type = null, $format = OBJECT) {
+        global $wpdb;
+        if ($type == null) {
+            $list = $wpdb->get_results("select * from " . NEWSLETTER_EMAILS_TABLE . " order by id desc", $format);
+        } else {
+            $list = $wpdb->get_results($wpdb->prepare("select * from " . NEWSLETTER_EMAILS_TABLE . " where type=%s order by id desc", $type), $format);
+        }
+        if ($wpdb->last_error) {
+            $this->logger->error($wpdb->last_error);
+            return false;
+        }
+        if (empty($list)) {
+            return array();
+        }
+        return $list;
+    }
+
+    function get_email($id, $format = OBJECT) {
+        return $this->store->get_single(NEWSLETTER_EMAILS_TABLE, $id, $format);
     }
 
 }

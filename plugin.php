@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.1.7
+  Version: 3.1.8
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.1.7');
+define('NEWSLETTER_VERSION', '3.1.8');
 
 global $wpdb, $newsletter;
 
@@ -49,6 +49,9 @@ if (!defined('NEWSLETTER_PROFILE_MAX'))
 if (!defined('NEWSLETTER_FORMS_MAX'))
     define('NEWSLETTER_FORMS_MAX', 10);
 
+if (!defined('NEWSLETTER_CRON_INTERVAL'))
+    define('NEWSLETTER_CRON_INTERVAL', 300);
+
 // Force the whole system log level to this value
 //define('NEWSLETTER_LOG_LEVEL', 4);
 
@@ -59,7 +62,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/themes.php';
 
 class Newsletter extends NewsletterModule {
 
-    const VERSION = '1.1.4';
+    const VERSION = '1.1.5';
 
     // Limits to respect to avoid memory, time or provider limits
     var $time_limit;
@@ -96,9 +99,17 @@ class Newsletter extends NewsletterModule {
 
     function __construct() {
         // Early possible
-        $max_time = (int) (@ini_get('max_execution_time') * 0.9);
-        if ($max_time == 0)
-            $max_time = 600;
+        if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
+            $max_time = NEWSLETTER_MAX_EXECUTION_TIME;
+        }
+        else {
+            $max_time = (int) (@ini_get('max_execution_time') * 0.9);
+        }
+
+        if ($max_time == 0) {
+            $max_time = 60;
+        }
+
         $this->time_limit = time() + $max_time;
 
         // Here because the upgrade is called by the parent constructor and uses the scheduler
@@ -184,6 +195,11 @@ class Newsletter extends NewsletterModule {
                 $sitename = substr($sitename, 4);
             // WordPress build an address in the same way using wordpress@...
             $options['sender_email'] = 'newsletter@' . $sitename;
+            $this->save_options($options);
+        }
+
+        if (empty($options['scheduler_max']) || !is_numeric($options['scheduler_max'])) {
+            $options['scheduler_max'] = 100;
             $this->save_options($options);
         }
 
@@ -321,7 +337,7 @@ class Newsletter extends NewsletterModule {
         $this->logger->debug('hook_newsletter> Starting');
 
         // Do not accept job activation before at least 4 minutes are elapsed from the last run.
-        if (!$this->check_transient('engine', 240))
+        if (!$this->check_transient('engine', NEWSLETTER_CRON_INTERVAL))
             return;
 
         // Retrieve all email in "sending" status
@@ -329,15 +345,10 @@ class Newsletter extends NewsletterModule {
         $this->logger->debug('hook_newsletter> Emails found in sending status: ' . count($emails));
         foreach ($emails as &$email) {
             $this->logger->debug('hook_newsletter> Sending email ' . $email->id);
-            if (!$this->send($email))
-                return;
+            if (!$this->send($email)) break;
         }
-
-        // TODO: Manage the follow-up with Newsletter 3.0.
-        if (defined('NEWSLETTER_FOLLOWUP_VERSION')) {
-            //global $newsletter_followup;
-            //$newsletter_followup->send();
-        }
+        // Remove the semaphore so the delivery engine can be activated again
+        $this->delete_transient('engine');
     }
 
     /**
@@ -360,8 +371,9 @@ class Newsletter extends NewsletterModule {
         $test = $users != null;
 
         if ($users == null) {
-            if (empty($email->query))
+            if (empty($email->query)) {
                 $email->query = "select * from " . NEWSLETTER_EMAILS_TABLE . " where status='C'";
+            }
             $query = $email->query . " and id>" . $email->last_id . " order by id limit " . $this->max_emails;
             $users = $wpdb->get_results($query);
 
@@ -373,7 +385,7 @@ class Newsletter extends NewsletterModule {
 
             if (empty($users)) {
                 $this->logger->info('No more users');
-                $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set status='sent' where id=" . $email->id . " limit 1");
+                $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set status='sent', total=sent where id=" . $email->id . " limit 1");
                 return true;
             }
         }
@@ -584,7 +596,7 @@ class Newsletter extends NewsletterModule {
 
     function hook_cron_schedules($schedules) {
         $schedules['newsletter'] = array(
-            'interval' => 300, // seconds
+            'interval' => NEWSLETTER_CRON_INTERVAL, // seconds
             'display' => 'Newsletter'
         );
         return $schedules;
@@ -943,32 +955,12 @@ class Newsletter extends NewsletterModule {
         return $user;
     }
 
-    function get_emails($type = null, $format = OBJECT) {
-        global $wpdb;
-        if ($type == null) {
-            $list = $wpdb->get_results("select * from " . NEWSLETTER_EMAILS_TABLE . " order by id desc", $format);
-        } else {
-            $list = $wpdb->get_results($wpdb->prepare("select * from " . NEWSLETTER_EMAILS_TABLE . " where type=%s order by id desc", $type), $format);
-        }
-        if ($wpdb->last_error) {
-            $this->logger->error($wpdb->last_error);
-            return false;
-        }
-        if (empty($list))
-            return array();
-        return $list;
-    }
-
     function save_email($email) {
         return $this->store->save(NEWSLETTER_EMAILS_TABLE, $email);
     }
 
     function delete_email($id) {
         return $this->store->delete(NEWSLETTER_EMAILS_TABLE, $id);
-    }
-
-    function get_email($id, $format = OBJECT) {
-        return $this->store->get_single(NEWSLETTER_EMAILS_TABLE, $id, $format);
     }
 
     function get_email_field($id, $field_name) {
@@ -1075,6 +1067,12 @@ require_once NEWSLETTER_DIR . '/statistics/statistics.php';
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/feed/feed.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/feed/feed.php';
+} else {
+    require_once NEWSLETTER_DIR . '/feed/feed.php';
+}
+
+if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/updates/updates.php')) {
+    require_once WP_CONTENT_DIR . '/extensions/newsletter/updates/updates.php';
 }
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/followup/followup.php')) {

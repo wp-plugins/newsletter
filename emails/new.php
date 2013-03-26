@@ -2,33 +2,20 @@
 require_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
 $module = NewsletterEmails::instance();
-$store = NewsletterStore::instance();
 
 
-if ($controls->is_action('change')) {
-    // Recover the selected theme options, if any, and use them.
+if ($controls->is_action('theme')) {
     $controls->merge($module->themes->get_options($controls->data['theme']));
     $module->save_options($controls->data);
 }
 
 if ($controls->is_action('save')) {
     $module->save_options($controls->data);
+    $controls->messages = 'Saved.';
 }
 
-if ($controls->is_action('create') || $controls->is_action('test')) {
+if ($controls->is_action('create')) {
     $module->save_options($controls->data);
-
-    if ($controls->is_action('test')) {
-        $users = $controls->get_test_subscribers();
-        $email = new stdClass();
-        $email->id = 0;
-        $email->message = $controls->data['message'];
-        $email->message_text = $controls->data['message_text'];
-        $email->subject = 'Test subject';
-        $email->track = $controls->data['track'];
-        $email->type = 'message';
-        $newsletter->send($email, $users);
-    }
 
     if ($controls->is_action('create')) {
         $email = array();
@@ -43,7 +30,7 @@ if ($controls->is_action('create') || $controls->is_action('test')) {
         ob_start();
         include $module->get_current_theme_file_path('theme.php');
         $email['message'] = ob_get_clean();
-        
+
         if (!empty($theme_subject)) {
             $email['subject'] = $theme_subject;
         }
@@ -68,7 +55,7 @@ if ($controls->is_action('create') || $controls->is_action('test')) {
 }
 
 if ($controls->data == null) {
-    $controls->data = NewsletterEmails::instance()->get_options();
+    $controls->data = $module->get_options();
 }
 
 
@@ -107,51 +94,43 @@ function newsletter_emails_get_theme_options($theme) {
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
-    
-    <h5>Newsletters Module</h5>
-
     <h2>New Newsletter</h2>
 
     <?php $controls->show(); ?>
 
-    <!--
-    <p>
-      <strong>Select a theme</strong> to compose a precompiled message, tune the theme setting, look at the previews and then preceed to the
-      composer.
-    </p>
-    -->
-
-    <form method="post" action="<?php echo $module->get_admin_page_url('new'); ?>" id="newsletter-form">
+    <form method="post" action="<?php echo $module->get_admin_page_url('new'); ?>">
         <?php $controls->init(); ?>
-        <div style="padding: .6em; border: 1px solid #ddd; background-color: #f4f4f4; border-radius: 3px;">
-            <strong>Choose a theme</strong>
-            <?php $controls->select('theme', NewsletterEmails::instance()->themes->get_all()); ?>
-            <?php $controls->button('change', 'Change theme'); ?>
-            <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">(more about themes)</a>
-        </div>
+        <h3>Choose a theme</h3>
+            <?php //$controls->select('theme', NewsletterEmails::instance()->themes->get_all()); ?>
+            <?php //$controls->button('change', 'Change theme'); ?>
+
+            <?php $controls->themes('theme', $module->themes->get_all_with_data()); ?>
 
         <p>
-            <?php $controls->button('save', 'Save options and refresh'); ?>
-            <?php $controls->button('create', 'Create the email'); ?>
+            <?php $controls->button_primary('create', 'Create the email'); ?>
         </p>
 
         <div id="tabs">
             <ul>
+                <li><a href="#tabs-1">Theme options</a></li>
                 <li><a href="#tabs-2">Preview</a></li>
                 <li><a href="#tabs-3">Preview (textual)</a></li>
-                <li><a href="#tabs-1">Theme options</a></li>
-                <li><a href="#tabs-4">Help</a></li>
             </ul>
 
+
             <div id="tabs-1">
-              <?php
-                  include NewsletterEmails::instance()->get_current_theme_file_path('theme-options.php');
-              ?>
+              <?php @include $module->get_current_theme_file_path('theme-options.php');?>
+                <div class="newsletter-buttons newsletter-buttons-bottom">
+              <?php $controls->button('save', 'Save options and refresh'); ?>
+                </div>
             </div>
 
 
             <div id="tabs-2">
-                <iframe src="<?php echo wp_nonce_url(NEWSLETTER_URL . '/emails/preview.php?' . time()); ?>" width="100%" height="500"></iframe>
+                <div class="tab-preamble">
+                    <p>After the email is created, you can edit every part of this message.</p>
+                </div>
+                <iframe src="<?php echo wp_nonce_url(NEWSLETTER_URL . '/emails/preview.php?' . time()); ?>" width="100%" height="700"></iframe>
             </div>
 
 
@@ -159,13 +138,6 @@ function newsletter_emails_get_theme_options($theme) {
                 <iframe src="<?php echo wp_nonce_url(NEWSLETTER_URL . '/emails/preview-text.php?' . time()); ?>" width="100%" height="500"></iframe>
             </div>
 
-            <div id="tabs-4">
-              <p>
-                Custom themes can be created starting from the supplied themes (on <code>wp_content/plugins/newsletter/emails/themes</code>
-                each subfolder is a theme)
-                and copied inside the <code>wp_content/newsletter/emails/themes</code> folder.
-              </p>
-            </div>
         </div>
 
     </form>

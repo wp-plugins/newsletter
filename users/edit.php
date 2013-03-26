@@ -38,7 +38,7 @@ $options_profile = get_option('newsletter_profile');
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
   <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-    
+
         <h2>Subscriber Edit</h2>
 
   <?php $controls->show(); ?>
@@ -101,10 +101,13 @@ $options_profile = get_option('newsletter_profile');
                   </div>
               </td>
           </tr>
+
+              <?php do_action('newsletter_user_edit_extra', $controls); ?>
+
           <tr valign="top">
             <th>Follow up</th>
             <td>
-              <?php $controls->yesno('followup'); ?> step: <?php $controls->text('followup_step'); ?> (next step on: <?php $controls->value_date('followup_time'); ?>)
+              <?php $controls->yesno('followup'); ?> step: <?php $controls->text('followup_step'); ?> (next step on: <?php $controls->value_date('followup_time', true); ?>)
             </td>
           </tr>
           <tr valign="top">

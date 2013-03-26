@@ -10,7 +10,7 @@ else {
     if ($controls->is_action('save')) {
         update_option('newsletter_profile', $controls->data);
     }
-    
+
     if ($controls->is_action('reset')) {
         // TODO: Move this inside the module
         @include NEWSLETTER_DIR . '/subscription/languages/profile-en_US.php';
@@ -46,18 +46,14 @@ $rules = array(0=>'Optional', 1=>'Required');
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
   <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
-    
+
     <h2>Subscription Form Fields and Layout</h2>
 
     <div class="preamble">
     <p>
-        User profile is the whole set of user data that he can edit accessing the profile page (usually via the {profile_url} link you
-        should add in any newsletter or welcome message.<br />
-        Some of this data (at least the email) is collected on subscription and you can decide here what to ask the user on sign up for your
-        newsletter.<br />
-        It's a good practice to let the subscriber to sign up with a small set of data (eg. only his email or email and name) and then let him to
-        add more information on a profile page.<br />
-        The form seems complex, but it's not! On first approach, skip profiles and preferences.
+        This panel contains the configuration of the subscription and profile editing forms which collect the subscriber data you want to have.<br>
+        And let you to <strong>translate</strong> every single button and label.<br>
+        <strong>Preferences</strong> can be an important setting for your newsletter: <a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">here you can read more about them</a>.
     </p>
     </div>
 

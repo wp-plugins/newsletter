@@ -5,17 +5,9 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterEmails extends NewsletterModule {
 
-    const VERSION = '1.0.8';
-
-    /**
-     * @var NewsletterThemes
-     */
-    var $themes;
-
     static $instance;
 
     /**
-     *
      * @return NewsletterEmails
      */
     static function instance() {
@@ -27,7 +19,7 @@ class NewsletterEmails extends NewsletterModule {
 
     function __construct() {
         $this->themes = new NewsletterThemes('emails');
-        parent::__construct('emails', self::VERSION);
+        parent::__construct('emails', '1.0.8');
     }
 
     function upgrade() {
@@ -53,13 +45,6 @@ class NewsletterEmails extends NewsletterModule {
         $this->add_admin_page('new', 'Email New');
         $this->add_admin_page('edit', 'Email Edit');
         $this->add_admin_page('theme', 'Email List');
-    }
-
-    function save_options($options) {
-        $this->options = $options;
-        parent::save_options($options);
-        // This separately save the theme options
-        $this->themes->save_options($options['theme'], $options);
     }
 
     /**

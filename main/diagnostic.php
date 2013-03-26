@@ -100,37 +100,33 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletter-diagnostic'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
-    <h2>Newsletter Diagnostic</h2>
+    <h2>Diagnostic</h2>
 
     <?php $controls->show(); ?>
 
+    <div class="preamble">
     <p>
         If something is not working, here are some test procedures and diagnostics. But before you try these,
         write down any modifications or configuration changes that you may have made.
         For example: Did you use sender email or name? What was the return path? What was the reply to?
     </p>
+    </div>
 
     <form method="post" action="">
         <?php $controls->init(); ?>
 
         <h3>Test</h3>
-        <table class="form-table">
-            <tr>
-                <th>Email test</th>
-                <td>
-                    <?php $controls->text('test_email'); ?>
-                    <?php $controls->button('test_wp', 'Send an email with WordPress'); ?>
-                    <?php $controls->button('send_test', 'Send test emails to this address'); ?>
-                    <div class="hints">
-                        Some test emails will be sent to the specified address:<br />
-                        1. One with the native mail functionality of WordPress as is, so the email should come fro wordpress@yourdomain.tld<br />
-                        2. One with sender data/reply to/return path as configured on Newsletter main settings in TEXT format (some time those values can break the mail system)<br />
-                        3. One with sender data/reply to/return path as configured on Newsletter main settings in HTML format (some time those values can break the mail system)<br />
-                        4. One in multipart format (with html and text parts) managed directly by Newsletter
-                    </div>
-                </td>
-            </tr>
-        </table>
+        Email: <?php $controls->text('test_email'); ?>
+        <?php $controls->button('test_wp', 'Send an email with WordPress'); ?>
+        <?php $controls->button('send_test', 'Send few emails with Newsletter'); ?>
+        <div class="hints">
+            First test emailing with WordPress if it does not work you need to contact your provider. Test on different addresses.
+            <br>
+            Second test emailing with Newsletter. You must receive three distinct email in different formats.
+            <br>
+            If the WordPress test works but Newsletter test doesn't, check the main configuration and try to change the sender,
+            return path and reply to email addresses.
+        </div>
 
 
         <h3>System Check and Upgrade</h3>
@@ -143,7 +139,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
 
             <ul>
                 <li><a href="#tabs-1">Logging</a></li>
-                <li><a href="#tabs-2">Sempahores and Crons</a></li>
+                <li><a href="#tabs-2">Semaphores and Crons</a></li>
                 <li><a href="#tabs-4">System</a></li>
                 <li><a href="#tabs-upgrade">Maintainance</a></li>
             </ul>
@@ -343,6 +339,23 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                             <td>PHP Execution Time</td>
                             <td>
                                 <?php echo ini_get('max_execution_time'); ?> (seconds)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>NEWSLETTER_MAX_EXECUTION_TIME</td>
+                            <td>
+                                <?php if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
+                                    echo NEWSLETTER_MAX_EXECUTION_TIME . 'seconds';
+                                } else {
+                                    echo 'Not set';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>NEWSLETTER_CRON_INTERVAL</td>
+                            <td>
+                                <?php echo NEWSLETTER_CRON_INTERVAL . 'seconds'; ?>
                             </td>
                         </tr>
                         <tr>

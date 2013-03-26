@@ -46,6 +46,52 @@ class NewsletterThemes {
         return $list;
     }
 
+    function get_all_with_data() {
+        $list = array();
+
+        $dir = NEWSLETTER_DIR . '/' . $this->module . '/themes';
+        $handle = @opendir($dir);
+
+        if ($handle !== false) {
+            while ($file = readdir($handle)) {
+                if ($file == '.' || $file == '..') continue;
+                if (!is_file($dir . '/' . $file . '/theme.php')) continue;
+                $data = array();
+                $data['name'] = $file;
+                $screenshot = $dir . '/' . $file . '/screenshot.png';
+                if (is_file($screenshot)) {
+                    $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
+                } else {
+                    $data['screenshot'] = NEWSLETTER_URL . '/images/theme-screenshot.png';
+                }
+                $list[$file] = $data;
+            }
+            closedir($handle);
+        }
+
+        $dir = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/themes';
+        $handle = @opendir($dir);
+
+        if ($handle !== false) {
+            while ($file = readdir($handle)) {
+                if ($file == '.' || $file == '..') continue;
+                if (isset($list[$file])) continue;
+                if (!is_file($dir . '/' . $file . '/theme.php')) continue;
+                $data = array();
+                $data['name'] = $file;
+                $screenshot = $dir . '/' . $file . '/screenshot.png';
+                if (is_file($screenshot)) {
+                    $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
+                } else {
+                    $data['screenshot'] = NEWSLETTER_URL . '/images/theme-screenshot.png';
+                }
+                $list[$file] = $data;
+            }
+            closedir($handle);
+        }
+        return $list;
+    }
+
     /**
      *
      * @param type $theme
@@ -79,8 +125,7 @@ class NewsletterThemes {
         $path = NEWSLETTER_DIR . '/' . $this->module . '/themes/' . $theme;
         if (is_dir($path)) {
             return NEWSLETTER_URL . '/' . $this->module . '/themes/' . $theme;
-        }
-        else {
+        } else {
             return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/themes/' . $theme;
         }
     }

@@ -56,6 +56,17 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.1.8 =
+
+* Added the NEWSLETTER_MAX_EXECUTION_TIME
+* Added the NEWSLETTER_CRON_INTERVAL
+* Improved the delivery engine performances
+* Improved the newsletter list panel
+* Change the subscription in case of unsubscribed, bounced or confirmed address with a configurable error message
+* Some CSS review
+* Fixed the unsubscription procedure with a check on user status
+* Added Pint theme
+
 = 3.1.7 =
 
 * Added better support for Follow Up for Newsletter

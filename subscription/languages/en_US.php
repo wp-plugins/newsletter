@@ -13,6 +13,8 @@
 $options = array();
 $options['profile_text'] = '{profile_form}<p>If you want to cancel your subscription, <a href="{unsubscription_confirm_url}">click here</a></p>';
 
+$options['error_text'] = '<p>This subscription can\'t be completed, sorry. The email address is blocked or already subscribed. You should contact the owner to unlock that email address. Thank you.</p>';
+
 // Subscription page introductory text (befor the subscription form)
 $options['subscription_text'] =
 "{subscription_form}";

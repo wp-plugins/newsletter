@@ -1,7 +1,7 @@
 <?php
     $all_count = $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter");
     $options_profile = get_option('newsletter_profile');
-    
+
     $module = NewsletterUsers::instance();
 ?>
 
@@ -10,7 +10,7 @@
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-    
+
     <h2>Subscriber Statistics</h2>
 
 <p>Counts are limited to confirmed subscribers.</p>
@@ -117,7 +117,7 @@
     <?php
     $months = $wpdb->get_results("select count(*) as c, concat(year(created), '-', date_format(created, '%m')) as d from " . $wpdb->prefix . "newsletter where status='C' group by concat(year(created), '-', date_format(created, '%m')) order by d desc limit 24");
     ?>
-    
+
     <div id="months-chart" style="width:400; height:300"></div>
 
     <table class="widefat" style="width: 300px">
@@ -158,7 +158,7 @@
 
 </div>
 
- <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 
   // Load the Visualization API and the piechart package.
@@ -166,7 +166,7 @@
 
   // Set a callback to run when the Google Visualization API is loaded.
   google.setOnLoadCallback(drawChart);
-  
+
       function drawChart() {
 
       // Create the data table.
@@ -186,15 +186,15 @@
 
       var chart = new google.visualization.PieChart(document.getElementById('sex-chart'));
       chart.draw(data, options);
-      
+
       var months = new google.visualization.DataTable();
       months.addColumn('string', 'Topping');
       months.addColumn('number', 'Slices');
-      
+
       <?php foreach ($months as $day) { ?>
       months.addRow(['<?php echo $day->d; ?>', <?php echo $day->c; ?>]);
       <?php } ?>
-          
+
       var options = {'title':'By months', 'width':400, 'height':300};
 
       var chart = new google.visualization.BarChart(document.getElementById('months-chart'));

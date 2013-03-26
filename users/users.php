@@ -39,11 +39,6 @@ class NewsletterUsers extends NewsletterModule {
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column created timestamp not null default current_timestamp");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column token varchar(50) not null default ''");
 
-        // Follow up
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column followup_time bigint(20) not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column followup_step tinyint(4) not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column followup tinyint(4) not null default 0");
-
         // Feed by mail
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column feed tinyint(4) not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column feed_time bigint(20) not null default 0");

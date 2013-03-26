@@ -10,7 +10,7 @@ if ($controls->is_action()) {
     if ($controls->is_action('save')) {
 
         $defaults = $module->get_default_options();
-        
+
         if (empty($controls->data['profile_text'])) {
             $controls->data['profile_text'] = $defaults['profile_text'];
         }
@@ -23,11 +23,11 @@ if ($controls->is_action()) {
         if (empty($controls->data['confirmation_text'])) {
             $controls->data['confirmation_text'] = $defaults['confirmation_text'];
         }
-        
+
         if (empty($controls->data['confirmation_subject'])) {
             $controls->data['confirmation_subject'] = $defaults['confirmation_subject'];
         }
-        
+
         if (empty($controls->data['confirmation_message'])) {
             $controls->data['confirmation_message'] = $defaults['confirmation_message'];
         }
@@ -35,11 +35,11 @@ if ($controls->is_action()) {
         if (empty($controls->data['confirmed_text'])) {
             $controls->data['confirmed_text'] = $defaults['confirmed_text'];
         }
-        
+
         if (empty($controls->data['confirmed_subject'])) {
             $controls->data['confirmed_subject'] = $defaults['confirmed_subject'];
         }
-        
+
         if (empty($controls->data['confirmed_message'])) {
             $controls->data['confirmed_message'] = $defaults['confirmed_message'];
         }
@@ -53,7 +53,7 @@ if ($controls->is_action()) {
         $module->save_options($controls->data);
         $controls->messages = 'Saved.';
     }
-    
+
 if ($controls->is_action('create')) {
         $page = array();
         $page['post_title'] = 'Newsletter';
@@ -69,7 +69,7 @@ if ($controls->is_action('create')) {
 
         $controls->data['url'] = get_permalink($page_id);
         $module->save_options($controls->data);
-     }    
+     }
 
     if ($controls->is_action('reset')) {
         $controls->data = $module->reset_options();
@@ -139,9 +139,10 @@ if ($controls->is_action('create')) {
     <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
 
     <h2>Subscription, Unsubscription, Profile Page Configuration</h2>
-    
+
     <?php $controls->show(); ?>
 
+    <div class="preamble">
     <p>
         In this panel you can configure the subscription and cancellation process, set up every message, the single or double opt in and
         even a customized subscription form.
@@ -153,6 +154,7 @@ if ($controls->is_action('create')) {
         Page layout where messages are shown is managed by subscription/page.php file which contains instruction on how to
         customize it OR use a WordPress page for messages as described on subscription configuration.
     </p>
+    </div>
 
 
     <form method="post" action="">
@@ -183,25 +185,25 @@ if ($controls->is_action('create')) {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th>WordPress page URL for messages</th>
+                        <th>Newsletter dedicated page</th>
                         <td>
-                            <?php $controls->text('url', 70); ?> (eg. <?php echo get_option('home') . '/newsletter'; ?>, optional, read below)
-                            <?php 
-                            if (empty($controls->data['url'])) { 
+                            <?php $controls->text('url', 70); ?>
+                            <?php
+                            if (empty($controls->data['url'])) {
                                 $controls->button('create', 'Create a page for me');
-                            } 
+                            }
                             ?>
 
                             <div class="hints">
-                                Here you can specify the URL of a blog page to be used to show messages (subscription form,
-                                confirmation and welcome message, and so on). If not specified Newsletter will use a neutral blank page.
+                                Optionally (but recommended) and address of a WordPress page (eg. <?php echo get_option('home') . '/newsletter'; ?>)
+                                you set up for subscription and messages.
                                 <br>
                                 The page must have in its body <strong>only</strong> the short code <strong>[newsletter]</strong> (as is).
-                                
+
                                 <?php if (!empty($controls->data['url'])) { ?>
                                 <br>
-                                If something is not working as expected you can empty the field above and save: a button will appear 
-                                to create thast page automatically.
+                                If something is not working as expected with this address you can empty the field above and save: a button will appear
+                                to create that page automatically.
                                 <?php } ?>
                             </div>
                         </td>
@@ -218,8 +220,8 @@ if ($controls->is_action('create')) {
                             <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
                             <br>
                             opt in check box label: <?php $controls->text('subscribe_wp_users_label', 30); ?>
-                            
-                            
+
+
                             <div class="hints">
                                 It works only on new registration. If you use the double opt in the activation email is sent to the user.
                                 To align old registration, press the alignment button.
@@ -232,7 +234,7 @@ if ($controls->is_action('create')) {
                         <td>
                             <?php $controls->select('optin_wp_users', array(0=>'As for regular subscriptions', 1=>'Force single opt-in')); ?>
                         </td>
-                    </tr>                    
+                    </tr>
             <tr valign="top">
                 <th>Notifications</th>
                 <td>
@@ -269,6 +271,18 @@ if ($controls->is_action('create')) {
                             </div>
                         </td>
                     </tr>
+                                <tr valign="top">
+                        <th>Error page</th>
+                        <td>
+                            <?php $controls->editor('error_text'); ?>
+                            <div class="hints">
+                                This message is shown whenever the subscription definitively fails because the email address used is blocked
+                                (bounced, unsubscribed, already subscribed). Hence the message should be as explicative as possible and offer
+                                a way to contact the blog owner.
+                            </div>
+                        </td>
+                    </tr>
+
                 </table>
             </div>
 

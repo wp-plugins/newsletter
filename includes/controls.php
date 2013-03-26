@@ -188,47 +188,47 @@ class NewsletterControls {
      * Generated a select control with all available templates. From version 3 there are
      * only on kind of templates, they are no more separated by type.
      */
-    function themes($name, $theme_dir, $theme_dir2 = null) {
-        $list = array();
-
-        $handle = @opendir($theme_dir);
-
-        while ($file = readdir($handle)) {
-            if ($file == '.' || $file == '..') continue;
-            // TODO: optimize the string concatenation
-            if (!is_dir($theme_dir . '/' . $file)) continue;
-            if (!is_file($theme_dir . '/' . $file . '/theme.php')) continue;
-            $list[$theme_dir . '/' . $file] = $file;
-        }
-        closedir($handle);
-
-        if ($theme_dir2 != null && is_dir($theme_dir2)) {
-            $handle = @opendir($theme_dir2);
-            $list = array();
-            while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') continue;
-                // TODO: optimize the string concatenation
-                if (!is_dir($theme_dir2 . '/' . $file)) continue;
-                if (!is_file($theme_dir2 . '/' . $file . '/theme.php')) continue;
-                $list[$theme_dir2 . '/' . $file] = $file;
+    function themes($name, $themes, $submit_on_click=true) {
+        foreach($themes as $key=>$data) {
+            echo '<label style="display: block; float: left; text-align: center; margin-right: 10px;">';
+            echo $key . '<br>';
+            echo '<img src="' . $data['screenshot'] . '" width="100" height="100" style="border: 1px solid #666; padding: 5px"><br>';
+            echo '<input style="position: relative; top: -40px" type="radio" onchange="this.form.act.value=\'theme\';this.form.submit()" name="options[' . $name . ']" value="' . $key . '"';
+            if ($this->data[$name] == $key) {
+                echo ' checked';
             }
-            closedir($handle);
+            echo '>';
+            echo '</label>';
         }
-
-        $this->select($name, $list);
+        echo '<div style="clear: both"></div>';
+        echo 'Want to create a custom theme? <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">Read here</a>';
     }
 
     function value($name) {
         echo htmlspecialchars($this->data[$name]);
     }
 
-    function value_date($name) {
+    function value_date($name, $show_remaining) {
         $time = $this->data[$name];
         echo gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
+        $delta = $time - time();
+        if ($show_remaining && $delta > 0) {
+            echo 'Remaining: ';
+            $delta = $time - time();
+            $days = floor($delta / (24*3600));
+            $delta = $delta - $days*24*3600;
+            $hours = floor($delta / 3600);
+            $delta = $delta - $hours*3600;
+            $minutes = floor($delta / 60);
+
+            if ($days > 0) echo $days . ' days ';
+            echo $hours . ' hours ';
+            echo $minutes . ' minutes ';
+        }
     }
 
-    function text($name, $size = 20) {
-        echo '<input name="options[' . $name . ']" type="text" size="' . $size . '" value="';
+    function text($name, $size = 20, $placeholder = '') {
+        echo '<input placeholder="' . $placeholder . '" name="options[' . $name . ']" type="text" size="' . $size . '" value="';
         echo htmlspecialchars($this->data[$name]);
         echo '"/>';
     }
@@ -250,6 +250,13 @@ class NewsletterControls {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';' . htmlspecialchars($function) . '"/>';
         } else {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';this.form.submit()"/>';
+        }
+    }
+    function button_primary($action, $label, $function = null) {
+        if ($function != null) {
+            echo '<input class="button-primary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';' . htmlspecialchars($function) . '"/>';
+        } else {
+            echo '<input class="button-primary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';this.form.submit()"/>';
         }
     }
 
@@ -287,8 +294,8 @@ class NewsletterControls {
 
     function email($prefix, $editor = null) {
         echo 'Subject:<br />';
-        $this->text($prefix . '_subject', 70);
-        echo '<br />Message:<br />';
+        $this->text($prefix . '_subject', 90);
+        //echo '<br />Message:<br />';
         if ($editor == 'wordpress') {
             $this->wp_editor($prefix . '_message');
         } else if ($editor == 'textarea') {
@@ -299,10 +306,11 @@ class NewsletterControls {
     }
 
     function checkbox($name, $label = '') {
+        if ($label != '') echo '<label>';
         echo '<input type="checkbox" id="' . $name . '" name="options[' . $name . ']" value="1"';
         if (!empty($this->data[$name])) echo ' checked="checked"';
         echo '/>';
-        if ($label != '') echo '&nbsp;<label for="' . $name . '">' . $label . '</label>';
+        if ($label != '') echo '&nbsp;' . $label . '</label>';
     }
 
     function color($name) {
@@ -325,6 +333,39 @@ class NewsletterControls {
         }
         echo '<div style="clear: both"></div>';
         echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
+        echo '</div>';
+    }
+
+    /** Creates a set of checkbox named $name_[category id] (so they are posted with distinct names).
+     */
+    function categories($name='category') {
+        $categories = get_categories();
+        echo '<div class="newsletter-checkboxes-group">';
+        foreach ($categories as &$c) {
+            echo '<div class="newsletter-checkboxes-item">';
+            $this->checkbox($name . '_' . $c->cat_ID, esc_html($c->cat_name));
+            echo '</div>';
+        }
+        echo '<div style="clear: both"></div>';
+        echo '</div>';
+    }
+
+    /**
+     * Creates a set of checkbox to activate the profile preferences. Every checkbox has a DIV around to
+     * be formatted.
+     */
+    function categories_group($name, $show_mode=false) {
+        $categories = get_categories();
+        if ($show_mode) {
+            $this->select($name . '_mode', array('include'=>'To be included', 'exclude'=>'To be excluded'));
+        }
+        echo '<div class="newsletter-categories-group">';
+        foreach ($categories as &$c) {
+            echo '<div class="newsletter-categories-item">';
+            $this->checkbox_group($name, $c->cat_ID, esc_html($c->cat_name));
+            echo '</div>';
+        }
+        echo '<div style="clear: both"></div>';
         echo '</div>';
     }
 

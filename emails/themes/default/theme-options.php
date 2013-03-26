@@ -7,4 +7,12 @@
         <th>Add latest posts</th>
         <td><?php $controls->checkbox('theme_posts'); ?></td>
     </tr>
+    <tr>
+        <th>Add post thumbnails</th>
+        <td><?php $controls->checkbox('theme_thumbnails'); ?></td>
+    </tr>
+    <tr>
+        <th>Add post excerpts</th>
+        <td><?php $controls->checkbox('theme_excerpts'); ?></td>
+    </tr>
 </table>

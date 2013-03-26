@@ -98,10 +98,16 @@ if ($controls->is_action('import')) {
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
     <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-    
+
         <h2>Import</h2>
-        
+
     <?php $controls->show(); ?>
+
+    <div class="preamble">
+    <p>
+        The import and export functions <strong>ARE NOT for backup</strong>. If you want to backup you should consider to backup the
+        wp_newsletter* tables.
+    </p>
 
     <p>
         Please consider to break up your input list if you get errors, blank pages or partially imported lists: it can be a time/resource limit
@@ -115,6 +121,7 @@ if ($controls->is_action('import')) {
         where [separator] must be selected from the available ones. Empty lines and lines starting with "#" will be skipped. There is
         no separator essaping mechanism, so be sure that field values do not contain the selected separator.
     </p>
+    </div>
 
     <?php if (!empty($results)) { ?>
 

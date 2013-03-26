@@ -2,7 +2,6 @@
 @include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 
 $controls = new NewsletterControls();
-echo $newsletter->store->get_field('wp_newsletter', 1, 'mes sage');
 
 if (!$controls->is_action()) {
     $controls->data = get_option('newsletter_main');
@@ -108,7 +107,8 @@ if (!$controls->is_action()) {
     <div class="preamble">
     <p>
         Do not be scared by all those configurations. Only <strong>basic settings</strong> are important and should be reviewed to
-        make Newsletter plugin to work correctly. If something seems to now work, run a test reading what you should expect from it.
+        make Newsletter plugin to work correctly. If something doesn't work, run a test from
+        <a href="http://test.satollo.net/2/wp-admin/admin.php?page=newsletter_main_diagnostic">diagnostic panel</a>.
     </p>
     </div>
 
@@ -127,29 +127,34 @@ if (!$controls->is_action()) {
             <div id="tabs-1">
 
                 <!-- Main settings -->
-
-                <p class="intro">
-                    Configurations on this sub panel can block emails sent by Newsletter Pro. It's not a plugin limit but odd restrictions imposed by
-                    hosting providers. It's advisable to careful read the detailed documentation you'll found under every options, specially on the "return path"
-                    field. Try different combination of setting below before send a support request and do it in this way: one single change - test - other single
-                    change - test, and so on. Thank you for your collaboration.
+                <div class="tab-preamble">
+                <p>
                 </p>
+                </div>
 
                 <table class="form-table">
 
                     <tr valign="top">
-                        <th>Sender name and address</th>
+                        <th>Sender email address</th>
                         <td>
-                            email address (required): <?php $controls->text_email('sender_email', 40); ?>
-                            name (optional): <?php $controls->text('sender_name', 40); ?>
+                            <?php $controls->text_email('sender_email', 40); ?> (valid email address)
 
                             <div class="hints">
-                                These are the name and email address a subscriber will see on emails he'll receive.
-                                Be aware that hosting providers can block email with a sender address not of the same domain of the blog.<br />
-                                For example, if your blog is www.myblog.com, using as sender email "info@myblog.com" or
-                                "newsletter@myblog.com" is safer than using "myaccount@gmail.com". The name is optional but is more professional
-                                to set it (even if some providers with bugged mail server do not send email with a sender name set as reported by
-                                a customer).
+                                Here the email address from which subscribers will se your email coming. Since this setting can
+                                affect the reliability of delivery,
+                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a> (important).
+                                Generally use an address within your domain name.
+                            </div>
+                        </td>
+                    </tr>
+                        <th>Sender name</th>
+                        <td>
+                            <?php $controls->text('sender_name', 40); ?> (optional)
+
+                            <div class="hints">
+                                Here the name which subscribers will se your email coming. Since this setting can
+                                affect the reliability of delivery (usually under Windows),
+                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a>.
                             </div>
                         </td>
                     </tr>
@@ -158,28 +163,20 @@ if (!$controls->is_action()) {
                         <td>
                             <?php $controls->text('scheduler_max', 5); ?>
                             <div class="hints">
-                                The internal engine of Newsletter Pro sends email with the specified rate to stay under
-                                provider limits. The default value is 100 a very low value. The right value for you
-                                depends on your provider or server capacity.<br />
-                                Some examples. Hostgator: 500. Dreamhost: 100, asking can be raised to 200. Go Daddy: 1000 per day using their SMTP,
-                                unknown per hour rate. Gmail: 500 per day using their SMTP, unknown per hour rate.<br />
-                                My sites are on Hostgator or Linode VPS.<br />
-                                If you have a service with no limits on the number of emails, still PHP have memory and time limits. Newsletter Pro
-                                does it's best to detect those limits and to respect them so it can send out less emails per hour than excepted.
+                                Newsletter delivery engine respects this limit and it should be set to a value less than the maximum allowed by your provider
+                                (Hostgator: 500 per hour, Dreamhost: 100 per hour, Go Daddy: 1000 per day using their SMTP, Gmail: 500 per day).
+                                Read <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">more on delivery engine</a> (important).
                             </div>
                         </td>
                     </tr>
                     <tr valign="top">
                         <th>Return path</th>
                         <td>
-                            <?php $controls->text_email('return_path', 40); ?> (valid email address)
+                            <?php $controls->text_email('return_path', 40); ?> (valid email address, default empty)
                             <div class="hints">
-                                This is the email address where delivery error messages are sent. Error message are sent back from mail systems when
-                                an email cannot be delivered to the receiver (full mailbox, unrecognized user and invalid address are the most common
-                                errors).<br />
-                                <strong>Some providers do not accept this field and block emails is present or if the email address has a
-                                    different domain of the blog</strong> (see above the sender field notes). If you experience problem sending emails
-                                (just do some tests), try to leave it blank.
+                                Email address where delivery error messages are sent by mailing systems (eg. mailbox full, invalid address, ...).<br>
+                                Some providers do not accept this field: they can block emails or force it to a different value affecting the delivery reliability.
+                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#return-path" target="_blank">Read my notes here</a> (important).
                             </div>
                         </td>
                     </tr>
@@ -189,8 +186,9 @@ if (!$controls->is_action()) {
                             <?php $controls->text_email('reply_to', 40); ?> (valid email address)
                             <div class="hints">
                                 This is the email address where subscribers will reply (eg. if they want to reply to a newsletter). Leave it blank if
-                                you don't want to specify a different address from the sender email above. As for return path, come provider do not like this
-                                setting active.
+                                you don't want to specify a different address from the sender email above. Since this setting can
+                                affect the reliability of delivery,
+                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#reply-to" target="_blank">read my notes here</a> (important).
                             </div>
                         </td>
                     </tr>
@@ -238,7 +236,8 @@ if (!$controls->is_action()) {
                         <td>
                             <?php $controls->select('content_transfer_encoding', array('' => 'Default', '8bit' => '8 bit', 'base64' => 'Base 64')); ?>
                             <div class="hints">
-                                Used only by some modules. Choose base64 to have chunked email body when server reports too long email line.
+                                Sometime setting it to Base 64 solves problem with old mail servers (for example truncated or unformatted emails.
+                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#enconding" target="_blank">Read more here</a>.
                             </div>
                         </td>
                     </tr>
@@ -251,8 +250,8 @@ if (!$controls->is_action()) {
             <div id="tabs-5">
                 <div class="tab-preamble">
                     <p>
-                        <strong>Be aware!</strong> Those options can be overridden by modules which integrates with external
-                        SMTPs (like MailJet or SendGrid)
+                        <strong>Those options can be overridden by modules which integrates with external
+                        SMTPs (like MailJet, SendGrid, ...) if installed and activated.</strong>
                     </p>
                 <p>
                     To use an external SMTP (mail sending service), fill in the SMTP data and activate it. SMTP will be used for any
@@ -264,7 +263,7 @@ if (!$controls->is_action()) {
                     SMTP service provider.
                 </p>
                 <p>
-                    Consider <a href="http://sendgrid.tellapal.com/a/clk/3ZVbH7" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
+                    Consider <a href="http://www.satollo.net/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
                 </p>
                 </div>
 
@@ -303,7 +302,7 @@ if (!$controls->is_action()) {
                                 SMTP test will be addressed to this email
                             </div>
                         </td>
-                    </tr>                    
+                    </tr>
                 </table>
                 <?php $controls->button('smtp_test', 'Test'); ?>
 
@@ -313,17 +312,10 @@ if (!$controls->is_action()) {
             <div id="tabs-3">
                 <!-- Content locking -->
                 <div class="tab-preamble">
-                    <p><a href="http://www.satollo.net/plugins/newsletter/newsletter-locked-content" target="_blank">Read more about locked content</a>.</p>
-                <p>
-                    Content locking is a special feature that permits to "lock out" pieces of post content hiding them and unveiling
-                    them only to newsletter subscribers. I use it to hide special content on some post inviting the reader to subscribe the newsletter
-                    to read them.<br />
-                    Parts of content on post can be hidden surrounding it with [newsletter_lock] and [/newsletter_lock] short codes.<br />
-                    A subscriber can see the hidden content after sign up or following a link on newsletters and welcome email generated by
-                    {unlock_url} tag. That link bring the user to the URL below that should be a single premium post/page where there is the hidden
-                    content or a list of premium posts with hidden content. The latter option can be implemented tagging all premium posts with a
-                    WordPress tag or adding them to a specific WordPress category.
-                </p>
+                    <p>
+                        Please, <a href="http://www.satollo.net/plugins/newsletter/newsletter-locked-content" target="_blank">read more here how to use and configure</a>,
+                        since it can incredibly increase your subscription rate.
+                    </p>
                 </div>
                 <table class="form-table">
                     <tr valign="top">
@@ -335,7 +327,7 @@ if (!$controls->is_action()) {
                             </div>
                         </td>
                     </tr>
-                    
+
                     <tr valign="top">
                         <th>Unlock destination URL</th>
                         <td>

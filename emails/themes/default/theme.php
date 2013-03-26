@@ -13,7 +13,7 @@ global $newsletter, $post;
 $color = $theme_options['theme_color'];
 if (empty($color)) $color = '#0088cc';
 
-if (isset($theme_options['theme_posts'])) $posts = get_posts(array('shoposts'=>10));
+if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>10));
 
 ?><!DOCTYPE html>
 <html>
@@ -45,8 +45,13 @@ if (isset($theme_options['theme_posts'])) $posts = get_posts(array('shoposts'=>1
                             <table cellpadding="5">
                                 <?php foreach ($posts as $post) { setup_postdata($post); ?>
                                     <tr>
+                                        <?php if (isset($theme_options['theme_thumbnails'])) { ?>
                                         <td><a href="<?php echo get_permalink(); ?>"><img width="75" src="<?php echo newsletter_get_post_image($post->ID); ?>" alt="image"></a></td>
-                                        <td valign="top"><a href="<?php echo get_permalink(); ?>" style="font-size: 20px; line-height: 26px"><?php the_title(); ?></a></td>
+                                        <?php } ?>
+                                        <td valign="top">
+                                            <a href="<?php echo get_permalink(); ?>" style="font-size: 20px; line-height: 26px"><?php the_title(); ?></a>
+                                            <?php if (isset($theme_options['theme_excerpts'])) the_excerpt(); ?>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                             </table>
