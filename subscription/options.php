@@ -271,14 +271,23 @@ if ($controls->is_action('create')) {
                             </div>
                         </td>
                     </tr>
-                                <tr valign="top">
-                        <th>Error page</th>
+                    <tr valign="top">
+                        <th>Error page content</th>
                         <td>
                             <?php $controls->editor('error_text'); ?>
                             <div class="hints">
                                 This message is shown whenever the subscription definitively fails because the email address used is blocked
                                 (bounced, unsubscribed, already subscribed). Hence the message should be as explicative as possible and offer
                                 a way to contact the blog owner.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Re-subscription</th>
+                        <td>
+                            <?php $controls->yesno('resubscription'); ?>
+                            <div class="hints">
+                                Allow unsubscribed user to subscribe again (otherwise they'll get the error message above)
                             </div>
                         </td>
                     </tr>
@@ -396,10 +405,8 @@ if ($controls->is_action('create')) {
                         <th>Profile page</th>
                         <td>
                             <?php $controls->editor('profile_text'); ?>
-                            <div class="hints">
-                                This is the page where subscribers edit their data. Must contain at least the {profile_form} tag. Empty the field
-                                and save to reset it to its default.
-                            </div>
+                            <?php $controls->hint('This is the ppage where subscribers can edit their data and it must contain the {profile_form} tag.',
+                                    'http://www.satollo.net/plugins/newsletter/subscription-module#profile'); ?>
                         </td>
                     </tr>
                     <tr>

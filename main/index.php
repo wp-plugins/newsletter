@@ -107,31 +107,6 @@ $controls = new NewsletterControls();
             <!-- TODO: Should be a cicle of installed modules -->
             <tbody>
                 <tr>
-                    <td>Main<br><small>The main configuration of Newsletter and some minor features</small></td>
-                    <td><?php echo Newsletter::VERSION; ?></td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>Subscription<br><small>All about the subscription and unsubscription processes</small></td>
-                    <td><?php echo NewsletterSubscription::instance()->version; ?></td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>Subscribers<br><small>The subscribers management tool</small></td>
-                    <td><?php echo NewsletterUsers::instance()->version; ?></td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>Newsletters<br><small>The newsletters composer with themes</small></td>
-                    <td><?php echo NewsletterEmails::instance()->version; ?></td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>Statistics<br><small>Statistics collector</small></td>
-                    <td><?php echo NewsletterStatistics::instance()->version; ?></td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
                     <td>Reports<br><small>Extends the statistics system with a better report</small></td>
                     <?php if (class_exists('NewsletterReports')) { ?>
                         <td><?php echo NewsletterReports::instance()->version; ?></td>
@@ -141,8 +116,8 @@ $controls = new NewsletterControls();
                     <td><?php echo NewsletterModule::get_available_version(34); ?></td>
                 </tr>
                 <tr>
-                    <td>Feed by Mail (test version)<br><small>Automatically generate and send email with blog contents</small></td>
-                    <?php if (class_exists('NewsletterFeed')) { ?>
+                    <td>Feed by Mail<br><small>Automatically generate and send email with blog contents</small></td>
+                    <?php if (NewsletterModule::extension_exists('feed') && class_exists('NewsletterFeed')) { ?>
                         <td><?php echo NewsletterFeed::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>
@@ -151,7 +126,7 @@ $controls = new NewsletterControls();
                 </tr>
                 <tr>
                     <td>Follow Up (test version))<br><small>Sends email serie after subscriber sign up</small></td>
-                    <?php if (class_exists('NewsletterFollowup')) { ?>
+                    <?php if (NewsletterModule::extension_exists('followup') &&  class_exists('NewsletterFollowup')) { ?>
                         <td><?php echo NewsletterFollowup::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>

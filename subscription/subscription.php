@@ -129,26 +129,25 @@ class NewsletterSubscription extends NewsletterModule {
         if ($user != null) {
             if ($user->status == 'B') {
                 $this->logger->error('Subscription attempt of a bounced address');
-                //echo 'This address is bounced, cannot be subscribed. Contact the blog owner.';
-                //die();
+                $user->status = 'E';
+            return $user;
             }
-            if ($user->status == 'U') {
+            if ($user->status == 'U' && $this->options['resubscription'] != 1) {
                 $this->logger->error('Subscription attempt of an unsubscribed address');
-                //echo 'This address ishas been unsubscribed in the past, cannot be subscribed again. Contact the blog owner.';
-                //die();
+                $user->status = 'E';
+            return $user;
             }
             if ($user->status == 'C') {
                 $this->logger->error('Subscription attempt of a confirmed address');
-                //echo 'This address has already been confirmed, cannot be subscribed again. Look at the welcome email on your mailbox or contact the blog owner for further support.';
-                //die();
+                $user->status = 'E';
+            return $user;
             }
             // Fake status to communicate an error condition
-            $user->status = 'E';
-            return $user;
+
         }
 
         // This address is new or was it previously collected but never confirmed?
-        if ($user == null || $user->status == 'S') {
+        if ($user == null || $user->status == 'S' || $user->status == 'S') {
 
             if ($user != null) {
                 $this->logger->info("Email address subscribed but not confirmed");
@@ -202,14 +201,6 @@ class NewsletterSubscription extends NewsletterModule {
 
             if (isset($flow)) {
                 $user['flow'] = $flow;
-            }
-
-            // TODO: use a filter
-            if (class_exists('NewsletterFollowup')) {
-                if (NewsletterFollowup::instance()->options['add_new'] == 1) {
-                    $user['followup'] = 1;
-                    $user['followup_time'] = time() + NewsletterFollowup::instance()->options['interval'] * 3600;
-                }
             }
 
             $user = apply_filters('newsletter_user_subscribe', $user);
@@ -275,6 +266,10 @@ class NewsletterSubscription extends NewsletterModule {
         global $newsletter;
         $user = $this->get_user_from_request();
         if ($user == null) die('No subscriber found.');
+        if ($user->status != 'S') {
+            $user->status = 'E';
+            return $user;
+        }
         setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
         NewsletterUsers::instance()->set_user_status($user->id, 'C');
 
@@ -933,6 +928,7 @@ $newsletter_action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
 
 if ($newsletter_action == 's') {
     $user = NewsletterSubscription::instance()->subscribe();
+    if ($user->status == 'E') NewsletterSubscription::instance()->show_message('error', $user->id);
     if ($user->status == 'C') NewsletterSubscription::instance()->show_message('confirmation', $user->id);
     if ($user->status == 'S') NewsletterSubscription::instance()->show_message('confirmed', $user->id);
 }
@@ -946,7 +942,11 @@ else if ($newsletter_action == 'c') {
 }
 else if ($newsletter_action == 'uc') {
     $user = NewsletterSubscription::instance()->unsubscribe();
-    NewsletterSubscription::instance()->show_message('unsubscribed', $user);
+    if ($user->status == 'E') {
+        NewsletterSubscription::instance()->show_message('error', $user->id);
+    } else {
+        NewsletterSubscription::instance()->show_message('unsubscribed', $user);
+    }
 } else if ($newsletter_action == 'p' || $newsletter_action == 'pe') {
     $user = NewsletterSubscription::instance()->get_user_from_request();
     if ($user == null) die('No subscriber found.');

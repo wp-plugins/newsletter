@@ -3,9 +3,11 @@
 class NewsletterThemes {
 
     var $module;
+    var $is_extension = false;
 
-    function __construct($module) {
+    function __construct($module, $is_extension = false) {
         $this->module = $module;
+        $this->is_extension = $is_extension;
     }
 
     /** Loads all themes of a module (actually only "emails" module makes sense). Themes are located inside the subfolder
@@ -18,57 +20,40 @@ class NewsletterThemes {
     function get_all() {
         $list = array();
 
-        $dir = NEWSLETTER_DIR . '/' . $this->module . '/themes';
-        $handle = @opendir($dir);
-
-        if ($handle !== false) {
-            while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') continue;
-                if (!is_file($dir . '/' . $file . '/theme.php')) continue;
-
-                $list[$file] = $file;
-            }
-            closedir($handle);
-        }
-
         $dir = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/themes';
         $handle = @opendir($dir);
 
         if ($handle !== false) {
             while ($file = readdir($handle)) {
                 if ($file == '.' || $file == '..') continue;
-                if (isset($list[$file])) continue;
                 if (!is_file($dir . '/' . $file . '/theme.php')) continue;
                 $list[$file] = $file;
             }
             closedir($handle);
         }
+
+        if (!$this->is_extension) {
+            $dir = NEWSLETTER_DIR . '/' . $this->module . '/themes';
+            $handle = @opendir($dir);
+
+            if ($handle !== false) {
+                while ($file = readdir($handle)) {
+                    if ($file == '.' || $file == '..') continue;
+                    if (isset($list[$file])) continue;
+                    if (!is_file($dir . '/' . $file . '/theme.php')) continue;
+
+                    $list[$file] = $file;
+                }
+                closedir($handle);
+            }
+        }
+
         return $list;
     }
 
     function get_all_with_data() {
         $list = array();
 
-        $dir = NEWSLETTER_DIR . '/' . $this->module . '/themes';
-        $handle = @opendir($dir);
-
-        if ($handle !== false) {
-            while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') continue;
-                if (!is_file($dir . '/' . $file . '/theme.php')) continue;
-                $data = array();
-                $data['name'] = $file;
-                $screenshot = $dir . '/' . $file . '/screenshot.png';
-                if (is_file($screenshot)) {
-                    $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
-                } else {
-                    $data['screenshot'] = NEWSLETTER_URL . '/images/theme-screenshot.png';
-                }
-                $list[$file] = $data;
-            }
-            closedir($handle);
-        }
-
         $dir = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/themes';
         $handle = @opendir($dir);
 
@@ -89,6 +74,30 @@ class NewsletterThemes {
             }
             closedir($handle);
         }
+
+        if (!$this->is_extension) {
+            $dir = NEWSLETTER_DIR . '/' . $this->module . '/themes';
+            $handle = @opendir($dir);
+
+            if ($handle !== false) {
+                while ($file = readdir($handle)) {
+                    if ($file == '.' || $file == '..') continue;
+                    if (!is_file($dir . '/' . $file . '/theme.php')) continue;
+                    $data = array();
+                    $data['name'] = $file;
+                    $screenshot = $dir . '/' . $file . '/screenshot.png';
+                    if (is_file($screenshot)) {
+                        $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
+                    } else {
+                        $data['screenshot'] = NEWSLETTER_URL . '/images/theme-screenshot.png';
+                    }
+                    $list[$file] = $data;
+                }
+                closedir($handle);
+            }
+        }
+
+
         return $list;
     }
 
@@ -122,6 +131,10 @@ class NewsletterThemes {
     }
 
     function get_theme_url($theme) {
+        if ($this->is_extension) {
+            return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/themes/' . $theme;
+        }
+
         $path = NEWSLETTER_DIR . '/' . $this->module . '/themes/' . $theme;
         if (is_dir($path)) {
             return NEWSLETTER_URL . '/' . $this->module . '/themes/' . $theme;
@@ -131,12 +144,18 @@ class NewsletterThemes {
     }
 
     function get_default_options() {
-        $path1 = NEWSLETTER_DIR . '/' . $this->module . '/themes/' . $theme . '/languages';
-        $path2 = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/themes/' . $theme . '/languages';
-        @include $path1 . '/en_US.php';
-        @include $path2 . '/en_US.php';
-        @include $path1 . '/' . WPLANG . '.php';
-        @include $path2 . '/' . WPLANG . '.php';
+        if ($this->is_extension) {
+            $path2 = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/themes/' . $theme . '/languages';
+            @include $path2 . '/en_US.php';
+            @include $path2 . '/' . WPLANG . '.php';
+        } else {
+            $path1 = NEWSLETTER_DIR . '/' . $this->module . '/themes/' . $theme . '/languages';
+            $path2 = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/themes/' . $theme . '/languages';
+            @include $path1 . '/en_US.php';
+            @include $path2 . '/en_US.php';
+            @include $path1 . '/' . WPLANG . '.php';
+            @include $path2 . '/' . WPLANG . '.php';
+        }
 
         if (!is_array($options)) return array();
         return $options;

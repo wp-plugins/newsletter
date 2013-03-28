@@ -9,4 +9,8 @@ unset($_GET['na']);
 include '../../../../wp-load.php';
 
 $user = NewsletterSubscription::instance()->confirm();
-NewsletterSubscription::instance()->show_message('confirmed', $user);
+if ($user->status == 'E') {
+    NewsletterSubscription::instance()->show_message('error', $user->id);
+} else {
+    NewsletterSubscription::instance()->show_message('confirmed', $user);
+}

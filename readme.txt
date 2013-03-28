@@ -56,6 +56,22 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.2.0 =
+
+* Added hint() method to NewsletterControls
+* Added the Feed by Mail demo module
+* Fixed the Newsletter::replace_date() to replace even the {date} tag without a format
+* Added NewsletterModule::format_time_delta()
+* Added NewsletterModule::format_scheduler_time
+* Improved the diagnostic panel
+* Fixed an error on subscription with old forms
+* Fixed the unsubscription with old formats
+* Fixed the confirmation for multiple calls
+* Fixed user saving on new installation (column missing for followup module)
+* Added compatibility code with domain remaping plugin
+* Added a setting to let unsubscribed users to subscribe again
+* Added the re-subscription option
+
 = 3.1.9 =
 
 * Added the NEWSLETTER_MAX_EXECUTION_TIME

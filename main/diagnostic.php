@@ -225,7 +225,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                     <thead>
                         <tr>
                             <th>Function</th>
-                            <th>Runs in (seconds)</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
 
@@ -246,18 +246,10 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 Delivery Engine
                             </td>
                             <td>
-                                <?php
-                                $x = wp_next_scheduled('newsletter');
-                                if ($x === false) {
-                                    echo 'Error! The delivery engine is off (it should never be off),';
-                                    $controls->button('engine_on', 'Reactivate now');
-                                }
-                                echo 'next run on ';
-                                if ($x > 0) echo $x - time();
-                                echo ' seconds';
-                                if ($x < -1000) echo ' (not good, see <a href="http://www.satollo.net/?p=2015" target="_tab">this page)</a>)';
-                                ?>
+                                <?php echo NewsletterModule::format_scheduler_time('newsletter'); ?>
                                 <?php $controls->button('trigger', 'Trigger now'); ?>
+                                <br>
+                                If inactive or always in "running now" status your blog has a problem: <a href="http://www.satollo.net/?p=2015" target="_blank">read more here</a>.
                             </td>
                         </tr>
                         <tr>
@@ -265,20 +257,11 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 Feed by Mail
                             </td>
                             <td>
-                                <?php
-                                $x = wp_next_scheduled('newsletter_feed');
-                                if ($x === false) {
-                                    echo 'Not active';
-                                    //$controls->button('engine_on', 'Reactivate now');
-                                } else {
-                                    if ($x > 0) {
-                                        echo 'Next run on ' . ($x - time()) . ' seconds';
-                                    } else {
-                                        echo 'Running now';
-                                    }
-                                }
-                                ?>
+                                <?php echo NewsletterModule::format_scheduler_time('newsletter_feed'); ?>
                                 <?php //$controls->button('trigger_followup', 'Trigger now'); ?>
+                                <br>
+                                This time is not necessarily when the email will be sent but when Feed by Mail does its check to see if
+                                this is a planned day and if there is something to send.
                             </td>
                         </tr>
                         <tr>
@@ -286,20 +269,18 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 Follow Up
                             </td>
                             <td>
-                                <?php
-                                $x = wp_next_scheduled('newsletter_followup');
-                                if ($x === false) {
-                                    echo 'Not active';
-                                    //$controls->button('engine_on', 'Reactivate now');
-                                } else {
-                                    if ($x > 0) {
-                                        echo 'Next run on ' . ($x - time()) . ' seconds';
-                                    } else {
-                                        echo 'Running now';
-                                    }
-                                }
-                                ?>
-                                <?php $controls->button('trigger_followup', 'Trigger now'); ?>
+                                <?php echo NewsletterModule::format_scheduler_time('newsletter_followup'); ?>
+                                <br>
+                                Indicates when the Follow Up system runs again (usually every hour) to check for new follow up to send out.
+                                <?php //$controls->button('trigger_followup', 'Trigger now'); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                SendGrid bounce checking
+                            </td>
+                            <td>
+                                <?php echo NewsletterModule::format_scheduler_time('newsletter_sendgrid_bounce'); ?>
                             </td>
                         </tr>
                         <tr>
@@ -307,9 +288,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 MailJet bounce checking
                             </td>
                             <td>
-                                <?php echo NewsletterModule::date(wp_next_scheduled('newsletter_mailjet_bounce'), false, true); ?>
-
-                                <?php //$controls->button('trigger_followup', 'Trigger now');  ?>
+                                <?php echo NewsletterModule::format_scheduler_time('newsletter_mailjet_bounce'); ?>
                             </td>
                         </tr>
                     </tbody>

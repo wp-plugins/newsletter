@@ -192,8 +192,8 @@ class NewsletterModule {
         return true;
     }
 
-    function delete_transient($sub = '') {
-        delete_transient($this->get_prefix($sub));
+    function delete_transient($name = '') {
+        delete_transient($this->get_prefix() . '_' . $name);
     }
 
     /** Returns a random token of the specified size (or 10 characters if size is not specified).
@@ -271,6 +271,30 @@ class NewsletterModule {
         return gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
     }
 
+    static function format_time_delta($delta) {
+        $days = floor($delta / (3600*24));
+        $hours = floor(($delta % (3600*24)) / 3600);
+        $minutes = floor(($delta % 3600) / 60);
+        $seconds = floor(($delta % 60));
+        $buffer = $days . ' days, ' . $hours . ' hours, ' . $minutes . ' minutes, ' . $seconds . ' seconds';
+        return $buffer;
+    }
+
+    static function format_scheduler_time($name) {
+        $time = wp_next_scheduled($name);
+        if ($time === false) {
+            return 'Not active';
+        }
+        $delta = $time-time();
+        // If less 10 minutes late it can be a cron problem but now it is working
+        if ($delta < 0 && $delta > -600) {
+            return 'Probably running now';
+        } else if ($delta <= -600) {
+            return 'It seems the cron system is not working. Reload the page to see if this message change.';
+        }
+        return 'Runs in ' . self::format_time_delta($delta);
+    }
+
     static function date($time = null, $now = false, $left = false) {
         if (is_null($time)) {
             $time = time();
@@ -338,6 +362,10 @@ class NewsletterModule {
                 return $image[0];
             }
         }
+    }
+
+    static function extension_exists($name) {
+        return is_file(WP_CONTENT_DIR . "/extensions/newsletter/$name/$name.php");
     }
 
     function get_styles() {

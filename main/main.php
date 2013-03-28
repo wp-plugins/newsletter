@@ -108,7 +108,7 @@ if (!$controls->is_action()) {
     <p>
         Do not be scared by all those configurations. Only <strong>basic settings</strong> are important and should be reviewed to
         make Newsletter plugin to work correctly. If something doesn't work, run a test from
-        <a href="http://test.satollo.net/2/wp-admin/admin.php?page=newsletter_main_diagnostic">diagnostic panel</a>.
+        <a href="admin.php?page=newsletter_main_diagnostic">diagnostic panel</a>.
     </p>
     </div>
 

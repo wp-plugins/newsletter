@@ -73,6 +73,15 @@ class NewsletterControls {
         }
     }
 
+    function hint($text, $url = '') {
+        echo '<div class="hints">';
+        echo $text;
+        if (!empty($url)) {
+            echo " <a href='$url' target='_blank'>Read more</a>.";
+        }
+        echo '</div>';
+    }
+
     function yesno($name) {
         $value = isset($this->data[$name]) ? (int) $this->data[$name] : 0;
 

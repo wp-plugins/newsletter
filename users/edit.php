@@ -105,12 +105,6 @@ $options_profile = get_option('newsletter_profile');
               <?php do_action('newsletter_user_edit_extra', $controls); ?>
 
           <tr valign="top">
-            <th>Follow up</th>
-            <td>
-              <?php $controls->yesno('followup'); ?> step: <?php $controls->text('followup_step'); ?> (next step on: <?php $controls->value_date('followup_time', true); ?>)
-            </td>
-          </tr>
-          <tr valign="top">
             <th>Feed by mail</th>
             <td>
               <?php $controls->yesno('feed'); ?>
