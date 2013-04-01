@@ -21,6 +21,8 @@ class NewsletterSubscription extends NewsletterModule {
 
     function __construct() {
         parent::__construct('subscription', self::VERSION);
+
+        //add_action('wp_login', array($this, 'hook_wp_login'));
     }
 
     function upgrade() {
@@ -108,6 +110,19 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     /**
+     * See wp-includes/user.php function wp_signon().
+     */
+    function hook_wp_login($user_login) {
+        $this->logger->info(__METHOD__ . '> Start');
+        $user = get_user_by('user_login', $user_login);
+        if (!empty($user)) {
+            // We have a user able to login, so his subscription can be confirmed if not confirmed
+            //Newsletter::instance()->get_user($id_or_email, $format);
+        }
+        $this->logger->info(__METHOD__ . '> End');
+    }
+
+    /**
      * Return the subscribed user.
      *
      * @global Newsletter $newsletter
@@ -130,24 +145,23 @@ class NewsletterSubscription extends NewsletterModule {
             if ($user->status == 'B') {
                 $this->logger->error('Subscription attempt of a bounced address');
                 $user->status = 'E';
-            return $user;
+                return $user;
             }
             if ($user->status == 'U' && $this->options['resubscription'] != 1) {
                 $this->logger->error('Subscription attempt of an unsubscribed address');
                 $user->status = 'E';
-            return $user;
+                return $user;
             }
             if ($user->status == 'C') {
                 $this->logger->error('Subscription attempt of a confirmed address');
                 $user->status = 'E';
-            return $user;
+                return $user;
             }
             // Fake status to communicate an error condition
-
         }
 
         // This address is new or was it previously collected but never confirmed?
-        if ($user == null || $user->status == 'S' || $user->status == 'S') {
+        if ($user == null || $user->status == 'S' || $user->status == 'U') {
 
             if ($user != null) {
                 $this->logger->info("Email address subscribed but not confirmed");
@@ -210,7 +224,7 @@ class NewsletterSubscription extends NewsletterModule {
                 if ($options_feed['add_new'] == 1) $user['feed'] = 1;
             }
 
-            $user = NewsletterUsers::instance()->save_user($user);
+            $user = $newsletter->save_user($user);
 
             // Notification to admin (only for new confirmed subscriptions)
             if ($user->status == 'C') {
@@ -271,7 +285,7 @@ class NewsletterSubscription extends NewsletterModule {
             return $user;
         }
         setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
-        NewsletterUsers::instance()->set_user_status($user->id, 'C');
+        $newsletter->set_user_status($user->id, 'C');
 
         $message = $this->options['confirmed_message'];
 
@@ -305,7 +319,7 @@ class NewsletterSubscription extends NewsletterModule {
             return $user;
         }
 
-        NewsletterUsers::instance()->set_user_status($user->id, 'U');
+        $newsletter->set_user_status($user->id, 'U');
 
         $this->mail($user->email, $newsletter->replace($this->options['unsubscribed_subject'], $user), $newsletter->replace($this->options['unsubscribed_message'], $user));
         $this->notify_admin($user, 'Newsletter unsubscription');

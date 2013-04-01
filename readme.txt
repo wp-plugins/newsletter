@@ -56,6 +56,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.2.1 =
+
+* Fixed fatal error with old form formats
+
 = 3.2.0 =
 
 * Added hint() method to NewsletterControls

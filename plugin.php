@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.2.0
+  Version: 3.2.1
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.2.0');
+define('NEWSLETTER_VERSION', '3.2.1');
 
 global $wpdb, $newsletter;
 
@@ -947,6 +947,8 @@ class Newsletter extends NewsletterModule {
     function save_user($user, $return_format = OBJECT) {
         if (is_object($user)) $user = (array) $user;
         if (empty($user['id'])) {
+            $existing = $this->get_user($user['email']);
+            if ($existing != null) return false;
             if (empty($user['token'])) $user['token'] = NewsletterModule::get_token();
             //if (empty($user['created'])) $user['created'] = time();
             // Database default
@@ -986,6 +988,18 @@ class Newsletter extends NewsletterModule {
         } else {
             $r = $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where email=%s limit 1", $id_or_email), $format);
         }
+
+        if ($wpdb->last_error) {
+            $this->logger->error($wpdb->last_error);
+            return false;
+        }
+        return $r;
+    }
+
+    function get_user_by_wp_user_id($wp_user_id, $format = OBJECT) {
+        global $wpdb;
+
+        $r = $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where email=%d limit 1", $wp_user_id), $format);
 
         if ($wpdb->last_error) {
             $this->logger->error($wpdb->last_error);
