@@ -45,7 +45,7 @@ class NewsletterSubscription extends NewsletterModule {
 
         if (empty($options['error_text'])) {
             $options['error_text'] = $default_options['error_text'];
-            update_option('newsletter', $options);
+            update_option('newsletter', $options); 
         }
 
 
