@@ -22,11 +22,11 @@ class NewsletterSubscription extends NewsletterModule {
     function __construct() {
         parent::__construct('subscription', self::VERSION);
 
-        //add_action('wp_login', array($this, 'hook_wp_login'));
+        add_action('wp_login', array($this, 'hook_wp_login'));
     }
 
     function upgrade() {
-        global $wpdb, $charset_collate;
+        global $wpdb, $charset_collate, $newsletter;
 
         parent::upgrade();
 
@@ -38,44 +38,38 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         $default_options = $this->get_default_options();
-        $options = $this->get_options();
-        if (empty($options)) {
-            update_option('newsletter', $default_options);
+
+        if (empty($this->options['error_text'])) {
+            $this->options['error_text'] = $default_options['error_text'];
+            $this->save_options($this->options);
         }
 
-        if (empty($options['error_text'])) {
-            $options['error_text'] = $default_options['error_text'];
-            update_option('newsletter', $options); 
-        }
-
-
-        $options = get_option('newsletter', array());
-
-
+        // Old migration code
         if (isset($options_profile['profile_text'])) {
-            $options['profile_text'] = $options_profile['profile_text'];
-            update_option('newsletter', $options);
+            $this->options['profile_text'] = $options_profile['profile_text'];
+            if (empty($this->options['profile_text'])) {
+                $this->options['profile_text'] = '{profile_form}<p><a href="{unsubscription_url}">I want to unsubscribe.</a>';
+            }
+
+            $this->save_options($this->options);
             unset($options_profile['profile_text']);
             update_option('newsletter_profile', $options_profile);
         }
 
         if (isset($options_profile['profile_saved'])) {
-            $options['profile_saved'] = $options_profile['profile_saved'];
-            update_option('newsletter', $options);
+            $this->options['profile_saved'] = $options_profile['profile_saved'];
+            $this->save_options($this->options);
             unset($options_profile['profile_saved']);
             update_option('newsletter_profile', $options_profile);
         }
 
-        // TODO: Remove since it's only useful for first time migration
-        if (empty($options['profile_text'])) {
-            $options['profile_text'] = '{profile_form}<p><a href="{unsubscription_url}">I want unsubscribe?</a>';
+        // Very old...
+        if (!isset($this->options['url']) && !empty($newsletter->options['url'])) {
+            $this->options['url'] = $newsletter->options['url'];
+            $this->save_options($this->options);
         }
 
-        if (!isset($options['url']) && !empty(Newsletter::instance()->options['url'])) {
-            $options['url'] = Newsletter::instance()->options['url'];
-            update_option('newsletter', $options);
-        }
-
+        // Because users do not understand how to create an "extensions" folder...
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter/subscription');
         return true;
     }
@@ -86,6 +80,17 @@ class NewsletterSubscription extends NewsletterModule {
         $this->add_admin_page('forms', 'Forms');
     }
 
+    /**
+     * This method has been redefined for compatibility with the old options naming. It would
+     * be better to change them instead. The subscription options should be named
+     * "newsletter_subscription" while the form field options, actually named
+     * "newsletter_profile", should be renamed "newsletter_subscription_profile" (since
+     * they are retrived with get_options('profile')) or "newsletter_subscription_fields" or
+     * "newsletter_subscription_form".
+     *
+     * @param array $options
+     * @param string $sub
+     */
     function save_options($options, $sub = '') {
         if ($sub == '') {
             // For compatibility the options are wrongly named
@@ -113,11 +118,17 @@ class NewsletterSubscription extends NewsletterModule {
      * See wp-includes/user.php function wp_signon().
      */
     function hook_wp_login($user_login) {
-        $this->logger->info(__METHOD__ . '> Start');
-        $user = get_user_by('user_login', $user_login);
-        if (!empty($user)) {
+        global $newsletter;
+
+        $this->logger->info(__METHOD__ . '> Start with ' . $user_login);
+        $wp_user = get_user_by('login', $user_login);
+        if (!empty($wp_user)) {
+            $this->logger->info($wp_user);
             // We have a user able to login, so his subscription can be confirmed if not confirmed
-            //Newsletter::instance()->get_user($id_or_email, $format);
+            $user = $newsletter->get_user($wp_user->user_email);
+            if (!empty($user)) {
+                $this->confirm($user->id, $this->options['wp_welcome'] == 1);
+            }
         }
         $this->logger->info(__METHOD__ . '> End');
     }
@@ -125,16 +136,18 @@ class NewsletterSubscription extends NewsletterModule {
     /**
      * Return the subscribed user.
      *
+     * @param bool $registration If invoked from the registration process
      * @global Newsletter $newsletter
      */
-    function subscribe($force_single_opt_in = false) {
+    function subscribe($status = null, $emails = true) {
         global $newsletter;
 
         $options = get_option('newsletter', array());
         $options_profile = get_option('newsletter_profile', array());
 
-        if ($force_single_opt_in) $opt_in = 1;
-        else $opt_in = (int) $this->options['noconfirmation']; // 0 - double, 1 - single
+        //if ($force_single_opt_in) $opt_in = 1;
+        //else
+        $opt_in = (int) $this->options['noconfirmation']; // 0 - double, 1 - single
 
         $email = $newsletter->normalize_email(stripslashes($_REQUEST['ne']));
         if ($email == null) die('Wrong email');
@@ -209,7 +222,8 @@ class NewsletterSubscription extends NewsletterModule {
 
             $user['token'] = $newsletter->get_token();
             $user['ip'] = $_SERVER['REMOTE_ADDR'];
-            $user['status'] = $opt_in == 1 ? 'C' : 'S';
+            if ($status != null) $user['status'] = $status;
+            else $user['status'] = $opt_in == 1 ? 'C' : 'S';
 
             // TODO: add the flow integration?
 
@@ -245,6 +259,12 @@ class NewsletterSubscription extends NewsletterModule {
 //            $user = $this->store->save_user($delta);
         }
 
+        if ($user->status == 'C') {
+            setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
+        }
+
+        if (!$emails) return $user;
+
 
         $prefix = ($user->status == 'C') ? 'confirmed_' : 'confirmation_';
         $message = $options[$prefix . 'message'];
@@ -252,10 +272,6 @@ class NewsletterSubscription extends NewsletterModule {
         // TODO: This is always empty!
         $message_text = $options[$prefix . 'message_text'];
         $subject = $options[$prefix . 'subject'];
-
-        if ($user->status == 'C') {
-            setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
-        }
 
         $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
 
@@ -276,9 +292,21 @@ class NewsletterSubscription extends NewsletterModule {
         Newsletter::instance()->mail($to, $subject, $message);
     }
 
-    function confirm() {
+    /**
+     *
+     * @global Newsletter $newsletter
+     * @param type $user
+     * @return type
+     */
+    function confirm($user_id = null, $emails = true) {
         global $newsletter;
-        $user = $this->get_user_from_request();
+        if ($user_id == null) {
+            $user = $this->get_user_from_request();
+        }
+        else {
+            $user = $newsletter->get_user($user_id);
+        }
+
         if ($user == null) die('No subscriber found.');
         if ($user->status != 'S') {
             $user->status = 'E';
@@ -286,6 +314,9 @@ class NewsletterSubscription extends NewsletterModule {
         }
         setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
         $newsletter->set_user_status($user->id, 'C');
+        $user->status = 'C';
+
+        if (!$emails) return $user;
 
         $message = $this->options['confirmed_message'];
 
@@ -297,7 +328,7 @@ class NewsletterSubscription extends NewsletterModule {
 
         $this->notify_admin($user, 'Newsletter subscription');
 
-        $user->status = 'C';
+
         return $user;
     }
 
@@ -895,7 +926,8 @@ function newsletter_subscription_user_register($user_id) {
     $_REQUEST['nr'] = 'registration';
     // Upon registration there is no last name and first name, sorry.
 
-    $module->subscribe($module->options['optin_wp_users'] == 1);
+    // With registration always store as unconfirmed, it will be confirmed on first login
+    $module->subscribe('S', false);
 
 //    $user = array();
 //    $user['email'] = $module->normalize_email($wp_user->user_email);

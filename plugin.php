@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.2.1
+  Version: 3.2.2
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.2.1');
+define('NEWSLETTER_VERSION', '3.2.2');
 
 global $wpdb, $newsletter;
 
@@ -44,8 +44,6 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 require_once NEWSLETTER_INCLUDES_DIR . '/themes.php';
 
 class Newsletter extends NewsletterModule {
-
-    const VERSION = '1.1.5';
 
     // Limits to respect to avoid memory, time or provider limits
     var $time_limit;
@@ -97,7 +95,7 @@ class Newsletter extends NewsletterModule {
         // Here because the upgrade is called by the parent constructor and uses the scheduler
         add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
-        parent::__construct('main', self::VERSION);
+        parent::__construct('main', '1.1.5');
 
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max)) $max = 100;
@@ -282,8 +280,10 @@ class Newsletter extends NewsletterModule {
 
     function is_admin_page() {
         // TODO: Use the module list to detect that...
-        return strpos($_GET['page'], 'newsletter_') === 0 || strpos($_GET['page'], 'newsletter-statistics/') === 0 || strpos($_GET['page'], 'newsletter/') === 0 ||
-                strpos($_GET['page'], 'newsletter-updates/') === 0 || strpos($_GET['page'], 'newsletter-flows/') === 0;
+        if (!isset($_GET['page'])) return false;
+        $page = $_GET['page'];
+        return strpos($page, 'newsletter_') === 0 || strpos($page, 'newsletter-statistics/') === 0 || strpos($page, 'newsletter/') === 0 ||
+                strpos($page, 'newsletter-updates/') === 0 || strpos($page, 'newsletter-flows/') === 0;
     }
 
     function hook_admin_init() {
@@ -400,12 +400,6 @@ class Newsletter extends NewsletterModule {
             $this->mail($user->email, $s, array('html' => $m, 'text' => $mt), $headers);
 
             $this->email_limit--;
-        }
-
-        // TODO: Integrate the feed by mail
-        if (defined('NEWSLETTER_FEED_VERSION')) {
-            //global $newsletter_feed;
-            //if ($email->type == 'feed') return $newsletter_feed->feed_send($email, $users);
         }
 
         return true;
@@ -692,6 +686,8 @@ class Newsletter extends NewsletterModule {
         if (is_array($user)) {
             $user = $this->get_user($user['id']);
         }
+
+        $text = apply_filters('newsletter_replace', $text, $user_id, $email_id);
 
         $text = str_replace('{home_url}', get_option('home'), $text);
         $text = str_replace('{blog_title}', get_option('blogname'), $text);
@@ -1045,8 +1041,10 @@ require_once NEWSLETTER_DIR . '/statistics/statistics.php';
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/feed/feed.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/feed/feed.php';
 } else {
-    if (is_file(NEWSLETTER_DIR . '/feed/feed.php')) {
-        //require_once NEWSLETTER_DIR . '/feed/feed.php';
+    if (get_option('newsletter_feed_demo_disable') != 1) {
+        if (is_file(NEWSLETTER_DIR . '/feed/feed.php')) {
+            require_once NEWSLETTER_DIR . '/feed/feed.php';
+        }
     }
 }
 
@@ -1068,6 +1066,10 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/mailjet/mailjet.php')) {
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/sendgrid/sendgrid.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/sendgrid/sendgrid.php';
+}
+
+if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/facebook/facebook.php')) {
+    require_once WP_CONTENT_DIR . '/extensions/newsletter/facebook/facebook.php';
 }
 
 require_once(dirname(__FILE__) . '/widget.php');

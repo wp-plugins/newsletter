@@ -88,13 +88,26 @@ class NewsletterWidget extends WP_Widget {
             }
 
             $form .= '</form></div>';
+
+            // Canot user directly the replace, since the form is different on the widget...
             if (strpos($buffer, '{subscription_form}') !== false) $buffer = str_replace('{subscription_form}', $form, $buffer);
-            else $buffer .= $form;
+            else {
+                if (strpos($buffer, '{subscription_form_') !== false) {
+                    // TODO: Optimize with a method to replace only the custom forms
+                    $buffer = $newsletter->replace($buffer);
+                }
+                else {
+                    $buffer .= $form;
+                }
+            }
         }
         else {
             $buffer = str_ireplace('<form', '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '" onsubmit="return newsletter_check(this)"', $buffer);
             $buffer = str_ireplace('</form>', '<input type="hidden" name="nr" value="widget"/></form>', $buffer);
         }
+
+        // That replace all the remaining tags
+        $buffer = $newsletter->replace($buffer);
 
         echo $buffer;
         echo $after_widget;
@@ -120,10 +133,7 @@ class NewsletterWidget extends WP_Widget {
                 Introduction:
                 <textarea class="widefat" rows="10" cols="20" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo esc_html($instance['text']); ?></textarea>
             </label>
-            The subscription form is created according the subscription panel configurations and appended at the end of the introduction text. If you
-            want to place the form in the middle of introduction text above, use the {subscription_form} tag.<br />
-            You can even create a full customized subscription on introduction text, it will be detected and the standard form not inserted.
-            Just add a &lt;form&gt; tag with wanted newsletter fields (see documentation on custom form building).
+            <p>Use the tag {subscription_form} to place the subscription form within your personal text.
         </p>
         <?php
     }

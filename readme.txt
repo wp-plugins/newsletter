@@ -56,6 +56,13 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.2.2 =
+
+* Fixed the subscription options change problem during the upgrade
+* English corrections by Rita Vaccaro
+* Added the Feed by Mail demo module
+* Added support for the Facebook module
+
 = 3.2.1 =
 
 * Fixed fatal error with old form formats
@@ -63,7 +70,6 @@ No screen shots are available at this time.
 = 3.2.0 =
 
 * Added hint() method to NewsletterControls
-* Added the Feed by Mail demo module
 * Fixed the Newsletter::replace_date() to replace even the {date} tag without a format
 * Added NewsletterModule::format_time_delta()
 * Added NewsletterModule::format_scheduler_time

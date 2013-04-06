@@ -7,6 +7,7 @@ if (!$controls->is_action()) {
     $controls->data = $module->options;
 }
 else {
+
     if ($controls->is_action('reset')) {
         $controls->data = $module->reset_options();
         $controls->messages = 'Options restored.';
@@ -82,11 +83,14 @@ else {
 
     <div class="preamble">
     <p>
-        <strong>This is only a demo version of the real <a href="" target="_blank">Feed by Mail</a> module.</strong>
+        <strong>This is a demo version of the real <a href="http://www.satollo.net/plugins/newsletter/feed-by-mail-module" target="_blank">Feed by Mail</a> module.</strong>
     </p>
     <p>
         Anyway, options saved on this panel will be preserved if you install the real module and you can already offer to
         subscribers the option to opt-in this service.
+    </p>
+    <p>
+        If you don't want to see this panel on menu, disable it on Welcome panel.
     </p>
     </div>
 
@@ -308,7 +312,7 @@ else {
                 ?>
                 <div class="tab-preamble">
                     <p>
-                        Here you can run some massive action on subscribers about this service.
+                        Here you can run some massive actions on subscribers. These button works really!
                     </p>
                 </div>
                 <?php $controls->button_confirm('add_all', 'Add this service to all subscribers', 'Proceed?'); ?>

@@ -1,12 +1,11 @@
 <?php
-
+/**
+ * This is only demo code just to make the demo Feed by Mail panel work.
+ */
 class NewsletterFeed extends NewsletterModule {
 
     static $instance;
 
-    /**
-     * @return NewsletterFeed
-     */
     static function instance() {
         if (self::$instance == null) {
             self::$instance = new NewsletterFeed();
@@ -16,21 +15,15 @@ class NewsletterFeed extends NewsletterModule {
 
     function __construct() {
         $this->themes = new NewsletterThemes('feed');
-        parent::__construct('feed', '1.0.1');
+        parent::__construct('feed', '1.0.0');
         add_filter('newsletter_user_subscribe', array($this, 'hook_user_subscribe'));
         add_filter('newsletter_subscription_extra', array($this, 'hook_subscription_extra'));
-    }
-
-    function upgrade() {
-        global $wpdb, $charset_collate;
-        parent::upgrade();
     }
 
     function create_email($options) {
         global $wpdb, $newsletter;
 
         $posts = $this->get_posts();
-
 
         $email = array();
 
@@ -47,13 +40,8 @@ class NewsletterFeed extends NewsletterModule {
     }
 
     function hook_user_subscribe($user) {
-        if ($this->options['subscription'] == 1 && isset($_REQUEST['feed'])) {
-            $user['feed'] = 1;
-        }
-        // Forced
-        if ($this->options['subscription'] == 2) {
-            $user['feed'] = 1;
-        }
+        if ($this->options['subscription'] == 1 && isset($_REQUEST['feed'])) $user['feed'] = 1;
+        if ($this->options['subscription'] == 2) $user['feed'] = 1;
         return $user;
     }
 
@@ -72,16 +60,9 @@ class NewsletterFeed extends NewsletterModule {
         $this->add_menu_page('index', 'Feed by Mail (Demo)');
     }
 
-    /**
-     * Extract all post based on Feed by Mail options (passed or the ones saved).
-     * Sets some variables inside $newsletter, for compatibility with old themes.
-     *
-     * @param array $options
-     */
     function get_posts($options = null) {
         if ($options == null) $options = $this->options;
 
-        // Compute the categories to exclude
         $excluded_categories = '';
         $categories = get_categories();
         foreach ($categories as $c) {
@@ -90,23 +71,14 @@ class NewsletterFeed extends NewsletterModule {
             }
         }
 
-        $this->logger->debug('create_email> Excluded categories: ' . $excluded_categories);
-
-        // Extract the max posts
         $max_posts = $options['max_posts'];
         if (!is_numeric($max_posts)) $max_posts = 10;
 
-        // Build the filter
         $filters = array('showposts' => $max_posts, 'post_status' => 'publish');
         if ($excluded_categories != '') $filters['cat'] = $excluded_categories;
 
-        $this->logger->debug($filters);
-
-        // Load the posts
         $posts = get_posts($filters);
-        $this->logger->debug('Loaded ' . count($posts) . ' posts');
 
-        // TODO: Kept for compatibility
         $newsletter->feed_posts = $posts;
         $newsletter->feed_max_posts = $max_posts;
         $newsletter->feed_excluded_categories = $excluded_categories;
@@ -114,13 +86,6 @@ class NewsletterFeed extends NewsletterModule {
 
         return $posts;
     }
-
-    function save_options($options, $sub = '') {
-        $this->options = $options;
-        parent::save_options($options, $sub);
-        $this->themes->save_options($options['theme'], $options);
-    }
-
 }
 
 NewsletterFeed::instance();

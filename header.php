@@ -11,6 +11,7 @@ if (isset($_REQUEST['dismiss']) && check_admin_referer()) {
     <a href="<?php echo $help_url?$help_url:'http://www.satollo.net/plugins/newsletter/newsletter-configuration'; ?>" target="_blank">Get Help</a>
     <a href="http://www.satollo.net/plugins/newsletter/newsletter-faq" target="_blank">FAQ</a>
     <a href="http://www.satollo.net/forums" target="_blank">Forum</a>
+    <a href="http://www.satollo.net/membership" target="_blank">Membership</a>
     <!--<a href="http://www.satollo.net/plugins/newsletter/newsletter-collaboration" target="_blank">Collaboration</a>-->
 
     <form style="display: inline; margin: 0;" action="http://www.satollo.net/wp-content/plugins/newsletter/do/subscribe.php" method="post" target="_blank">

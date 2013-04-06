@@ -107,7 +107,7 @@ if (!$controls->is_action()) {
     <div class="preamble">
     <p>
         Do not be scared by all those configurations. Only <strong>basic settings</strong> are important and should be reviewed to
-        make Newsletter plugin to work correctly. If something doesn't work, run a test from
+        make Newsletter plugin work correctly. If something doesn't work, run a test from
         <a href="admin.php?page=newsletter_main_diagnostic">diagnostic panel</a>.
     </p>
     </div>
@@ -140,7 +140,7 @@ if (!$controls->is_action()) {
                             <?php $controls->text_email('sender_email', 40); ?> (valid email address)
 
                             <div class="hints">
-                                Here the email address from which subscribers will se your email coming. Since this setting can
+                                Insert here the email address from which subscribers will se your email coming. Since this setting can
                                 affect the reliability of delivery,
                                 <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a> (important).
                                 Generally use an address within your domain name.
@@ -152,8 +152,7 @@ if (!$controls->is_action()) {
                             <?php $controls->text('sender_name', 40); ?> (optional)
 
                             <div class="hints">
-                                Here the name which subscribers will se your email coming. Since this setting can
-                                affect the reliability of delivery (usually under Windows),
+                                Insert here the name which subscribers will see as the sender of your email (for example your blog or website's name). Since this setting can affect the reliability of delivery (usually under Windows)
                                 <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a>.
                             </div>
                         </td>
@@ -236,7 +235,7 @@ if (!$controls->is_action()) {
                         <td>
                             <?php $controls->select('content_transfer_encoding', array('' => 'Default', '8bit' => '8 bit', 'base64' => 'Base 64')); ?>
                             <div class="hints">
-                                Sometime setting it to Base 64 solves problem with old mail servers (for example truncated or unformatted emails.
+                                Sometimes setting it to Base 64 solves problem with old mail servers (for example truncated or unformatted emails.
                                 <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#enconding" target="_blank">Read more here</a>.
                             </div>
                         </td>
@@ -250,7 +249,7 @@ if (!$controls->is_action()) {
             <div id="tabs-5">
                 <div class="tab-preamble">
                     <p>
-                        <strong>Those options can be overridden by modules which integrates with external
+                        <strong>These options can be overridden by modules which integrates with external
                         SMTPs (like MailJet, SendGrid, ...) if installed and activated.</strong>
                     </p>
                 <p>
@@ -258,8 +257,8 @@ if (!$controls->is_action()) {
                     messages sent by Newsletter (subscription messages and newsletters). SMTP is required to send email with Gmail or
                     GoDaddy hosting account.
                     Read more <a href="http://www.satollo.net/godaddy-using-smtp-external-server-on-shared-hosting" target="_blank">here</a>.
-                    Test button below sends an email to the first test address configured above and works even if SMTP is not enabled. If you get a "connection refused"
-                    message, check the SMTP settings if they are correct and then contact your hosting provider. If you get a "relay denied" contact your
+                    The "test" button below sends an email to the first test address configured above and works even if SMTP is not enabled. If you get a "connection refused"
+                    message, check the SMTP settings if they are correct, then contact your hosting provider. If you get a "relay denied" contact your
                     SMTP service provider.
                 </p>
                 <p>
@@ -349,7 +348,7 @@ if (!$controls->is_action()) {
                                 [newsletter_lock] and [/newsletter_lock] short codes or in place of the full content if they are
                                 in categories or have tags as specified above.<br />
                                 You can use the {subscription_form} tag to display the subscription form.<br>
-                                <strong>Remeber to add the {unlock_url} on welcome email so the user can unlock the content.</strong>
+                                <strong>Remeber to add the {unlock_url} on the welcome email so the user can unlock the content.</strong>
                             </div>
                         </td>
                     </tr>

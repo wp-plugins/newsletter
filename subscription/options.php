@@ -223,16 +223,25 @@ if ($controls->is_action('create')) {
 
 
                             <div class="hints">
-                                It works only on new registration. If you use the double opt in the activation email is sent to the user.
-                                To align old registration, press the alignment button.
-                                <?php $controls->button_confirm('align_wp_users', 'Align WP Users', 'Proceed?'); ?>
+                                It works only on new registrations to your blog. The user email is stored as unconfirmed and will be
+                                confirmed on first login.
+                                <br>
+                                To align old users press this button: <?php $controls->button_confirm('align_wp_users', 'Align WP Users', 'Proceed?'); ?>
                             </div>
                         </td>
                     </tr>
+                    <!--
                     <tr valign="top">
                         <th>Opt-in mode for WordPress registrated users</th>
                         <td>
                             <?php $controls->select('optin_wp_users', array(0=>'As for regular subscriptions', 1=>'Force single opt-in')); ?>
+                        </td>
+                    </tr>
+                    -->
+                    <tr valign="top">
+                        <th>Send welcome email to registered users</th>
+                        <td>
+                            <?php $controls->yesno('wp_welcome'); ?>
                         </td>
                     </tr>
             <tr valign="top">

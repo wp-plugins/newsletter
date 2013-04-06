@@ -75,6 +75,8 @@ class NewsletterModule {
         if (empty($this->options) || !is_array($this->options)) {
             $this->options = $this->get_default_options();
             $this->save_options($this->options);
+        } else {
+            // TODO: Try with an array_merge()?
         }
     }
 
@@ -95,7 +97,7 @@ class NewsletterModule {
     static function get_available_version($module_id) {
         $version = get_option('newsletter_module_' . $module_id . '_version', '');
         $time = get_option('newsletter_module_' . $module_id . '_last_check', 0);
-        if (empty($version) || $time < time()-86400) {
+        if (empty($version) || $time < time() - 86400) {
             $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $module_id);
             add_option('newsletter_module_' . $module_id . '_last_check', time(), '', 'no');
             update_option('newsletter_module_' . $module_id . '_last_check', time());
@@ -120,14 +122,12 @@ class NewsletterModule {
      */
     function get_options($sub = '') {
         $options = get_option($this->get_prefix($sub));
-        if ($options == false)
-            return array();
+        if ($options == false) return array();
         return $options;
     }
 
     function get_default_options($sub = '') {
-        if (!empty($sub))
-            $sub .= '-';
+        if (!empty($sub)) $sub .= '-';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
@@ -143,16 +143,27 @@ class NewsletterModule {
         return $this->options;
     }
 
+    /**
+     * Saves the module options (or eventually a subset names as per parameter $sub). $options
+     * should be an array (even if it can work with non array options.
+     * The internal module options variable IS initialized with those new options only for the main
+     * options (empty $sub parameter).
+     * If the options contain a "theme" value, the theme-related options contained are saved as well
+     * (used by some modules).
+     *
+     * @param array $options
+     * @param string $sub
+     */
     function save_options($options, $sub = '') {
-        $this->options = $options;
         update_option($this->get_prefix($sub), $options);
-
-        if (isset($this->themes) && isset($options['theme'])) {
-            $this->themes->save_options($options['theme'], $options);
+        if (empty($sub)) {
+            $this->options = $options;
+            if (isset($this->themes) && isset($options['theme'])) {
+                $this->themes->save_options($options['theme'], $options);
+            }
+            // TODO: To be remove since there is no more log level at module level (should it be reintroduced?)
+            if (isset($options['log_level'])) update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
         }
-
-        if (isset($options['log_level']))
-            update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
     }
 
     function backup_options($sub) {
@@ -165,22 +176,36 @@ class NewsletterModule {
         return get_option($this->get_prefix($sub) . '_last_run', 0);
     }
 
+    /**
+     * Save the module last run value. Used to store a timestamp for some modules,
+     * for example the Feed by Mail module.
+     *
+     * @param int $time Unix timestamp (as returned by time() for example)
+     * @param string $sub Sub module name (default empty)
+     */
     function save_last_run($time, $sub = '') {
         update_option($this->get_prefix($sub) . '_last_run', $time);
     }
 
+    /**
+     * Sums $delta seconds to the last run time.
+     * @param int $delta Seconds
+     * @param string $sub Sub module name (default empty)
+     */
     function add_to_last_run($delta, $sub = '') {
         $time = $this->get_last_run($sub);
         $this->save_last_run($time + $delta, $sub);
     }
 
     /**
-     * Checks if the semaphore of that name (for this module) is still red giving that it should last only
-     * $time seconds.
+     * Checks if the semaphore of that name (for this module) is still red. If it is active the method
+     * returns false. If it is not active, it will be activated for $time seconds.
      *
-     * @param string $name
+     * Since this method activate the semaphore when called, it's name is a bit confusing.
+     *
+     * @param string $name Sempahore name (local to this module)
      * @param int $time Max time in second this semaphore should stay red
-     * @return boolean False if the semaphore is red and you should not proceed.
+     * @return boolean False if the semaphore is red and you should not proceed, true is it was not active and has been activated.
      */
     function check_transient($name, $time) {
         usleep(rand(0, 1000000));
@@ -205,21 +230,25 @@ class NewsletterModule {
         return substr(md5(rand()), 0, $size);
     }
 
+    /**
+     * Adds query string parameters to an URL checing id there are already other parameters.
+     *
+     * @param string $url
+     * @param string $qs The part of query-string to add (param1=value1&param2=value2...)
+     * @param boolean $amp If the method must use the &amp; instead of the plain & (default true)
+     * @return string
+     */
     static function add_qs($url, $qs, $amp = true) {
         if (strpos($url, '?') !== false) {
-            if ($amp)
-                return $url . '&amp;' . $qs;
-            else
-                return $url . '&' . $qs;
+            if ($amp) return $url . '&amp;' . $qs;
+            else return $url . '&' . $qs;
         }
-        else
-            return $url . '?' . $qs;
+        else return $url . '?' . $qs;
     }
 
     static function normalize_email($email) {
         $email = strtolower(trim($email));
-        if (!is_email($email))
-            return null;
+        if (!is_email($email)) return null;
         return $email;
     }
 
@@ -237,25 +266,22 @@ class NewsletterModule {
 
     static function is_email($email, $empty_ok = false) {
         $email = strtolower(trim($email));
-        if ($empty_ok && $email == '')
-            return true;
+        if ($empty_ok && $email == '') return true;
 
-        if (!is_email($email))
-            return false;
-        if (strpos($email, 'mailinator.com') !== false)
-            return false;
-        if (strpos($email, 'guerrillamailblock.com') !== false)
-            return false;
-        if (strpos($email, 'emailtemporanea.net') !== false)
-            return false;
+        if (!is_email($email)) return false;
+
+        // TODO: To be moved on the subscription module and make configurable
+        if (strpos($email, 'mailinator.com') !== false) return false;
+        if (strpos($email, 'guerrillamailblock.com') !== false) return false;
+        if (strpos($email, 'emailtemporanea.net') !== false) return false;
         return true;
     }
 
     /**
-     * Converts a GMT date into timestamp.
+     * Converts a GMT date from mysql (see the posts table columns) into a timestamp.
      *
-     * @param type $s
-     * @return type
+     * @param string $s GMT date with format yyyy-mm-dd hh:mm:ss
+     * @return int A timestamp
      */
     static function m2t($s) {
 
@@ -272,20 +298,27 @@ class NewsletterModule {
     }
 
     static function format_time_delta($delta) {
-        $days = floor($delta / (3600*24));
-        $hours = floor(($delta % (3600*24)) / 3600);
+        $days = floor($delta / (3600 * 24));
+        $hours = floor(($delta % (3600 * 24)) / 3600);
         $minutes = floor(($delta % 3600) / 60);
         $seconds = floor(($delta % 60));
         $buffer = $days . ' days, ' . $hours . ' hours, ' . $minutes . ' minutes, ' . $seconds . ' seconds';
         return $buffer;
     }
 
+    /**
+     * Formats a scheduler returned "next execution" time, managing negative or false values. Many times
+     * used in conjuction with "last run".
+     *
+     * @param string $name The scheduler name
+     * @return string
+     */
     static function format_scheduler_time($name) {
         $time = wp_next_scheduled($name);
         if ($time === false) {
             return 'Not active';
         }
-        $delta = $time-time();
+        $delta = $time - time();
         // If less 10 minutes late it can be a cron problem but now it is working
         if ($delta < 0 && $delta > -600) {
             return 'Probably running now';
@@ -301,8 +334,7 @@ class NewsletterModule {
         }
         if ($time == false) {
             $buffer = 'none';
-        }
-        else {
+        } else {
             $buffer = gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
         }
         if ($now) {
@@ -326,10 +358,8 @@ class NewsletterModule {
     static function split_posts(&$posts, $time = 0) {
         $result = array(array(), array());
         foreach ($posts as &$post) {
-            if (self::is_post_old($post, $time))
-                $result[1][] = $post;
-            else
-                $result[0][] = $post;
+            if (self::is_post_old($post, $time)) $result[1][] = $post;
+            else $result[0][] = $post;
         }
         return $result;
     }
@@ -341,10 +371,8 @@ class NewsletterModule {
     static function get_post_image($post_id = null, $size = 'thumbnail', $alternative = null) {
         global $post;
 
-        if (empty($post_id))
-            $post_id = $post->ID;
-        if (empty($post_id))
-            return $alternative;
+        if (empty($post_id)) $post_id = $post->ID;
+        if (empty($post_id)) return $alternative;
 
         $image_id = function_exists('get_post_thumbnail_id') ? get_post_thumbnail_id($post_id) : false;
         if ($image_id) {
@@ -377,10 +405,8 @@ class NewsletterModule {
 
         if ($handle !== false) {
             while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..')
-                    continue;
-                if (substr($file, -4) != '.css')
-                    continue;
+                if ($file == '.' || $file == '..') continue;
+                if (substr($file, -4) != '.css') continue;
                 $list[$file] = substr($file, 0, strlen($file) - 4);
             }
             closedir($handle);
@@ -391,12 +417,9 @@ class NewsletterModule {
 
         if ($handle !== false) {
             while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..')
-                    continue;
-                if (isset($list[$file]))
-                    continue;
-                if (substr($file, -4) != '.css')
-                    continue;
+                if ($file == '.' || $file == '..') continue;
+                if (isset($list[$file])) continue;
+                if (substr($file, -4) != '.css') continue;
                 $list[$file] = substr($file, 0, strlen($file) - 4);
             }
             closedir($handle);
@@ -405,10 +428,8 @@ class NewsletterModule {
     }
 
     function get_style_url($style) {
-        if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/styles/' . $style))
-            return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/styles/' . $style;
-        else
-            return NEWSLETTER_URL . '/' . $this->module . '/styles/' . $style;
+        if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/styles/' . $style)) return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/styles/' . $style;
+        else return NEWSLETTER_URL . '/' . $this->module . '/styles/' . $style;
     }
 
     function admin_menu() {
@@ -423,7 +444,7 @@ class NewsletterModule {
         }
         $name = 'newsletter_' . $this->module . '_' . $page;
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
-        add_submenu_page('newsletter_main_index', $title, $title, $newsletter->options['editor'] ? 7 : 10, $name, $name);
+        add_submenu_page('newsletter_main_index', $title, $title, ($newsletter->options['editor'] == 1) ? 7 : 10, $name, $name);
     }
 
     function add_admin_page($page, $title) {
