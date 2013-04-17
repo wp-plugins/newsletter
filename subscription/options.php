@@ -75,30 +75,6 @@ if ($controls->is_action('create')) {
         $controls->data = $module->reset_options();
     }
 
-    if ($controls->is_action('align_wp_users')) {
-
-        NewsletterUsers::instance();
-
-        // TODO: check if the user is already there
-        $wp_users = $wpdb->get_results("select * from $wpdb->users");
-        foreach ($wp_users as &$wp_user) {
-            $module->logger->info('Adding a registered WordPress user (' . $wp_user->ID . ')');
-            $nl_user = array();
-            $nl_user['email'] = $module->normalize_email($wp_user->user_email);
-            $nl_user['name'] = $wp_user->user_login;
-            $nl_user['status'] = 'C';
-            $nl_user['wp_user_id'] = $wp_user->ID;
-
-            if (is_array($module->options['preferences'])) {
-                foreach ($module->options['preferences'] as $p) {
-                    $nl_user['list_' . $p] = 1;
-                }
-            }
-
-            NewsletterUsers::instance()->save_user($nl_user);
-        }
-        $controls->messages = 'Done.';
-    }
 } else {
     $controls->data = get_option('newsletter', array());
 
@@ -213,28 +189,25 @@ if ($controls->is_action('create')) {
                         <td>
                             <?php $controls->yesno('novisual'); ?>
                         </td>
+                    </tr>
                     <tr valign="top">
-                        <th>Automatically subscribe WordPress users</th>
+                        <th>Subscription on registration</th>
                         <td>
-                            <?php //$controls->yesno('subscribe_wp_users'); ?>
                             <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
-                            <br>
-                            opt in check box label: <?php $controls->text('subscribe_wp_users_label', 30); ?>
-
-
-                            <div class="hints">
-                                It works only on new registrations to your blog. The user email is stored as unconfirmed and will be
-                                confirmed on first login.
-                                <br>
-                                To align old users press this button: <?php $controls->button_confirm('align_wp_users', 'Align WP Users', 'Proceed?'); ?>
-                            </div>
+                            <?php $controls->hint('Adds a newsletter subscription option on registration.', 'http://www.satollo.net/plugins/newsletter/subscription-module#registration'); ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Check box label</th>
+                        <td>
+                            <?php $controls->text('subscribe_wp_users_label', 30); ?>
                         </td>
                     </tr>
                     <!--
                     <tr valign="top">
                         <th>Opt-in mode for WordPress registrated users</th>
                         <td>
-                            <?php $controls->select('optin_wp_users', array(0=>'As for regular subscriptions', 1=>'Force single opt-in')); ?>
+                            <?php //$controls->select('optin_wp_users', array(0=>'As for regular subscriptions', 1=>'Force single opt-in')); ?>
                         </td>
                     </tr>
                     -->
@@ -285,22 +258,11 @@ if ($controls->is_action('create')) {
                         <td>
                             <?php $controls->editor('error_text'); ?>
                             <div class="hints">
-                                This message is shown whenever the subscription definitively fails because the email address used is blocked
-                                (bounced, unsubscribed, already subscribed). Hence the message should be as explicative as possible and offer
-                                a way to contact the blog owner.
+                                This message is shown whenever a subscription is attempted with an address bounced, already registered but not confirmed or
+                                already subscribed. Consider all those three options while writing this message.
                             </div>
                         </td>
                     </tr>
-                    <tr valign="top">
-                        <th>Re-subscription</th>
-                        <td>
-                            <?php $controls->yesno('resubscription'); ?>
-                            <div class="hints">
-                                Allow unsubscribed user to subscribe again (otherwise they'll get the error message above)
-                            </div>
-                        </td>
-                    </tr>
-
                 </table>
             </div>
 

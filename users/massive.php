@@ -86,6 +86,58 @@ if ($controls->is_action('resend_all')) {
 
 }
 
+if ($controls->is_action('align_wp_users')) {
+
+    // TODO: check if the user is already there
+    $wp_users = $wpdb->get_results("select id, user_email, user_login from $wpdb->users");
+    $count = 0;
+    foreach ($wp_users as &$wp_user) {
+        $module->logger->info('Adding a registered WordPress user (' . $wp_user->id . ')');
+
+        // A subscriber is already there with the same wp_user_id? Do Nothing.
+        $nl_user = $module->get_user_by_wp_user_id($wp_user->id);
+        if (!empty($nl_user)) {
+            $module->logger->info('Subscriber already associated');
+            continue;
+        }
+
+        $module->logger->info('WP user email: ', $wp_user->user_email);
+
+        // A subscriber has the same email? Align them if not already associated to another wordpress user
+        $nl_user = $module->get_user($module->normalize_email($wp_user->user_email));
+        if (!empty($nl_user)) {
+            $module->logger->info('Subscriber already present with that email');
+            if (empty($nl_user->wp_user_id)) {
+                $module->logger->info('Linked');
+                $module->set_user_wp_user_id($nl_user->id, $wp_user->id);
+                continue;
+            }
+        }
+
+        $module->logger->info('New subscriber created');
+
+        // Create a new subscriber
+        $nl_user = array();
+        $nl_user['email'] = $module->normalize_email($wp_user->user_email);
+        $nl_user['name'] = $wp_user->user_login;
+        $nl_user['status'] = $controls->data['align_wp_users_status'];
+        $nl_user['wp_user_id'] = $wp_user->id;
+        $nl_user['referrer'] = 'wordpress';
+
+        // Adds the force subscription preferences
+        $preferences = NewsletterSubscription::instance()->options['preferences'];
+        if (is_array($preferences)) {
+            foreach ($preferences as $p) {
+                $nl_user['list_' . $p] = 1;
+            }
+        }
+
+        $module->save_user($nl_user);
+        $count++;
+    }
+    $controls->messages = 'Total WP users aligned ' . count($wp_users) . ', total new subscribers ' . $count . '.';
+}
+
 
 if ($controls->is_action('bounces')) {
     $lines = explode("\n", $controls->data['bounced_emails']);
@@ -184,9 +236,9 @@ if ($controls->is_action('bounces')) {
             <td>Confirmed</td>
             <td>
               <?php echo $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='C'"); ?>
-              <?php $controls->button_confirm('unconfirm_all', 'Unconfirm all', 'Are you sure? No way back.'); ?>
             </td>
             <td nowrap>
+              <?php $controls->button_confirm('unconfirm_all', 'Unconfirm all', 'Are you sure? No way back.'); ?>
             </td>
           </tr>
           <tr>
@@ -197,15 +249,8 @@ if ($controls->is_action('bounces')) {
             <td nowrap>
               <?php $controls->button_confirm('remove_unconfirmed', 'Delete all not confirmed', 'Are you sure you want to delete ALL not confirmed subscribers?'); ?>
               <?php $controls->button_confirm('confirm_all', 'Confirm all', 'Are you sure you want to mark ALL subscribers as confirmed?'); ?>
-              <?php $controls->button_confirm('resend_all', 'Resend confirmation message to all', 'Are you sure?'); ?>
-            </td>
-          </tr>
-          <tr>
-            <td>Subscribed to feed by mail</td>
-            <td nowrap>
-              <?php echo $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='C' and feed=1"); ?>
-            </td>
-            <td nowrap>
+                <?php $controls->hint('To send a comfirmation email to all, you can create a special newsletter.', 'http://www.satollo.net/plugins/newsletter/subscribers-module#resend-confirm'); ?>
+              <?php //$controls->button_confirm('resend_all', 'Resend confirmation message to all', 'Are you sure?'); ?>
             </td>
           </tr>
           <tr>
@@ -217,6 +262,19 @@ if ($controls->is_action('bounces')) {
               <?php $controls->button_confirm('remove_unsubscribed', 'Delete all unsubscribed', 'Are you sure you want to delete ALL unsubscribed?'); ?>
             </td>
           </tr>
+          <tr>
+            <td>Import WP user</td>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                Link WordPress users with status
+                <?php $controls->select('align_wp_users_status', array('C'=>'Confirmed', 'S'=>'Not confirmed')); ?>
+                <?php $controls->button_confirm('align_wp_users', 'Go', 'Proceed?'); ?>
+                <?php $controls->hint('Please, carefully read the documentation before taking this action!', 'http://www.satollo.net/plugins/newsletter/subscribers-module#import-wp-users'); ?>
+            </td>
+          </tr>
+
           <tr>
             <td>Bounced</td>
             <td>

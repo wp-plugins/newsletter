@@ -49,7 +49,8 @@ class NewsletterStore {
         return $this->get_single_by_query($wpdb->prepare("select * from $table where id=%d limit 1", $id), $format);
     }
 
-    function get_single_by_field($table, $field_name, $field_value) {
+    function get_single_by_field($table, $field_name, $field_value, $format = OBJECT) {
+        global $wpdb;
         return $this->get_single_by_query("select * from $table where $field_name='" . $wpdb->escape($field_value) . "' limit 1", $format);
     }
 
@@ -168,7 +169,7 @@ class NewsletterStore {
 
     function set_field($table, $id, $field, $value) {
         global $wpdb;
-        if (preg_match('/^[a-zA-Z]+$/', $field) == 0) {
+        if (preg_match('/^[a-zA-Z_]+$/', $field) == 0) {
             $this->logger->error('Invalis field name: ' . $field_name);
             return false;
         }

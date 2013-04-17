@@ -241,6 +241,33 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 ?>
                             </td>
                         </tr>
+
+                        <tr>
+                            <td>
+                                WordPress schedules
+                            </td>
+                            <td>
+                                <?php
+                                $schedules = wp_get_schedules();
+                                if (empty($schedules)) {
+                                    echo 'Really bad, no schedules found, missing even the WordPress default schedules!';
+                                } else {
+                                    $found = false;
+
+                                    foreach ($schedules as $key=>&$data) {
+                                        if ($key == 'newsletter') $found = true;
+                                        echo $key . ' - ' . $data['interval'] . ' s<br>';
+
+                                     }
+
+                                     if (!$found) {
+                                         echo 'The "newsletter" schedule was not found, email delivery won\'t work.';
+                                     }
+                                }
+                                ?>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td>
                                 Delivery Engine

@@ -35,6 +35,8 @@ if (!defined('NEWSLETTER_FORMS_MAX')) define('NEWSLETTER_FORMS_MAX', 10);
 
 if (!defined('NEWSLETTER_CRON_INTERVAL')) define('NEWSLETTER_CRON_INTERVAL', 300);
 
+if (!defined('NEWSLETTER_HEADER')) define('NEWSLETTER_HEADER', true);
+
 // Force the whole system log level to this value
 //define('NEWSLETTER_LOG_LEVEL', 4);
 
@@ -81,7 +83,8 @@ class Newsletter extends NewsletterModule {
     function __construct() {
         // Early possible
         if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
-            $max_time = NEWSLETTER_MAX_EXECUTION_TIME;
+            $max_time = NEWSLETTER_MAX_EXECUTION_TIME * 0.9;
+            @set_time_limit(NEWSLETTER_MAX_EXECUTION_TIME);
         } else {
             $max_time = (int) (@ini_get('max_execution_time') * 0.9);
         }
@@ -110,7 +113,7 @@ class Newsletter extends NewsletterModule {
         if (defined('DOING_CRON') && DOING_CRON) return;
 
         // TODO: Meditation on how to use those ones...
-        //register_activation_hook(__FILE__, array(&$this, 'hook_activate'));
+        register_activation_hook(__FILE__, array($this, 'hook_activate'));
         //register_deactivation_hook(__FILE__, array(&$this, 'hook_deactivate'));
 
         add_action('admin_init', array($this, 'hook_admin_init'));
@@ -123,6 +126,17 @@ class Newsletter extends NewsletterModule {
 
         if (is_admin()) {
             add_action('admin_head', array($this, 'hook_admin_head'));
+        }
+    }
+
+    function hook_activate() {
+        // Ok, why? When the plugin is not active WordPress may remove the scheduled "newsletter" action because
+        // the every-five-minutes schedule named "newsletter" is not present.
+        // Since the activation does not forces an upgrade, that schedule must be reactivated here. It is activated on
+        // the upgrade method as well for the user which upgrade the plugin without deactivte it (many).
+        $time = wp_next_scheduled('newsletter');
+        if ($time === false) {
+            wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
         }
     }
 
@@ -228,7 +242,6 @@ class Newsletter extends NewsletterModule {
         }
     }
 
-    // TODO: Remove almost anything...
     function hook_init() {
         global $cache_stop, $hyper_cache_stop, $wpdb;
 
@@ -260,6 +273,7 @@ class Newsletter extends NewsletterModule {
         $action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
         if (empty($action) || is_admin()) return;
 
+        // TODO: Remove!
         $cache_stop = true;
         $hyper_cache_stop = true;
 
@@ -360,7 +374,7 @@ class Newsletter extends NewsletterModule {
 
         if ($users == null) {
             if (empty($email->query)) {
-                $email->query = "select * from " . NEWSLETTER_EMAILS_TABLE . " where status='C'";
+                $email->query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='C'";
             }
             $query = $email->query . " and id>" . $email->last_id . " order by id limit " . $this->max_emails;
             $users = $wpdb->get_results($query);
@@ -396,6 +410,18 @@ class Newsletter extends NewsletterModule {
             if ($email->track == 1) $m = $this->relink($m, $email->id, $user->id);
 
             $s = $this->replace($email->subject, $user);
+
+            if (isset($user->wp_user_id) && $user->wp_user_id != 0) {
+                $this->logger->debug('Have wp_user_id: ' . $user->wp_user_id);
+                $wp_user_email = $wpdb->get_var($wpdb->prepare("select user_email from $wpdb->users where id=%d limit 1", $user->wp_user_id));
+                if (!empty($wp_user_email)) {
+                    $user->email = $wp_user_email;
+                    $this->logger->debug('Email replaced with: ' . $user->email);
+                }
+                else {
+                    $this->logger->debug('WP user has not an email?!');
+                }
+            }
 
             $this->mail($user->email, $s, array('html' => $m, 'text' => $mt), $headers);
 
@@ -690,6 +716,7 @@ class Newsletter extends NewsletterModule {
         $text = apply_filters('newsletter_replace', $text, $user_id, $email_id);
 
         $text = str_replace('{home_url}', get_option('home'), $text);
+        $text = str_replace('{blog_url}', get_option('home'), $text);
         $text = str_replace('{blog_title}', get_option('blogname'), $text);
         $text = str_replace('{blog_description}', get_option('blogdescription'), $text);
 
@@ -933,75 +960,11 @@ class Newsletter extends NewsletterModule {
     }
 
     /**
-     * NEVER CHANGE THIS METHOD SIGNATURE, USER BY THIRD PARTY PLUGINS.
-     *
-     * Saves a new user on the database. Return false if the email (that must be unique) is already
-     * there. For a new users set the token and creation time if not passed.
-     *
-     * @param array|object $user
-     */
-    function save_user($user, $return_format = OBJECT) {
-        if (is_object($user)) $user = (array) $user;
-        if (empty($user['id'])) {
-            $existing = $this->get_user($user['email']);
-            if ($existing != null) return false;
-            if (empty($user['token'])) $user['token'] = NewsletterModule::get_token();
-            //if (empty($user['created'])) $user['created'] = time();
-            // Database default
-            //if (empty($user['status'])) $user['status'] = 'S';
-        }
-        // Due to the unique index on email field, this can fail.
-        return $this->store->save(NEWSLETTER_USERS_TABLE, $user, $return_format);
-    }
-
-    /**
      * Returns a list of users marked as "test user".
      * @return array
      */
     function get_test_users() {
         return $this->store->get_all(NEWSLETTER_USERS_TABLE, "where test=1");
-    }
-
-    /** Returns the user identify by an id or an email. If $id_or_email is an object or an array, it is assumed it contains
-     * the "id" attribute or key and that is used to load the user.
-     *
-     * @global type $wpdb
-     * @param string|int|object|array $id_or_email
-     * @param type $format
-     * @return boolean
-     */
-    function get_user($id_or_email, $format = OBJECT) {
-        global $wpdb;
-
-        // To simplify the reaload of a user passing the user it self.
-        if (is_object($id_or_email)) $id_or_email = $id_or_email->id;
-        else if (is_array($id_or_email)) $id_or_email = $id_or_email['id'];
-
-        $id_or_email = strtolower(trim($id_or_email));
-
-        if (is_numeric($id_or_email)) {
-            $r = $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where id=%d limit 1", $id_or_email), $format);
-        } else {
-            $r = $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where email=%s limit 1", $id_or_email), $format);
-        }
-
-        if ($wpdb->last_error) {
-            $this->logger->error($wpdb->last_error);
-            return false;
-        }
-        return $r;
-    }
-
-    function get_user_by_wp_user_id($wp_user_id, $format = OBJECT) {
-        global $wpdb;
-
-        $r = $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where email=%d limit 1", $wp_user_id), $format);
-
-        if ($wpdb->last_error) {
-            $this->logger->error($wpdb->last_error);
-            return false;
-        }
-        return $r;
     }
 
     function delete_user($id) {

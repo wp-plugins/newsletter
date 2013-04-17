@@ -20,8 +20,7 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/subscription/email.php')) {
   return;
 }
 
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html>
     <head>
         <style type="text/css" media="all">

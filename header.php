@@ -7,6 +7,7 @@ if (isset($_REQUEST['dismiss']) && check_admin_referer()) {
 }
 
 ?>
+<?php if (NEWSLETTER_HEADER) { ?>
 <div id="newsletter-header">
     <a href="<?php echo $help_url?$help_url:'http://www.satollo.net/plugins/newsletter/newsletter-configuration'; ?>" target="_blank">Get Help</a>
     <a href="http://www.satollo.net/plugins/newsletter/newsletter-faq" target="_blank">FAQ</a>
@@ -27,6 +28,7 @@ if (isset($_REQUEST['dismiss']) && check_admin_referer()) {
     <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">Engine next run in <?php echo wp_next_scheduled('newsletter') - time(); ?> s</a>
     -->
 </div>
+<?php } ?>
 
 <?php if ($dismissed['rate'] != 1) { ?>
 <div class="newsletter-notice">

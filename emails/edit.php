@@ -44,6 +44,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     $email['options']['preferences'] = $controls->data['preferences'];
     $email['options']['sex'] = $controls->data['sex'];
     $email['options']['status'] = $controls->data['status'];
+    $email['options']['wp_users'] = $controls->data['wp_users'];
 
     $email['options'] = serialize($email['options']);
 
@@ -59,6 +60,10 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
         $query = "select * from " . $wpdb->prefix . "newsletter where status='S'";
     } else {
         $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
+    }
+
+    if ($controls->data['wp_users'] == '1') {
+        $query .= " and wp_user_id<>0";
     }
 
     $preferences = $controls->data['preferences'];
@@ -310,7 +315,7 @@ if ($email['editor'] == 0) {
                         <td>
                             Subscribers with at least one preference
                             <?php $controls->select('preferences_status', array(0=>'ACTIVE', 1=>'NOT ACTIVE')); ?>
-                            between the selected ones:
+                            between the selected ones below:
 
                             <?php $controls->preferences_group('preferences', true); ?>
                             <div class="hints">
@@ -340,6 +345,16 @@ if ($email['editor'] == 0) {
                                 <br>
                                 You should NEVER send emails to not confirmed subscribers, but if you need to send them
                                 an email to ask for confirmation, you can use this option.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Registered users?</th>
+                        <td>
+                            <?php $controls->yesno('wp_users'); ?>
+
+                            <div class="hints">
+                                Limit to the subscribers which are WordPress users as well.
                             </div>
                         </td>
                     </tr>

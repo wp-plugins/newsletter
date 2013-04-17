@@ -125,13 +125,6 @@ class NewsletterUsers extends NewsletterModule {
                 echo $recipients[$i]->feed . ';';
                 echo $recipients[$i]->followup . ';';
 
-                $profile = $wpdb->get_results("select name,value from " . $wpdb->prefix . "newsletter_profiles where newsletter_id=" . $recipients[$i]->id . " order by name");
-                $map = array();
-                foreach ($profile as $field) {
-                    $map[$field->name] = $field->value;
-                }
-
-
                 echo "\n";
                 flush();
             }

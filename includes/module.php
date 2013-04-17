@@ -492,6 +492,66 @@ class NewsletterModule {
         return $this->store->get_single(NEWSLETTER_EMAILS_TABLE, $id, $format);
     }
 
+    /** Returns the user identify by an id or an email. If $id_or_email is an object or an array, it is assumed it contains
+     * the "id" attribute or key and that is used to load the user.
+     *
+     * @global type $wpdb
+     * @param string|int|object|array $id_or_email
+     * @param type $format
+     * @return boolean
+     */
+    function get_user($id_or_email, $format = OBJECT) {
+        global $wpdb;
+
+        // To simplify the reaload of a user passing the user it self.
+        if (is_object($id_or_email)) $id_or_email = $id_or_email->id;
+        else if (is_array($id_or_email)) $id_or_email = $id_or_email['id'];
+
+        $id_or_email = strtolower(trim($id_or_email));
+
+        if (is_numeric($id_or_email)) {
+            $r = $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where id=%d limit 1", $id_or_email), $format);
+        } else {
+            $r = $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where email=%s limit 1", $id_or_email), $format);
+        }
+
+        if ($wpdb->last_error) {
+            $this->logger->error($wpdb->last_error);
+            return false;
+        }
+        return $r;
+    }
+
+    /**
+     * NEVER CHANGE THIS METHOD SIGNATURE, USER BY THIRD PARTY PLUGINS.
+     *
+     * Saves a new user on the database. Return false if the email (that must be unique) is already
+     * there. For a new users set the token and creation time if not passed.
+     *
+     * @param array|object $user
+     */
+    function save_user($user, $return_format = OBJECT) {
+        if (is_object($user)) $user = (array) $user;
+        if (empty($user['id'])) {
+            $existing = $this->get_user($user['email']);
+            if ($existing != null) return false;
+            if (empty($user['token'])) $user['token'] = NewsletterModule::get_token();
+            //if (empty($user['created'])) $user['created'] = time();
+            // Database default
+            //if (empty($user['status'])) $user['status'] = 'S';
+        }
+        // Due to the unique index on email field, this can fail.
+        return $this->store->save(NEWSLETTER_USERS_TABLE, $user, $return_format);
+    }
+
+    function set_user_wp_user_id($user_id, $wp_user_id) {
+        $this->store->set_field(NEWSLETTER_USERS_TABLE, $user_id, 'wp_user_id', $wp_user_id);
+    }
+
+    function get_user_by_wp_user_id($wp_user_id, $format = OBJECT) {
+        return $this->store->get_single_by_field(NEWSLETTER_USERS_TABLE, 'wp_user_id', $wp_user_id, $format);
+    }
+
 }
 
 /**

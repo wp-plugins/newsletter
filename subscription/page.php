@@ -18,6 +18,7 @@ $module = NewsletterSubscription::instance();
 $user = $module->get_user_from_request();
 $message_key = $module->get_message_key_from_request();
 $message = $newsletter->replace($module->options[$message_key . '_text'], $user);
+$message .= $module->options[$message_key . '_tracking'];
 $alert = stripslashes($_REQUEST['alert']);
 
 // Force the UTF-8 charset

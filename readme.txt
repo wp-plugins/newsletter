@@ -2,7 +2,7 @@
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.0.0
 Tested up to: 3.5.1
-Stable tag: trunk
+Stable tag: 3.2.3
 Donate link: http://www.satollo.net/donations
 
 Add a real newsletter to your blog. In seconds. For free.
@@ -55,6 +55,20 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.2.3 =
+
+* Added schedule list on Diagnostic panel
+* Removed the enable/disable resubscription option
+* Added a check for the delivery engine shutdown on some particular situations
+* Revisited the WordPress registration integration
+* Revisited the WordPress user import and moved on subscriber massive action panel
+* Added links to new documentation chapter
+* Removed a survived reference to an old table
+* Reactivated the replacement of the {blog_url} tag
+* Fixed the tracking code injection
+* Fixed a default query generation for compatibility with 2.5 version
+* Fixed the tag replacements when using the old forms
 
 = 3.2.2 =
 
