@@ -11,7 +11,7 @@ Add a real newsletter to your blog. In seconds. For free.
 
 This plug-in lets you collect subscribers on your blog with a single or double opt-in (law compliant)
 subscription process. Perfect for list building, you can create cool emails with visual editor, send and
-track them.
+track  them.
 
 Unlimited subscribers, unlimited emails.
 
