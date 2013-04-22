@@ -31,7 +31,7 @@ if (strpos(__FILE__, 'wp-content/newsletter') === false && is_file(WP_CONTENT_DI
         padding: 0;
       }
       #container {
-        background-image: url("<?php echo NEWSLETTER_URL; ?>/images/popup/bg.png");
+        background-image: url("<?php echo plugins_url('newsletter'); ?>/images/popup/bg.png");
         background-repeat: repeat-x;
         padding: 10px 15px;
       }
@@ -58,7 +58,7 @@ if (strpos(__FILE__, 'wp-content/newsletter') === false && is_file(WP_CONTENT_DI
       }
       
       input[type=submit] {
-        background-image: url("<?php echo NEWSLETTER_URL; ?>/images/popup/button.png");
+        background-image: url("<?php echo plugins_url('newsletter'); ?>/images/popup/button.png");
         color: #fff;
         border: 1px solid #333;
         padding: 5px;

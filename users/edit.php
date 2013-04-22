@@ -181,7 +181,7 @@ $options_profile = get_option('newsletter_profile');
           <tr valign="top">
             <th>Profile URL</th>
             <td>
-                <?php echo NEWSLETTER_PROFILE_URL . '?nk=' . $id . '-' . $controls->data['token']; ?>
+                <?php echo plugins_url('newsletter/do/profile.php') . '?nk=' . $id . '-' . $controls->data['token']; ?>
             </td>
           </tr>
 

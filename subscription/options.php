@@ -87,7 +87,7 @@ if ($controls->is_action('create')) {
 ?>
 
 <?php if ($controls->data['novisual'] != 1) { ?>
-    <script type="text/javascript" src="<?php echo NEWSLETTER_URL; ?>/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/tiny_mce/tiny_mce.js"></script>
 
     <script type="text/javascript">
         tinyMCE.init({
@@ -103,7 +103,7 @@ if ($controls->is_action('create')) {
             theme_advanced_resizing : true,
             theme_advanced_statusbar_location: "bottom",
             document_base_url : "<?php echo get_option('home'); ?>/",
-            content_css : "<?php echo NEWSLETTER_URL; ?>/editor.css?" + new Date().getTime()
+            content_css : "<?php echo plugins_url('newsletter'); ?>/editor.css?" + new Date().getTime()
         });
     </script>
 <?php } ?>

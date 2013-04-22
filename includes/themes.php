@@ -68,7 +68,7 @@ class NewsletterThemes {
                 if (is_file($screenshot)) {
                     $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
                 } else {
-                    $data['screenshot'] = NEWSLETTER_URL . '/images/theme-screenshot.png';
+                    $data['screenshot'] = plugins_url('newsletter') . '/images/theme-screenshot.png';
                 }
                 $list[$file] = $data;
             }
@@ -89,7 +89,7 @@ class NewsletterThemes {
                     if (is_file($screenshot)) {
                         $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
                     } else {
-                        $data['screenshot'] = NEWSLETTER_URL . '/images/theme-screenshot.png';
+                        $data['screenshot'] = plugins_url('newsletter') . '/images/theme-screenshot.png';
                     }
                     $list[$file] = $data;
                 }
@@ -137,7 +137,7 @@ class NewsletterThemes {
 
         $path = NEWSLETTER_DIR . '/' . $this->module . '/themes/' . $theme;
         if (is_dir($path)) {
-            return NEWSLETTER_URL . '/' . $this->module . '/themes/' . $theme;
+            return plugins_url('newsletter') . '/' . $this->module . '/themes/' . $theme;
         } else {
             return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/themes/' . $theme;
         }

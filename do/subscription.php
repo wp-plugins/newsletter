@@ -14,7 +14,7 @@ if (!empty($options_main['url'])) {
 $options = get_option('newsletter', array());
 
 if (stripos($options['subscription_text'], '<form') !== false) {
-  $message = str_ireplace('<form', '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '" onsubmit="return newsletter_check(this)"', $options['subscription_text']);
+  $message = str_ireplace('<form', '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '" onsubmit="return newsletter_check(this)"', $options['subscription_text']);
   $message = $this->replace_lists($message);
 } else {
   $form = $newsletter->subscription_form();

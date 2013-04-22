@@ -111,6 +111,9 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     if ($controls->is_action('editor')) {
         $email['editor'] = $email['editor'] == 0?1:0;
     }
+    
+    // Cleans up of tag
+    $email['message'] = NewsletterModule::clean_url_tags($email['message']);
 
     $res = Newsletter::instance()->save_email($email);
     if ($res === false) {
@@ -172,7 +175,7 @@ if ($email['editor'] == 0) {
 
 ?>
 
-<script type="text/javascript" src="<?php echo NEWSLETTER_URL; ?>/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
     tinyMCE.init({
         mode : "specific_textareas",
@@ -188,7 +191,7 @@ if ($email['editor'] == 0) {
         theme_advanced_resizing : true,
         theme_advanced_toolbar_location : "top",
         document_base_url : "<?php echo get_option('home'); ?>/",
-        content_css: "<?php echo NEWSLETTER_URL . '/emails/css.php?id=' . $email_id . '&' . time(); ?>"
+        content_css: "<?php echo plugins_url('newsletter') . '/emails/css.php?id=' . $email_id . '&' . time(); ?>"
     });
 
     jQuery(document).ready(function() {
@@ -326,7 +329,7 @@ if ($email['editor'] == 0) {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th>Track message links?</th>
+                        <th>Track clicks and opening?</th>
                         <td>
                             <?php $controls->yesno('track'); ?>
                             <div class="hints">

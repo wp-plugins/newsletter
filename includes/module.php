@@ -122,12 +122,14 @@ class NewsletterModule {
      */
     function get_options($sub = '') {
         $options = get_option($this->get_prefix($sub));
-        if ($options == false) return array();
+        if ($options == false)
+            return array();
         return $options;
     }
 
     function get_default_options($sub = '') {
-        if (!empty($sub)) $sub .= '-';
+        if (!empty($sub))
+            $sub .= '-';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
@@ -162,7 +164,8 @@ class NewsletterModule {
                 $this->themes->save_options($options['theme'], $options);
             }
             // TODO: To be remove since there is no more log level at module level (should it be reintroduced?)
-            if (isset($options['log_level'])) update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
+            if (isset($options['log_level']))
+                update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
         }
     }
 
@@ -240,15 +243,19 @@ class NewsletterModule {
      */
     static function add_qs($url, $qs, $amp = true) {
         if (strpos($url, '?') !== false) {
-            if ($amp) return $url . '&amp;' . $qs;
-            else return $url . '&' . $qs;
+            if ($amp)
+                return $url . '&amp;' . $qs;
+            else
+                return $url . '&' . $qs;
         }
-        else return $url . '?' . $qs;
+        else
+            return $url . '?' . $qs;
     }
 
     static function normalize_email($email) {
         $email = strtolower(trim($email));
-        if (!is_email($email)) return null;
+        if (!is_email($email))
+            return null;
         return $email;
     }
 
@@ -260,20 +267,26 @@ class NewsletterModule {
 
     static function normalize_sex($sex) {
         $sex = trim(strtolower($sex));
-        if ($sex != 'f' && $sex != 'm') $sex = 'n';
+        if ($sex != 'f' && $sex != 'm')
+            $sex = 'n';
         return $sex;
     }
 
     static function is_email($email, $empty_ok = false) {
         $email = strtolower(trim($email));
-        if ($empty_ok && $email == '') return true;
+        if ($empty_ok && $email == '')
+            return true;
 
-        if (!is_email($email)) return false;
+        if (!is_email($email))
+            return false;
 
         // TODO: To be moved on the subscription module and make configurable
-        if (strpos($email, 'mailinator.com') !== false) return false;
-        if (strpos($email, 'guerrillamailblock.com') !== false) return false;
-        if (strpos($email, 'emailtemporanea.net') !== false) return false;
+        if (strpos($email, 'mailinator.com') !== false)
+            return false;
+        if (strpos($email, 'guerrillamailblock.com') !== false)
+            return false;
+        if (strpos($email, 'emailtemporanea.net') !== false)
+            return false;
         return true;
     }
 
@@ -293,7 +306,8 @@ class NewsletterModule {
     }
 
     static function format_date($time) {
-        if (empty($time)) return '-';
+        if (empty($time))
+            return '-';
         return gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
     }
 
@@ -358,8 +372,10 @@ class NewsletterModule {
     static function split_posts(&$posts, $time = 0) {
         $result = array(array(), array());
         foreach ($posts as &$post) {
-            if (self::is_post_old($post, $time)) $result[1][] = $post;
-            else $result[0][] = $post;
+            if (self::is_post_old($post, $time))
+                $result[1][] = $post;
+            else
+                $result[0][] = $post;
         }
         return $result;
     }
@@ -371,8 +387,10 @@ class NewsletterModule {
     static function get_post_image($post_id = null, $size = 'thumbnail', $alternative = null) {
         global $post;
 
-        if (empty($post_id)) $post_id = $post->ID;
-        if (empty($post_id)) return $alternative;
+        if (empty($post_id))
+            $post_id = $post->ID;
+        if (empty($post_id))
+            return $alternative;
 
         $image_id = function_exists('get_post_thumbnail_id') ? get_post_thumbnail_id($post_id) : false;
         if ($image_id) {
@@ -396,6 +414,17 @@ class NewsletterModule {
         return is_file(WP_CONTENT_DIR . "/extensions/newsletter/$name/$name.php");
     }
 
+    /**
+     * Cleans up a text containing url tags with appended the absolute URL (due to
+     * the editor behavior) moving back them to the simple form.
+     */
+    static function clean_url_tags($text) {
+        $text = str_replace('%7B', '{', $text);
+        $text = str_replace('%7D', '}', $text);
+        $text = preg_replace("/[\"']http.*(\\{[^\\}]+\\})[\"']/i", "\"\\1\"", $text);
+        return $text;
+    }
+
     function get_styles() {
 
         $list = array('' => 'none');
@@ -405,8 +434,10 @@ class NewsletterModule {
 
         if ($handle !== false) {
             while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') continue;
-                if (substr($file, -4) != '.css') continue;
+                if ($file == '.' || $file == '..')
+                    continue;
+                if (substr($file, -4) != '.css')
+                    continue;
                 $list[$file] = substr($file, 0, strlen($file) - 4);
             }
             closedir($handle);
@@ -417,9 +448,12 @@ class NewsletterModule {
 
         if ($handle !== false) {
             while ($file = readdir($handle)) {
-                if ($file == '.' || $file == '..') continue;
-                if (isset($list[$file])) continue;
-                if (substr($file, -4) != '.css') continue;
+                if ($file == '.' || $file == '..')
+                    continue;
+                if (isset($list[$file]))
+                    continue;
+                if (substr($file, -4) != '.css')
+                    continue;
                 $list[$file] = substr($file, 0, strlen($file) - 4);
             }
             closedir($handle);
@@ -428,12 +462,14 @@ class NewsletterModule {
     }
 
     function get_style_url($style) {
-        if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/styles/' . $style)) return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/styles/' . $style;
-        else return NEWSLETTER_URL . '/' . $this->module . '/styles/' . $style;
+        if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/styles/' . $style))
+            return WP_CONTENT_URL . '/extensions/newsletter/' . $this->module . '/styles/' . $style;
+        else
+            return plugins_url('newsletter') . '/' . $this->module . '/styles/' . $style;
     }
 
     function admin_menu() {
-
+        
     }
 
     function add_menu_page($page, $title) {
@@ -444,7 +480,8 @@ class NewsletterModule {
         }
         $name = 'newsletter_' . $this->module . '_' . $page;
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
-        add_submenu_page('newsletter_main_index', $title, $title, ($newsletter->options['editor'] == 1) ? 7 : 10, $name, $name);
+        // Rather stupid system to enable a menu voice... it would suffice to say "to editors"
+        add_submenu_page('newsletter_main_index', $title, $title, ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', $name, $name);
     }
 
     function add_admin_page($page, $title) {
@@ -456,7 +493,7 @@ class NewsletterModule {
 
         $name = 'newsletter_' . $this->module . '_' . $page;
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
-        add_submenu_page(null, $title, $title, $newsletter->options['editor'] ? 7 : 10, $name, $name);
+        add_submenu_page(null, $title, $title, ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', $name, $name);
     }
 
     function get_admin_page_url($page) {
@@ -504,8 +541,10 @@ class NewsletterModule {
         global $wpdb;
 
         // To simplify the reaload of a user passing the user it self.
-        if (is_object($id_or_email)) $id_or_email = $id_or_email->id;
-        else if (is_array($id_or_email)) $id_or_email = $id_or_email['id'];
+        if (is_object($id_or_email))
+            $id_or_email = $id_or_email->id;
+        else if (is_array($id_or_email))
+            $id_or_email = $id_or_email['id'];
 
         $id_or_email = strtolower(trim($id_or_email));
 
@@ -531,11 +570,14 @@ class NewsletterModule {
      * @param array|object $user
      */
     function save_user($user, $return_format = OBJECT) {
-        if (is_object($user)) $user = (array) $user;
+        if (is_object($user))
+            $user = (array) $user;
         if (empty($user['id'])) {
             $existing = $this->get_user($user['email']);
-            if ($existing != null) return false;
-            if (empty($user['token'])) $user['token'] = NewsletterModule::get_token();
+            if ($existing != null)
+                return false;
+            if (empty($user['token']))
+                $user['token'] = NewsletterModule::get_token();
             //if (empty($user['created'])) $user['created'] = time();
             // Database default
             //if (empty($user['status'])) $user['status'] = 'S';

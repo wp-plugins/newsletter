@@ -227,14 +227,14 @@ else {
                         next time.
                     </p>
                 </div>
-                <iframe src="<?php echo NEWSLETTER_URL; ?>/feed/preview.php?<?php echo time(); ?>" width="100%" height="700"></iframe>
+                <iframe src="<?php echo plugins_url('newsletter'); ?>/feed/preview.php?<?php echo time(); ?>" width="100%" height="700"></iframe>
             </div>
 
 
             <div id="tabs-4">
                 <div class="tab-preamble">
                     <p>
-                        Posts below are the one will be included on next email (sheduled future posts are not counted so
+                        Posts below are the one will be included on next email (scheduled future posts are not counted so
                         more posts could be included).
                     </p>
                 </div>

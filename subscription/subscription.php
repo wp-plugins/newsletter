@@ -464,7 +464,7 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         // Use the standard page.
-        header('Location: ' . NEWSLETTER_URL . '/subscription/page.php?nm=' . $key . '&nk=' . $user->id . '-' . $user->token . $params);
+        header('Location: ' . plugins_url('newsletter') . '/subscription/page.php?nm=' . $key . '&nk=' . $user->id . '-' . $user->token . $params);
         die();
     }
 
@@ -620,7 +620,7 @@ class NewsletterSubscription extends NewsletterModule {
 
         $buffer .= '<div class="newsletter newsletter-subscription">' . "\n";
         if (empty($action)) {
-            $buffer .= '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '" onsubmit="return newsletter_check(this)">' . "\n\n";
+            $buffer .= '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '" onsubmit="return newsletter_check(this)">' . "\n\n";
         } else {
             $buffer .= '<form method="post" action="' . $action . '" onsubmit="return newsletter_check(this)">' . "\n\n";
         }
@@ -718,7 +718,7 @@ class NewsletterSubscription extends NewsletterModule {
         $options = get_option('newsletter_profile');
 
         $buffer .= '<div class="newsletter newsletter-profile">';
-        $buffer .= '<form action="' . NEWSLETTER_SAVE_URL . '" method="post">';
+        $buffer .= '<form action="' . plugins_url('newsletter/do/save.php') . '" method="post">';
         // TODO: use nk
         $buffer .= '<input type="hidden" name="nk" value="' . $user->id . '-' . $user->token . '"/>';
         $buffer .= '<table cellspacing="0" cellpadding="3" border="0">';
@@ -807,12 +807,12 @@ class NewsletterSubscription extends NewsletterModule {
         $form = $options['form_' . $number];
 
         if (stripos($form, '<form') === false) {
-            $form = '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '">' .
+            $form = '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '">' .
                     $form . '</form>';
         }
 
         // For compatibility
-        $form = str_replace('{newsletter_url}', NEWSLETTER_SUBSCRIBE_URL, $form);
+        $form = str_replace('{newsletter_url}', plugins_url('newsletter/do/subscribe.php'), $form);
 
         $form = $this->replace_lists($form);
 
@@ -927,7 +927,7 @@ function newsletter_shortcode($attrs, $content) {
         // Compatibility check
         if (stripos($message, '<form') !== false) {
             $message .= $module->get_form_javascript();
-            $message = str_ireplace('<form', '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '" onsubmit="return newsletter_check(this)"', $message);
+            $message = str_ireplace('<form', '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '" onsubmit="return newsletter_check(this)"', $message);
         } else {
 
             if (strpos($message, '{subscription_form') === false) {

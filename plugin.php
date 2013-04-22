@@ -29,13 +29,34 @@ define('NEWSLETTER_SLUG', 'newsletter');
 define('NEWSLETTER_DIR', WP_PLUGIN_DIR . '/' . NEWSLETTER_SLUG);
 define('NEWSLETTER_INCLUDES_DIR', WP_PLUGIN_DIR . '/' . NEWSLETTER_SLUG . '/includes');
 
-if (!defined('NEWSLETTER_LIST_MAX')) define('NEWSLETTER_LIST_MAX', 20);
-if (!defined('NEWSLETTER_PROFILE_MAX')) define('NEWSLETTER_PROFILE_MAX', 20);
-if (!defined('NEWSLETTER_FORMS_MAX')) define('NEWSLETTER_FORMS_MAX', 10);
+// Almost obsolete but the first two must be kept for compatibility with modules
+define('NEWSLETTER_URL', WP_PLUGIN_URL . '/newsletter');
+define('NEWSLETTER_EMAIL_URL', NEWSLETTER_URL . '/do/view.php');
 
-if (!defined('NEWSLETTER_CRON_INTERVAL')) define('NEWSLETTER_CRON_INTERVAL', 300);
+define('NEWSLETTER_SUBSCRIPTION_POPUP_URL', NEWSLETTER_URL . '/do/subscription-popup.php');
+define('NEWSLETTER_SUBSCRIBE_URL', NEWSLETTER_URL . '/do/subscribe.php');
+define('NEWSLETTER_SUBSCRIBE_POPUP_URL', NEWSLETTER_URL . '/do/subscribe-popup.php');
+define('NEWSLETTER_PROFILE_URL', NEWSLETTER_URL . '/do/profile.php');
+define('NEWSLETTER_SAVE_URL', NEWSLETTER_URL . '/do/save.php');
+define('NEWSLETTER_CONFIRM_URL', NEWSLETTER_URL . '/do/confirm.php');
+define('NEWSLETTER_CHANGE_URL', NEWSLETTER_URL . '/do/change.php');
+define('NEWSLETTER_UNLOCK_URL', NEWSLETTER_URL . '/do/unlock.php');
+define('NEWSLETTER_UNSUBSCRIBE_URL', NEWSLETTER_URL . '/do/unsubscribe.php');
+define('NEWSLETTER_UNSUBSCRIPTION_URL', NEWSLETTER_URL . '/do/unsubscription.php');
 
-if (!defined('NEWSLETTER_HEADER')) define('NEWSLETTER_HEADER', true);
+
+if (!defined('NEWSLETTER_LIST_MAX'))
+    define('NEWSLETTER_LIST_MAX', 20);
+if (!defined('NEWSLETTER_PROFILE_MAX'))
+    define('NEWSLETTER_PROFILE_MAX', 20);
+if (!defined('NEWSLETTER_FORMS_MAX'))
+    define('NEWSLETTER_FORMS_MAX', 10);
+
+if (!defined('NEWSLETTER_CRON_INTERVAL'))
+    define('NEWSLETTER_CRON_INTERVAL', 300);
+
+if (!defined('NEWSLETTER_HEADER'))
+    define('NEWSLETTER_HEADER', true);
 
 // Force the whole system log level to this value
 //define('NEWSLETTER_LOG_LEVEL', 4);
@@ -101,7 +122,8 @@ class Newsletter extends NewsletterModule {
         parent::__construct('main', '1.1.5');
 
         $max = $this->options['scheduler_max'];
-        if (!is_numeric($max)) $max = 100;
+        if (!is_numeric($max))
+            $max = 100;
         $this->max_emails = max(floor($max / 12), 1);
 
         add_action('init', array($this, 'hook_init'));
@@ -110,7 +132,8 @@ class Newsletter extends NewsletterModule {
         // This specific event is created by "Feed by mail" panel on configuration
         add_action('shutdown', array($this, 'hook_shutdown'));
 
-        if (defined('DOING_CRON') && DOING_CRON) return;
+        if (defined('DOING_CRON') && DOING_CRON)
+            return;
 
         // TODO: Meditation on how to use those ones...
         register_activation_hook(__FILE__, array($this, 'hook_activate'));
@@ -183,7 +206,8 @@ class Newsletter extends NewsletterModule {
         if (empty($options['sender_email'])) {
             // That code was taken from WordPress
             $sitename = strtolower($_SERVER['SERVER_NAME']);
-            if (substr($sitename, 0, 4) == 'www.') $sitename = substr($sitename, 4);
+            if (substr($sitename, 0, 4) == 'www.')
+                $sitename = substr($sitename, 4);
             // WordPress build an address in the same way using wordpress@...
             $options['sender_email'] = 'newsletter@' . $sitename;
             $this->save_options($options);
@@ -245,22 +269,6 @@ class Newsletter extends NewsletterModule {
     function hook_init() {
         global $cache_stop, $hyper_cache_stop, $wpdb;
 
-        if (!defined('NEWSLETTER_URL')) {
-            define('NEWSLETTER_URL', plugins_url('', __FILE__));
-        }
-
-        define('NEWSLETTER_SUBSCRIPTION_POPUP_URL', NEWSLETTER_URL . '/do/subscription-popup.php');
-        define('NEWSLETTER_SUBSCRIBE_URL', NEWSLETTER_URL . '/do/subscribe.php');
-        define('NEWSLETTER_SUBSCRIBE_POPUP_URL', NEWSLETTER_URL . '/do/subscribe-popup.php');
-        define('NEWSLETTER_PROFILE_URL', NEWSLETTER_URL . '/do/profile.php');
-        define('NEWSLETTER_SAVE_URL', NEWSLETTER_URL . '/do/save.php');
-        define('NEWSLETTER_CONFIRM_URL', NEWSLETTER_URL . '/do/confirm.php');
-        define('NEWSLETTER_CHANGE_URL', NEWSLETTER_URL . '/do/change.php');
-        define('NEWSLETTER_UNLOCK_URL', NEWSLETTER_URL . '/do/unlock.php');
-        define('NEWSLETTER_UNSUBSCRIBE_URL', NEWSLETTER_URL . '/do/unsubscribe.php');
-        define('NEWSLETTER_UNSUBSCRIPTION_URL', NEWSLETTER_URL . '/do/unsubscription.php');
-        define('NEWSLETTER_EMAIL_URL', NEWSLETTER_URL . '/do/view.php');
-
         if (is_admin()) {
             if ($this->is_admin_page()) {
                 wp_enqueue_script('jquery-ui-tabs');
@@ -271,7 +279,8 @@ class Newsletter extends NewsletterModule {
         }
 
         $action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
-        if (empty($action) || is_admin()) return;
+        if (empty($action) || is_admin())
+            return;
 
         // TODO: Remove!
         $cache_stop = true;
@@ -284,7 +293,8 @@ class Newsletter extends NewsletterModule {
 
         if ($action == 'fu') {
             $user = $this->check_user();
-            if ($user == null) die('No user');
+            if ($user == null)
+                die('No user');
             $wpdb->query("update " . $wpdb->prefix . "newsletter set followup=2 where id=" . $user->id);
             $options_followup = get_option('newsletter_followup');
             $this->message = $options_followup['unsubscribed_text'];
@@ -294,20 +304,21 @@ class Newsletter extends NewsletterModule {
 
     function is_admin_page() {
         // TODO: Use the module list to detect that...
-        if (!isset($_GET['page'])) return false;
+        if (!isset($_GET['page']))
+            return false;
         $page = $_GET['page'];
         return strpos($page, 'newsletter_') === 0 || strpos($page, 'newsletter-statistics/') === 0 || strpos($page, 'newsletter/') === 0 ||
                 strpos($page, 'newsletter-updates/') === 0 || strpos($page, 'newsletter-flows/') === 0;
     }
 
     function hook_admin_init() {
-
+        
     }
 
     function hook_admin_head() {
         if ($this->is_admin_page()) {
-            echo '<link type="text/css" rel="stylesheet" href="' . NEWSLETTER_URL . '/admin.css?' . NEWSLETTER_VERSION . '"/>';
-            echo '<script src="' . NEWSLETTER_URL . '/admin.js?' . NEWSLETTER_VERSION . '"></script>';
+            echo '<link type="text/css" rel="stylesheet" href="' . plugins_url('newsletter') . '/admin.css?' . NEWSLETTER_VERSION . '"/>';
+            echo '<script src="' . plugins_url('newsletter') . '/admin.js?' . NEWSLETTER_VERSION . '"></script>';
         }
     }
 
@@ -341,14 +352,16 @@ class Newsletter extends NewsletterModule {
         $this->logger->debug('hook_newsletter> Starting');
 
         // Do not accept job activation before at least 4 minutes are elapsed from the last run.
-        if (!$this->check_transient('engine', NEWSLETTER_CRON_INTERVAL)) return;
+        if (!$this->check_transient('engine', NEWSLETTER_CRON_INTERVAL))
+            return;
 
         // Retrieve all email in "sending" status
         $emails = $wpdb->get_results("select * from " . NEWSLETTER_EMAILS_TABLE . " where status='sending' and send_on<" . time() . " order by id asc");
         $this->logger->debug('hook_newsletter> Emails found in sending status: ' . count($emails));
         foreach ($emails as &$email) {
             $this->logger->debug('hook_newsletter> Sending email ' . $email->id);
-            if (!$this->send($email)) break;
+            if (!$this->send($email))
+                break;
         }
         // Remove the semaphore so the delivery engine can be activated again
         $this->delete_transient('engine');
@@ -367,7 +380,8 @@ class Newsletter extends NewsletterModule {
     function send($email, $users = null) {
         global $wpdb;
 
-        if (is_array($email)) $email = (object) $email;
+        if (is_array($email))
+            $email = (object) $email;
 
         // This stops the update of last_id and sent fields since it's not a scheduled delivery but a test.
         $test = $users != null;
@@ -395,7 +409,8 @@ class Newsletter extends NewsletterModule {
         foreach ($users as &$user) {
 
             // Before try to send, check the limits.
-            if (!$test && $this->limits_exceeded()) return false;
+            if (!$test && $this->limits_exceeded())
+                return false;
 
             $headers = array('List-Unsubscribe' => '<' . NEWSLETTER_UNSUBSCRIBE_URL . '?nk=' . $user->id . '-' . $user->token . '>');
 
@@ -407,7 +422,8 @@ class Newsletter extends NewsletterModule {
             $mt = $this->replace($email->message_text, $user, $email->id);
 
 
-            if ($email->track == 1) $m = $this->relink($m, $email->id, $user->id);
+            if ($email->track == 1)
+                $m = $this->relink($m, $email->id, $user->id);
 
             $s = $this->replace($email->subject, $user);
 
@@ -417,8 +433,7 @@ class Newsletter extends NewsletterModule {
                 if (!empty($wp_user_email)) {
                     $user->email = $wp_user_email;
                     $this->logger->debug('Email replaced with: ' . $user->email);
-                }
-                else {
+                } else {
                     $this->logger->debug('WP user has not an email?!');
                 }
             }
@@ -455,13 +470,15 @@ class Newsletter extends NewsletterModule {
         if (!$this->limits_set) {
             $this->logger->debug('limits_exceeded> Setting the limits for the first time');
             $max = $this->options['scheduler_max'];
-            if (!is_numeric($max)) $max = 100;
+            if (!is_numeric($max))
+                $max = 100;
             $this->email_limit = max(floor($max / 12), 1);
             $this->logger->debug('limits_exceeded> Max number of emails can send: ' . $this->email_limit);
 
             $wpdb->query("set session wait_timeout=300");
             // From default-constants.php
-            if (function_exists('memory_get_usage') && ( (int) @ini_get('memory_limit') < 128 )) @ini_set('memory_limit', '256M');
+            if (function_exists('memory_get_usage') && ( (int) @ini_get('memory_limit') < 128 ))
+                @ini_set('memory_limit', '256M');
 
             $this->limits_set = true;
         }
@@ -496,7 +513,8 @@ class Newsletter extends NewsletterModule {
             return true;
         }
 
-        if ($this->mailer == null) $this->mailer_init();
+        if ($this->mailer == null)
+            $this->mailer_init();
 
         // Simple message is asumed to be html
         if (!is_array($message)) {
@@ -561,7 +579,8 @@ class Newsletter extends NewsletterModule {
         if ($smtp_options['enabled'] == 1) {
             $this->mailer->IsSMTP();
             $this->mailer->Host = $smtp_options['host'];
-            if (!empty($smtp_options['port'])) $this->mailer->Port = (int) $smtp_options['port'];
+            if (!empty($smtp_options['port']))
+                $this->mailer->Port = (int) $smtp_options['port'];
 
             if (!empty($smtp_options['user'])) {
                 $this->mailer->SMTPAuth = true;
@@ -608,15 +627,16 @@ class Newsletter extends NewsletterModule {
     }
 
     function form($number = null) {
-        if ($number == null) return $this->subscription_form();
+        if ($number == null)
+            return $this->subscription_form();
         $options = get_option('newsletter_forms');
 
         $form = $options['form_' . $number];
 
         if (stripos($form, '<form') !== false) {
-            $form = str_replace('{newsletter_url}', NEWSLETTER_SUBSCRIBE_URL, $form);
+            $form = str_replace('{newsletter_url}', plugins_url('newsletter/do/subscribe.php'), $form);
         } else {
-            $form = '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '" onsubmit="return newsletter_check(this)">' .
+            $form = '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '" onsubmit="return newsletter_check(this)">' .
                     $form . '</form>';
         }
 
@@ -626,7 +646,8 @@ class Newsletter extends NewsletterModule {
     }
 
     function find_file($file1, $file2) {
-        if (is_file($file1)) return $file1;
+        if (is_file($file1))
+            return $file1;
         return $file2;
     }
 
@@ -695,7 +716,8 @@ class Newsletter extends NewsletterModule {
         $x = 0;
         while (($x = strpos($text, '{date_', $x)) !== false) {
             $y = strpos($text, '}', $x);
-            if ($y === false) continue;
+            if ($y === false)
+                continue;
             $f = substr($text, $x + 6, $y - $x - 6);
             $text = substr($text, 0, $x) . date($f) . substr($text, $y + 1);
         }
@@ -739,7 +761,8 @@ class Newsletter extends NewsletterModule {
             $text = str_replace('{key}', $user->id . '-' . $user->token, $text);
             $text = str_replace('%7Bkey%7D', $user->id . '-' . $user->token, $text);
 
-            if (strpos($text, '{profile_form}') !== false) $text = str_replace('{profile_form}', NewsletterSubscription::instance()->get_profile_form($user), $text);
+            if (strpos($text, '{profile_form}') !== false)
+                $text = str_replace('{profile_form}', NewsletterSubscription::instance()->get_profile_form($user), $text);
 
             for ($i = 1; $i < NEWSLETTER_PROFILE_MAX; $i++) {
                 $p = 'profile_' . $i;
@@ -758,11 +781,11 @@ class Newsletter extends NewsletterModule {
             $nk = $user->id . '-' . $user->token;
 
             //$text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', self::add_qs(plugins_url('do.php', __FILE__), 'a=c' . $id_token));
-            $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', NEWSLETTER_CONFIRM_URL . '?nk=' . $nk);
-            $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', NEWSLETTER_UNSUBSCRIBE_URL . '?nk=' . $nk);
+            $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', plugins_url('newsletter/do/confirm.php') . '?nk=' . $nk);
+            $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', plugins_url('newsletter/do/unsubscribe.php') . '?nk=' . $nk);
             //$text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', NEWSLETTER_URL . '/do/unsubscribe.php?nk=' . $nk);
-            $text = $this->replace_url($text, 'UNSUBSCRIPTION_URL', NEWSLETTER_UNSUBSCRIPTION_URL . '?nk=' . $nk);
-            $text = $this->replace_url($text, 'CHANGE_URL', NEWSLETTER_CHANGE_URL);
+            $text = $this->replace_url($text, 'UNSUBSCRIPTION_URL', plugins_url('newsletter/do/unsubscription.php') . '?nk=' . $nk);
+            $text = $this->replace_url($text, 'CHANGE_URL', plugins_url('newsletter/do/change.php'));
 
             // Obsolete.
             $text = $this->replace_url($text, 'FOLLOWUP_SUBSCRIPTION_URL', self::add_qs($base, 'nm=fs' . $id_token));
@@ -771,13 +794,15 @@ class Newsletter extends NewsletterModule {
             $text = $this->replace_url($text, 'FEED_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=eu' . $id_token));
 
             $options_profile = get_option('newsletter_profile');
-            if (empty($options_profile['profile_url'])) $text = $this->replace_url($text, 'PROFILE_URL', NEWSLETTER_PROFILE_URL . '?nk=' . $nk);
-            else $text = $this->replace_url($text, 'PROFILE_URL', self::add_qs($options_profile['profile_url'], 'ni=' . $user->id . '&amp;nt=' . $user->token));
+            if (empty($options_profile['profile_url']))
+                $text = $this->replace_url($text, 'PROFILE_URL', plugins_url('newsletter/do/profile.php') . '?nk=' . $nk);
+            else
+                $text = $this->replace_url($text, 'PROFILE_URL', self::add_qs($options_profile['profile_url'], 'ni=' . $user->id . '&amp;nt=' . $user->token));
 
             //$text = $this->replace_url($text, 'UNLOCK_URL', self::add_qs($this->options_main['lock_url'], 'nm=m' . $id_token));
-            $text = $this->replace_url($text, 'UNLOCK_URL', NEWSLETTER_UNLOCK_URL . '?nk=' . $nk);
+            $text = $this->replace_url($text, 'UNLOCK_URL', plugins_url('newsletter/do/unlock.php') . '?nk=' . $nk);
             if (!empty($email_id)) {
-                $text = $this->replace_url($text, 'EMAIL_URL', NEWSLETTER_EMAIL_URL . '?id=' . $email_id . '&amp;nk=' . $nk);
+                $text = $this->replace_url($text, 'EMAIL_URL', plugins_url('newsletter/do/view.php') . '?id=' . $email_id . '&amp;nk=' . $nk);
             }
 
             for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
@@ -826,7 +851,8 @@ class Newsletter extends NewsletterModule {
     }
 
     function hook_shutdown() {
-        if ($this->mailer != null) $this->mailer->SmtpClose();
+        if ($this->mailer != null)
+            $this->mailer->SmtpClose();
     }
 
     function hook_the_content($content) {
@@ -871,7 +897,7 @@ class Newsletter extends NewsletterModule {
 //        eval('? >' . $buffer . "\n");
 //        $buffer = ob_get_clean();
         // TODO: add the newsletter check on submit
-        $buffer = str_ireplace('<form', '<form method="post" action="' . NEWSLETTER_SUBSCRIBE_URL . '"', $buffer);
+        $buffer = str_ireplace('<form', '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '"', $buffer);
         $buffer = $this->replace($buffer, null, null, 'lock');
 
         $buffer = do_shortcode($buffer);
@@ -903,7 +929,8 @@ class Newsletter extends NewsletterModule {
     }
 
     function notify_admin($user, $subject) {
-        if ($this->options['notify'] != 1) return;
+        if ($this->options['notify'] != 1)
+            return;
         $message = "Subscriber details:\n\n" .
                 "email: " . $user->email . "\n" .
                 "first name: " . $user->name . "\n" .
@@ -913,13 +940,15 @@ class Newsletter extends NewsletterModule {
         $options_profile = get_option('newsletter_profile');
 
         for ($i = 0; $i < NEWSLETTER_PROFILE_MAX; $i++) {
-            if ($options_profile['profile_' . $i] == '') continue;
+            if ($options_profile['profile_' . $i] == '')
+                continue;
             $field = 'profile_' . $i;
             $message .= $options_profile['profile_' . $i] . ': ' . $user->$field . "\n";
         }
 
         for ($i = 0; $i < NEWSLETTER_LIST_MAX; $i++) {
-            if ($options_profile['list_' . $i] == '') continue;
+            if ($options_profile['list_' . $i] == '')
+                continue;
             $field = 'list_' . $i;
             $message .= $options_profile['list_' . $i] . ': ' . $user->$field . "\n";
         }
@@ -941,8 +970,10 @@ class Newsletter extends NewsletterModule {
         $user = $this->get_user($id);
 
         if ($user == null || $token != $user->token) {
-            if ($required) die('No subscriber found.');
-            else return null;
+            if ($required)
+                die('No subscriber found.');
+            else
+                return null;
         }
         return $user;
     }
@@ -1051,5 +1082,6 @@ function newsletter_activate() {
 register_activation_hook(__FILE__, 'newsletter_deactivate');
 
 function newsletter_deactivate() {
+    
 }
 

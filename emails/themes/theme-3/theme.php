@@ -82,7 +82,7 @@ $posts = get_posts($filters);
                                         <?php if ($image != null) { ?>
                                             <img src="<?php echo $image; ?>" alt="picture" align="left" width="100" height="100" style="margin-right: 10px"/>
                                         <?php } ?>
-                                        <a href="<?php echo get_permalink(); ?>" style="color: #000; text-decoration: none"><b><?php the_title(); ?></b></a><br />
+                                        <a target="_tab" href="<?php echo get_permalink(); ?>" style="color: #000; text-decoration: none"><b><?php the_title(); ?></b></a><br />
 
                                         <?php the_excerpt(); ?>
                                     </td>
@@ -103,9 +103,9 @@ $posts = get_posts($filters);
                 This email was sent to <b>{email}</b> because you opted in on <?php echo get_option('blogname'); ?> website.
             <br />
 
-            <a href="{profile_url}">Manage Subscriptions</a> |
+            <a target="_tab" href="{profile_url}">Manage Subscriptions</a> |
 
-            <a href="{unsubscription_url}">Unsubscribe</a>
+            <a target="_tab" href="{unsubscription_url}">Unsubscribe</a>
         </td>
     </tr>
 </table>

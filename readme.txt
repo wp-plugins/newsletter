@@ -2,7 +2,7 @@
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.0.0
 Tested up to: 3.5.1
-Stable tag: 3.2.3
+Stable tag: 3.2.4
 Donate link: http://www.satollo.net/donations
 
 Add a real newsletter to your blog. In seconds. For free.
@@ -55,6 +55,12 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.2.4 =
+
+* Added target _blank on theme links so they open on a new windows for the online version
+* Changed to the plugins_url() function
+* Added clean up of url tags on composer
 
 = 3.2.3 =
 

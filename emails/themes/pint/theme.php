@@ -22,7 +22,7 @@ $posts = get_posts(array('post_status'=>'publish', 'showposts'=>9));
         <table align="center">
             <tr>
                 <td align="center">
-                    <small><a href="{email_url}" style="color: #666; text-decoration: none">View this email online</a></small>
+                    <small><a target="_tab"  href="{email_url}" style="color: #666; text-decoration: none">View this email online</a></small>
                     <br>
                         <div style="color: #b00; font-size: 50px; font-family: serif; font-style: italic;">
                             <?php echo get_option('blogname'); ?>
@@ -34,24 +34,24 @@ $posts = get_posts(array('post_status'=>'publish', 'showposts'=>9));
                                     <tr>
                                 <?php for ($i=0; $i<3; $i++) { $post = $posts[$i]; setup_postdata($post); ?>
                                         <td align="center" valign="top">
-                                        <a href="<?php echo get_permalink(); ?>" style="font-size: 14px; line-height: 26px; font-weight: bold; color: #000; text-decoration: none"><?php echo substr(get_the_title(), 0, 25); ?>...</a><br>
-                                        <a href="<?php echo get_permalink(); ?>" style="display: block; width: 200px; height: 170px; overflow: hidden"><img width="200" src="<?php echo newsletter_get_post_image($post->ID, 'medium'); ?>" alt=""></a>
+                                        <a target="_tab" href="<?php echo get_permalink(); ?>" style="font-size: 14px; line-height: 26px; font-weight: bold; color: #000; text-decoration: none"><?php echo substr(get_the_title(), 0, 25); ?>...</a><br>
+                                        <a target="_tab" href="<?php echo get_permalink(); ?>" style="display: block; width: 200px; height: 170px; overflow: hidden"><img width="200" src="<?php echo newsletter_get_post_image($post->ID, 'medium'); ?>" alt=""></a>
                                         </td>
                                 <?php } ?>
                                     </tr>
                                     <tr>
                                 <?php for ($i=3; $i<6; $i++) { $post = $posts[$i]; setup_postdata($post); ?>
                                         <td align="center" valign="top">
-                                        <a href="<?php echo get_permalink(); ?>" style="font-size: 14px; line-height: 26px; font-weight: bold; color: #000; text-decoration: none"><?php echo substr(get_the_title(), 0, 25); ?>...</a><br>
-                                        <a href="<?php echo get_permalink(); ?>" style="display: block; width: 200px; height: 170px; overflow: hidden"><img width="200" src="<?php echo newsletter_get_post_image($post->ID, 'medium'); ?>" alt=""></a>
+                                        <a target="_tab"  href="<?php echo get_permalink(); ?>" style="font-size: 14px; line-height: 26px; font-weight: bold; color: #000; text-decoration: none"><?php echo substr(get_the_title(), 0, 25); ?>...</a><br>
+                                        <a target="_tab"  href="<?php echo get_permalink(); ?>" style="display: block; width: 200px; height: 170px; overflow: hidden"><img width="200" src="<?php echo newsletter_get_post_image($post->ID, 'medium'); ?>" alt=""></a>
                                         </td>
                                 <?php } ?>
                                     </tr>
                                     <tr>
                                 <?php for ($i=6; $i<9; $i++) { $post = $posts[$i]; setup_postdata($post); ?>
                                         <td align="center" valign="top">
-                                        <a href="<?php echo get_permalink(); ?>" style="font-size: 14px; line-height: 26px; font-weight: bold; color: #000; text-decoration: none"><?php echo substr(get_the_title(), 0, 25); ?>...</a><br>
-                                        <a href="<?php echo get_permalink(); ?>" style="display: block; width: 200px; height: 170px; overflow: hidden"><img width="200" src="<?php echo newsletter_get_post_image($post->ID, 'medium'); ?>" alt=""></a>
+                                        <a target="_tab"  href="<?php echo get_permalink(); ?>" style="font-size: 14px; line-height: 26px; font-weight: bold; color: #000; text-decoration: none"><?php echo substr(get_the_title(), 0, 25); ?>...</a><br>
+                                        <a target="_tab"  href="<?php echo get_permalink(); ?>" style="display: block; width: 200px; height: 170px; overflow: hidden"><img width="200" src="<?php echo newsletter_get_post_image($post->ID, 'medium'); ?>" alt=""></a>
                                         </td>
                                 <?php } ?>
                                     </tr>
@@ -59,7 +59,7 @@ $posts = get_posts(array('post_status'=>'publish', 'showposts'=>9));
 
                     <br><br>
 
-                            <small>To change your subscription, <a href="{profile_url}" style="color: #666; text-decoration: none">click here</a></small>
+                            <small>To change your subscription, <a target="_tab"  href="{profile_url}" style="color: #666; text-decoration: none">click here</a></small>
 
                 </td>
             </tr>

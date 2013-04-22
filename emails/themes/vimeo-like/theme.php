@@ -74,7 +74,7 @@ $font_size = $theme_options['theme_font_size'];
 
 
 
-<p style="color:#456;font-family:arial,sans-serif;font-size:24px;line-height:1.2;margin:15px 0;padding:0"><a href="<?php echo get_option('home'); ?>" style="color:#28c;text-decoration:none" target="_blank"><?php echo get_option('blogname'); ?></a></p>
+<p style="color:#456;font-family:arial,sans-serif;font-size:24px;line-height:1.2;margin:15px 0;padding:0"><a target="_tab" href="<?php echo get_option('home'); ?>" style="color:#28c;text-decoration:none" target="_blank"><?php echo get_option('blogname'); ?></a></p>
 
 
 <?php
@@ -90,7 +90,7 @@ foreach ($posts as $post) {
 
                         <td style="width:100%;padding:0 10px 0 0;vertical-align:top">
 
-                            <p style="font-family:arial,sans-serif;color:#456;font-size:20px;line-height:22px;margin:0;padding:0"><strong><a href="<?php echo get_permalink(); ?>" style="color:#456;text-decoration:none" target="_blank"><?php the_title(); ?></a></strong></p>
+                            <p style="font-family:arial,sans-serif;color:#456;font-size:20px;line-height:22px;margin:0;padding:0"><strong><a target="_tab" href="<?php echo get_permalink(); ?>" style="color:#456;text-decoration:none" target="_blank"><?php the_title(); ?></a></strong></p>
 
                             <p style="font-family:arial,sans-serif;line-height:1.5em;margin:15px 0;padding:0"><?php the_excerpt(); ?>. </p>
 
@@ -98,9 +98,9 @@ foreach ($posts as $post) {
 
                         <td style="vertical-align:middle; width: 100px">
 
-                            <a href="<?php echo get_permalink(); ?>" target="_blank"><img src="<?php echo $image; ?>" alt="" width="100" border="0" height="100"></a>
+                            <a target="_tab" href="<?php echo get_permalink(); ?>" target="_blank"><img src="<?php echo $image; ?>" alt="" width="100" border="0" height="100"></a>
 
-                            <p style="background:#2786c2;text-align:center;margin:10px 0 0 0;font-size:11px;line-height:14px;font-family:arial,sans-serif;padding:4px 2px;border-radius:4px"><a href="<?php echo get_permalink(); ?>" style="color:#fff;text-decoration:none" target="_blank"><strong><?php echo $theme_options['theme_read_more']; ?></strong></a></p>
+                            <p style="background:#2786c2;text-align:center;margin:10px 0 0 0;font-size:11px;line-height:14px;font-family:arial,sans-serif;padding:4px 2px;border-radius:4px"><a target="_tab" href="<?php echo get_permalink(); ?>" style="color:#fff;text-decoration:none" target="_blank"><strong><?php echo $theme_options['theme_read_more']; ?></strong></a></p>
 
                         </td>
 

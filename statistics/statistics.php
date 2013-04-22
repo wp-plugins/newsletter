@@ -65,7 +65,7 @@ class NewsletterStatistics extends NewsletterModule {
         $text = preg_replace_callback('/(<[aA][^>]+href=["\'])([^>"\']+)(["\'][^>]*>)(.*?)(<\/[Aa]>)/', array($this, 'relink_callback'), $text);
 
         // TODO: use the WP rewriting
-        $text = str_replace('</body>', '<img src="' . NEWSLETTER_URL . '/statistics/open.php?r=' . urlencode(base64_encode($email_id . ';' . $user_id)) . '"/></body>', $text);
+        $text = str_replace('</body>', '<img src="' . plugins_url('newsletter') . '/statistics/open.php?r=' . urlencode(base64_encode($email_id . ';' . $user_id)) . '"/></body>', $text);
         return $text;
     }
 
@@ -86,7 +86,7 @@ class NewsletterStatistics extends NewsletterModule {
             }
         }
 
-        $url = NEWSLETTER_URL . '/statistics/link.php?r=' .
+        $url = plugins_url('newsletter') . '/statistics/link.php?r=' .
                 urlencode(base64_encode($this->relink_email_id . ';' . $this->relink_user_id . ';' . $href . ';' . $anchor));
 
         return $matches[1] . $url . $matches[3] . $matches[4] . $matches[5];

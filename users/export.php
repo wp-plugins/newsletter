@@ -23,7 +23,7 @@ for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
     </p>
     </div>
 
-    <form method="post" action="<?php echo NEWSLETTER_URL; ?>/users/csv.php">
+    <form method="post" action="<?php echo plugins_url('newsletter'); ?>/users/csv.php">
         <?php $controls->init(); ?>
         <table class="form-table">
             <tr>

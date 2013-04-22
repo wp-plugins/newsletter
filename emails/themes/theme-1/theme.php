@@ -81,7 +81,7 @@ $posts = get_posts($filters);
                     <?php if ($image != null) { ?>
                     <img src="<?php echo $image; ?>" alt="picture" align="left"/>
                     <?php } ?>
-                  <p><a href="<?php echo get_permalink(); ?>" style="font-size: 16px; color: #000; text-decoration: none"><?php the_title(); ?></a></p>
+                  <p><a target="_tab" href="<?php echo get_permalink(); ?>" style="font-size: 16px; color: #000; text-decoration: none"><?php the_title(); ?></a></p>
 
                   <?php the_excerpt(); ?>
               </td>
@@ -91,7 +91,7 @@ $posts = get_posts($filters);
 ?>
           <tr>
               <td style="border-top: 1px solid #eee; border-bottom: 1px solid #eee; font-size: 12px; color: #999">
-                  You received this email because you subscribed for it as {email}. If you'd like, you can <a href="{unsubscription_url}">unsubscribe</a>.
+                  You received this email because you subscribed for it as {email}. If you'd like, you can <a target="_tab" href="{unsubscription_url}">unsubscribe</a>.
               </td>
           </tr>
       </table>

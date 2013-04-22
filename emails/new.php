@@ -130,12 +130,12 @@ function newsletter_emails_get_theme_options($theme) {
                 <div class="tab-preamble">
                     <p>After the email is created, you can edit every part of this message.</p>
                 </div>
-                <iframe src="<?php echo wp_nonce_url(NEWSLETTER_URL . '/emails/preview.php?' . time()); ?>" width="100%" height="700"></iframe>
+                <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700"></iframe>
             </div>
 
 
             <div id="tabs-3">
-                <iframe src="<?php echo wp_nonce_url(NEWSLETTER_URL . '/emails/preview-text.php?' . time()); ?>" width="100%" height="500"></iframe>
+                <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview-text.php?' . time()); ?>" width="100%" height="500"></iframe>
             </div>
 
         </div>

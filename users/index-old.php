@@ -248,7 +248,7 @@ else {
 
     <?php $controls->button_confirm('resend', 'Resend confirmation', 'Proceed?', $s->id); ?>
     <?php $controls->button_confirm('resend_welcome', 'Resend welcome', 'Proceed?', $s->id); ?>
-    <a href="<?php echo NEWSLETTER_PROFILE_URL; ?>?nk=<?php echo $s->id . '-' . $s->token; ?>" class="button" target="_blank">Profile page</a>
+    <a href="<?php echo plugins_url('newsletter/do/profile.php'); ?>?nk=<?php echo $s->id . '-' . $s->token; ?>" class="button" target="_blank">Profile page</a>
 </td>
 <td><small>
         date: <?php echo $s->created; ?><br />
