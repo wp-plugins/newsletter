@@ -13,7 +13,7 @@ This plug-in lets you collect subscribers on your blog with a single or double o
 subscription process. Perfect for list building, you can create cool emails with visual editor, send and
 track  them.
 
-Unlimited subscribers, unlimited emails.
+Unlimited subscribers, unlimited e-mails.
 
 Key features:
 
