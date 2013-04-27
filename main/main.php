@@ -340,6 +340,7 @@ if (!$controls->is_action()) {
                     <tr valign="top">
                         <th>Denied content message</th>
                         <td>
+			<?php $controls->textarea('lock_message'); ?>
                             <?php wp_editor( $controls->data['lock_message'], 'lock_message', array('textarea_name'=>'options[lock_message]') ); ?>
 
                             <?php //$controls->textarea('lock_message'); ?>

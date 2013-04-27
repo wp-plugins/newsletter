@@ -56,6 +56,12 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.2.5 =
+
+* Fixed the home_url and blog_url replacements
+* Added the cleans up of tags used in href attributes
+* Fixed the cleans up of URL tags
+
 = 3.2.4 =
 
 * Added target _blank on theme links so they open on a new windows for the online version

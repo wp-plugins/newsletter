@@ -421,7 +421,7 @@ class NewsletterModule {
     static function clean_url_tags($text) {
         $text = str_replace('%7B', '{', $text);
         $text = str_replace('%7D', '}', $text);
-        $text = preg_replace("/[\"']http.*(\\{[^\\}]+\\})[\"']/i", "\"\\1\"", $text);
+        $text = preg_replace("/[\"']http[^\"']+(\\{[^\\}]+\\})[\"']/i", "\"\\1\"", $text);
         return $text;
     }
 

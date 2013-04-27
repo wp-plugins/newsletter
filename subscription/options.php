@@ -47,6 +47,12 @@ if ($controls->is_action()) {
         if (empty($controls->data['unsubscribed_text'])) {
             $controls->data['unsubscribed_text'] = $defaults['unsubscribed_text'];
         }
+        
+        $controls->data['confirmed_message'] = NewsletterModule::clean_url_tags($controls->data['confirmed_message']);
+        $controls->data['confirmed_text'] = NewsletterModule::clean_url_tags($controls->data['confirmed_text']);
+        $controls->data['confirmation_text'] = NewsletterModule::clean_url_tags($controls->data['confirmation_text']);
+        $controls->data['confirmation_message'] = NewsletterModule::clean_url_tags($controls->data['confirmation_message']);
+        
 
         $controls->data['confirmed_url'] = trim($controls->data['confirmed_url']);
         $controls->data['confirmation_url'] = trim($controls->data['confirmation_url']);
