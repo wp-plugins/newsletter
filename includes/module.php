@@ -28,6 +28,8 @@ class NewsletterModule {
      * @var string
      */
     var $version;
+    var $module_id;
+    var $available_version;
 
     /**
      * Prefix for all options stored on WordPress options table.
@@ -40,9 +42,10 @@ class NewsletterModule {
      */
     var $themes;
 
-    function __construct($module, $version) {
+    function __construct($module, $version, $module_id = null) {
         $this->module = $module;
         $this->version = $version;
+        $this->module_id = $module_id;
         $this->prefix = 'newsletter_' . $module;
 
 
@@ -60,7 +63,12 @@ class NewsletterModule {
                 $this->upgrade();
                 update_option($this->prefix . '_version', $this->version);
             }
+
             add_action('admin_menu', array($this, 'admin_menu'));
+            $this->available_version = get_option($this->prefix . '_available_version');
+        }
+        if (!empty($this->module_id)) {
+            add_action($this->prefix . '_version_check', array($this, 'hook_version_check'), 1);
         }
     }
 
@@ -78,6 +86,10 @@ class NewsletterModule {
         } else {
             // TODO: Try with an array_merge()?
         }
+        if (!empty($this->module_id)) {
+            wp_clear_scheduled_hook($this->prefix . '_version_check');
+            wp_schedule_event(time() + 30, 'daily', $this->prefix . '_version_check');
+        }
     }
 
     function upgrade_query($query) {
@@ -86,7 +98,17 @@ class NewsletterModule {
         $this->logger->info('upgrade_query> Executing ' . $query);
         $wpdb->query($query);
         if ($wpdb->last_error) {
-            $this->logger->info($wpdb->last_error);
+            $this->logger->debug($wpdb->last_error);
+        }
+    }
+
+    function hook_version_check() {
+        $this->logger->info('Checking for new version');
+        if (empty($this->module_id)) return;
+        $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $this->module_id);
+        if ($version) {
+            update_option($this->prefix . '_available_version', $version);
+            $this->available_version = $version;
         }
     }
 
@@ -94,17 +116,24 @@ class NewsletterModule {
      * Return, eventually, the version of this moduke available on satollo.net.
      * @return string
      */
-    static function get_available_version($module_id) {
-        $version = get_option('newsletter_module_' . $module_id . '_version', '');
-        $time = get_option('newsletter_module_' . $module_id . '_last_check', 0);
-        if (empty($version) || $time < time() - 86400) {
+    static function get_available_version($module_id, $force = false) {
+        if (empty($module_id))
+            return '';
+        $version = get_transient('newsletter_module_' . $module_id . '_version');
+        if ($force || !$version) {
             $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $module_id);
-            add_option('newsletter_module_' . $module_id . '_last_check', time(), '', 'no');
-            update_option('newsletter_module_' . $module_id . '_last_check', time());
-            add_option('newsletter_module_' . $module_id . '_version', $version);
-            update_option('newsletter_module_' . $module_id . '_version', $version);
+            set_transient('newsletter_module_' . $module_id . '_version', $version, 2 * 86400);
         }
         return $version;
+    }
+
+    function new_version_available($force = false) {
+        if (empty($this->module_id))
+            return false;
+        $version = self::get_available_version($this->module_id, $force);
+        if (empty($version))
+            return false;
+        return ($version > $this->version) ? $version : false;
     }
 
     /** Returns a prefix to be used for option names and other things which need to be uniquely named. The parameter
@@ -410,6 +439,7 @@ class NewsletterModule {
         }
     }
 
+    /** Returns true if the named extension is installed. */
     static function extension_exists($name) {
         return is_file(WP_CONTENT_DIR . "/extensions/newsletter/$name/$name.php");
     }

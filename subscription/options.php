@@ -349,7 +349,8 @@ if ($controls->is_action('create')) {
                             <?php $controls->textarea('confirmed_tracking'); ?>
                             <div class="hints">
                                 The code is injected AS-IS in welcome page and can be used to track conversion
-                                (you can use PHP if needed). Conversion code is usually supply by tracking services,
+                                (you can use PHP if needed). It does not work with a custom welcome page.
+                                Conversion code is usually supply by tracking services,
                                 like Google AdWords, Google Analytics and so on.</div>
                         </td>
                     </tr>
@@ -360,7 +361,7 @@ if ($controls->is_action('create')) {
                             Welcome email<br /><small>The right place where to put bonus content link</small>
                         </th>
                         <td>
-                            <?php $controls->email('confirmed'); ?>
+                            <?php $controls->email('confirmed', null, true); ?>
                             <div class="hints">
                                 Email sent to the user to confirm his subscription, the successful confirmation
                                 page, the welcome email. This is the right message where to put a <strong>{unlock_url}</strong> link to remember to the

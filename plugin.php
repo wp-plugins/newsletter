@@ -128,6 +128,7 @@ class Newsletter extends NewsletterModule {
 
         add_action('init', array($this, 'hook_init'));
         add_action('newsletter', array($this, 'hook_newsletter'), 1);
+        
 
         // This specific event is created by "Feed by mail" panel on configuration
         add_action('shutdown', array($this, 'hook_shutdown'));
@@ -239,7 +240,7 @@ class Newsletter extends NewsletterModule {
 
     function admin_menu() {
         // This adds the main menu page
-        add_menu_page('Newsletter', 'Newsletter', $this->options['editor'] ? 7 : 10, 'newsletter_main_index');
+        add_menu_page('Newsletter', 'Newsletter', ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index');
 
         $this->add_menu_page('index', 'Welcome');
         $this->add_menu_page('main', 'Configuration');
@@ -342,7 +343,7 @@ class Newsletter extends NewsletterModule {
     function relink($text, $email_id, $user_id) {
         return NewsletterStatistics::instance()->relink($text, $email_id, $user_id);
     }
-
+    
     /**
      * Runs every 5 minutes and look for emails that need to be processed.
      */

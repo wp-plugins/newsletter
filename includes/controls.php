@@ -237,7 +237,7 @@ class NewsletterControls {
     }
 
     function text($name, $size = 20, $placeholder = '') {
-        echo '<input placeholder="' . $placeholder . '" name="options[' . $name . ']" type="text" size="' . $size . '" value="';
+        echo '<input placeholder="' . htmlspecialchars($placeholder) . '" name="options[' . $name . ']" type="text" size="' . $size . '" value="';
         echo htmlspecialchars($this->data[$name]);
         echo '"/>';
     }
@@ -301,9 +301,13 @@ class NewsletterControls {
         echo '</textarea>';
     }
 
-    function email($prefix, $editor = null) {
-        echo 'Subject:<br />';
-        $this->text($prefix . '_subject', 90);
+    function email($prefix, $editor = null, $disable_option=false) {
+        if ($disable_option) {
+            $this->checkbox($prefix . '_disabled', 'Disable this email');
+            echo '<br>';
+        }
+        //echo 'Subject:<br />';
+        $this->text($prefix . '_subject', 90, 'Subject');
         //echo '<br />Message:<br />';
         if ($editor == 'wordpress') {
             $this->wp_editor($prefix . '_message');

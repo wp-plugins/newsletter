@@ -866,11 +866,13 @@ table.clicks {
 
 .newsletter-buttons {
     margin-top: 1em;
-    padding: 1em;
+    margin-bottom: 1em;
 }
 
 .newsletter-buttons-bottom {
-    xborder-top: 1px solid #ddd;
+}
+
+.newsletter-buttons-top {
 }
 
 /* Text under the panel title to explain the panel purpose. */

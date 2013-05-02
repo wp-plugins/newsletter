@@ -285,14 +285,16 @@ class NewsletterSubscription extends NewsletterModule {
 
 
         $prefix = ($user->status == 'C') ? 'confirmed_' : 'confirmation_';
-        $message = $options[$prefix . 'message'];
+        
+        if (empty($options[$prefix . 'disabled'])) {
+            $message = $options[$prefix . 'message'];
 
-        // TODO: This is always empty!
-        $message_text = $options[$prefix . 'message_text'];
-        $subject = $options[$prefix . 'subject'];
+            // TODO: This is always empty!
+            $message_text = $options[$prefix . 'message_text'];
+            $subject = $options[$prefix . 'subject'];
 
-        $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
-
+            $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
+        }
         return $user;
     }
 
@@ -333,20 +335,19 @@ class NewsletterSubscription extends NewsletterModule {
         setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
         $newsletter->set_user_status($user->id, 'C');
         $user->status = 'C';
+        $this->notify_admin($user, 'Newsletter subscription');
 
         if (!$emails)
             return $user;
+        
+        if (empty($this->options['confirmed_disabled'])) {
+            $message = $this->options['confirmed_message'];
+            // TODO: This is always empty!
+            $message_text = $this->options['confirmed_message_text'];
+            $subject = $this->options['confirmed_subject'];
 
-        $message = $this->options['confirmed_message'];
-
-        // TODO: This is always empty!
-        $message_text = $this->options['confirmed_message_text'];
-        $subject = $this->options['confirmed_subject'];
-
-        $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
-
-        $this->notify_admin($user, 'Newsletter subscription');
-
+            $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
+        }
 
         return $user;
     }

@@ -1,37 +1,36 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
-Requires at least: 3.0.0
+Requires at least: 3.3.0
 Tested up to: 3.5.1
-Stable tag: 3.2.4
+Stable tag: 3.2.5
 Donate link: http://www.satollo.net/donations
 
-Add a real newsletter to your blog. In seconds. For free.
+Add a real newsletter to your blog. In seconds. For free. With unlimited emails and subscribers.
 
 == Description ==
 
-This plug-in lets you collect subscribers on your blog with a single or double opt-in (law compliant)
-subscription process. Perfect for list building, you can create cool emails with visual editor, send and
+This plug-in adds a real newsletter system to your WordPress blog. Perfect for list building, 
+you can create cool emails with visual editor, send and
 track  them.
 
 Unlimited subscribers, unlimited e-mails.
 
 Key features:
 
-* unlimited subscribers (the database is your, why should I limit you?)
-* unlimited emails
+* **unlimited subscribers** (the database is your, why should I limit you?) with statistics
+* **unlimited emails** with tracking
+* subscription widget, page or via custom form
+* integrated with **WordPress user registration**
 * single and double opt-in plus privacy acceptance checkbox (as per European laws)
 * subscriber preferences to fine target your campaigns
-* SMTP ready
+* **SMTP** ready (Gmail, SendGrid, ...)
 * html and text version messages
-* a real delivery engine to manage huge lists with configurable speed
 * configurable themes
-* easy to develop themes (for coders)
-* every message fully translatable from administrative panels
-* diagnostic panel
+* every message and label **fully translatable** from administrative panels (no .po/.mo file to edit)
+* diagnostic panel for **easy system tests**
+* **extensible** with specific modules (Facebook, Reports, Feed by Mail, Follow Up)
 
-Visit the [Newsletter official page](http://www.satollo.net/plugins/newsletter).
-
-Previous version is available [here](http://www.satollo.net/wp-content/uploads/newsletter-2.5.2.7.zip).
+Visit the [Newsletter official page](http://www.satollo.net/plugins/newsletter) to know more.
 
 Thank you, Stefano Lissa (Satollo).
 
@@ -44,7 +43,7 @@ Thank you, Stefano Lissa (Satollo).
 == Frequently Asked Questions ==
 
 See the [Newsletter FAQ](http://www.satollo.net/plugins/newsletter/newsletter-faq) or the
-[Newsletter Forum](http://www.satollo.net/forums).
+[Newsletter Forum](http://www.satollo.net/forums) to ask for help.
 
 For documentation start from [Newsletter official page](http://www.satollo.net/plugins/newsletter).
 
@@ -61,6 +60,9 @@ No screen shots are available at this time.
 * Fixed the home_url and blog_url replacements
 * Added the cleans up of tags used in href attributes
 * Fixed the cleans up of URL tags
+* Added module version checking support
+* Added the welcome email option to disable it
+* Fixed the new subscriber notification missing under some specific conditions
 
 = 3.2.4 =
 
