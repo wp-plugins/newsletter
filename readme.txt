@@ -55,6 +55,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.2.6 =
+
+* Fixed the forced preferences on subscription panel
+
 = 3.2.5 =
 
 * Fixed the home_url and blog_url replacements

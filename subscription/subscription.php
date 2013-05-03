@@ -225,7 +225,7 @@ class NewsletterSubscription extends NewsletterModule {
 
         // New profiles
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
-            // If the profile cannot be set by  subscriber, skiyp it.
+            // If the profile cannot be set by  subscriber, skip it.
             if ($options_profile['profile_' . $i . '_status'] == 0)
                 continue;
 
@@ -242,13 +242,12 @@ class NewsletterSubscription extends NewsletterModule {
                     $user['list_' . $i] = 1;
             }
         }
-
+        
         // Forced preferences as set on subscription configuration
-        if (is_array($options['preferences'])) {
-            foreach ($options['preferences'] as $p) {
-                $user['list_' . $p] = 1;
-            }
-        }
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+            if (empty($options['preferences_' . $i])) continue;
+            $user['list_' . $i] = 1;
+        }        
 
         $user['token'] = $newsletter->get_token();
         $user['ip'] = $_SERVER['REMOTE_ADDR'];

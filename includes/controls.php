@@ -109,18 +109,6 @@ class NewsletterControls {
     }
 
     /**
-     * Creates a checkbox named $name and checked if the internal data contains under
-     * the key $name an array containig the passed value.
-     */
-    function checkbox_group($name, $value, $label = '') {
-        echo '<input type="checkbox" id="' . $name . '" name="options[' . $name . '][]" value="' . $value . '"';
-        if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
-                echo ' checked="checked"';
-        echo '/>';
-        if ($label != '') echo ' <label for="' . $name . '">' . $label . '</label>';
-    }
-
-    /**
      * Creates a set of checkbox all named as $name with values and labels extracted from
      * $values_labels. A checkbox will be checked if internal data under key $name is an array
      * and contains the value of the current (echoing) checkbox.
@@ -325,28 +313,21 @@ class NewsletterControls {
         echo '/>';
         if ($label != '') echo '&nbsp;' . $label . '</label>';
     }
+    
+    /**
+     * Creates a checkbox named $name and checked if the internal data contains under
+     * the key $name an array containig the passed value.
+     */
+    function checkbox_group($name, $value, $label = '') {
+        echo '<input type="checkbox" id="' . $name . '" name="options[' . $name . '][]" value="' . $value . '"';
+        if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
+                echo ' checked="checked"';
+        echo '/>';
+        if ($label != '') echo ' <label for="' . $name . '">' . $label . '</label>';
+    }    
 
     function color($name) {
         echo $this->text($name, 10);
-    }
-
-    /**
-     * Creates a set of checkbox to activate the profile preferences. Every checkbox has a DIV around to
-     * be formatted.
-     */
-    function preferences_group($name = 'preferences', $skip_empty = false) {
-        $options_profile = get_option('newsletter_profile');
-
-        echo '<div class="newsletter-preferences-group">';
-        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-            if (empty($options_profile['list_' . $i])) continue;
-            echo '<div class="newsletter-preferences-item">';
-            $this->checkbox_group($name, $i, '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]));
-            echo '</div>';
-        }
-        echo '<div style="clear: both"></div>';
-        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
-        echo '</div>';
     }
 
     /** Creates a set of checkbox named $name_[category id] (so they are posted with distinct names).
@@ -401,7 +382,12 @@ class NewsletterControls {
         echo '</div>';
     }
 
-    function preferences($name = 'preferences', $skip_empty = false) {
+    /**
+     * Creates a set of checkboxes named $name_[preference number] (so they are
+     * distinct fields).
+     * Empty preferences are skipped.
+     */
+    function preferences($name = 'preferences') {
         $options_profile = get_option('newsletter_profile');
         echo '<div class="newsletter-preferences-group">';
 
@@ -416,6 +402,27 @@ class NewsletterControls {
         echo '</div>';
 
     }
+    
+    /**
+     * Creates a set of checkboxes to activate the profile preferences. Every checkbox has the
+     * same $name and the preference number as value so the selected checkboxes 
+     * are retrieved as an array of values.
+     */
+    function preferences_group($name = 'preferences') {
+        $options_profile = get_option('newsletter_profile');
+
+        echo '<div class="newsletter-preferences-group">';
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+            if (empty($options_profile['list_' . $i])) continue;
+            echo '<div class="newsletter-preferences-item">';
+            $this->checkbox_group($name, $i, '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]));
+            echo '</div>';
+        }
+        echo '<div style="clear: both"></div>';
+        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
+        echo '</div>';
+    }
+    
 
     function date($name) {
         $this->hidden($name);
