@@ -611,7 +611,7 @@ class NewsletterSubscription extends NewsletterModule {
      *
      * @return string The html code of the subscription form
      */
-    function get_subscription_form($referrer = null) {
+    function get_subscription_form($referrer = null, $action=null) {
         $options_profile = get_option('newsletter_profile');
         $options = get_option('newsletter');
 
@@ -945,7 +945,7 @@ function newsletter_shortcode($attrs, $content) {
     $message = $newsletter->replace($message, $user, null, 'page');
 
     if (!empty($alert)) {
-        $message .= '<script>alert("' . addslashes($alert) . '");</script>';
+        $message .= '<script>alert("' . addslashes(strip_tags($alert)) . '");</script>';
     }
 
     return $message;

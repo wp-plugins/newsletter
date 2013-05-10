@@ -1070,6 +1070,10 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/facebook/facebook.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/facebook/facebook.php';
 }
 
+if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/popup/popup.php')) {
+    require_once WP_CONTENT_DIR . '/extensions/newsletter/popup/popup.php';
+}
+
 require_once(dirname(__FILE__) . '/widget.php');
 
 register_activation_hook(__FILE__, 'newsletter_activate');

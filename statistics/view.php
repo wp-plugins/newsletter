@@ -13,7 +13,7 @@ $email = $module->get_email($_GET['id']);
     <div class="preamble">
         <p>
             Complete statistics for this email are available with
-            <a href="http://www.satollo.net/plugins/newsletter/reports-module-for-newsletter" target="_blank">Reports for Newsletter</a>.
+            <a href="http://www.satollo.net/plugins/newsletter/reports-module" target="_blank">Reports for Newsletter</a>.
         </p>
     </div>
 

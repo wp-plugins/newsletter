@@ -12,6 +12,6 @@ $wpdb->insert(NEWSLETTER_STATS_TABLE, array(
 );
 
 header('Content-Type: image/gif');
-readfile(dirname(__FILE__) . '/1x1.gif');
+echo base64_decode('_R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
 die();
 

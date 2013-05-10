@@ -11,7 +11,7 @@ Add a real newsletter to your blog. In seconds. For free. With unlimited emails 
 
 This plug-in adds a real newsletter system to your WordPress blog. Perfect for list building, 
 you can create cool emails with visual editor, send and
-track  them.
+track them.
 
 Unlimited subscribers, unlimited e-mails.
 
@@ -54,6 +54,13 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.2.7 =
+
+* Added a controls for the Reports module version 1.0.4
+* Changed opening tracking and removed 1x1 GIF
+* Added support for popup on subscription form
+* Fixed the link to the reports module
 
 = 3.2.6 =
 

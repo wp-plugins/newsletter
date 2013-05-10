@@ -37,7 +37,7 @@ if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>
                         </div>
                         <div style="padding: 20px; background-color: #fff; line-height: 18px">
 
-                            <p style="text-align: center"><a target="_tab"  href="{email_url}">View this email online</a></p>
+                            <p style="text-align: center"><a target="_blank"  href="{email_url}">View this email online</a></p>
 
                             <?php if (empty($posts)) { ?>
                             <p>Here you can start to write your message. Be polite with your readers! Do not forget the subsject of this message.</p>
@@ -46,10 +46,10 @@ if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>
                                 <?php foreach ($posts as $post) { setup_postdata($post); ?>
                                     <tr>
                                         <?php if (isset($theme_options['theme_thumbnails'])) { ?>
-                                        <td><a target="_tab"  href="<?php echo get_permalink(); ?>"><img width="75" src="<?php echo newsletter_get_post_image($post->ID); ?>" alt="image"></a></td>
+                                        <td><a target="_blank"  href="<?php echo get_permalink(); ?>"><img width="75" src="<?php echo newsletter_get_post_image($post->ID); ?>" alt="image"></a></td>
                                         <?php } ?>
                                         <td valign="top">
-                                            <a target="_tab"  href="<?php echo get_permalink(); ?>" style="font-size: 20px; line-height: 26px"><?php the_title(); ?></a>
+                                            <a target="_blank"  href="<?php echo get_permalink(); ?>" style="font-size: 20px; line-height: 26px"><?php the_title(); ?></a>
                                             <?php if (isset($theme_options['theme_excerpts'])) the_excerpt(); ?>
                                         </td>
                                     </tr>
@@ -57,7 +57,7 @@ if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>
                             </table>
                             <?php } ?>
 
-                            <p>To change your subscription, <a target="_tab"  href="{profile_url}">click here</a>.
+                            <p>To change your subscription, <a target="_blank"  href="{profile_url}">click here</a>.
                         </div>
 
                     </div>

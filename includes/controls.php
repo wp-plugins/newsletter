@@ -7,25 +7,27 @@ class NewsletterControls {
     var $button_data = '';
 
     function __construct($options = null) {
-        if ($options == null) $this->data = stripslashes_deep($_POST['options']);
-        else $this->data = $options;
+        if ($options == null)
+            $this->data = stripslashes_deep($_POST['options']);
+        else
+            $this->data = $options;
 
         $this->action = $_REQUEST['act'];
 
-        if (isset($_REQUEST['btn'])) $this->button_data = $_REQUEST['btn'];
+        if (isset($_REQUEST['btn']))
+            $this->button_data = $_REQUEST['btn'];
 
         // Fields analysis
         $fields = $_REQUEST['fields'];
         if (is_array($fields)) {
-            foreach ($fields as $name=>$type) {
+            foreach ($fields as $name => $type) {
                 if ($type == 'datetime') {
                     // Ex. The user insert 01/07/2012 14:30 and it set the time zone to +2. We cannot use the
                     // mktime, since it uses the time zone of the machine. We create the time as if we are on
                     // GMT 0 and then we subtract the GMT offset (the example date and time on GMT+2 happens
                     // "before").
 
-                    $time = gmmktime($_REQUEST[$name . '_hour'], 0, 0,
-                            $_REQUEST[$name . '_month'], $_REQUEST[$name . '_day'], $_REQUEST[$name . '_year']);
+                    $time = gmmktime($_REQUEST[$name . '_hour'], 0, 0, $_REQUEST[$name . '_month'], $_REQUEST[$name . '_day'], $_REQUEST[$name . '_year']);
                     $time -= get_option('gmt_offset') * 3600;
                     $this->data[$name] = $time;
                 }
@@ -33,15 +35,19 @@ class NewsletterControls {
         }
     }
 
-  function merge($options) {
-      if (!is_array($options)) return;
-      if ($this->data == null) $this->data = array();
-      $this->data = array_merge($this->data, $options);
-  }
+    function merge($options) {
+        if (!is_array($options))
+            return;
+        if ($this->data == null)
+            $this->data = array();
+        $this->data = array_merge($this->data, $options);
+    }
 
     function merge_defaults($defaults) {
-        if ($this->data == null) $this->data = $defaults;
-        else $this->data = array_merge($defaults, $this->data);
+        if ($this->data == null)
+            $this->data = $defaults;
+        else
+            $this->data = array_merge($defaults, $this->data);
     }
 
     /**
@@ -50,10 +56,14 @@ class NewsletterControls {
      * Dies if it is not a safe call.
      */
     function is_action($action = null) {
-        if ($action == null) return $this->action != null;
-        if ($this->action == null) return false;
-        if ($this->action != $action) return false;
-        if (check_admin_referer()) return true;
+        if ($action == null)
+            return $this->action != null;
+        if ($this->action == null)
+            return false;
+        if ($this->action != $action)
+            return false;
+        if (check_admin_referer())
+            return true;
         die('Invalid call');
     }
 
@@ -87,10 +97,12 @@ class NewsletterControls {
 
         echo '<select style="width: 60px" name="options[' . $name . ']">';
         echo '<option value="0"';
-        if ($value == 0) echo ' selected';
+        if ($value == 0)
+            echo ' selected';
         echo '>No</option>';
         echo '<option value="1"';
-        if ($value == 1) echo ' selected';
+        if ($value == 1)
+            echo ' selected';
         echo '>Yes</option>';
         echo '</select>&nbsp;&nbsp;&nbsp;';
     }
@@ -100,10 +112,12 @@ class NewsletterControls {
 
         echo '<select style="width: 100px" name="options[' . $name . ']">';
         echo '<option value="0"';
-        if ($value == 0) echo ' selected';
+        if ($value == 0)
+            echo ' selected';
         echo '>Disabled</option>';
         echo '<option value="1"';
-        if ($value == 1) echo ' selected';
+        if ($value == 1)
+            echo ' selected';
         echo '>Enabled</option>';
         echo '</select>';
     }
@@ -122,13 +136,14 @@ class NewsletterControls {
      */
     function checkboxes_group($name, $values_labels) {
         echo "<div class='newsletter-checkboxes-group'>";
-        foreach($values_labels as $value=>$label) {
+        foreach ($values_labels as $value => $label) {
             echo "<div class='newsletter-checkboxes-item'>";
             echo "<input type='checkbox' id='$name' name='options[$name][]' value='$value'";
             if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
                 echo " checked";
             echo '/>';
-            if ($label != '') echo " <label for='$name'>$label</label>";
+            if ($label != '')
+                echo " <label for='$name'>$label</label>";
             echo "</div>";
         }
         echo "</div><div style='clear: both'></div>";
@@ -139,7 +154,8 @@ class NewsletterControls {
 
         foreach ($options as $key => $label) {
             echo '<option value="' . $key . '"';
-            if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false) echo ' selected';
+            if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
+                echo ' selected';
             echo '>' . htmlspecialchars($label) . '</option>';
         }
 
@@ -155,7 +171,8 @@ class NewsletterControls {
         }
         foreach ($options as $key => $label) {
             echo '<option value="' . $key . '"';
-            if ($value == $key) echo ' selected';
+            if ($value == $key)
+                echo ' selected';
             echo '>' . htmlspecialchars($label) . '</option>';
         }
         echo '</select>';
@@ -170,9 +187,11 @@ class NewsletterControls {
             echo '<optgroup label="' . htmlspecialchars($group['']) . '">';
             if (!empty($group)) {
                 foreach ($group as $key => $label) {
-                    if ($key == '') continue;
+                    if ($key == '')
+                        continue;
                     echo '<option value="' . $key . '"';
-                    if ($value == $key) echo ' selected';
+                    if ($value == $key)
+                        echo ' selected';
                     echo '>' . htmlspecialchars($label) . '</option>';
                 }
             }
@@ -185,8 +204,8 @@ class NewsletterControls {
      * Generated a select control with all available templates. From version 3 there are
      * only on kind of templates, they are no more separated by type.
      */
-    function themes($name, $themes, $submit_on_click=true) {
-        foreach($themes as $key=>$data) {
+    function themes($name, $themes, $submit_on_click = true) {
+        foreach ($themes as $key => $data) {
             echo '<label style="display: block; float: left; text-align: center; margin-right: 10px;">';
             echo $key . '<br>';
             echo '<img src="' . $data['screenshot'] . '" width="100" height="100" style="border: 1px solid #666; padding: 5px"><br>';
@@ -212,13 +231,14 @@ class NewsletterControls {
         if ($show_remaining && $delta > 0) {
             echo 'Remaining: ';
             $delta = $time - time();
-            $days = floor($delta / (24*3600));
-            $delta = $delta - $days*24*3600;
+            $days = floor($delta / (24 * 3600));
+            $delta = $delta - $days * 24 * 3600;
             $hours = floor($delta / 3600);
-            $delta = $delta - $hours*3600;
+            $delta = $delta - $hours * 3600;
             $minutes = floor($delta / 60);
 
-            if ($days > 0) echo $days . ' days ';
+            if ($days > 0)
+                echo $days . ' days ';
             echo $hours . ' hours ';
             echo $minutes . ' minutes ';
         }
@@ -249,6 +269,7 @@ class NewsletterControls {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';this.form.submit()"/>';
         }
     }
+
     function button_primary($action, $label, $function = null) {
         if ($function != null) {
             echo '<input class="button-primary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';' . htmlspecialchars($function) . '"/>';
@@ -257,11 +278,10 @@ class NewsletterControls {
         }
     }
 
-    function button_confirm($action, $label, $message='', $data = '') {
+    function button_confirm($action, $label, $message = '', $data = '') {
         if (empty($message)) {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';this.form.submit()"/>';
-        }
-        else {
+        } else {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.btn.value=\'' . $data . '\';this.form.act.value=\'' . $action . '\';if (confirm(\'' .
             htmlspecialchars($message) . '\')) this.form.submit()"/>';
         }
@@ -274,7 +294,7 @@ class NewsletterControls {
     }
 
     function wp_editor($name, $settings = array()) {
-        wp_editor($this->data[$name], $name, array_merge(array('textarea_name'=>'options[' . $name . ']', 'wpautop'=>false), $settings));
+        wp_editor($this->data[$name], $name, array_merge(array('textarea_name' => 'options[' . $name . ']', 'wpautop' => false), $settings));
     }
 
     function textarea($name, $width = '100%', $height = '50') {
@@ -289,7 +309,7 @@ class NewsletterControls {
         echo '</textarea>';
     }
 
-    function email($prefix, $editor = null, $disable_option=false) {
+    function email($prefix, $editor = null, $disable_option = false) {
         if ($disable_option) {
             $this->checkbox($prefix . '_disabled', 'Disable this email');
             echo '<br>';
@@ -307,13 +327,16 @@ class NewsletterControls {
     }
 
     function checkbox($name, $label = '') {
-        if ($label != '') echo '<label>';
+        if ($label != '')
+            echo '<label>';
         echo '<input type="checkbox" id="' . $name . '" name="options[' . $name . ']" value="1"';
-        if (!empty($this->data[$name])) echo ' checked="checked"';
+        if (!empty($this->data[$name]))
+            echo ' checked="checked"';
         echo '/>';
-        if ($label != '') echo '&nbsp;' . $label . '</label>';
+        if ($label != '')
+            echo '&nbsp;' . $label . '</label>';
     }
-    
+
     /**
      * Creates a checkbox named $name and checked if the internal data contains under
      * the key $name an array containig the passed value.
@@ -321,10 +344,11 @@ class NewsletterControls {
     function checkbox_group($name, $value, $label = '') {
         echo '<input type="checkbox" id="' . $name . '" name="options[' . $name . '][]" value="' . $value . '"';
         if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
-                echo ' checked="checked"';
+            echo ' checked="checked"';
         echo '/>';
-        if ($label != '') echo ' <label for="' . $name . '">' . $label . '</label>';
-    }    
+        if ($label != '')
+            echo ' <label for="' . $name . '">' . $label . '</label>';
+    }
 
     function color($name) {
         echo $this->text($name, 10);
@@ -332,7 +356,7 @@ class NewsletterControls {
 
     /** Creates a set of checkbox named $name_[category id] (so they are posted with distinct names).
      */
-    function categories($name='category') {
+    function categories($name = 'category') {
         $categories = get_categories();
         echo '<div class="newsletter-checkboxes-group">';
         foreach ($categories as &$c) {
@@ -348,10 +372,10 @@ class NewsletterControls {
      * Creates a set of checkbox to activate the profile preferences. Every checkbox has a DIV around to
      * be formatted.
      */
-    function categories_group($name, $show_mode=false) {
+    function categories_group($name, $show_mode = false) {
         $categories = get_categories();
         if ($show_mode) {
-            $this->select($name . '_mode', array('include'=>'To be included', 'exclude'=>'To be excluded'));
+            $this->select($name . '_mode', array('include' => 'To be included', 'exclude' => 'To be excluded'));
         }
         echo '<div class="newsletter-categories-group">';
         foreach ($categories as &$c) {
@@ -360,25 +384,6 @@ class NewsletterControls {
             echo '</div>';
         }
         echo '<div style="clear: both"></div>';
-        echo '</div>';
-    }
-
-    function preferences_selects($name = 'preferences', $skip_empty = false) {
-        $options_profile = get_option('newsletter_profile');
-
-        echo '<div class="newsletter-preferences-group">';
-        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-            if (empty($options_profile['list_' . $i])) continue;
-
-            echo '<div class="newsletter-preferences-item">';
-
-            $this->select($name . '_' . $i, array(0=>'Any', 1=>'Yes', 2=>'No'));
-            echo '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]);
-
-            echo '</div>';
-        }
-        echo '<div style="clear: both"></div>';
-        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
         echo '</div>';
     }
 
@@ -392,7 +397,8 @@ class NewsletterControls {
         echo '<div class="newsletter-preferences-group">';
 
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-            if (empty($options_profile['list_' . $i])) continue;
+            if (empty($options_profile['list_' . $i]))
+                continue;
             echo '<div class="newsletter-preferences-item">';
             $this->checkbox($name . '_' . $i, '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]));
             echo '</div>';
@@ -400,20 +406,20 @@ class NewsletterControls {
         echo '<div style="clear: both"></div>';
         echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
         echo '</div>';
-
     }
-    
+
     /**
-     * Creates a set of checkboxes to activate the profile preferences. Every checkbox has the
-     * same $name and the preference number as value so the selected checkboxes 
-     * are retrieved as an array of values.
+     * Creates a set of checkboxes all names $name[] and the preference number as value 
+     * so the selected checkboxes are retrieved as an array of values ($REQUEST[$name]
+     * will be an array if at east one preference is checked).
      */
     function preferences_group($name = 'preferences') {
         $options_profile = get_option('newsletter_profile');
 
         echo '<div class="newsletter-preferences-group">';
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-            if (empty($options_profile['list_' . $i])) continue;
+            if (empty($options_profile['list_' . $i]))
+                continue;
             echo '<div class="newsletter-preferences-item">';
             $this->checkbox_group($name, $i, '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]));
             echo '</div>';
@@ -422,7 +428,40 @@ class NewsletterControls {
         echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
         echo '</div>';
     }
-    
+
+    /** Creates as many selects as the active preferences with the three values
+     * 'any', 'yes', 'no' corresponding to the values 0, 1, 2. 
+     */
+    function preferences_selects($name = 'preferences', $skip_empty = false) {
+        $options_profile = get_option('newsletter_profile');
+
+        echo '<div class="newsletter-preferences-group">';
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+            if (empty($options_profile['list_' . $i]))
+                continue;
+
+            echo '<div class="newsletter-preferences-item">';
+
+            $this->select($name . '_' . $i, array(0 => 'Any', 1 => 'Yes', 2 => 'No'));
+            echo '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]);
+
+            echo '</div>';
+        }
+        echo '<div style="clear: both"></div>';
+        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
+        echo '</div>';
+    }
+
+    /** Creates a single select with the active preferences. */
+    function preferences_select($name = 'preference') {
+        $options_profile = get_option('newsletter_profile');
+
+        $lists = array();
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+            $lists['' . $i] = '(' . $i . ') ' . $options_profile['list_' . $i];
+        }
+        $this->select($name, $lists);
+    }
 
     function date($name) {
         $this->hidden($name);
@@ -433,7 +472,8 @@ class NewsletterControls {
         echo '<select id="' . $name . '_month" onchange="' . $onchange . '">';
         for ($i = 0; $i < 12; $i++) {
             echo '<option value="' . $i . '"';
-            if ($month - 1 == $i) echo ' selected';
+            if ($month - 1 == $i)
+                echo ' selected';
             echo '>' . date('F', mktime(0, 0, 0, $i + 1, 1, 2000)) . '</option>';
         }
         echo '</select>';
@@ -441,7 +481,8 @@ class NewsletterControls {
         echo '<select id="' . $name . '_day" onchange="' . $onchange . '">';
         for ($i = 1; $i <= 31; $i++) {
             echo '<option value="' . $i . '"';
-            if ($day == $i) echo ' selected';
+            if ($day == $i)
+                echo ' selected';
             echo '>' . $i . '</option>';
         }
         echo '</select>';
@@ -449,7 +490,8 @@ class NewsletterControls {
         echo '<select id="' . $name . '_year" onchange="' . $onchange . '">';
         for ($i = 2011; $i <= 2021; $i++) {
             echo '<option value="' . $i . '"';
-            if ($year == $i) echo ' selected';
+            if ($year == $i)
+                echo ' selected';
             echo '>' . $i . '</option>';
         }
         echo '</select>';
@@ -466,7 +508,8 @@ class NewsletterControls {
         echo '<select name="' . $name . '_month">';
         for ($i = 1; $i <= 12; $i++) {
             echo '<option value="' . $i . '"';
-            if ($month == $i) echo ' selected';
+            if ($month == $i)
+                echo ' selected';
             echo '>' . date('F', mktime(0, 0, 0, $i, 1, 2000)) . '</option>';
         }
         echo '</select>';
@@ -474,7 +517,8 @@ class NewsletterControls {
         echo '<select name="' . $name . '_day">';
         for ($i = 1; $i <= 31; $i++) {
             echo '<option value="' . $i . '"';
-            if ($day == $i) echo ' selected';
+            if ($day == $i)
+                echo ' selected';
             echo '>' . $i . '</option>';
         }
         echo '</select>';
@@ -482,7 +526,8 @@ class NewsletterControls {
         echo '<select name="' . $name . '_year">';
         for ($i = 2011; $i <= 2021; $i++) {
             echo '<option value="' . $i . '"';
-            if ($year == $i) echo ' selected';
+            if ($year == $i)
+                echo ' selected';
             echo '>' . $i . '</option>';
         }
         echo '</select>';
@@ -490,7 +535,8 @@ class NewsletterControls {
         echo '<select name="' . $name . '_hour">';
         for ($i = 0; $i <= 23; $i++) {
             echo '<option value="' . $i . '"';
-            if ($hour == $i) echo ' selected';
+            if ($hour == $i)
+                echo ' selected';
             echo '>' . $i . ':00</option>';
         }
         echo '</select>';
@@ -530,7 +576,8 @@ class NewsletterControls {
     }
 
     function update_option($name, $data = null) {
-        if ($data == null) $data = $this->data;
+        if ($data == null)
+            $data = $this->data;
         update_option($name, $data);
         if (isset($data['log_level'])) {
             update_option($name . '_log_level', $data['log_level']);

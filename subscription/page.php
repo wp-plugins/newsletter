@@ -69,7 +69,7 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/subscription/page.php')) {
     <body>
         <?php if (!empty($alert)) { ?>
         <script>
-            alert("<?php echo addslashes($alert); ?>");
+            alert("<?php echo addslashes(strip_tags($alert)); ?>");
         </script>
         <?php } ?>
         <div id="container">
