@@ -4,7 +4,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterSubscription extends NewsletterModule {
 
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
     const MESSAGE_CONFIRMED = 'confirmed';
 
     static $instance;
