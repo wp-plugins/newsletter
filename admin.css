@@ -914,4 +914,18 @@ table.clicks {
     margin-bottom: 5px;
 }
 
+.newsletter-option-grid th {
+    text-align: right;
+    width: auto;
+    border: 0;
+    padding: 3px;
+    font-weight: normal;
+    vertical-align: top;
+    padding-right: 15px;
+}
+.newsletter-option-grid td {
+    border: 0;
+    padding: 3px;
+    vertical-align: top;
+}
 

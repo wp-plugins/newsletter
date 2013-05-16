@@ -20,7 +20,7 @@ else {
     }
 }
 
-$status = array(0=>'Disabled/Private', 1=>'Only on profile page', 2=>'Even on subscription forms');
+$status = array(0=>'Disabled/Private use', 1=>'Only on profile page', 2=>'Even on subscription forms');
 $rules = array(0=>'Optional', 1=>'Required');
 ?>
 <script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
@@ -73,79 +73,94 @@ $rules = array(0=>'Optional', 1=>'Required');
         </ul>
 
           <div id="tabs-2">
-        <table class="form-table">
-            <tr>
-                <th>User's data/fields</th>
-                <td>
-                    <table class="widefat">
-                        <thead>
-                    <tr>
-                        <th width="150">Field</th>
-                        <th>Where to ask</th>
-                        <th>Rules</th>
-                        <th>Configuration</th>
-                    </tr>
-                        </thead>
-                    <tr>
-                        <td>Email</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>
-                            <label>label</label> <?php $controls->text('email', 50); ?><br/>
-                            <label>if wrong</label> <?php $controls->text('email_error', 50); ?>
+            <div class="tab-preamble">
+              <p>The main subscriber fields. Only the email field is, of course, mandatory.</p>
+                </div>
+              <table class="form-table">
+                  <tr>
+                  <th>Email</th>
+                  <td>
+                      <table class="newsletter-option-grid">
+                          <tr><th>Field label</th><td><?php $controls->text('email', 50); ?></td></tr>
+                            <tr><th>Error message</th><td><?php $controls->text('email_error', 50); ?></td></tr>
+                      </table>
+                  </td>
+              </tr>
+               <tr>
+                  <th>Name or first name</th>
+                  <td>
+                      <table class="newsletter-option-grid">
+                          <tr><th>Field label</th><td><?php $controls->text('name', 50); ?></td></tr>
+                          <tr><th>When to show</th><td><?php $controls->select('name_status', $status); ?></td></tr>
+                          <tr><th>Rules</th><td><?php $controls->text('name_rules', 50); ?></td></tr>
+                          <tr><th>Error message</th><td><?php $controls->text('name_error', 50); ?></td></tr>
+                      </table>
+                      <div class="hints">
+                          If you want to collect only a generic "name", use only this field and not the
+                          last name field.
+                      </div>
+                    </td>
+              </tr>
+              <tr>
+                  <th>Last name</th>
+                  <td>
+                      <table class="newsletter-option-grid">
+                          <tr><th>Field label</th><td><?php $controls->text('surname', 50); ?></td></tr>
+                          <tr><th>When to show</th><td><?php $controls->select('surname_status', $status); ?></td></tr>
+                          <tr><th>Rules</th><td><?php $controls->select('surname_rules', $rules); ?></td></tr>
+                          <tr><th>Error message</th><td><?php $controls->text('surname_error', 50); ?></td></tr>
+                      </table>
+                    </td>
+              </tr>
+                            <tr>
+                  <th>Sex/Gender</th>
+                  <td>
+                      <table class="newsletter-option-grid">
+                          <tr><th>Field label</th><td><?php $controls->text('sex', 50); ?></td></tr>
+                          <tr><th>When to show</th><td><?php $controls->select('sex_status', $status); ?></td></tr>
+                          <tr><th>Value labels</th><td>
+                               female: <?php $controls->text('sex_female'); ?>
+                            male: <?php $controls->text('sex_male'); ?>
+                            not specified: <?php $controls->text('sex_none'); ?>
+                              </td></tr>
+                          
+                          <tr><th>Salutation titles</th><td>
+                       
+                            for males: <?php $controls->text('title_male'); ?> (ex. "Mr")<br>
+                            for females: <?php $controls->text('title_female'); ?> (ex. "Mrs")<br>
+                            for others: <?php $controls->text('title_none'); ?>
+                            </td></tr>
+                      </table>
+                          <div class="hints">
+                          Salutation titles are inserted in emails message when the tag {title} is used. For example
+                          "Good morning {title} {surname} {name}".
+                      </div>
                         </td>
                     </tr>
-                    <tr>
-                      <td>First Name</td>
-                      <td><?php $controls->select('name_status', $status); ?></td>
-                      <td><?php $controls->select('name_rules', $rules); ?></td>
-                      <td>
-                        <label>label</label> <?php $controls->text('name', 50); ?>
-                        <label>if missing</label> <?php $controls->text('name_error', 50); ?>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Last Name</td>
-                      <td><?php $controls->select('surname_status', $status); ?></td>
-                      <td><?php $controls->select('surname_rules', $rules); ?></td>
-                      <td>
-                        <label>label</label> <?php $controls->text('surname', 50); ?><br />
-                        <label>if missing</label> <?php $controls->text('surname_error', 50); ?>
-                      </td>
-                    </tr>
-                    <tr>
-                        <td>Sex</td>
-                        <td><?php $controls->select('sex_status', $status); ?></td>
-                        <td>
-                            label: <?php $controls->text('sex'); ?>
-                            "female": <?php $controls->text('sex_female'); ?>
-                            "male": <?php $controls->text('sex_male'); ?>
-                            "not specified": <?php $controls->text('sex_none'); ?>
-                        </td>
-                    </tr>
-                    <tr><td>Privacy checkbox</td><td><?php $controls->yesno('privacy_status'); ?></td>
-                        <td>
-                          <label>text</label> <?php $controls->text('privacy', 50); ?><br />
-                          <label>unchecked warning</label> <?php $controls->text('privacy_error', 50); ?>
-                          <label>privacy link</label>  <?php $controls->text('privacy_url', 50); ?>
-                        </td>
-                    </tr>
-                    </table>
+                    
+                   <tr>
+                  <th>Button labels</th>
+                  <td>
+                      <table class="newsletter-option-grid">
+                          <tr><th>Subscribe button</th><td><?php $controls->text('subscribe'); ?></td></tr>
+                          <tr><th>Save button</th><td><?php $controls->text('save'); ?> (on profile page)</td></tr>
+                      </table>
                     <div class="hints">
-                    If sex field is disabled subscribers will be stored with unspecified sex. Privacy is applied only on subscription and is
-                    a checkbox the use must check to proceed with subscription.
+                        For "subscribe" insert an URL to an image (http://...) to use it as a graphical button.
                     </div>
                 </td>
             </tr>
             <tr>
-                <th>Buttons</th>
-                <td>
-                    "subscribe": <?php $controls->text('subscribe'); ?> "profile save": <?php $controls->text('save'); ?>
-                    <div class="hints">
-                    For "subscribe" insert an URL to an image (http://...) to use it as a graphical button.
-                    </div>
-                </td>
-            </tr>
+                  <th>Privacy check box</th>
+                  <td>
+                      <table class="newsletter-option-grid">
+                          <tr><th>Label</th><td><?php $controls->text('privacy', 50); ?></td></tr>
+                          <tr><th>Error message</th><td><?php $controls->text('privacy_error', 50); ?></td></tr>
+                          <tr><th>Privacy URL</th><td><?php $controls->text('privacy_url', 50); ?></td></tr>
+                      </table>
+                      </td>
+                    </tr>
+                    
 
         </table>
           </div>

@@ -128,7 +128,7 @@ class Newsletter extends NewsletterModule {
 
         add_action('init', array($this, 'hook_init'));
         add_action('newsletter', array($this, 'hook_newsletter'), 1);
-        
+
 
         // This specific event is created by "Feed by mail" panel on configuration
         add_action('shutdown', array($this, 'hook_shutdown'));
@@ -343,7 +343,7 @@ class Newsletter extends NewsletterModule {
     function relink($text, $email_id, $user_id) {
         return NewsletterStatistics::instance()->relink($text, $email_id, $user_id);
     }
-    
+
     /**
      * Runs every 5 minutes and look for emails that need to be processed.
      */
@@ -736,19 +736,26 @@ class Newsletter extends NewsletterModule {
             $user = $this->get_user($user['id']);
         }
 
-        $text = apply_filters('newsletter_replace', $text, $user_id, $email_id);
+        $email = null;
+        if (is_numeric($email_id)) {
+            $email = $this->get_email($email_id);
+        }
+
+        $text = apply_filters('newsletter_replace', $text, $user, $email);
 
         //$text = str_replace('{home_url}', get_option('home'), $text);
         //$text = str_replace('{blog_url}', get_option('home'), $text);
         $text = $this->replace_url($text, 'BLOG_URL', get_option('home'));
         $text = $this->replace_url($text, 'HOME_URL', get_option('home'));
-        
+
         $text = str_replace('{blog_title}', get_option('blogname'), $text);
         $text = str_replace('{blog_description}', get_option('blogdescription'), $text);
 
         $text = $this->replace_date($text);
 
         if ($user != null) {
+            $options_profile = get_option('newsletter_profile');
+
             $text = str_replace('{email}', $user->email, $text);
             if (empty($user->name)) {
                 $text = str_replace(' {name}', '', $text);
@@ -756,6 +763,17 @@ class Newsletter extends NewsletterModule {
             } else {
                 $text = str_replace('{name}', $user->name, $text);
             }
+            
+            switch ($user->sex) {
+                case 'm': $text = str_replace('{title}', $options_profile['title_male'], $text);
+                    break;
+                case 'f': $text = str_replace('{title}', $options_profile['title_female'], $text);
+                    break;
+                case 'n': $text = str_replace('{title}', $options_profile['title_none'], $text);
+                    break;
+            }
+
+
             $text = str_replace('{surname}', $user->surname, $text);
             $text = str_replace('{token}', $user->token, $text);
             $text = str_replace('%7Btoken%7D', $user->token, $text);
@@ -797,7 +815,7 @@ class Newsletter extends NewsletterModule {
             $text = $this->replace_url($text, 'FEED_SUBSCRIPTION_URL', self::add_qs($base, 'nm=es' . $id_token));
             $text = $this->replace_url($text, 'FEED_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=eu' . $id_token));
 
-            $options_profile = get_option('newsletter_profile');
+
             if (empty($options_profile['profile_url']))
                 $text = $this->replace_url($text, 'PROFILE_URL', plugins_url('newsletter/do/profile.php') . '?nk=' . $nk);
             else

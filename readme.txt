@@ -55,6 +55,12 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.2.8 =
+
+* Fixed the newsletter_replace filter
+* Added the person title for salutation
+* Changed the profile field panel
+
 = 3.2.7 =
 
 * Added a controls for the Reports module version 1.0.4
