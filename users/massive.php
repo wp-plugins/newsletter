@@ -17,6 +17,7 @@ if ($controls->is_action('remove_unconfirmed')) {
 }
 
 if ($controls->is_action('remove_unsubscribed')) {
+  $r = $wpdb->query("delete from " . NEWSLETTER_USERS_TABLE . " where status='U'");
   $controls->messages = $r . ' unsubscribed deleted (profiles associated to WordPress users are never deleted).';
 }
 

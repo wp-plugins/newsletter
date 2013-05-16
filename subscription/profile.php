@@ -92,7 +92,7 @@ $rules = array(0=>'Optional', 1=>'Required');
                       <table class="newsletter-option-grid">
                           <tr><th>Field label</th><td><?php $controls->text('name', 50); ?></td></tr>
                           <tr><th>When to show</th><td><?php $controls->select('name_status', $status); ?></td></tr>
-                          <tr><th>Rules</th><td><?php $controls->text('name_rules', 50); ?></td></tr>
+                          <tr><th>Rules</th><td><?php $controls->select('surname_rules', $rules); ?></td></tr>
                           <tr><th>Error message</th><td><?php $controls->text('name_error', 50); ?></td></tr>
                       </table>
                       <div class="hints">
