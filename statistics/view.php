@@ -6,7 +6,7 @@ $email = $module->get_email($_GET['id']);
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/statistics-module'; ?>
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
-    <h5>Statistics Module</h5>
+    <h5>Statistics</h5>
 
     <h2>Statistics for "<?php echo esc_html($email->subject); ?>"</h2>
 
@@ -36,4 +36,5 @@ $email = $module->get_email($_GET['id']);
             </tr>
         </tbody>
     </table>
+        
 </div>

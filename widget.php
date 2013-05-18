@@ -53,8 +53,8 @@ class NewsletterWidget extends WP_Widget {
                 if ($options_profile['profile_' . $i . '_type'] == 'select') {
                     $form .= '<p>' . $options_profile['profile_' . $i] . '<br /><select class="newsletter-profile newsletter-profile-' . $i . '" name="np' . $i . '">';
                     $opts = explode(',', $options_profile['profile_' . $i . '_options']);
-                    for ($i = 0; $i < count($opts); $i++) {
-                        $form .= '<option>' . trim($opts[$i]) . '</option>';
+                    for ($t = 0; $t < count($opts); $t++) {
+                        $form .= '<option>' . trim($opts[$t]) . '</option>';
                     }
                     $form .= '</select></p>';
                 }
