@@ -63,7 +63,9 @@ class NewsletterWidget extends WP_Widget {
             $lists = '';
             for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
                 if ($options_profile['list_' . $i . '_status'] != 2) continue;
-                $lists .= '<input type="checkbox" name="nl[]" value="' . $i . '"/>&nbsp;' . $options_profile['list_' . $i] . '<br />';
+                $lists .= '<input type="checkbox" name="nl[]" value="' . $i . '"'; 
+                if ($options_profile['list_' . $i . '_checked'] == 1) $lists .= ' checked';
+                $lists .= '/>&nbsp;' . $options_profile['list_' . $i] . '<br />';
             }
             if (!empty($lists)) $form .= '<p>' . $lists . '</p>';
 

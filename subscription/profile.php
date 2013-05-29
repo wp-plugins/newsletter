@@ -154,6 +154,7 @@ $rules = array(0=>'Optional', 1=>'Required');
                   <th>Privacy check box</th>
                   <td>
                       <table class="newsletter-option-grid">
+                          <tr><th>Enabled?</th><?php $controls->yesno('privacy_status'); ?></td></tr>
                           <tr><th>Label</th><td><?php $controls->text('privacy', 50); ?></td></tr>
                           <tr><th>Error message</th><td><?php $controls->text('privacy_error', 50); ?></td></tr>
                           <tr><th>Privacy URL</th><td><?php $controls->text('privacy_url', 50); ?></td></tr>
@@ -213,11 +214,19 @@ $rules = array(0=>'Optional', 1=>'Required');
                             <table class="widefat">
                                 <thead>
                                     <tr>
-                                        <th>Field</th><th>When/Where</th><th>Configuration</th>
+                                        <th>Field</th>
+                                        <th>When/Where</th>
+                                        <th>Name</th>
+                                        <th>&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <?php for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) { ?>
-                                    <tr><td>Preference <?php echo $i; ?></td><td><?php $controls->select('list_' . $i . '_status', $status); ?></td><td>label: <?php $controls->text('list_' . $i); ?></td></tr>
+                                    <tr>
+                                        <td>Preference <?php echo $i; ?></td>
+                                        <td><?php $controls->select('list_' . $i . '_status', $status); ?></td>
+                                        <td><?php $controls->text('list_' . $i); ?></td>
+                                        <td><?php $controls->select('list_' . $i . '_checked', array(0=>'Uncheked', 1=>'Checked')); ?></td>
+                                    </tr>
                                 <?php } ?>
                             </table>
                             <div class="hints">

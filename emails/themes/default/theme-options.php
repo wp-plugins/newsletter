@@ -3,6 +3,14 @@
         <th>Base color</th>
         <td><?php $controls->color('theme_color'); ?></td>
     </tr>
+        <tr>
+        <th>Banner</th>
+        <td><?php $controls->wp_editor('theme_banner'); ?>
+            <div class="hints">
+                Create a content with an image (500 pixel wide) that will be your newsletter banner.
+            </div>
+        </td>
+    </tr>
     <tr>
         <th>Add latest posts</th>
         <td><?php $controls->checkbox('theme_posts'); ?></td>

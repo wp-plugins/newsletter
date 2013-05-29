@@ -399,6 +399,10 @@ class NewsletterModule {
      * @param int $time
      */
     static function split_posts(&$posts, $time = 0) {
+        if ($last_run < 0) {
+            return array_chunk($posts, ceil(count($posts)/2));
+        }
+        
         $result = array(array(), array());
         foreach ($posts as &$post) {
             if (self::is_post_old($post, $time))

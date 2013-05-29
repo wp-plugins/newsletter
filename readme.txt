@@ -55,6 +55,16 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.3.0 =
+
+* Fixed a replacement on online email version
+* Fixed a missing privacy check box configuration
+* Improved the split posts
+* Added post_type control
+* Re-enabled the subscription for addresses not confirmed
+* Fixed the welcome and ocnfirmaiton email when sent from subscribers list panel (were not using the theme)
+* Added the "pre-checked" option to preferences configuration
+
 = 3.2.9 =
 
 * Fixed a possible loop on widget (when using extended fields in combobox format)

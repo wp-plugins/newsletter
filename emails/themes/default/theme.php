@@ -15,6 +15,7 @@ if (empty($color)) $color = '#0088cc';
 
 if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>10));
 
+
 ?><!DOCTYPE html>
 <html>
     <head>
@@ -32,9 +33,11 @@ if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>
             <tr>
                 <td style="font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14px; color: #666;">
                     <div style="text-align: left; max-width: 500px; border-top: 10px solid <?php echo $color; ?>; border-bottom: 3px solid <?php echo $color; ?>;">
+                        
                         <div style="padding: 10px 20px; color: #000; font-size: 20px; background-color: #EFEFEF; border-bottom: 1px solid #ddd">
                             <?php echo get_option('blogname'); ?>
                         </div>
+                        
                         <div style="padding: 20px; background-color: #fff; line-height: 18px">
 
                             <p style="text-align: center"><a target="_blank"  href="{email_url}">View this email online</a></p>

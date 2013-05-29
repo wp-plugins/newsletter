@@ -112,13 +112,14 @@ function newsletter_emails_get_theme_options($theme) {
 
         <div id="tabs">
             <ul>
-                <li><a href="#tabs-1">Theme options</a></li>
                 <li><a href="#tabs-2">Preview</a></li>
+                <li><a href="#tabs-1">Theme options</a></li>
                 <li><a href="#tabs-3">Preview (textual)</a></li>
             </ul>
 
 
             <div id="tabs-1">
+                <p>Theme options are saved for next time you'll use it!</p>
               <?php @include $module->get_current_theme_file_path('theme-options.php');?>
                 <div class="newsletter-buttons newsletter-buttons-bottom">
               <?php $controls->button('save', 'Save options and refresh'); ?>

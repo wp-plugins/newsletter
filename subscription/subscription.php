@@ -195,7 +195,7 @@ class NewsletterSubscription extends NewsletterModule {
         $user = $newsletter->get_user($email);
 
         if ($user != null) {
-            if ($user->status == 'B' || $user->status == 'C' || $user->status == 'S') {
+            if ($user->status == 'B' || $user->status == 'C') {
                 $this->logger->error('Subscription of an address with status ' . $user->status);
                 $user->status = 'E';
                 return $user;
@@ -654,7 +654,9 @@ class NewsletterSubscription extends NewsletterModule {
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
             if ($options_profile['list_' . $i . '_status'] != 2)
                 continue;
-            $lists .= "\t\t" . '<input type="checkbox" name="nl[]" value="' . $i . '"/>&nbsp;' . $options_profile['list_' . $i] . '<br />' . "\n";
+            $lists .= "\t\t" . '<input type="checkbox" name="nl[]" value="' . $i . '"';
+            if ($options_profile['list_' . $i . '_checked'] == 1) $lists .= ' checked';
+            $lists .= '/>&nbsp;' . $options_profile['list_' . $i] . '<br />' . "\n";
         }
         if (!empty($lists))
             $buffer .= "<!-- preferences -->\n<tr>\n\t<th>&nbsp;</th>\n\t<td>\n" . $lists . "\t</td>\n</tr>\n\n";

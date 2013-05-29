@@ -20,14 +20,14 @@ for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++)
 if ($controls->is_action('resend')) {
     $user = NewsletterUsers::instance()->get_user($controls->button_data);
     $opts = get_option('newsletter');
-    $newsletter->mail($user->email, $newsletter->replace($opts['confirmation_subject'], $user), $newsletter->replace($opts['confirmation_message'], $user));
+    NewsletterSubscription::instance()->mail($user->email, $newsletter->replace($opts['confirmation_subject'], $user), $newsletter->replace($opts['confirmation_message'], $user));
     $controls->messages = 'Activation email resent to ' . $user->email;
 }
 
 if ($controls->is_action('resend_welcome')) {
     $user = NewsletterUsers::instance()->get_user($controls->button_data);
     $opts = get_option('newsletter');
-    $newsletter->mail($user->email, $newsletter->replace($opts['confirmed_subject'], $user), $newsletter->replace($opts['confirmed_message'], $user));
+    NewsletterSubscription::instance()->mail($user->email, $newsletter->replace($opts['confirmed_subject'], $user), $newsletter->replace($opts['confirmed_message'], $user));
     $controls->messages = 'Welcome email resent.';
 }
 

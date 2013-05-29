@@ -149,6 +149,18 @@ class NewsletterControls {
         echo "</div><div style='clear: both'></div>";
     }
 
+    /** Creates a checkbox group with all public post types.
+     */
+    function post_types($name = 'post_types') {
+        $list = array();
+        $post_types = get_post_types(array('public' => true), 'objects', 'and');
+        foreach ($post_types as &$post_type) {
+            $list[$post_type->name] = $post_type->labels->name;
+        }
+
+        $this->checkboxes_group('post_types', $list);
+    }
+
     function select_group($name, $options) {
         echo '<select name="options[' . $name . '][]">';
 
