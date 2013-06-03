@@ -45,7 +45,7 @@ else {
     }
 
     if ($controls->is_action('delete')) {
-        $wpdb->query("delete from " . $wpdb->prefix . "newsletter_emails where id=" . $_POST['btn']);
+        $wpdb->query($wpdb->prepare("delete from " . $wpdb->prefix . "newsletter_emails where id=%d", $_POST['btn']));
     }
 
     if ($controls->is_action('reset_time')) {
