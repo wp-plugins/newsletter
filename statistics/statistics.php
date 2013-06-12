@@ -4,8 +4,6 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterStatistics extends NewsletterModule {
 
-    const VERSION = '1.0.3';
-
     static $instance;
 
     /**
@@ -19,7 +17,7 @@ class NewsletterStatistics extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('statistics', self::VERSION, 34);
+        parent::__construct('statistics', '1.0.5');
     }
 
     function upgrade() {
@@ -42,10 +40,11 @@ class NewsletterStatistics extends NewsletterModule {
         // Future... see the links table
         $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column link_id int not null default 0");
 
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column user_id int not null default 0");
         $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column created timestamp not null default current_timestamp");
         $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column url varchar(255) not null default ''");
         $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column anchor varchar(200) not null default ''");
+        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column ip varchar(20) not null default ''");
+        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_stats add column country varchar(4) not null default ''");
 
         // Stores the link of every email to create short links
 //        $this->upgrade_query("create table if not exists {$wpdb->prefix}newsletter_links (id int auto_increment, primary key (id)) $charset_collate");

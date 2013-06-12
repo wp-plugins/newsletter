@@ -8,7 +8,8 @@ $wpdb->insert(NEWSLETTER_STATS_TABLE,
         'email_id' => $email_id,
         'user_id' => $user_id,
         'url' => $url,
-        'anchor' => $anchor
+        'anchor' => $anchor,
+        'ip' => $_SERVER['REMOTE_ADDR']
     )
 );
 

@@ -2,7 +2,7 @@
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
 Tested up to: 3.5.1
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 Donate link: http://www.satollo.net/donations
 
 Add a real newsletter to your blog. In seconds. For free. With unlimited emails and subscribers.
@@ -54,6 +54,17 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.3.2 =
+
+* Disabled the save button on composer when the newsletter is "sending" or "sent"
+* Added ip field on statistics
+* Reviewed the subscriber statistics panel
+* Fixed some links on welcome panel
+* Added extensions version check
+* Added the Mandrill Extension support
+* Fixed the banner options on default theme
+* New "new newsletter" panel (hope simpler to use)
 
 = 3.3.1 =
 

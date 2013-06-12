@@ -929,3 +929,14 @@ table.clicks {
     vertical-align: top;
 }
 
+.newsletter-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fafafa;
+    margin-bottom: 15px;
+}
+
+.newsletter-box h3 {
+    margin-top: 0;
+}
+

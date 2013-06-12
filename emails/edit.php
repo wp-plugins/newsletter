@@ -229,8 +229,8 @@ if ($email['editor'] == 0) {
         <?php $controls->init(); ?>
 
         <p class="submit">
-            <?php if ($email['status'] != 'sending') $controls->button('save', 'Save'); ?>
-            <?php if ($email['status'] != 'sending') $controls->button_confirm('test', 'Save and test', 'Save and send test emails to test addresses?'); ?>
+            <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button('save', 'Save'); ?>
+            <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button_confirm('test', 'Save and test', 'Save and send test emails to test addresses?'); ?>
 
             <?php if ($email['status'] == 'new') $controls->button_confirm('send', 'Send', 'Start a real delivery?'); ?>
             <?php if ($email['status'] == 'sending') $controls->button_confirm('pause', 'Pause', 'Pause the delivery?'); ?>

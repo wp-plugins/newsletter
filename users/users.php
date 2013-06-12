@@ -4,8 +4,6 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterUsers extends NewsletterModule {
 
-    const VERSION = '1.0.3';
-
     static $instance;
 
     /**
@@ -19,7 +17,7 @@ class NewsletterUsers extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('users', self::VERSION);
+        parent::__construct('users', '1.0.4');
     }
 
     function upgrade() {
@@ -42,6 +40,7 @@ class NewsletterUsers extends NewsletterModule {
         // Feed by mail
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column feed tinyint(4) not null default 0");
         $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column feed_time bigint(20) not null default 0");
+        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column country varchar(4) not null default ''");
 
         // List/Preferences
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {

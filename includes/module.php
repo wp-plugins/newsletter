@@ -67,9 +67,9 @@ class NewsletterModule {
             add_action('admin_menu', array($this, 'admin_menu'));
             $this->available_version = get_option($this->prefix . '_available_version');
         }
-        if (!empty($this->module_id)) {
-            add_action($this->prefix . '_version_check', array($this, 'hook_version_check'), 1);
-        }
+//        if (!empty($this->module_id)) {
+//            add_action($this->prefix . '_version_check', array($this, 'hook_version_check'), 1);
+//        }
     }
 
     /**
@@ -86,10 +86,10 @@ class NewsletterModule {
         } else {
             // TODO: Try with an array_merge()?
         }
-        if (!empty($this->module_id)) {
-            wp_clear_scheduled_hook($this->prefix . '_version_check');
-            wp_schedule_event(time() + 30, 'daily', $this->prefix . '_version_check');
-        }
+//        if (!empty($this->module_id)) {
+//            wp_clear_scheduled_hook($this->prefix . '_version_check');
+//            wp_schedule_event(time() + 30, 'daily', $this->prefix . '_version_check');
+//        }
     }
 
     function upgrade_query($query) {
@@ -102,15 +102,15 @@ class NewsletterModule {
         }
     }
 
-    function hook_version_check() {
-        $this->logger->info('Checking for new version');
-        if (empty($this->module_id)) return;
-        $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $this->module_id);
-        if ($version) {
-            update_option($this->prefix . '_available_version', $version);
-            $this->available_version = $version;
-        }
-    }
+//    function hook_version_check() {
+//        $this->logger->info('Checking for new version');
+//        if (empty($this->module_id)) return;
+//        $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $this->module_id);
+//        if ($version) {
+//            update_option($this->prefix . '_available_version', $version);
+//            $this->available_version = $version;
+//        }
+//    }
 
     /**
      * Return, eventually, the version of this moduke available on satollo.net.

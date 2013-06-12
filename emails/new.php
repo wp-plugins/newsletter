@@ -100,46 +100,55 @@ function newsletter_emails_get_theme_options($theme) {
 
     <form method="post" action="<?php echo $module->get_admin_page_url('new'); ?>">
         <?php $controls->init(); ?>
+        
+        <div class="newsletter-box">
         <h3>Choose a theme</h3>
             <?php //$controls->select('theme', NewsletterEmails::instance()->themes->get_all()); ?>
             <?php //$controls->button('change', 'Change theme'); ?>
 
             <?php $controls->themes('theme', $module->themes->get_all_with_data()); ?>
-
-        <p>
-            <?php $controls->button_primary('create', 'Create the email'); ?>
-        </p>
-
+        </div>
+        
+<!--
         <div id="tabs">
             <ul>
                 <li><a href="#tabs-2">Preview</a></li>
-                <li><a href="#tabs-1">Theme options</a></li>
+                <li><a href="#tabs-options">Theme options</a></li>
                 <li><a href="#tabs-3">Preview (textual)</a></li>
             </ul>
 
+-->
+             <div class="newsletter-box">
 
-            <div id="tabs-1">
-                <p>Theme options are saved for next time you'll use it!</p>
-              <?php @include $module->get_current_theme_file_path('theme-options.php');?>
-                <div class="newsletter-buttons newsletter-buttons-bottom">
-              <?php $controls->button('save', 'Save options and refresh'); ?>
-                </div>
-            </div>
+                 <h3>Set the theme options</h3>
+                 <?php @include $module->get_current_theme_file_path('theme-options.php'); ?>
+                  
+                 <?php $controls->button('save', 'Save options and refresh'); ?>
+                 <?php $controls->button_primary('create', 'Create the email'); ?>
+                        
+                 <div class="hints">Theme options are saved for next time you'll use it!</div>
+             </div>
 
-
+<!--
             <div id="tabs-2">
+      
                 <div class="tab-preamble">
                     <p>After the email is created, you can edit every part of this message.</p>
                 </div>
                 <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700"></iframe>
+    
             </div>
-
-
+-->
+<!--
             <div id="tabs-3">
                 <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview-text.php?' . time()); ?>" width="100%" height="500"></iframe>
             </div>
-
-        </div>
-
+-->
+        <!--</div>-->
+            
+        <h3>Preview</h3>
+        
+        <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="700" height="700" style="border: 1px solid #ccc"></iframe>
+  
     </form>
 </div>

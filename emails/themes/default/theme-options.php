@@ -4,10 +4,11 @@
         <td><?php $controls->color('theme_color'); ?></td>
     </tr>
         <tr>
-        <th>Banner</th>
+        <th>Banner/Title</th>
         <td><?php $controls->wp_editor('theme_banner'); ?>
             <div class="hints">
-                Create a content with an image (500 pixel wide) that will be your newsletter banner.
+                Create a content with an image (500 pixel wide) that will be your newsletter banner and that will replace the 
+                title with your blog name.
             </div>
         </td>
     </tr>

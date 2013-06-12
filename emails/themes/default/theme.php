@@ -32,11 +32,16 @@ if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>
         <table align="center">
             <tr>
                 <td style="font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 14px; color: #666;">
-                    <div style="text-align: left; max-width: 500px; border-top: 10px solid <?php echo $color; ?>; border-bottom: 3px solid <?php echo $color; ?>;">
+                    <div style="text-align: left; background-color: #fff; max-width: 500px; border-top: 10px solid <?php echo $color; ?>; border-bottom: 3px solid <?php echo $color; ?>;">
                         
+                        <?php 
+                        if (!empty($theme_options['theme_banner'])) { 
+                            echo $theme_options['theme_banner'];
+                        } else { ?>
                         <div style="padding: 10px 20px; color: #000; font-size: 20px; background-color: #EFEFEF; border-bottom: 1px solid #ddd">
                             <?php echo get_option('blogname'); ?>
                         </div>
+                        <?php } ?>
                         
                         <div style="padding: 20px; background-color: #fff; line-height: 18px">
 

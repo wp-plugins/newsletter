@@ -13,6 +13,10 @@ if ($controls->is_action('feed_disable')) {
     $controls->messages = 'Feed by Mail demo panel disabled. On next page reload it will disappear.';
 }
 
+if ($controls->is_action('check_versions')) {
+    $newsletter->hook_check_versions();
+    $controls->messages = 'Module versions updated';
+}
 ?>
 <div class="wrap main-index">
 
@@ -78,12 +82,12 @@ if ($controls->is_action('feed_disable')) {
 
         <ol>
             <li>
-                <em>I want to create a newsletter.</em> Use the <a href="http://www.satollo.net/wp-admin/admin.php?page=newsletter_emails_index">newsletters panel</a>
+                <em>I want to create a newsletter.</em> Use the <a href="admin.php?page=newsletter_emails_index">newsletters panel</a>
                 <strong>choose a theme</strong>, preview, twick it if needed and create your message.
             </li>
             <li>
                 <em>I want to test my newsletter.</em> Save the newsletter and move to the
-                <a href="http://www.satollo.net/wp-admin/admin.php?page=newsletter_users_index">subscribers panel</a>.
+                <a href="admin.php?page=newsletter_users_index">subscribers panel</a>.
                 Create some subscribers manually using your own email addresses and mark them as test subscribers. They will be
                 used for newsletter tests.
             </li>
@@ -127,7 +131,7 @@ if ($controls->is_action('feed_disable')) {
                     <?php } else { ?>
                         <td>Not installed</td>
                     <?php } ?>
-                    <td><?php echo NewsletterModule::get_available_version(34); ?></td>
+                    <td><?php echo get_option('newsletter_reports_available_version'); ?></td>
                 </tr>
                 <tr>
                     <td>
@@ -151,7 +155,7 @@ if ($controls->is_action('feed_disable')) {
                     <?php } else { ?>
                         <td>Not installed</td>
                     <?php } ?>
-                    <td><?php echo NewsletterModule::get_available_version(35); ?></td>
+                    <td><?php echo get_option('newsletter_feed_available_version'); ?></td>
                 </tr>
                 <tr>
                     <td>
@@ -163,7 +167,7 @@ if ($controls->is_action('feed_disable')) {
                     <?php } else { ?>
                         <td>Not installed</td>
                     <?php } ?>
-                        <td><?php echo NewsletterModule::get_available_version(37); ?></td>
+                        <td><?php echo get_option('newsletter_followup_available_version'); ?></td>
                 </tr>
                 <tr>
                     <td>
@@ -175,11 +179,11 @@ if ($controls->is_action('feed_disable')) {
                     <?php } else { ?>
                         <td>Not installed</td>
                     <?php } ?>
-                    <td><?php echo NewsletterModule::get_available_version(41); ?></td>
+                    <td><?php echo get_option('newsletter_facebook_available_version'); ?></td>
                 </tr>
                 <tr>
                     <td>
-                        <a href="http://www.satollo.net/plugins/newsletter/sendgrid-up-module" target="_blank">SendGrid</a>
+                        <a href="http://www.satollo.net/plugins/newsletter/sendgrid-module" target="_blank">SendGrid</a>
                         <br><small>Integrates with <a href="http://www.satollo.net/affiliate/sendgrid" target="_blank">SendGrid</a> SMTP and bounce report</small>
                     </td>
                     <?php if (class_exists('NewsletterSendgrid')) { ?>
@@ -187,8 +191,32 @@ if ($controls->is_action('feed_disable')) {
                     <?php } else { ?>
                         <td>Not installed</td>
                     <?php } ?>
-                    <td><?php echo NewsletterModule::get_available_version(40); ?></td>
+                    <td><?php echo get_option('newsletter_sendgrid_available_version'); ?></td>
                 </tr>
+                <tr>
+                    <td>
+                        <a href="http://www.satollo.net/plugins/newsletter/mandrill-module" target="_blank">Mandrill</a>
+                        <br><small>Integrates with <a href="http://www.mandrill.com/" target="_blank">Mandrill by Mailchimp</a> SMTP and bounce report (experimental)</small>
+                    </td>
+                    <?php if (class_exists('NewsletterMandrill')) { ?>
+                        <td><?php echo NewsletterMandrill::instance()->version; ?></td>
+                    <?php } else { ?>
+                        <td>Not installed</td>
+                    <?php } ?>
+                    <td><?php echo get_option('newsletter_mandrill_available_version'); ?></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="http://www.satollo.net/plugins/newsletter/popup-module" target="_blank">Popup</a>
+                        <br><small>A very simple subscription popup (experimental)</small>
+                    </td>
+                    <?php if (class_exists('NewsletterPopup')) { ?>
+                        <td><?php echo NewsletterPopup::instance()->version; ?></td>
+                    <?php } else { ?>
+                        <td>Not installed</td>
+                    <?php } ?>
+                    <td><?php echo get_option('newsletter_popup_available_version'); ?></td>
+                </tr>                
                 <tr>
                     <td>
                         <a href="http://www.satollo.net/plugins/newsletter/mailjet-module" target="_blank">MailJet</a>
@@ -199,11 +227,12 @@ if ($controls->is_action('feed_disable')) {
                     <?php } else { ?>
                         <td>Not installed</td>
                     <?php } ?>
-                    <td><?php echo NewsletterModule::get_available_version(38); ?></td>
+                    <td><?php echo get_option('newsletter_mailjet_available_version'); ?></td>
                 </tr>
             </tbody>
         </table>
-
+        
+<?php $controls->button('check_versions', 'Check for new versions'); ?>
 
         <h3>Support</h3>
         <p>
