@@ -2,7 +2,7 @@
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
 Tested up to: 3.5.1
-Stable tag: 3.3.2
+Stable tag: 3.3.3
 Donate link: http://www.satollo.net/donations
 
 Add a real newsletter to your blog. In seconds. For free. With unlimited emails and subscribers.
