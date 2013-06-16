@@ -55,6 +55,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.3.3 =
+
+* Fixed the IP tracking on opening
+
 = 3.3.2 =
 
 * Disabled the save button on composer when the newsletter is "sending" or "sent"

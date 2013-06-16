@@ -8,6 +8,7 @@ list($email_id, $user_id) = explode(';', base64_decode($_GET['r']), 2);
 $wpdb->insert(NEWSLETTER_STATS_TABLE, array(
     'email_id' => $email_id,
     'user_id' => $user_id,
+    'ip' => $_SERVER['REMOTE_ADDR']
         )
 );
 
