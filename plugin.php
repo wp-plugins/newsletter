@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.3.3
+  Version: 3.3.4
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -119,7 +119,7 @@ class Newsletter extends NewsletterModule {
         // Here because the upgrade is called by the parent constructor and uses the scheduler
         add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
-        parent::__construct('main', '1.1.7');
+        parent::__construct('main', '1.1.8');
 
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max))
@@ -234,7 +234,8 @@ class Newsletter extends NewsletterModule {
         wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
 
         wp_clear_scheduled_hook('newsletter_update');
-        wp_schedule_event(time() + 30, 'daily', 'newsletter_check_versions');
+        wp_clear_scheduled_hook('newsletter_check_versions');
+        wp_schedule_event(time() + 30, 'weekly', 'newsletter_check_versions');
 
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter');
         wp_mkdir_p(WP_CONTENT_DIR . '/cache/newsletter');
