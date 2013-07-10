@@ -118,16 +118,36 @@ function newsletter_emails_get_theme_options($theme) {
             </ul>
 
 -->
-             <div class="newsletter-box">
+<div>
+      
+                 
+</div>
+    <table style="width: 100%">
+        <tr>
+            <td><?php $controls->button('save', 'Save options and refresh'); ?>
+            To create custom theme <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">read here</a>
+
+            </td>
+            <td>
+                <?php $controls->button_primary('create', 'Go to edit this message'); ?>
+            </td>
+        </tr>
+    <tr>
+        
+        <td style="vertical-align: top"><div class="newsletter-box">
 
                  <h3>Set the theme options</h3>
                  <?php @include $module->get_current_theme_file_path('theme-options.php'); ?>
                   
-                 <?php $controls->button('save', 'Save options and refresh'); ?>
-                 <?php $controls->button_primary('create', 'Create the email'); ?>
+               
                         
-                 <div class="hints">Theme options are saved for next time you'll use it!</div>
-             </div>
+                 <!--<div class="hints">Theme options are saved for next time you'll use it!</div>-->
+             </div></td>
+        <td style="width: 600px; vertical-align: top"><iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700" style="border: 1px solid #ccc"></iframe>
+  </td>
+    </tr>
+</table>
+             
 
 <!--
             <div id="tabs-2">
@@ -148,7 +168,6 @@ function newsletter_emails_get_theme_options($theme) {
             
         <h3>Preview</h3>
         
-        <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="700" height="700" style="border: 1px solid #ccc"></iframe>
-  
+        
     </form>
 </div>

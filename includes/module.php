@@ -151,7 +151,7 @@ class NewsletterModule {
      */
     function get_options($sub = '') {
         $options = get_option($this->get_prefix($sub));
-        if ($options == false)
+        if ($options === false)
             return array();
         return $options;
     }

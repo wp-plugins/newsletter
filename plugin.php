@@ -4,16 +4,16 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.3.4
+  Version: 3.3.5
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 
-  Copyright 2011 Stefano Lissa (email: info@satollo.net, web: http://www.satollo.net)
+  Copyright 2009-2013 Stefano Lissa (email: stefano@satollo.net, web: http://www.satollo.net)
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.3.3');
+define('NEWSLETTER_VERSION', '3.3.5');
 
 global $wpdb, $newsletter;
 
@@ -619,8 +619,10 @@ class Newsletter extends NewsletterModule {
 
         $this->mailer->CharSet = 'UTF-8';
         $this->mailer->From = $this->options['sender_email'];
-        if (!empty($this->options['return_path'])) {
-            $this->mailer->Sender = $this->options['return_path'];
+        
+        $return_path = $this->options['return_path'];
+        if (!empty($return_path)) {
+            $this->mailer->Sender = $return_path;
         }
         if (!empty($this->options['reply_to'])) {
             $this->mailer->AddReplyTo($this->options['reply_to']);

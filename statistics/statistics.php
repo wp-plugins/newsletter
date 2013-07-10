@@ -17,7 +17,7 @@ class NewsletterStatistics extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('statistics', '1.0.5');
+        parent::__construct('statistics', '1.0.6');
     }
 
     function upgrade() {
@@ -75,6 +75,9 @@ class NewsletterStatistics extends NewsletterModule {
             return $matches[0];
         if (substr($href, 0, 1) == '#')
             return $matches[0];
+        if (substr($href, 0, 7) == 'mailto:')
+            return $matches[0];
+
 
         $anchor = '';
         if ($this->options['anchor'] == 1) {

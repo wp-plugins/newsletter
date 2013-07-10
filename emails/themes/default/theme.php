@@ -13,8 +13,26 @@ global $newsletter, $post;
 $color = $theme_options['theme_color'];
 if (empty($color)) $color = '#0088cc';
 
-if (isset($theme_options['theme_posts'])) $posts = get_posts(array('showposts'=>10));
-
+if (isset($theme_options['theme_posts'])) {
+    $filters = array();
+    
+    if (empty($theme_options['theme_max_posts'])) $filters['showposts'] = 10;
+    else $filters['showposts'] = (int)$theme_options['theme_max_posts'];
+    
+    if (!empty($theme_options['theme_categories'])) {
+        $filters['category__in'] = $theme_options['theme_categories'];
+    }
+    
+    if (!empty($theme_options['theme_tags'])) {
+        $filters['tag'] = $theme_options['theme_tags'];
+    }
+    
+    if (!empty($theme_options['theme_post_types'])) {
+        $filters['post_type'] = $theme_options['theme_post_types'];
+    }    
+    
+    $posts = get_posts($filters);
+}
 
 ?><!DOCTYPE html>
 <html>

@@ -158,7 +158,7 @@ class NewsletterControls {
             $list[$post_type->name] = $post_type->labels->name;
         }
 
-        $this->checkboxes_group('post_types', $list);
+        $this->checkboxes_group($name, $list);
     }
 
     function select_group($name, $options) {
@@ -229,7 +229,6 @@ class NewsletterControls {
             echo '</label>';
         }
         echo '<div style="clear: both"></div>';
-        echo 'Want to create a custom theme? <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">Read here</a>';
     }
 
     function value($name) {
@@ -389,9 +388,9 @@ class NewsletterControls {
         if ($show_mode) {
             $this->select($name . '_mode', array('include' => 'To be included', 'exclude' => 'To be excluded'));
         }
-        echo '<div class="newsletter-categories-group">';
+        echo '<div class="newsletter-checkboxes-group">';
         foreach ($categories as &$c) {
-            echo '<div class="newsletter-categories-item">';
+            echo '<div class="newsletter-checkboxes-item">';
             $this->checkbox_group($name, $c->cat_ID, esc_html($c->cat_name));
             echo '</div>';
         }

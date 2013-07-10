@@ -741,7 +741,7 @@ table.clicks {
     list-style-position: inside;
 }
 
-.nl-checkbox-group {
+.newsletter-checkbox-group, .nl-checkbox-group {
     float: left;
     margin-right: 5px;
     border: 1px solid #ccc;
