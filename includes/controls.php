@@ -256,18 +256,28 @@ class NewsletterControls {
     }
 
     function text($name, $size = 20, $placeholder = '') {
+        if (!isset($this->data[$name])) $this->data[$name] = '';
         echo '<input placeholder="' . htmlspecialchars($placeholder) . '" name="options[' . $name . ']" type="text" size="' . $size . '" value="';
         echo htmlspecialchars($this->data[$name]);
         echo '"/>';
     }
 
     function text_email($name, $size = 40) {
+        if (!isset($this->data[$name])) $this->data[$name] = '';
         echo '<input name="options[' . $name . ']" type="email" placeholder="Valid email address" size="' . $size . '" value="';
         echo htmlspecialchars($this->data[$name]);
         echo '"/>';
     }
+    
+    function text_url($name, $size = 40) {
+        if (!isset($this->data[$name])) $this->data[$name] = '';
+        echo '<input name="options[' . $name . ']" type="url" placeholder="http://..." size="' . $size . '" value="';
+        echo htmlspecialchars($this->data[$name]);
+        echo '"/>';
+    }    
 
     function hidden($name) {
+        if (!isset($this->data[$name])) $this->data[$name] = '';
         echo '<input name="options[' . $name . ']" type="hidden" value="';
         echo htmlspecialchars($this->data[$name]);
         echo '"/>';

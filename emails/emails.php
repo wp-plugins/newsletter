@@ -19,7 +19,7 @@ class NewsletterEmails extends NewsletterModule {
 
     function __construct() {
         $this->themes = new NewsletterThemes('emails');
-        parent::__construct('emails', '1.0.9');
+        parent::__construct('emails', '1.1.0');
     }
 
     function upgrade() {
@@ -44,7 +44,7 @@ class NewsletterEmails extends NewsletterModule {
         $this->add_admin_page('list', 'Email List');
         $this->add_admin_page('new', 'Email New');
         $this->add_admin_page('edit', 'Email Edit');
-        $this->add_admin_page('theme', 'Email List');
+        $this->add_admin_page('theme', 'Email Themes');
     }
 
     /**

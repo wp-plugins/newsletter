@@ -3,7 +3,6 @@ require_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
 $module = NewsletterEmails::instance();
 
-
 if ($controls->is_action('theme')) {
     $controls->merge($module->themes->get_options($controls->data['theme']));
     $module->save_options($controls->data);
@@ -100,74 +99,28 @@ function newsletter_emails_get_theme_options($theme) {
 
     <form method="post" action="<?php echo $module->get_admin_page_url('new'); ?>">
         <?php $controls->init(); ?>
-        
-        <div class="newsletter-box">
-        <h3>Choose a theme</h3>
-            <?php //$controls->select('theme', NewsletterEmails::instance()->themes->get_all()); ?>
-            <?php //$controls->button('change', 'Change theme'); ?>
+        <?php $controls->hidden('theme'); ?>
 
-            <?php $controls->themes('theme', $module->themes->get_all_with_data()); ?>
-        </div>
-        
-<!--
-        <div id="tabs">
-            <ul>
-                <li><a href="#tabs-2">Preview</a></li>
-                <li><a href="#tabs-options">Theme options</a></li>
-                <li><a href="#tabs-3">Preview (textual)</a></li>
-            </ul>
+        <table style="width: 100%">
+            <tr>
+                <td><?php $controls->button_primary('save', 'Save options and refresh'); ?>
+                    To create custom theme <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">read here</a>
+                </td>
+                <td>
+                    <?php $controls->button_primary('create', 'Go to edit this message'); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 600px; vertical-align: top">
+                    <?php @include $module->get_current_theme_file_path('theme-options.php'); ?>
+                    
+                    This theme options are saved for next time you'll use it!
+                </td>
+                <td style="vertical-align: top">
+                    <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700" style="border: 1px solid #ccc"></iframe>
+                </td>
+            </tr>
+        </table>
 
--->
-<div>
-      
-                 
-</div>
-    <table style="width: 100%">
-        <tr>
-            <td><?php $controls->button('save', 'Save options and refresh'); ?>
-            To create custom theme <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">read here</a>
-
-            </td>
-            <td>
-                <?php $controls->button_primary('create', 'Go to edit this message'); ?>
-            </td>
-        </tr>
-    <tr>
-        
-        <td style="vertical-align: top"><div class="newsletter-box">
-
-                 <h3>Set the theme options</h3>
-                 <?php @include $module->get_current_theme_file_path('theme-options.php'); ?>
-                  
-               
-                        
-                 <!--<div class="hints">Theme options are saved for next time you'll use it!</div>-->
-             </div></td>
-        <td style="width: 600px; vertical-align: top"><iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700" style="border: 1px solid #ccc"></iframe>
-  </td>
-    </tr>
-</table>
-             
-
-<!--
-            <div id="tabs-2">
-      
-                <div class="tab-preamble">
-                    <p>After the email is created, you can edit every part of this message.</p>
-                </div>
-                <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700"></iframe>
-    
-            </div>
--->
-<!--
-            <div id="tabs-3">
-                <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview-text.php?' . time()); ?>" width="100%" height="500"></iframe>
-            </div>
--->
-        <!--</div>-->
-            
-        <h3>Preview</h3>
-        
-        
     </form>
 </div>

@@ -886,8 +886,6 @@ add_shortcode('newsletter_embed', 'newsletter_shortcode_form');
 add_shortcode('newsletter_form', 'newsletter_shortcode_form');
 
 function newsletter_shortcode_form($attrs, $content) {
-    global $cache_stop;
-    $cache_stop = true;
     if (isset($attrs['form'])) {
         return NewsletterSubscription::instance()->get_form($attrs['form']);
     } else {
