@@ -4,7 +4,6 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 
 class NewsletterSubscription extends NewsletterModule {
 
-    const VERSION = '1.0.3';
     const MESSAGE_CONFIRMED = 'confirmed';
 
     static $instance;
@@ -20,7 +19,7 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('subscription', self::VERSION);
+        parent::__construct('subscription', '1.0.4');
 
         add_action('wp_login', array($this, 'hook_wp_login'));
         

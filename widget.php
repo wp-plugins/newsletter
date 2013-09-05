@@ -72,7 +72,8 @@ class NewsletterWidget extends WP_Widget {
 
             $extra = apply_filters('newsletter_subscription_extra', array());
             foreach ($extra as &$x) {
-                $form .= "<p>" . $x['label'] . "<br/>";
+                $form .= "<p>";
+                if (!empty($x['label'])) $form .= $x['label'] . "<br/>";
                 $form .= $x['field'] . "</p>";
             }
 

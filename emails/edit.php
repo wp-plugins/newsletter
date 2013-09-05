@@ -241,15 +241,15 @@ if ($email['editor'] == 0) {
 
         <div id="tabs">
             <ul>
-                <li><a href="#tabs-1">Message</a></li>
-                <li><a href="#tabs-2">Message (textual)</a></li>
-                <li><a href="#tabs-3">Who will receive it</a></li>
-                <li><a href="#tabs-4">Status</a></li>
+                <li><a href="#tabs-a">Message</a></li>
+                <li><a href="#tabs-b">Message (textual)</a></li>
+                <li><a href="#tabs-c">Who will receive it</a></li>
+                <li><a href="#tabs-d">Status</a></li>
                 <!--<li><a href="#tabs-5">Documentation</a></li>-->
             </ul>
 
 
-            <div id="tabs-1">
+            <div id="tabs-a">
                 <table class="form-table">
                     <tr valign="top">
                         <th>Subject</th>
@@ -275,7 +275,7 @@ if ($email['editor'] == 0) {
             </div>
 
 
-            <div id="tabs-2">
+            <div id="tabs-b">
                 <p>
                     This is the textual version of your newsletter. If you empty it, only an HTML version will be sent but
                     is an anti-spam best practice to include a text only version.
@@ -291,7 +291,7 @@ if ($email['editor'] == 0) {
             </div>
 
 
-            <div id="tabs-3">
+            <div id="tabs-c">
                 <table class="form-table">
                     <tr valign="top">
                         <th>Approximative number of receivers</th>
@@ -365,7 +365,7 @@ if ($email['editor'] == 0) {
             </div>
 
 
-            <div id="tabs-4">
+            <div id="tabs-d">
                 <table class="form-table">
                     <tr valign="top">
                         <th>Send on</th>

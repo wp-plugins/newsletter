@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.3.6
+  Version: 3.3.7
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,15 +13,20 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.3.6');
+define('NEWSLETTER_VERSION', '3.3.7');
 
 global $wpdb, $newsletter;
 
 //@include_once WP_CONTENT_DIR . '/extensions/newsletter/config.php';
 
-define('NEWSLETTER_EMAILS_TABLE', $wpdb->prefix . 'newsletter_emails');
-define('NEWSLETTER_USERS_TABLE', $wpdb->prefix . 'newsletter');
-define('NEWSLETTER_STATS_TABLE', $wpdb->prefix . 'newsletter_stats');
+if (!defined('NEWSLETTER_EMAILS_TABLE'))
+    define('NEWSLETTER_EMAILS_TABLE', $wpdb->prefix . 'newsletter_emails');
+
+if (!defined('NEWSLETTER_USERS_TABLE'))
+    define('NEWSLETTER_USERS_TABLE', $wpdb->prefix . 'newsletter');
+
+if (!defined('NEWSLETTER_STATS_TABLE'))
+    define('NEWSLETTER_STATS_TABLE', $wpdb->prefix . 'newsletter_stats');
 
 // Do not use basename(dirname()) since on activation the plugin is sandboxed inside a function
 define('NEWSLETTER_SLUG', 'newsletter');
@@ -170,37 +175,37 @@ class Newsletter extends NewsletterModule {
 
         parent::upgrade();
 
-        $this->upgrade_query("create table if not exists " . $wpdb->prefix . "newsletter_emails (id int auto_increment, primary key (id)) $charset_collate");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column message longtext");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column message_text longtext");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column subject varchar(255) not null default ''");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column type varchar(50) not null default ''");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column created timestamp not null default current_timestamp");
+        $this->upgrade_query("create table if not exists " . NEWSLETTER_EMAILS_TABLE . " (id int auto_increment, primary key (id)) $charset_collate");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column message longtext");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column message_text longtext");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column subject varchar(255) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column type varchar(50) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column created timestamp not null default current_timestamp");
 
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column status enum('new','sending','sent','paused') not null default 'new'");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column status enum('new','sending','sent','paused') not null default 'new'");
 
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column total int not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column last_id int not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sent int not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column send_on int not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column track tinyint not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column editor tinyint not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column sex char(1) not null default ''");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails change column sex sex char(1) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column total int not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column last_id int not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column sent int not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column send_on int not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column track tinyint not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column editor tinyint not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column sex char(1) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " change column sex sex char(1) not null default ''");
 
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column query text");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column preferences text");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails add column options longtext");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column query text");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column preferences text");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " add column options longtext");
 
         // Cleans up old installations
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails drop column name");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " drop column name");
         $this->upgrade_query("drop table if exists " . $wpdb->prefix . "newsletter_work");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter_emails convert to character set utf8");
+        $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " convert to character set utf8");
 
         // TODO: To be moved on users module.
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter convert to character set utf8");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " convert to character set utf8");
 
-        $this->upgrade_query("update " . $wpdb->prefix . "newsletter set sex='n' where sex='' or sex=' '");
+        $this->upgrade_query("update " . NEWSLETTER_USERS_TABLE . " set sex='n' where sex='' or sex=' '");
 
         // Some setting check to avoid the common support request for mis-configurations
         $options = $this->get_options();

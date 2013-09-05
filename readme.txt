@@ -2,7 +2,7 @@
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
 Tested up to: 3.5.2
-Stable tag: 3.3.6
+Stable tag: 3.3.7
 Donate link: http://www.satollo.net/donations
 
 Add a real newsletter to your blog. In seconds. For free. With unlimited emails and subscribers.
@@ -54,6 +54,13 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.3.7 =
+
+* Fixed the feed by mail field on widget
+* Fixed tab names to avoid mod_security interference
+* Fixed the "name" form field rules
+* Added (undocumented/untested) way to change the table names
 
 = 3.3.6 =
 

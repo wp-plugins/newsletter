@@ -25,42 +25,42 @@ class NewsletterUsers extends NewsletterModule {
 
         parent::upgrade();
 
-        $this->upgrade_query("create table if not exists " . $wpdb->prefix . "newsletter (id int auto_increment, `email` varchar(100) not null default '', primary key (id), unique key email (email)) $charset_collate");
+        $this->upgrade_query("create table if not exists " . NEWSLETTER_USERS_TABLE . " (id int auto_increment, `email` varchar(100) not null default '', primary key (id), unique key email (email)) $charset_collate");
 
         // User personal data
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column name varchar(100) not null default ''");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column surname varchar(100) not null default ''");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column sex char(1) not null default 'n'");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter change column sex sex char(1) not null default 'n'");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column name varchar(100) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column surname varchar(100) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column sex char(1) not null default 'n'");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " change column sex sex char(1) not null default 'n'");
 
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column status char(1) not null default 'S'");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column created timestamp not null default current_timestamp");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column token varchar(50) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column status char(1) not null default 'S'");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column created timestamp not null default current_timestamp");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column token varchar(50) not null default ''");
 
         // Feed by mail
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column feed tinyint(4) not null default 0");
-        $this->upgrade_query("alter table " . $wpdb->prefix . "newsletter add column feed_time bigint(20) not null default 0");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column country varchar(4) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column feed tinyint(4) not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column feed_time bigint(20) not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column country varchar(4) not null default ''");
 
         // List/Preferences
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-            $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column list_$i tinyint(4) not null default 0");
+            $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column list_$i tinyint(4) not null default 0");
         }
 
         // Profiles
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
-            $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column profile_$i varchar(255) not null default ''");
+            $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column profile_$i varchar(255) not null default ''");
         }
 
         // TODO: Still makes sense the referrer?
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column referrer varchar(50) not null default ''");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column http_referer varchar(255) not null default ''");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column wp_user_id int not null default 0");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column ip varchar(50) not null default ''");
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column test tinyint(4) not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column referrer varchar(50) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column http_referer varchar(255) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column wp_user_id int not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column ip varchar(50) not null default ''");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column test tinyint(4) not null default 0");
 
         // TODO: Flow module should add that it self (?)
-        $this->upgrade_query("alter table {$wpdb->prefix}newsletter add column flow tinyint(4) not null default 0");
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column flow tinyint(4) not null default 0");
     }
 
     function admin_menu() {
@@ -100,7 +100,7 @@ class NewsletterUsers extends NewsletterModule {
 
         $page = 0;
         while (true) {
-            $query = "select * from " . $wpdb->prefix . "newsletter";
+            $query = "select * from " . NEWSLETTER_USERS_TABLE . "";
             if (!empty($_POST['options']['list'])) {
                 $query .= " where list_" . $_POST['options']['list'] . "=1";
             }

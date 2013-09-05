@@ -49,7 +49,7 @@ class NewsletterFeed extends NewsletterModule {
 
         if ($this->options['subscription'] == 1) {
             $field = array();
-            $field['label'] = '&nbsp;';
+            $field['label'] = '';
             $field['field'] = '<input type="checkbox" name="feed" value="1"/>&nbsp;' . $this->options['name'];
             $extra[] = $field;
         }
