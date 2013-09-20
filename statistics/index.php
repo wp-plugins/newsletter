@@ -16,7 +16,7 @@ if ($controls->is_action('save')) {
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
     <h5>Statistics Module</h5>
-    
+
     <h2>Configuration and Email List</h2>
 
     <p>
@@ -29,7 +29,7 @@ if ($controls->is_action('save')) {
         convenience, below there is a list of each email sent by Newsletter till now.
     </p>
     <p>
-        A more advanced report for each email can be generated installing the Advanced Statistics Module
+        A more advanced report for each email can be generated installing the Reports Extension
         from <a href="http://www.satollo.net/downloads" target="_blank">this page</a>.
     </p>
 
@@ -38,9 +38,10 @@ if ($controls->is_action('save')) {
             <tr>
                 <th>Id</th>
                 <th>Subject</th>
-                <th>Date</th>
                 <th>Type</th>
                 <th>Status</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -50,12 +51,22 @@ if ($controls->is_action('save')) {
                 <tr>
                     <td><?php echo $email->id; ?></td>
                     <td><?php echo htmlspecialchars($email->subject); ?></td>
-                    <td><?php echo $email->date; ?></td>
                     <td><?php echo $email->type; ?></td>
                     <td>
-                        <?php echo $email->status; ?>
-                        (<?php echo $email->sent; ?>/<?php echo $email->total; ?>)
+                        <?php
+                        if ($email->status == 'sending') {
+                            if ($email->send_on > time()) {
+                                echo 'planned';
+                            } else {
+                                echo 'sending';
+                            }
+                        } else {
+                            echo $email->status;
+                        }
+                        ?>
                     </td>
+                    <td><?php if ($email->status == 'sent' || $email->status == 'sending') echo $email->sent . ' of ' . $email->total; ?></td>
+                    <td><?php if ($email->status == 'sent' || $email->status == 'sending') echo $module->format_date($email->send_on); ?></td>
                     <td>
                         <a class="button" href="<?php echo NewsletterStatistics::instance()->get_statistics_url($email->id); ?>">statistics</a>
                     </td>

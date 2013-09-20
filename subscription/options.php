@@ -92,7 +92,7 @@ if ($controls->is_action('create')) {
 }
 ?>
 
-<?php if ($controls->data['novisual'] != 1) { ?>
+<?php if (isset($controls->data['novisual']) && $controls->data['novisual'] != 1) { ?>
     <script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/tiny_mce/tiny_mce.js"></script>
 
     <script type="text/javascript">

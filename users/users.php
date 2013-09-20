@@ -61,6 +61,11 @@ class NewsletterUsers extends NewsletterModule {
 
         // TODO: Flow module should add that it self (?)
         $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " add column flow tinyint(4) not null default 0");
+
+        // Old problems...
+        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " convert to character set utf8");
+
+        $this->upgrade_query("update " . NEWSLETTER_USERS_TABLE . " set sex='n' where sex='' or sex=' '");        
     }
 
     function admin_menu() {

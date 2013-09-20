@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.3.7
+  Version: 3.3.9
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.3.7');
+define('NEWSLETTER_VERSION', '3.3.9');
 
 global $wpdb, $newsletter;
 
@@ -49,11 +49,12 @@ define('NEWSLETTER_UNLOCK_URL', NEWSLETTER_URL . '/do/unlock.php');
 define('NEWSLETTER_UNSUBSCRIBE_URL', NEWSLETTER_URL . '/do/unsubscribe.php');
 define('NEWSLETTER_UNSUBSCRIPTION_URL', NEWSLETTER_URL . '/do/unsubscription.php');
 
-
 if (!defined('NEWSLETTER_LIST_MAX'))
     define('NEWSLETTER_LIST_MAX', 20);
+
 if (!defined('NEWSLETTER_PROFILE_MAX'))
     define('NEWSLETTER_PROFILE_MAX', 20);
+
 if (!defined('NEWSLETTER_FORMS_MAX'))
     define('NEWSLETTER_FORMS_MAX', 10);
 
@@ -202,11 +203,6 @@ class Newsletter extends NewsletterModule {
         $this->upgrade_query("drop table if exists " . $wpdb->prefix . "newsletter_work");
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " convert to character set utf8");
 
-        // TODO: To be moved on users module.
-        $this->upgrade_query("alter table " . NEWSLETTER_USERS_TABLE . " convert to character set utf8");
-
-        $this->upgrade_query("update " . NEWSLETTER_USERS_TABLE . " set sex='n' where sex='' or sex=' '");
-
         // Some setting check to avoid the common support request for mis-configurations
         $options = $this->get_options();
 
@@ -250,7 +246,7 @@ class Newsletter extends NewsletterModule {
 
     function admin_menu() {
         // This adds the main menu page
-        add_menu_page('Newsletter', 'Newsletter', ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index');
+        add_menu_page('Newsletter', 'Newsletter', ($this->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index');
 
         $this->add_menu_page('index', 'Welcome');
         $this->add_menu_page('main', 'Configuration');
@@ -342,10 +338,10 @@ class Newsletter extends NewsletterModule {
 
         // TODO: move on subscription module
         $profile_options = get_option('newsletter_profile');
-        if ($profile_options['style'] != '') {
+        if (!empty($profile_options['style'])) {
             echo '<link href="' . NewsletterSubscription::instance()->get_style_url($profile_options['style']) . '" type="text/css" rel="stylesheet">';
         }
-        if ($profile_options['widget_style'] != '') {
+        if (!empty($profile_options['widget_style'])) {
             echo '<link href="' . NewsletterSubscription::instance()->get_style_url($profile_options['widget_style']) . '" type="text/css" rel="stylesheet">';
         }
     }

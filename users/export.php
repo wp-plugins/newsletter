@@ -7,6 +7,7 @@ $module = NewsletterUsers::instance();
 
 $lists = array('0' => 'All');
 for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+    if (!isset($options_profile['list_' . $i])) $options_profile['list_' . $i] = '';
     $lists['' . $i] = '(' . $i . ') ' . $options_profile['list_' . $i];
 }
 ?>

@@ -7,29 +7,36 @@ class NewsletterControls {
     var $button_data = '';
 
     function __construct($options = null) {
-        if ($options == null)
-            $this->data = stripslashes_deep($_POST['options']);
-        else
+        if ($options == null) {
+            if (isset($_POST['options'])) {
+                $this->data = stripslashes_deep($_POST['options']);
+            }
+        } else {
             $this->data = $options;
+        }
 
-        $this->action = $_REQUEST['act'];
+        if (isset($_REQUEST['act'])) {
+            $this->action = $_REQUEST['act'];
+        }
 
-        if (isset($_REQUEST['btn']))
+        if (isset($_REQUEST['btn'])) {
             $this->button_data = $_REQUEST['btn'];
-
+        }
         // Fields analysis
-        $fields = $_REQUEST['fields'];
-        if (is_array($fields)) {
-            foreach ($fields as $name => $type) {
-                if ($type == 'datetime') {
-                    // Ex. The user insert 01/07/2012 14:30 and it set the time zone to +2. We cannot use the
-                    // mktime, since it uses the time zone of the machine. We create the time as if we are on
-                    // GMT 0 and then we subtract the GMT offset (the example date and time on GMT+2 happens
-                    // "before").
+        if (isset($_REQUEST['fields'])) {
+            $fields = $_REQUEST['fields'];
+            if (is_array($fields)) {
+                foreach ($fields as $name => $type) {
+                    if ($type == 'datetime') {
+                        // Ex. The user insert 01/07/2012 14:30 and it set the time zone to +2. We cannot use the
+                        // mktime, since it uses the time zone of the machine. We create the time as if we are on
+                        // GMT 0 and then we subtract the GMT offset (the example date and time on GMT+2 happens
+                        // "before").
 
-                    $time = gmmktime($_REQUEST[$name . '_hour'], 0, 0, $_REQUEST[$name . '_month'], $_REQUEST[$name . '_day'], $_REQUEST[$name . '_year']);
-                    $time -= get_option('gmt_offset') * 3600;
-                    $this->data[$name] = $time;
+                        $time = gmmktime($_REQUEST[$name . '_hour'], 0, 0, $_REQUEST[$name . '_month'], $_REQUEST[$name . '_day'], $_REQUEST[$name . '_year']);
+                        $time -= get_option('gmt_offset') * 3600;
+                        $this->data[$name] = $time;
+                    }
                 }
             }
         }
@@ -62,9 +69,19 @@ class NewsletterControls {
             return false;
         if ($this->action != $action)
             return false;
-        if (check_admin_referer())
+        if (check_admin_referer('save'))
             return true;
         die('Invalid call');
+    }
+    
+    function get_value($name) {
+        if (!isset($this->data[$name])) return null;
+        return $this->data[$name];
+    }
+    
+    function get_value_array($name) {
+        if (!isset($this->data[$name]) || !is_array($this->data[$name])) return array();
+        return $this->data[$name];
     }
 
     /**
@@ -135,11 +152,13 @@ class NewsletterControls {
      * @param array $values_labels
      */
     function checkboxes_group($name, $values_labels) {
+        $value_array = $this->get_value_array($name);
+        
         echo "<div class='newsletter-checkboxes-group'>";
         foreach ($values_labels as $value => $label) {
             echo "<div class='newsletter-checkboxes-item'>";
             echo "<input type='checkbox' id='$name' name='options[$name][]' value='$value'";
-            if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
+            if (array_search($value, $value_array) !== false)
                 echo " checked";
             echo '/>';
             if ($label != '')
@@ -162,11 +181,13 @@ class NewsletterControls {
     }
 
     function select_group($name, $options) {
+        $value_array = $this->get_value_array($name);
+        
         echo '<select name="options[' . $name . '][]">';
 
         foreach ($options as $key => $label) {
             echo '<option value="' . $key . '"';
-            if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
+            if (array_search($value, $value_array) !== false)
                 echo ' selected';
             echo '>' . htmlspecialchars($label) . '</option>';
         }
@@ -175,7 +196,7 @@ class NewsletterControls {
     }
 
     function select($name, $options, $first = null) {
-        $value = $this->data[$name];
+        $value = $this->get_value($name);
 
         echo '<select id="options-' . $name . '" name="options[' . $name . ']">';
         if (!empty($first)) {
@@ -191,7 +212,7 @@ class NewsletterControls {
     }
 
     function select_grouped($name, $groups) {
-        $value = $this->data[$name];
+        $value = $this->get_value($name);
 
         echo '<select name="options[' . $name . ']">';
 
@@ -236,7 +257,8 @@ class NewsletterControls {
     }
 
     function value_date($name, $show_remaining) {
-        $time = $this->data[$name];
+        $time = $this->get_value($name);
+        
         echo gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
         $delta = $time - time();
         if ($show_remaining && $delta > 0) {
@@ -256,30 +278,30 @@ class NewsletterControls {
     }
 
     function text($name, $size = 20, $placeholder = '') {
-        if (!isset($this->data[$name])) $this->data[$name] = '';
+        $value = $this->get_value($name);
         echo '<input placeholder="' . htmlspecialchars($placeholder) . '" name="options[' . $name . ']" type="text" size="' . $size . '" value="';
-        echo htmlspecialchars($this->data[$name]);
+        echo htmlspecialchars($value);
         echo '"/>';
     }
 
     function text_email($name, $size = 40) {
-        if (!isset($this->data[$name])) $this->data[$name] = '';
+        $value = $this->get_value($name);
         echo '<input name="options[' . $name . ']" type="email" placeholder="Valid email address" size="' . $size . '" value="';
-        echo htmlspecialchars($this->data[$name]);
+        echo htmlspecialchars($value);
         echo '"/>';
     }
-    
+
     function text_url($name, $size = 40) {
-        if (!isset($this->data[$name])) $this->data[$name] = '';
+        $value = $this->get_value($name);
         echo '<input name="options[' . $name . ']" type="url" placeholder="http://..." size="' . $size . '" value="';
-        echo htmlspecialchars($this->data[$name]);
+        echo htmlspecialchars($value);
         echo '"/>';
-    }    
+    }
 
     function hidden($name) {
-        if (!isset($this->data[$name])) $this->data[$name] = '';
+        $value = $this->get_value($name);
         echo '<input name="options[' . $name . ']" type="hidden" value="';
-        echo htmlspecialchars($this->data[$name]);
+        echo htmlspecialchars($value);
         echo '"/>';
     }
 
@@ -310,7 +332,7 @@ class NewsletterControls {
 
     function editor($name, $rows = 5, $cols = 75) {
         echo '<textarea class="visual" name="options[' . $name . ']" style="width: 100%" wrap="off" rows="' . $rows . '">';
-        echo htmlspecialchars($this->data[$name]);
+        echo htmlspecialchars($this->get_value($name));
         echo '</textarea>';
     }
 
@@ -589,7 +611,7 @@ class NewsletterControls {
 ';
         echo '<input name="act" type="hidden" value=""/>';
         echo '<input name="btn" type="hidden" value=""/>';
-        wp_nonce_field();
+        wp_nonce_field('save');
     }
 
     function log_level($name = 'log_level') {

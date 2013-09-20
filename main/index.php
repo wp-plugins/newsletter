@@ -106,9 +106,10 @@ if ($controls->is_action('check_versions')) {
         <h3>Modules</h3>
         <p>
             Below is the list of available modules that can be used with Newsletter plugin. Some modules are the "core" part
-            of Newsletter and are automatically updated with Newsletter official updates. Other modules are extensions and
+            of Newsletter and are automatically updated with Newsletter official updates. Other modules are <strong>extensions</strong> and
             can be downloaded from <a href="http://www.satollo.net/downloads" target="_blank">www.satollo.net/downloads</a>.
-            Some of them are commercial and others are still under development (here for testers).
+            <br>
+            Extensions must be installed in the folder wp-content/extensions/newsletter.
         </p>
 
         <table class="widefat" style="width: auto">

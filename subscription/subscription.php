@@ -19,7 +19,7 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('subscription', '1.0.4');
+        parent::__construct('subscription', '1.0.9');
 
         add_action('wp_login', array($this, 'hook_wp_login'));
         
@@ -72,9 +72,12 @@ class NewsletterSubscription extends NewsletterModule {
 
         // Migrate the profile_text from profile to subscription options
         $options_profile = $this->get_options('profile');
-
+        $default_options_profile = $this->get_default_options('profile');
+        
         if (empty($options_profile)) {
             update_option('newsletter_profile', $this->get_default_options('profile'));
+        } else { 
+            update_option('newsletter_profile', array_merge($default_options_profile, $options_profile));
         }
 
         $default_options = $this->get_default_options();
@@ -110,7 +113,7 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         // Because users do not understand how to create an "extensions" folder...
-        wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter/subscription');
+        @wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter/subscription');
         return true;
     }
 

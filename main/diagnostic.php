@@ -107,7 +107,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
     <div class="preamble">
     <p>
         If something is not working, here are some test procedures and diagnostics. But before you try these,
-        write down any modifications or configuration changes that you may have made.
+        write down any configuration changes that you may have made.
         For example: Did you use sender email or name? What was the return path? What was the reply to?
     </p>
     </div>
@@ -374,6 +374,12 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                             <td>WordPress Memory limit</td>
                             <td>
                                 <?php echo WP_MEMORY_LIMIT; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>WP_DEBUG</td>
+                            <td>
+                                <?php echo WP_DEBUG?'true':'false'; ?>
                             </td>
                         </tr>
                         <tr>

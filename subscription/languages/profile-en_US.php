@@ -13,3 +13,10 @@ $options['privacy_error'] = 'You must accept the privacy statement';
 $options['subscribe'] = 'Subscribe';
 $options['save'] = 'Save';
 
+$options['title_female'] = 'Mrs.';
+$options['title_male'] = 'Mr.';
+$options['title_none'] = 'Dear';
+
+$options['sex_male'] = 'Man';
+$options['sex_female'] = 'Woman';
+$options['sex_none'] = 'None';

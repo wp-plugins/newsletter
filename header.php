@@ -29,7 +29,7 @@ if (isset($_REQUEST['dismiss']) && check_admin_referer()) {
 </div>
 <?php } ?>
 
-<?php if ($dismissed['rate'] != 1) { ?>
+<?php if (isset($dismissed['rate']) && $dismissed['rate'] != 1) { ?>
 <div class="newsletter-notice">
     I never asked before and I'm curious: <a href="http://wordpress.org/extend/plugins/newsletter/" target="_blank">would you rate this plugin</a>?
     (few seconds required). (account on WordPress.org required, every blog owner should have one...). <strong>Really appreciated, Stefano</strong>.
@@ -38,7 +38,7 @@ if (isset($_REQUEST['dismiss']) && check_admin_referer()) {
 </div>
 <?php } ?>
 
-<?php if ($dismissed['newsletter-page'] != 1 && empty(NewsletterSubscription::instance()->options['url'])) { ?>
+<?php if (isset($dismissed['newsletter-page']) && $dismissed['newsletter-page'] != 1 && empty(NewsletterSubscription::instance()->options['url'])) { ?>
 <div class="newsletter-notice">
     Create a page with your blog style to show the subscription form and the subscription messages. Go to the
     <a href="?page=newsletter_subscription_options">subscription panel</a> to
