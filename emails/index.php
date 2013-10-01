@@ -26,6 +26,9 @@ if ($controls->is_action('copy')) {
     $email['message_text'] = $original->message_text;
     $email['send_on'] = time();
     $email['type'] = 'message';
+    $email['editor'] = $original->editor;
+    $email['track'] = $original->track;
+    
     Newsletter::instance()->save_email($email);
     $controls->messages .= 'Message duplicated.';
 }

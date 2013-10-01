@@ -62,6 +62,7 @@ if (!empty($controls->data['search_status'])) {
     
 // Total items, total pages
 $items_per_page = 20;
+$where = $wpdb->prepare($where, $query_args);
 $count = Newsletter::instance()->store->get_count($wpdb->prefix . 'newsletter', $where);
 $last_page = floor($count / $items_per_page) - ($count % $items_per_page == 0 ? 1 : 0);
 if ($last_page < 0) $last_page = 0;
@@ -95,8 +96,6 @@ if ($controls->is_action('search')) {
 // Eventually fix the page
 if ($controls->data['search_page'] < 0) $controls->data['search_page'] = 0;
 if ($controls->data['search_page'] > $last_page) $controls->data['search_page'] = $last_page;
-
-$where = $wpdb->prepare($where, $query_args);
 
 $query = "select * from " . $wpdb->prefix . "newsletter " . $where . " order by id desc";
 $query .= " limit " . ($controls->data['search_page']*$items_per_page) . "," . $items_per_page;

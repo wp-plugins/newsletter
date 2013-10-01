@@ -55,6 +55,13 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.4.0 =
+
+* Changed newsletter copy to copy even the editor and traking status
+* Fixed the subscribers search list
+* Added some more buttons on Newsletter editor
+* Added the subscription form menu voice (I cannot answer anymore the same request about subscribe button translation :-)
+
 = 3.3.9 =
 
 * Fixed activation in debug mode

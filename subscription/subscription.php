@@ -119,7 +119,7 @@ class NewsletterSubscription extends NewsletterModule {
 
     function admin_menu() {
         $this->add_menu_page('options', 'Subscription Steps');
-        $this->add_admin_page('profile', 'Profile');
+        $this->add_menu_page('profile', 'Subscription Form');
         $this->add_admin_page('forms', 'Forms');
     }
 
