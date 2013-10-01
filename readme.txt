@@ -61,6 +61,7 @@ No screen shots are available at this time.
 * Fixed the subscribers search list
 * Added some more buttons on Newsletter editor
 * Added the subscription form menu voice (I cannot answer anymore the same request about subscribe button translation :-)
+* Suppressed warning on log function
 
 = 3.3.9 =
 
