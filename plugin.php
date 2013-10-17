@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.4.0
+  Version: 3.4.2
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.4.0');
+define('NEWSLETTER_VERSION', '3.4.2');
 
 global $wpdb, $newsletter;
 
@@ -236,10 +236,13 @@ class Newsletter extends NewsletterModule {
 
         wp_clear_scheduled_hook('newsletter_update');
         wp_clear_scheduled_hook('newsletter_check_versions');
-        wp_schedule_event(time() + 30, 'weekly', 'newsletter_check_versions');
+        wp_schedule_event(time() + 30, 'newsletter_weekly', 'newsletter_check_versions');
 
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter');
         wp_mkdir_p(WP_CONTENT_DIR . '/cache/newsletter');
+        
+        wp_clear_scheduled_hook('newsletter_updates_run');
+        wp_clear_scheduled_hook('newsletter_statistics_version_check');
 
         return true;
     }
@@ -261,7 +264,7 @@ class Newsletter extends NewsletterModule {
         $warnings = '';
         $x = wp_next_scheduled('newsletter');
         if ($x === false) {
-            $warnings .= 'The delivery engine is off (it should never be off). See the System Check below to reactivate it.<br>';
+            $warnings .= 'The delivery engine is off (it should never be off). Deactivate and reactivate the plugin. Thank you.<br>';
         } else if (time() - $x > 900) {
             $warnings .= 'The cron system seems not running correctly. See <a href="http://www.satollo.net/how-to-make-the-wordpress-cron-work" target="_blank">this page</a> for more information.<br>';
         }
@@ -641,6 +644,10 @@ class Newsletter extends NewsletterModule {
         $schedules['newsletter'] = array(
             'interval' => NEWSLETTER_CRON_INTERVAL, // seconds
             'display' => 'Newsletter'
+        );
+        $schedules['newsletter_weekly'] = array(
+            'interval' => 86400*7, // seconds
+            'display' => 'Newsletter Weekly'
         );
         return $schedules;
     }
@@ -1086,9 +1093,9 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/feed/feed.php')) {
     }
 }
 
-if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/updates/updates.php')) {
-    require_once WP_CONTENT_DIR . '/extensions/newsletter/updates/updates.php';
-}
+//if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/updates/updates.php')) {
+//    require_once WP_CONTENT_DIR . '/extensions/newsletter/updates/updates.php';
+//}
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/followup/followup.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/followup/followup.php';

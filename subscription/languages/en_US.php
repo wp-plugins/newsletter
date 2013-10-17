@@ -15,6 +15,8 @@ $options['profile_text'] = "{profile_form}<p>To cancel your subscription, <a hre
 
 $options['error_text'] = '<p>This subscription can\'t be completed, sorry. The email address is blocked or already subscribed. You should contact the owner to unlock that email address. Thank you.</p>';
 
+$options['already_confirmed_text'] = '<p>This email address is already subscribed, anyway a welcome email has been resent. Thank you.</p>';
+
 // Subscription page introductory text (befor the subscription form)
 $options['subscription_text'] =
 "{subscription_form}";

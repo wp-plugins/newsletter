@@ -144,7 +144,7 @@ if ($controls->is_action('create')) {
         <?php $controls->init(); ?>
         <div id="tabs">
             <ul>
-                <li><a href="#tabs-1">General</a></li>
+                <li><a href="#tabs-general">General</a></li>
                 <li><a href="#tabs-2">Subscription</a></li>
                 <li><a href="#tabs-3">Confirmation</a></li>
                 <li><a href="#tabs-4">Welcome</a></li>
@@ -154,7 +154,7 @@ if ($controls->is_action('create')) {
                 <li><a href="#tabs-7">Docs</a></li>
             </ul>
 
-            <div id="tabs-1">
+            <div id="tabs-general">
                 <p>Choose how the subscription process to your newsletter works.</p>
                 <table class="form-table">
                     <tr valign="top">
@@ -178,8 +178,8 @@ if ($controls->is_action('create')) {
                             ?>
 
                             <div class="hints">
-                                Optionally (but recommended) and address of a WordPress page (eg. <?php echo get_option('home') . '/newsletter'; ?>)
-                                you set up for subscription and messages.
+                                Optional (but recommended) an address of a WordPress page (eg. <?php echo get_option('home') . '/newsletter'; ?>)
+                                you <strong>manually created</strong> for subscription and messages.
                                 <br>
                                 The page must have in its body <strong>only</strong> the short code <strong>[newsletter]</strong> (as is).
 
@@ -197,6 +197,20 @@ if ($controls->is_action('create')) {
                             <?php $controls->yesno('novisual'); ?>
                         </td>
                     </tr>
+                     <tr valign="top">
+                        <th>Notifications</th>
+                        <td>
+                            <?php $controls->yesno('notify'); ?>
+                            to: <?php $controls->text_email('notify_email'); ?> (email address, leave empty for the WordPress administration email <?php echo get_option('admin_email'); ?>)
+                            <div class="hints">
+                            Notifies when a user confirm his subscription or unsubscribe.
+                            </div>
+                        </td>
+                    </tr>
+                    </table>
+                        
+                    <h3><?php _e('Integration with WordPress user registration', 'newsletter'); ?></h3>
+                    <table class="form-table">
                     <tr valign="top">
                         <th>Subscription on registration</th>
                         <td>
@@ -224,16 +238,7 @@ if ($controls->is_action('create')) {
                             <?php $controls->yesno('wp_welcome'); ?>
                         </td>
                     </tr>
-            <tr valign="top">
-                <th>Notifications</th>
-                <td>
-                    <?php $controls->yesno('notify'); ?>
-                    to: <?php $controls->text_email('notify_email'); ?> (email address, leave empty for the WordPress administration email <?php echo get_option('admin_email'); ?>)
-                    <div class="hints">
-                    Notifies when a user confirm his subscription or unsubscribe.
-                    </div>
-                </td>
-            </tr>
+           
                 </table>
             </div>
 
@@ -260,13 +265,24 @@ if ($controls->is_action('create')) {
                             </div>
                         </td>
                     </tr>
+                </table>
+                
+                <h3>Special cases</h3>
+                <p>
+                <table class="form-table">
+                    <tr valign="top">
+                        <th>Already subscribed page content</th>
+                        <td>
+                            <?php $controls->editor('already_confirmed_text'); ?><br>
+                            <?php $controls->checkbox('resend_welcome_email_disabled', 'Do not resend the welcome email'); ?>
+                        </td>
+                    </tr>
                     <tr valign="top">
                         <th>Error page content</th>
                         <td>
                             <?php $controls->editor('error_text'); ?>
                             <div class="hints">
-                                This message is shown whenever a subscription is attempted with an address bounced, already registered but not confirmed or
-                                already subscribed. Consider all those three options while writing this message.
+                                Message shown when the email is bounced.
                             </div>
                         </td>
                     </tr>

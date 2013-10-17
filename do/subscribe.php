@@ -9,4 +9,5 @@ require_once '../../../../wp-load.php';
 $user = NewsletterSubscription::instance()->subscribe();
 if ($user->status == 'E') NewsletterSubscription::instance()->show_message('error', $user->id);
 if ($user->status == 'C') NewsletterSubscription::instance()->show_message('confirmed', $user->id);
+if ($user->status == 'A') NewsletterSubscription::instance()->show_message('already_confirmed', $user->id);
 if ($user->status == 'S') NewsletterSubscription::instance()->show_message('confirmation', $user->id);

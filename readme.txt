@@ -55,6 +55,15 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.4.2 =
+
+* Refined the subscription for already subscribed emails
+
+= 3.4.1 =
+
+* Fixed the delivery engine warning message
+* Fixed the version check
+
 = 3.4.0 =
 
 * Changed newsletter copy to copy even the editor and traking status
