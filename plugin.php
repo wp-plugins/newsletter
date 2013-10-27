@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.4.2
+  Version: 3.4.3
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.4.2');
+define('NEWSLETTER_VERSION', '3.4.3');
 
 global $wpdb, $newsletter;
 
@@ -75,6 +75,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/themes.php';
 class Newsletter extends NewsletterModule {
 
     // Limits to respect to avoid memory, time or provider limits
+    var $time_start;
     var $time_limit;
     var $email_limit = 10; // Per run, every 5 minutes
     var $limits_set = false;
@@ -108,25 +109,15 @@ class Newsletter extends NewsletterModule {
     }
 
     function __construct() {
-        // Early possible
-        if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
-            $max_time = NEWSLETTER_MAX_EXECUTION_TIME * 0.9;
-            @set_time_limit(NEWSLETTER_MAX_EXECUTION_TIME);
-        } else {
-            $max_time = (int) (@ini_get('max_execution_time') * 0.9);
-        }
 
-        if ($max_time == 0) {
-            $max_time = 60;
-        }
-
-        $this->time_limit = time() + $max_time;
-
+       
+        $this->time_start = time();
+        
         // Here because the upgrade is called by the parent constructor and uses the scheduler
         add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
-        parent::__construct('main', '1.1.8');
-
+        parent::__construct('main', '1.2.0');
+ 
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max))
             $max = 100;
@@ -241,8 +232,12 @@ class Newsletter extends NewsletterModule {
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter');
         wp_mkdir_p(WP_CONTENT_DIR . '/cache/newsletter');
         
-        wp_clear_scheduled_hook('newsletter_updates_run');
+        //wp_clear_scheduled_hook('newsletter_updates_run');
         wp_clear_scheduled_hook('newsletter_statistics_version_check');
+        wp_clear_scheduled_hook('newsletter_reports_version_check');
+        wp_clear_scheduled_hook('newsletter_feed_version_check');
+        wp_clear_scheduled_hook('newsletter_popup_version_check');
+        
 
         return true;
     }
@@ -437,6 +432,7 @@ class Newsletter extends NewsletterModule {
                 return false;
 
             $headers = array('List-Unsubscribe' => '<' . NEWSLETTER_UNSUBSCRIBE_URL . '?nk=' . $user->id . '-' . $user->token . '>');
+            $headers['Precendence'] = 'bulk';
 
             if (!$test) {
                 $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set sent=sent+1, last_id=" . $user->id . " where id=" . $email->id . " limit 1");
@@ -493,6 +489,26 @@ class Newsletter extends NewsletterModule {
 
         if (!$this->limits_set) {
             $this->logger->debug('limits_exceeded> Setting the limits for the first time');
+            
+            // Actually it should be set on startup, anyway the scripts use as time base the startup time
+            if (!empty($this->options['php_time_limit'])) {
+                @set_time_limit((int)$this->options['php_time_limit']);
+            }   
+            else if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
+                $max_time = NEWSLETTER_MAX_EXECUTION_TIME * 0.95;
+                @set_time_limit(NEWSLETTER_MAX_EXECUTION_TIME);
+            } 
+            $max_time = (int) (@ini_get('max_execution_time') * 0.95);
+            
+
+            if ($max_time == 0) {
+                $max_time = 30;
+            }   
+
+            $this->time_limit = $this->time_start + $max_time;
+            
+            $this->logger->debug('limits_exceeded> Max time set to ' . $max_time);
+ 
             $max = $this->options['scheduler_max'];
             if (!is_numeric($max))
                 $max = 100;

@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 3.6.1
+Tested up to: 3.7.0
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -54,6 +54,14 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.4.3 =
+
+* Added the precendece bulk header (https://support.google.com/mail/answer/81126)
+* Added filter on messages to avoid wrong URLs when the blog change domain or folder
+* Added the alt attribute to the tracking image
+* New option to set the PHP max execution time
+* Fixed some text on main configuration panel
 
 = 3.4.2 =
 

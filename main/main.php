@@ -31,6 +31,9 @@ if (!$controls->is_action()) {
         if (!$newsletter->is_email($controls->data['return_path'], true)) {
             $controls->errors .= 'Return path email is not correct.<br />';
         }
+        
+        $controls->data['php_time_limit'] = (int)$controls->data['php_time_limit'];
+        if ($controls->data['php_time_limit'] == 0) unset($controls->data['php_time_limit']);
 
         //$controls->data['test_email'] = $newsletter->normalize_email($controls->data['test_email']);
         //if (!$newsletter->is_email($controls->data['test_email'], true)) {
@@ -197,7 +200,11 @@ if (!$controls->is_action()) {
 
             <div id="tabs-2">
 
-                <!-- General parameters -->
+                <div class="tab-preamble">
+                <p>
+                    Every setting is explained <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#advanced" target="_blank">here</a>.
+                </p>
+                </div>
 
                 <table class="form-table">
 
@@ -220,7 +227,7 @@ if (!$controls->is_action()) {
                     </tr>
 
                     <tr>
-                        <th>Styling</th>
+                        <th>Custom CSS</th>
                         <td>
                             <?php $controls->textarea('css'); ?>
                             <div class="hints">
@@ -240,7 +247,16 @@ if (!$controls->is_action()) {
                             </div>
                         </td>
                     </tr>
-
+                    <tr valign="top">
+                        <th>PHP max execution time</th>
+                        <td>
+                            <?php $controls->text('php_time_limit', 10); ?> 
+                            (before write in something, <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#advanced" target="_blank">read here</a>)
+                            <div class="hints">
+                                Sets the PHP max execution time in seconds, overriding the default of your server. 
+                            </div>
+                        </td>
+                    </tr>
                 </table>
 
             </div>
@@ -252,18 +268,16 @@ if (!$controls->is_action()) {
                         <strong>These options can be overridden by modules which integrates with external
                         SMTPs (like MailJet, SendGrid, ...) if installed and activated.</strong>
                     </p>
-                <p>
-                    To use an external SMTP (mail sending service), fill in the SMTP data and activate it. SMTP will be used for any
-                    messages sent by Newsletter (subscription messages and newsletters). SMTP is required to send email with Gmail or
-                    GoDaddy hosting account.
-                    Read more <a href="http://www.satollo.net/godaddy-using-smtp-external-server-on-shared-hosting" target="_blank">here</a>.
-                    The "test" button below sends an email to the first test address configured above and works even if SMTP is not enabled. If you get a "connection refused"
-                    message, check the SMTP settings if they are correct, then contact your hosting provider. If you get a "relay denied" contact your
-                    SMTP service provider.
-                </p>
-                <p>
-                    Consider <a href="http://www.satollo.net/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
-                </p>
+                    <p>
+
+                        What you need to know to use and external SMTP can be found 
+                        <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#smtp" target="_blank">here</a>.
+                        <br>
+                        On GoDaddy it does not work and you need a <a href="http://www.satollo.net/godaddy-using-smtp-external-server-on-shared-hosting" target="_blank">special setup</a>.
+                    </p>
+                    <p>
+                        Consider <a href="http://www.satollo.net/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
+                    </p>
                 </div>
 
                 <table class="form-table">
