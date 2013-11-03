@@ -605,7 +605,12 @@ class NewsletterControls {
             jQuery("textarea.dynamic").css("height", "50px");
             jQuery(this).css("height", "400px");
         });
-      tabs = jQuery("#tabs").tabs({ cookie: { expires: 30 } });
+      tabs = jQuery("#tabs").tabs({
+        active : jQuery.cookie("newsletter_tab"),
+        activate : function( event, ui ){
+            jQuery.cookie("newsletter_tab", ui.newTab.index(),{expires: 1});
+        }
+      });
     });
 </script>
 ';
@@ -655,6 +660,47 @@ class NewsletterControls {
      */
     function get_test_subscribers() {
         return NewsletterUsers::instance()->get_test_users();
+    }
+    
+    function css_font_size($name) {
+        $value = $this->get_value($name);
+
+        echo '<select id="options-' . $name . '" name="options[' . $name . ']">';
+        for ($i=8; $i<50; $i++) {
+            echo '<option value="' . $i . '"';
+            if ($value == $i)
+                echo ' selected';
+            echo '>' . $i . '</option>';
+        }
+        echo '</select>&nbsp;px';
+    }
+    
+    function css_border($name) {
+        $value = $this->get_value($name . '_width');
+
+        echo 'width&nbsp;<select id="options-' . $name . '-width" name="options[' . $name . '_width]">';
+        for ($i=0; $i<10; $i++) {
+            echo '<option value="' . $i . '"';
+            if ($value == $i)
+                echo ' selected';
+            echo '>' . $i . '</option>';
+        }
+        echo '</select>&nbsp;px&nbsp;&nbsp;';
+        
+        $this->select($name . '_type', array('solid'=>'Solid', 'dashed'=>'Dashed'));
+        
+        $this->color($name . '_color');
+        
+        $value = $this->get_value($name . '_radius');
+
+        echo '&nbsp;&nbsp;radius&nbsp;<select id="options-' . $name . '-radius" name="options[' . $name . '_radius]">';
+        for ($i=0; $i<10; $i++) {
+            echo '<option value="' . $i . '"';
+            if ($value == $i)
+                echo ' selected';
+            echo '>' . $i . '</option>';
+        }
+        echo '</select>&nbsp;px';
     }
 
 }

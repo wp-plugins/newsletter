@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.4.3
+  Version: 3.4.4
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.4.3');
+define('NEWSLETTER_VERSION', '3.4.4');
 
 global $wpdb, $newsletter;
 
@@ -148,6 +148,11 @@ class Newsletter extends NewsletterModule {
 
         if (is_admin()) {
             add_action('admin_head', array($this, 'hook_admin_head'));
+            
+            // Protection against strange schedule removal on some installations
+            if (!wp_next_scheduled('newsletter') && !defined('WP_INSTALLING')) {
+                wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
+            }
         }
     }
 
@@ -156,8 +161,7 @@ class Newsletter extends NewsletterModule {
         // the every-five-minutes schedule named "newsletter" is not present.
         // Since the activation does not forces an upgrade, that schedule must be reactivated here. It is activated on
         // the upgrade method as well for the user which upgrade the plugin without deactivte it (many).
-        $time = wp_next_scheduled('newsletter');
-        if ($time === false) {
+        if (!wp_next_scheduled('newsletter')) {
             wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
         }
     }

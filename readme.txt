@@ -13,6 +13,8 @@ This plug-in adds a real newsletter system to your WordPress blog. Perfect for l
 you can create cool emails with visual editor, send and
 track them.
 
+** Let me know if the plugin is doing well: rate it, thank you!** (see the stars on the right)
+
 Unlimited subscribers, unlimited e-mails.
 
 Key features:
@@ -55,9 +57,15 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.4.4 =
+
+* Improved error messages
+* Fixed the last tab store (jquery changes)
+* Added some new controls for the pop up extensions
+
 = 3.4.3 =
 
-* Added the precendece bulk header (https://support.google.com/mail/answer/81126)
+* Added the precendence bulk header (https://support.google.com/mail/answer/81126)
 * Added filter on messages to avoid wrong URLs when the blog change domain or folder
 * Added the alt attribute to the tracking image
 * New option to set the PHP max execution time
