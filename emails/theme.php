@@ -53,6 +53,8 @@ $themes = $module->themes->get_all_with_data();
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
     <h2>New Newsletter</h2>
+    
+    <p>To create custom themes <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">read here</a>.</p>
 
     <?php $controls->show(); ?>
 
@@ -62,7 +64,7 @@ $themes = $module->themes->get_all_with_data();
         <?php foreach ($themes as $key => &$data) { ?>
             <div style="display: block; float: left; text-align: center; margin-right: 10px;">
                 <?php echo $key; ?><br>
-                <a href="#" onclick="var f = document.getElementById('newsletter-form'); f.act.value='theme'; f.elements['options[theme]'].value='<?php echo $key; ?>'; f.submit(); return false"><img src="<?php echo $data['screenshot'] ?>" width="200" height="200" style="border: 1px solid #666; padding: 5px"></a>
+                <a href="#" onclick="var f = document.getElementById('newsletter-form'); f.act.value='theme'; f.elements['options[theme]'].value='<?php echo $key; ?>'; f.submit(); return false" style="margin-right: 20px; margin-bottom: 20px"><img src="<?php echo $data['screenshot'] ?>" width="200" height="200" style="border: 5px solid #ccc; border-radius: 5px; padding: 5px"></a>
             </div>
         <?php } ?>
     </form>

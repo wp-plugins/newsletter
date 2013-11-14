@@ -32,21 +32,13 @@ $controls->merge_defaults($theme_defaults);
         </td>
     </tr>
     <tr valign="top">
-        <th>Categories to include</th>
+        <th>Categories</th>
         <td>
-            <?php
-            $categories = get_categories();
-            foreach ($categories as $c) {
-                echo '<div class="nl-checkbox-group">';
-                $controls->checkbox_group('theme_categories', $c->cat_ID, esc_html($c->cat_name));
-                echo '</div>';
-            }
-            ?>
-            <div style="clear: both"></div>
-            <div class="hints">
-                Leaving all categories unselected means to NOT filter by category.
-            </div>
+            <?php $controls->categories_group('theme_categories'); ?>
         </td>
     </tr>
 </table>
+
+<h3>Social</h3>
+<?php include WP_PLUGIN_DIR . '/newsletter/emails/themes/default/social-options.php'; ?>
 

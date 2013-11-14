@@ -152,12 +152,11 @@ if ($controls->is_action('create')) {
                 <li><a href="#tabs-4">Welcome</a></li>
                 <li><a href="#tabs-9">Profile</a></li>
                 <li><a href="#tabs-5">Unsubscription</a></li>
-                <!--<li><a href="#tabs-8">Popup</a></li>-->
+                <li><a href="#tabs-wp">WP Registration</a></li>
                 <li><a href="#tabs-7">Docs</a></li>
             </ul>
 
             <div id="tabs-general">
-                <p>Choose how the subscription process to your newsletter works.</p>
                 <table class="form-table">
                     <tr valign="top">
                         <th>Opt In</th>
@@ -211,37 +210,7 @@ if ($controls->is_action('create')) {
                     </tr>
                     </table>
                         
-                    <h3><?php _e('Integration with WordPress user registration', 'newsletter'); ?></h3>
-                    <table class="form-table">
-                    <tr valign="top">
-                        <th>Subscription on registration</th>
-                        <td>
-                            <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
-                            <?php $controls->hint('Adds a newsletter subscription option on registration.', 'http://www.satollo.net/plugins/newsletter/subscription-module#registration'); ?>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Check box label</th>
-                        <td>
-                            <?php $controls->text('subscribe_wp_users_label', 30); ?>
-                        </td>
-                    </tr>
-                    <!--
-                    <tr valign="top">
-                        <th>Opt-in mode for WordPress registrated users</th>
-                        <td>
-                            <?php //$controls->select('optin_wp_users', array(0=>'As for regular subscriptions', 1=>'Force single opt-in')); ?>
-                        </td>
-                    </tr>
-                    -->
-                    <tr valign="top">
-                        <th>Send welcome email to registered users</th>
-                        <td>
-                            <?php $controls->yesno('wp_welcome'); ?>
-                        </td>
-                    </tr>
-           
-                </table>
+                    
             </div>
 
 
@@ -259,7 +228,7 @@ if ($controls->is_action('create')) {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th>Preferences</th>
+                        <th>Forced preferences</th>
                         <td>
                             <?php $controls->preferences(); ?>
                             <div class="hints">
@@ -270,13 +239,18 @@ if ($controls->is_action('create')) {
                 </table>
                 
                 <h3>Special cases</h3>
-                <p>
+                
                 <table class="form-table">
                     <tr valign="top">
                         <th>Already subscribed page content</th>
                         <td>
                             <?php $controls->editor('already_confirmed_text'); ?><br>
                             <?php $controls->checkbox('resend_welcome_email_disabled', 'Do not resend the welcome email'); ?>
+                            <div class="hints">
+                                Shown when the email is already subscribed and confirmed. The welcome email, is not disabled, will
+                                be sent. Find out more on this topic on its 
+                                <a href="http://www.satollo.net/plugins/newsletter/subscription-module#repeated" target="_blank">documentation page</a>.
+                            </div>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -293,7 +267,10 @@ if ($controls->is_action('create')) {
 
 
             <div id="tabs-3">
-                <p>Only for double opt-in mode</p>
+                <div class="tab-preamble">
+                <p>This configuration applies only when in double opt-in mode.</p>
+                </div>
+                
                 <table class="form-table">
                     <tr valign="top">
                         <th>Confirmation required message</th>
@@ -329,7 +306,7 @@ if ($controls->is_action('create')) {
                                 (for double opt-in process). Do not forget to add the <strong>{subscription_confirm_url}</strong>
                                 that users must click to activate their subscription.<br />
                                 Sometime can be useful to add a <strong>{unsubscription_url}</strong> to let users to
-                                cancel if they wrongly subscribed your service.
+                                cancel if they wrongly subscribed your newsletter.
                             </div>
                         </td>
                     </tr>
@@ -396,20 +373,25 @@ if ($controls->is_action('create')) {
 
             <!-- PROFILE -->
             <div id="tabs-9">
+                <div class="tab-preamble">
+                    <p>
+                        The page shown when the subscriber wants to edit hid profile following the link
+                        {profile_url} you added to a newsletter.
+                    </p>
 
                 <table class="form-table">
                     <tr valign="top">
                         <th>Profile page</th>
                         <td>
                             <?php $controls->editor('profile_text'); ?>
-                            <?php $controls->hint('This is the ppage where subscribers can edit their data and it must contain the {profile_form} tag.',
+                            <?php $controls->hint('This is the page where subscribers can edit their data and it must contain the {profile_form} tag.',
                                     'http://www.satollo.net/plugins/newsletter/subscription-module#profile'); ?>
                         </td>
                     </tr>
                     <tr>
                         <th>Other messages</th>
                         <td>
-                            confirmation after profile save: <?php $controls->text('profile_saved'); ?>
+                            confirmation after profile save: <?php $controls->text('profile_saved', 50); ?>
                         </td>
                     </tr>
                 </table>
@@ -530,7 +512,38 @@ if ($controls->is_action('create')) {
                     Insert the profile form with user's data. Usually it make sense only on welcome page.<br />
                 </p>
             </div>
+        
+        
+        <div id="tabs-wp">
+            <div class="tab-preamble">
+                <p>Configure if and how a regular WordPress user registration can be connected to a Newsletter subscription.</p>
+                <p>Important! This type of subscription does not require confirmation, it's automatic on first login. 
+                    <a href="http://www.satollo.net/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>-
+                </p>
+            </div>
+                <table class="form-table">
+                    <tr valign="top">
+                        <th>Subscription on registration</th>
+                        <td>
+                            <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
+                            <?php $controls->hint('Adds a newsletter subscription option on registration.', 'http://www.satollo.net/plugins/newsletter/subscription-module#registration'); ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Check box label</th>
+                        <td>
+                            <?php $controls->text('subscribe_wp_users_label', 30); ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Send welcome email to registered users</th>
+                        <td>
+                            <?php $controls->yesno('wp_welcome'); ?>
+                        </td>
+                    </tr>
+                </table>
         </div>
+            </div>
 
         <p class="submit">
             <?php $controls->button('save', 'Save'); ?>

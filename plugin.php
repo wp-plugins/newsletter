@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.4.4
+  Version: 3.4.5
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.4.4');
+define('NEWSLETTER_VERSION', '3.4.5');
 
 global $wpdb, $newsletter;
 
@@ -372,7 +372,7 @@ class Newsletter extends NewsletterModule {
     function hook_newsletter() {
         global $wpdb;
 
-        $this->logger->debug('hook_newsletter> Starting');
+        $this->logger->debug('hook_newsletter> Start');
 
         // Do not accept job activation before at least 4 minutes are elapsed from the last run.
         if (!$this->check_transient('engine', NEWSLETTER_CRON_INTERVAL))
@@ -388,6 +388,8 @@ class Newsletter extends NewsletterModule {
         }
         // Remove the semaphore so the delivery engine can be activated again
         $this->delete_transient('engine');
+        
+        $this->logger->debug('hook_newsletter> End');
     }
 
     /**
@@ -436,7 +438,7 @@ class Newsletter extends NewsletterModule {
                 return false;
 
             $headers = array('List-Unsubscribe' => '<' . NEWSLETTER_UNSUBSCRIBE_URL . '?nk=' . $user->id . '-' . $user->token . '>');
-            $headers['Precendence'] = 'bulk';
+            $headers['Precedence'] = 'bulk';
 
             if (!$test) {
                 $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set sent=sent+1, last_id=" . $user->id . " where id=" . $email->id . " limit 1");
@@ -483,6 +485,7 @@ class Newsletter extends NewsletterModule {
 
         return ob_get_clean();
     }
+    
 
     /**
      * This function checks is, during processing, we are getting to near to system limits and should stop any further
@@ -494,21 +497,19 @@ class Newsletter extends NewsletterModule {
         if (!$this->limits_set) {
             $this->logger->debug('limits_exceeded> Setting the limits for the first time');
             
+            $max_time = 300;
+                    
             // Actually it should be set on startup, anyway the scripts use as time base the startup time
             if (!empty($this->options['php_time_limit'])) {
                 @set_time_limit((int)$this->options['php_time_limit']);
             }   
             else if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
-                $max_time = NEWSLETTER_MAX_EXECUTION_TIME * 0.95;
                 @set_time_limit(NEWSLETTER_MAX_EXECUTION_TIME);
             } 
-            $max_time = (int) (@ini_get('max_execution_time') * 0.95);
             
-
-            if ($max_time == 0) {
-                $max_time = 30;
-            }   
-
+            $max_time = (int) (@ini_get('max_execution_time') * 0.95);
+            if ($max_time > NEWSLETTER_CRON_INTERVAL) $max_time = (int)(NEWSLETTER_CRON_INTERVAL*0.95);
+ 
             $this->time_limit = $this->time_start + $max_time;
             
             $this->logger->debug('limits_exceeded> Max time set to ' . $max_time);

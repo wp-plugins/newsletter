@@ -1,9 +1,8 @@
-This email can be seen only on rich text email client. To see it online visit:
+This email requires a modern e-mail reader. You can view the email online here:
 
-{email_url}
+{email_url}.
 
-To change your subscription visit:
+Thank you, <?php echo get_option('blogname'); ?>
 
-{profile_url}
-
-Thank you!
+To change your subscription follow:
+{profile_url}.

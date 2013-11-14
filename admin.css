@@ -608,16 +608,10 @@ border-radius: 0;
     margin-bottom: 15px;
 }
 
-.wrap {
-    font-size: 14px;
-    line-height: 150%;
+.wrap, .wrap td, .wrap th, .wrap input, .wrap textarea {
+    font-size: 13px;
     font-family: sans-serif;
-
-}
-
-.wrap td, .wrap th {
-    font-size: 14px;
-    font-family: sans-serif;
+    line-height: 130%;
 }
 
 .main-index a {
@@ -663,6 +657,7 @@ font-family: Georgia;
     text-align: right;
     font-weight: bold;
     border-right: 1px solid #ddd;
+    max-width: 200px;
 }
 .form-table th small {
     font-weight: normal;
@@ -723,7 +718,10 @@ table.clicks {
     margin-top: 10px;
     border-radius: 4px 4px;
     font-size: 12px;
+
     color: #666;
+background-color: #fcf8e3;
+border-color: #faebcc;
 }
 
 .intro {
@@ -741,28 +739,34 @@ table.clicks {
     list-style-position: inside;
 }
 
+
 .newsletter-checkbox-group, .nl-checkbox-group {
     float: left;
     margin-right: 5px;
     border: 1px solid #ccc;
     background-color: #f4f4f4;
-    width: 200px;
     margin-bottom: 5px;
     padding: 5px;
     white-space: nowrap;
     overflow: hidden;
 }
 
+/* Checkbox group */
 .newsletter-checkboxes-item {
     float: left;
     margin-right: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
+    border-radius: 3px;
     background-color: #f4f4f4;
-    width: 200px;
+    width: 150px;
     margin-bottom: 5px;
-    padding: 5px;
+    padding: 3px;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.newsletter-checkboxes-item input {
+    vertical-align: text-bottom;
 }
 
 .newsletter-checkboxes-item label {
@@ -894,19 +898,19 @@ table.clicks {
 }
 
 .tab-preamble {
-    margin-bottom: 15px;
-    border-radius: 3px;
-    background-color: #f4f4f4;
-    padding: 10px;
-    background-repeat: no-repeat;
-    background-position: left;
     font-size: 13px;
     line-height: normal;
     font-family: sans-serif;
+    color: #3a87ad;
+    background-color: #d9edf7;
+    border: 1px solid #bce8f1;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
 }
 
 .tab-preamble p {
-    margin: 0;
+    margin: 0 0 5px 0;
 }
 
 .newsletter-paginator {

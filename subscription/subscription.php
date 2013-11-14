@@ -732,6 +732,7 @@ class NewsletterSubscription extends NewsletterModule {
         $buffer .= "</table>\n</form>\n</div>";
         return $buffer;
     }
+   
 
     /**
      * Generate the profile editing form.

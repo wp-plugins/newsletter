@@ -31,9 +31,10 @@ if (!$controls->is_action()) {
         if (!$newsletter->is_email($controls->data['return_path'], true)) {
             $controls->errors .= 'Return path email is not correct.<br />';
         }
-        
-        $controls->data['php_time_limit'] = (int)$controls->data['php_time_limit'];
-        if ($controls->data['php_time_limit'] == 0) unset($controls->data['php_time_limit']);
+
+        $controls->data['php_time_limit'] = (int) $controls->data['php_time_limit'];
+        if ($controls->data['php_time_limit'] == 0)
+            unset($controls->data['php_time_limit']);
 
         //$controls->data['test_email'] = $newsletter->normalize_email($controls->data['test_email']);
         //if (!$newsletter->is_email($controls->data['test_email'], true)) {
@@ -64,13 +65,16 @@ if (!$controls->is_action()) {
         $mail->Body = $message;
         $mail->From = $controls->data['sender_email'];
         $mail->FromName = $controls->data['sender_name'];
-        if (!empty($controls->data['return_path'])) $mail->Sender = $options['return_path'];
-        if (!empty($controls->data['reply_to'])) $mail->AddReplyTo($controls->data['reply_to']);
+        if (!empty($controls->data['return_path']))
+            $mail->Sender = $options['return_path'];
+        if (!empty($controls->data['reply_to']))
+            $mail->AddReplyTo($controls->data['reply_to']);
 
         $mail->Subject = '[' . get_option('blogname') . '] SMTP test';
 
         $mail->Host = $controls->data['smtp_host'];
-        if (!empty($controls->data['smtp_port'])) $mail->Port = (int) $controls->data['smtp_port'];
+        if (!empty($controls->data['smtp_port']))
+            $mail->Port = (int) $controls->data['smtp_port'];
 
         $mail->SMTPSecure = $controls->data['smtp_secure'];
 
@@ -88,8 +92,12 @@ if (!$controls->is_action()) {
         $mail->SmtpClose();
         $debug = htmlspecialchars(ob_get_clean());
 
-        if ($mail->IsError()) $controls->errors = $mail->ErrorInfo;
-        else $controls->messages = 'Success.';
+        if ($mail->IsError()) {
+            $controls->errors = '<strong>Connection/email delivery failed.</strong><br>You should contact your provider reporting the SMTP parameter and asking about connection to that SMTP.<br><br>';
+            $controls->errors = $mail->ErrorInfo;
+        }
+        else
+            $controls->messages = 'Success.';
 
         $controls->messages .= '<textarea style="width:100%;height:250px;font-size:10px">';
         $controls->messages .= $debug;
@@ -107,34 +115,39 @@ if (!$controls->is_action()) {
 
     <?php $controls->show(); ?>
 
+    <!--
     <div class="preamble">
-    <p>
-        Do not be scared by all those configurations. Only <strong>basic settings</strong> are important and should be reviewed to
-        make Newsletter plugin work correctly. If something doesn't work, run a test from
-        <a href="admin.php?page=newsletter_main_diagnostic">diagnostic panel</a>.
-    </p>
+        <p>
+            Do not be scared by all those configurations. Only <strong>basic settings</strong> are important and should be reviewed to
+            make Newsletter plugin work correctly. If something doesn't work, run a test from
+            <a href="admin.php?page=newsletter_main_diagnostic">diagnostic panel</a>.
+        </p>
     </div>
-
+    -->
+    
     <form method="post" action="">
         <?php $controls->init(); ?>
 
         <div id="tabs">
 
             <ul>
-                <li><a href="#tabs-1">Basic settings</a></li>
+                <li><a href="#tabs-basic">Basic settings</a></li>
+                <li><a href="#tabs-speed">Delivery speed</a></li>
                 <li><a href="#tabs-2">Advanced settings</a></li>
                 <li><a href="#tabs-5">SMTP</a></li>
                 <li><a href="#tabs-3">Content locking</a></li>
             </ul>
 
-            <div id="tabs-1">
+            <div id="tabs-basic">
 
-                <!-- Main settings -->
                 <div class="tab-preamble">
-                <p>
-                </p>
+                    <p>
+                        <strong>Important!</strong> 
+                        <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration" target="_blank">Read the configuration page</a>
+                        to know every details about these settings.
+                    </p>
                 </div>
-
+                
                 <table class="form-table">
 
                     <tr valign="top">
@@ -143,34 +156,25 @@ if (!$controls->is_action()) {
                             <?php $controls->text_email('sender_email', 40); ?> (valid email address)
 
                             <div class="hints">
-                                Insert here the email address from which subscribers will se your email coming. Since this setting can
+                                This the email address from which subscribers will se your email coming. Since this setting can
                                 affect the reliability of delivery,
                                 <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a> (important).
                                 Generally use an address within your domain name.
                             </div>
                         </td>
                     </tr>
+                    <tr>
                         <th>Sender name</th>
                         <td>
                             <?php $controls->text('sender_name', 40); ?> (optional)
 
                             <div class="hints">
-                                Insert here the name which subscribers will see as the sender of your email (for example your blog or website's name). Since this setting can affect the reliability of delivery (usually under Windows)
+                                Insert here the name which subscribers will see as the sender of your email (for example your blog name). Since this setting can affect the reliability of delivery (usually under Windows)
                                 <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a>.
                             </div>
                         </td>
                     </tr>
-                    <tr valign="top">
-                        <th>Max emails per hour</th>
-                        <td>
-                            <?php $controls->text('scheduler_max', 5); ?>
-                            <div class="hints">
-                                Newsletter delivery engine respects this limit and it should be set to a value less than the maximum allowed by your provider
-                                (Hostgator: 500 per hour, Dreamhost: 100 per hour, Go Daddy: 1000 per day using their SMTP, Gmail: 500 per day).
-                                Read <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">more on delivery engine</a> (important).
-                            </div>
-                        </td>
-                    </tr>
+
                     <tr valign="top">
                         <th>Return path</th>
                         <td>
@@ -198,18 +202,47 @@ if (!$controls->is_action()) {
                 </table>
             </div>
 
+            <div id="tabs-speed">
+                <div class="tab-preamble">
+                    <p>
+                        You can set the speed of the email delivery as <strong>emails per hour</strong>. The delivery engine
+                        runs every <strong>5 minutes</strong> and sends a limited number of email to keep the sending rate
+                        below the specified limit. For example if you set 120 emails per hour the delivery engine will
+                        send at most 10 emails per run.
+                    </p>
+                    <p>
+                        <strong>Important!</strong> Read the 
+                        <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">delivery engine page</a>
+                        to solve speed problems and find blog setup examples to make it work at the best.
+                    </p>
+                </div>
+                <table class="form-table">
+                    <tr>
+                        <th>Max emails per hour</th>
+                        <td>
+                            <?php $controls->text('scheduler_max', 5); ?>
+                            <div class="hints">
+                                Newsletter delivery engine respects this limit and it should be set to a value less than the maximum allowed by your provider
+                                (Hostgator: 500 per hour, Dreamhost: 100 per hour, Go Daddy: 1000 per day using their SMTP, Gmail: 500 per day).
+                                Read <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">more on delivery engine</a> (important).
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
             <div id="tabs-2">
 
                 <div class="tab-preamble">
-                <p>
-                    Every setting is explained <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#advanced" target="_blank">here</a>.
-                </p>
+                    <p>
+                        Every setting is explained <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#advanced" target="_blank">here</a>.
+                    </p>
                 </div>
 
                 <table class="form-table">
 
                     <tr valign="top">
-                        <th>Enable access to editors?</th>
+                        <th>Enable access to blog editors?</th>
                         <td>
                             <?php $controls->yesno('editor'); ?>
                         </td>
@@ -266,14 +299,14 @@ if (!$controls->is_action()) {
                 <div class="tab-preamble">
                     <p>
                         <strong>These options can be overridden by modules which integrates with external
-                        SMTPs (like MailJet, SendGrid, ...) if installed and activated.</strong>
+                            SMTPs (like MailJet, SendGrid, ...) if installed and activated.</strong>
                     </p>
                     <p>
 
                         What you need to know to use and external SMTP can be found 
                         <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#smtp" target="_blank">here</a>.
                         <br>
-                        On GoDaddy it does not work and you need a <a href="http://www.satollo.net/godaddy-using-smtp-external-server-on-shared-hosting" target="_blank">special setup</a>.
+                        On GoDaddy you should follow this <a href="http://www.satollo.net/godaddy-using-smtp-external-server-on-shared-hosting" target="_blank">special setup</a>.
                     </p>
                     <p>
                         Consider <a href="http://www.satollo.net/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
@@ -282,7 +315,7 @@ if (!$controls->is_action()) {
 
                 <table class="form-table">
                     <tr>
-                        <th>Enable external SMTP?</th>
+                        <th>Enable the SMTP?</th>
                         <td><?php $controls->yesno('smtp_enabled'); ?></td>
                     </tr>
                     <tr>
@@ -310,14 +343,16 @@ if (!$controls->is_action()) {
                     <tr>
                         <th>Test email address</th>
                         <td>
-                            <?php $controls->text('smtp_test_email', 30); ?>
+                            <?php $controls->text_email('smtp_test_email', 30); ?>
+                                <?php $controls->button('smtp_test', 'Send a test email to this address'); ?>
                             <div class="hints">
-                                SMTP test will be addressed to this email
+                                If the test reports a "connection failed", review your settings and, if correct, contact
+                                your provider to unlock the connection (if possible).
                             </div>
                         </td>
                     </tr>
                 </table>
-                <?php $controls->button('smtp_test', 'Test'); ?>
+                
 
             </div>
 
@@ -354,10 +389,8 @@ if (!$controls->is_action()) {
                     <tr valign="top">
                         <th>Denied content message</th>
                         <td>
-			<?php $controls->textarea('lock_message'); ?>
-                            <?php wp_editor( $controls->data['lock_message'], 'lock_message', array('textarea_name'=>'options[lock_message]') ); ?>
+                            <?php wp_editor($controls->data['lock_message'], 'lock_message', array('textarea_name' => 'options[lock_message]')); ?>
 
-                            <?php //$controls->textarea('lock_message'); ?>
                             <div class="hints">
                                 This message is shown in place of protected post or page content which is surrounded with
                                 [newsletter_lock] and [/newsletter_lock] short codes or in place of the full content if they are

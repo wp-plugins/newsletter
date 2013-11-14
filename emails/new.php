@@ -10,7 +10,7 @@ if ($controls->is_action('theme')) {
 
 if ($controls->is_action('save')) {
     $module->save_options($controls->data);
-    $controls->messages = 'Saved.';
+    //$controls->messages = 'Saved.';
 }
 
 if ($controls->is_action('create')) {
@@ -94,6 +94,7 @@ function newsletter_emails_get_theme_options($theme) {
     <?php include NEWSLETTER_DIR . '/header.php'; ?>
 
     <h2>New Newsletter</h2>
+    <p><a href="<?php echo NewsletterEmails::instance()->get_admin_page_url('theme'); ?>">Back to the themes</a></p>
 
     <?php $controls->show(); ?>
 
@@ -103,11 +104,11 @@ function newsletter_emails_get_theme_options($theme) {
 
         <table style="width: 100%">
             <tr>
-                <td><?php $controls->button_primary('save', 'Save options and refresh'); ?>
-                    To create custom theme <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">read here</a>
+                <td style="text-align: center; vertical-align: top; border-bottom: 1px solid #ccc">
+                    <?php $controls->button_primary('save', '(1) Save options and refresh the preview'); ?><br><br>
                 </td>
-                <td>
-                    <?php $controls->button_primary('create', 'Go to edit this message'); ?>
+                <td style="text-align: center; vertical-align: top; border-bottom: 1px solid #ccc">
+                    <?php $controls->button_primary('create', '(2) Go to edit this message'); ?><br><br>
                 </td>
             </tr>
             <tr>

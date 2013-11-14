@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 3.7.0
+Tested up to: 3.7.1
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -56,6 +56,12 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.4.5 =
+
+* Revisited the theme chooser and the theme configuration
+* Fixed a double field on the locked content configuration
+* Improved the delivery engine
 
 = 3.4.4 =
 

@@ -38,28 +38,6 @@
         <div class="hints">Leave all uncheck for a default behavior.</div>
     </div>
     <div id="tab-social">
-        <table class="form-table">
-            <tr>
-                <th>Facebook</th>
-                <td><?php $controls->text_url('theme_facebook',30); ?></td>
-            </tr>
-            <tr>
-                <th>Twitter</th>
-                <td><?php $controls->text_url('theme_twitter',30); ?></td>
-            </tr>
-            <tr>
-                <th>Pinterest</th>
-                <td><?php $controls->text_url('theme_pinterest',30); ?></td>
-            </tr>
-            <tr>
-                <th>Google+</th>
-                <td><?php $controls->text_url('theme_googleplus',30); ?></td>
-            </tr>
-            <tr>
-                <th>LinkedIn</th>
-                <td><?php $controls->text_url('theme_linkedin',30); ?></td>
-            </tr>
-        </table>
-
+        <?php include WP_PLUGIN_DIR . '/newsletter/emails/themes/default/social-options.php'; ?>
     </div>
 </div>

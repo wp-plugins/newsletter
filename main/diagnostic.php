@@ -63,7 +63,7 @@ if ($controls->is_action('test_wp')) {
     if ($r) {
         $controls->messages .= 'Direct WordPress email sent<br />';
     } else {
-        $controls->errors .= 'Direct WordPress email NOT sent: ask your provider if your web space is enabled to send emails.<br />';
+        $controls->errors .= 'Direct WordPress email NOT sent: <strong>ask now your provider</strong> to know if you can send emails from your blog or not..<br>';
     }
 }
 

@@ -10,7 +10,16 @@
 
 global $newsletter, $post;
 
-$posts = get_posts(array('post_status'=>'publish', 'showposts'=>9));
+$filters = array();
+if (!empty($theme_options['theme_categories'])) {
+    $filters['category__in'] = $theme_options['theme_categories'];
+}
+if (empty($theme_options['theme_max_posts']))
+    $filters['showposts'] = 9;
+else
+    $filters['showposts'] = (int) $theme_options['theme_max_posts'];
+
+$posts = get_posts($filters);
 
 ?><!DOCTYPE html>
 <html>
@@ -58,6 +67,12 @@ $posts = get_posts(array('post_status'=>'publish', 'showposts'=>9));
                             </table>
 
                     <br><br>
+                    
+                            <?php 
+                            if (!isset($theme_options['theme_social_disable'])) { 
+                                include WP_PLUGIN_DIR . '/newsletter/emails/themes/default/social.php';                             
+                            }
+                            ?>
 
                             <small>To change your subscription, <a target="_tab"  href="{profile_url}" style="color: #666; text-decoration: none">click here</a></small>
 

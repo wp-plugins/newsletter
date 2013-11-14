@@ -1,7 +1,8 @@
-View this email online here: {email_url}.
----
+This email requires a modern e-mail reader but uou can view the email online here:
 
-Blank newsletter!
+{email_url}.
 
----
-To change your subscription follow {profile_url}.
+Thank you, <?php echo get_option('blogname'); ?>
+
+To change your subscription follow:
+{profile_url}.

@@ -24,7 +24,7 @@ $theme_defaults = array(
 // Mandatory!
 $controls->merge_defaults($theme_defaults);
 ?>
-<p>This theme build an email loading all new posts after the date of the last run.</p>
+
 <table class="form-table">  
     <tr valign="top">
         <th>Max new posts to include</th>
@@ -34,20 +34,7 @@ $controls->merge_defaults($theme_defaults);
     </tr>
     <tr valign="top">
         <th>Categories to include</th>
-        <td>
-            <?php
-            $categories = get_categories();
-            foreach ($categories as $c) {
-                echo '<div class="nl-checkbox-group">';
-                $controls->checkbox_group('theme_categories', $c->cat_ID, esc_html($c->cat_name));
-                echo '</div>';
-            }
-            ?>
-            <div style="clear: both"></div>
-            <div class="hints">
-                Leaving all categories unselected means to NOT filter by category.
-            </div>
-        </td>
+        <td><?php $controls->categories_group('theme_categories'); ?></td>
     </tr>
     <tr valign="top">
         <th>Pre message</th>
@@ -62,3 +49,5 @@ $controls->merge_defaults($theme_defaults);
         </td>
     </tr>    
 </table>
+
+<?php include WP_PLUGIN_DIR . '/newsletter/emails/themes/default/social-options.php'; ?>

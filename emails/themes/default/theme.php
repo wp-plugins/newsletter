@@ -83,61 +83,7 @@ if (isset($theme_options['theme_posts'])) {
                             </table>
                             <?php } ?>
                             
-                            <!-- Social -->
-                            <table cellpadding="5" align="center">
-                                <tr>
-                                    <?php if (!empty($theme_options['theme_facebook'])) { ?>
-                                    <td style="text-align: center; vertical-align: top" align="center" valign="top">
-                                        <a href="<?php echo $theme_options['theme_facebook']?>">
-                                            <img src="<?php echo $theme_url?>/images/facebook.png">
-                                            <br>
-                                            Facebook
-                                        </a>
-                                    </td>
-                                    <?php } ?>
-                                    
-                                     <?php if (!empty($theme_options['theme_twitter'])) { ?>
-                                    <td style="text-align: center; vertical-align: top" align="center" valign="top">
-                                        <a href="<?php echo $theme_options['theme_twitter']?>">
-                                            <img src="<?php echo $theme_url?>/images/twitter.png">
-                                            <br>
-                                            Twitter
-                                        </a>
-                                    </td>
-                                    <?php } ?>
-                                    
-                                     <?php if (!empty($theme_options['theme_googleplus'])) { ?>
-                                    <td style="text-align: center; vertical-align: top" align="center" valign="top">
-                                        <a href="<?php echo $theme_options['theme_googleplus']?>">
-                                            <img src="<?php echo $theme_url?>/images/googleplus.png">
-                                            <br>
-                                            Google+
-                                        </a>
-                                    </td>
-                                    <?php } ?>
-                                    
-                                    <?php if (!empty($theme_options['theme_pinterest'])) { ?>
-                                    <td style="text-align: center; vertical-align: top" align="center" valign="top">
-                                        <a href="<?php echo $theme_options['theme_pinterest']?>">
-                                            <img src="<?php echo $theme_url?>/images/pinterest.png">
-                                            <br>
-                                            Pinterest
-                                        </a>
-                                    </td>
-                                    <?php } ?>
-                                    
-                                    <?php if (!empty($theme_options['theme_linkedin'])) { ?>
-                                    <td style="text-align: center; vertical-align: top" align="center" valign="top">
-                                        <a href="<?php echo $theme_options['theme_linkedin']?>">
-                                            <img src="<?php echo $theme_url?>/images/linkedin.png">
-                                            <br>
-                                            LinkedIn
-                                        </a>
-                                    </td>
-                                    <?php } ?>
-                                    
-                                </tr>
-                            </table>
+                            <?php include WP_PLUGIN_DIR . '/newsletter/emails/themes/default/social.php'; ?>
 
                             <p>To change your subscription, <a target="_blank"  href="{profile_url}">click here</a>.
                         </div>

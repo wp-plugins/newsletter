@@ -264,10 +264,7 @@ if ($email['editor'] == 0) {
                             <input id="upload_image_button" type="button" value="Choose or upload an image" />
                             <?php $email['editor'] == 0 ? $controls->editor('message', 30) : $controls->textarea_fixed('message', '100%', '400'); ?>
                             <div class="hints">
-                                Tags: <strong>{name}</strong> receiver name;
-                                <strong>{unsubscription_url}</strong> unsubscription URL;
-                                <strong>{token}</strong> the subscriber token; <strong>{profile_url}</strong> link to user subscription options page;
-                                <strong>{np_aaa}</strong> user profile data named "aaa".
+                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-tags" target="">See the list of all tags</a> that can be used on the email text.
                             </div>
                         </td>
                     </tr>
@@ -276,15 +273,17 @@ if ($email['editor'] == 0) {
 
 
             <div id="tabs-b">
+                <div class="tab-preamble">
                 <p>
                     This is the textual version of your newsletter. If you empty it, only an HTML version will be sent but
                     is an anti-spam best practice to include a text only version.
                 </p>
+                </div>
                 <table class="form-table">
                     <tr valign="top">
                         <th>Message</th>
                         <td>
-                            <?php $controls->textarea_fixed('message_text', '100%', '250'); ?>
+                            <?php $controls->textarea_fixed('message_text', '100%', '350'); ?>
                         </td>
                     </tr>
                 </table>
@@ -293,23 +292,13 @@ if ($email['editor'] == 0) {
 
             <div id="tabs-c">
                 <table class="form-table">
+                    
                     <tr valign="top">
-                        <th>Approximative number of receivers</th>
-                        <td>
-                            <?php
-                            echo $wpdb->get_var(str_replace('*', 'count(*)', $email['query']));
-                            ?>
-                            <div class="hints">
-                            If you change selections below, save the email to update this values.
-                            </div>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Sex</th>
+                        <th>Gender</th>
                         <td>
                             <?php $controls->checkboxes_group('sex', array('f'=>'Women', 'm'=>'Men', 'n'=>'Not specified')); ?>
                             <div class="hints">
-                                Leaving all sex options unselected means to NOT filter by sex.
+                                Leaving all gender options unselected disable this filter.
                             </div>
                         </td>
                     </tr>
@@ -358,6 +347,20 @@ if ($email['editor'] == 0) {
 
                             <div class="hints">
                                 Limit to the subscribers which are WordPress users as well.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>
+                            Approximative number of receivers<br>
+                            <small>Updated everytime you save</small>
+                        </th>
+                        <td>
+                            <?php
+                            echo $wpdb->get_var(str_replace('*', 'count(*)', $email['query']));
+                            ?>
+                            <div class="hints">
+                            If you change selections below, save the email to update this values.
                             </div>
                         </td>
                     </tr>

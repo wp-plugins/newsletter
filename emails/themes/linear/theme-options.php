@@ -1,14 +1,11 @@
 <table class="form-table">
     <tr>
-        <th>Facebook link</th>
-        <td><?php $controls->text('theme_facebook'); ?></td>
+        <th>Max posts</th>
+        <td><?php $controls->text('theme_max_posts', 5); ?></td>
     </tr>
     <tr>
-        <th>Twitter link</th>
-        <td><?php $controls->text('theme_twitter'); ?></td>
-    </tr>
-    <tr>
-        <th>YouTube link</th>
-        <td><?php $controls->text('theme_youtube'); ?></td>
+        <th>Categories</th>
+        <td><?php $controls->categories_group('theme_categories'); ?></td>
     </tr>
 </table>
+<?php include WP_PLUGIN_DIR . '/newsletter/emails/themes/default/social-options.php'; ?>
