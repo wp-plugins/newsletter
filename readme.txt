@@ -57,6 +57,13 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.4.6 =
+
+* Added the full_name tag
+* Added the "simple" theme
+* Added indexes to the statistic table to improve the reports extension response time
+* Fixed some noticies in debug mode
+
 = 3.4.5 =
 
 * Revisited the theme chooser and the theme configuration

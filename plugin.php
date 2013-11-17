@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.4.5
+  Version: 3.4.6
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.4.5');
+define('NEWSLETTER_VERSION', '3.4.6');
 
 global $wpdb, $newsletter;
 
@@ -116,7 +116,7 @@ class Newsletter extends NewsletterModule {
         // Here because the upgrade is called by the parent constructor and uses the scheduler
         add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
-        parent::__construct('main', '1.2.0');
+        parent::__construct('main', '1.2.1');
  
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max))
@@ -497,7 +497,7 @@ class Newsletter extends NewsletterModule {
         if (!$this->limits_set) {
             $this->logger->debug('limits_exceeded> Setting the limits for the first time');
             
-            $max_time = 300;
+            $max_time = NEWSLETTER_CRON_INTERVAL;
                     
             // Actually it should be set on startup, anyway the scripts use as time base the startup time
             if (!empty($this->options['php_time_limit'])) {
@@ -508,11 +508,11 @@ class Newsletter extends NewsletterModule {
             } 
             
             $max_time = (int) (@ini_get('max_execution_time') * 0.95);
-            if ($max_time > NEWSLETTER_CRON_INTERVAL) $max_time = (int)(NEWSLETTER_CRON_INTERVAL*0.95);
+            if ($max_time == 0 || $max_time > NEWSLETTER_CRON_INTERVAL) $max_time = (int)(NEWSLETTER_CRON_INTERVAL*0.95);
  
             $this->time_limit = $this->time_start + $max_time;
             
-            $this->logger->debug('limits_exceeded> Max time set to ' . $max_time);
+            $this->logger->info('limits_exceeded> Max time set to ' . $max_time);
  
             $max = $this->options['scheduler_max'];
             if (!is_numeric($max))
@@ -825,6 +825,16 @@ class Newsletter extends NewsletterModule {
 
 
             $text = str_replace('{surname}', $user->surname, $text);
+            $text = str_replace('{last_name}', $user->surname, $text);
+            
+            $full_name = trim($user->name . ' ' . $user->surname);
+            if (empty($full_name)) {
+                $text = str_replace(' {full_name}', '', $text);
+                $text = str_replace('{full_name}', '', $text);
+            } else {
+                $text = str_replace('{full_name}', $full_name, $text);
+            }
+            
             $text = str_replace('{token}', $user->token, $text);
             $text = str_replace('%7Btoken%7D', $user->token, $text);
             $text = str_replace('{id}', $user->id, $text);

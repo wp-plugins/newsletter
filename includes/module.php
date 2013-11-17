@@ -165,7 +165,7 @@ class NewsletterModule {
         @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . 'en_US.php';
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
         @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
-        if (!is_array($options)) {
+        if (!isset($options) || !is_array($options)) {
             return array();
         }
         return $options;
