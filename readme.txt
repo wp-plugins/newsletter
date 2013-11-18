@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.4.7 =
+
+* Fixed the subscription panel where some panels where no more visible.
+
 = 3.4.6 =
 
 * Added the full_name tag

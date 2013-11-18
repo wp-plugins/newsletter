@@ -378,6 +378,7 @@ if ($controls->is_action('create')) {
                         The page shown when the subscriber wants to edit hid profile following the link
                         {profile_url} you added to a newsletter.
                     </p>
+                </div>
 
                 <table class="form-table">
                     <tr valign="top">
@@ -449,31 +450,7 @@ if ($controls->is_action('create')) {
             </div>
 
 
-            <!-- POPUP -->
-            <!--
-            <div id="tabs-8">
-              <p>
-                Newsletter plugin does not provide a popup, but if you use a popup system (like ...) you can configure it to
-                open the url <code><?php echo NEWSLETTER_SUBSCRIPTION_POPUP_URL; ?></code>. The message shown  is the one below or,
-                if left empty, the standard subscription text (just try, it's easy).
-              </p>
-              <p>
-                The message shown after the subscription is the standard confirmation or welcome message (it depends on opt in setting).
-              </p>
-
-              <table class="form-table">
-                <tr valign="top">
-                  <th>Popup subscription page</th>
-                  <td>
-            <?php $controls->editor('subscription_popup_text'); ?>
-                    <div class="hints">
-                      Leave empty to use the standard subscription page text.
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            -->
+           
 
             <div id="tabs-7">
 
@@ -518,7 +495,7 @@ if ($controls->is_action('create')) {
             <div class="tab-preamble">
                 <p>Configure if and how a regular WordPress user registration can be connected to a Newsletter subscription.</p>
                 <p>Important! This type of subscription does not require confirmation, it's automatic on first login. 
-                    <a href="http://www.satollo.net/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>-
+                    <a href="http://www.satollo.net/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>.
                 </p>
             </div>
                 <table class="form-table">
