@@ -57,6 +57,11 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.4.8 =
+
+* Added a javascript protection against auto confirmation from bot
+* Fixed a warning with debug active on site login
+
 = 3.4.7 =
 
 * Fixed the subscription panel where some panels where no more visible.

@@ -11,3 +11,5 @@ if ($user->status == 'E') NewsletterSubscription::instance()->show_message('erro
 if ($user->status == 'C') NewsletterSubscription::instance()->show_message('confirmed', $user->id);
 if ($user->status == 'A') NewsletterSubscription::instance()->show_message('already_confirmed', $user->id);
 if ($user->status == 'S') NewsletterSubscription::instance()->show_message('confirmation', $user->id);
+?>
+Uncorrect status: <?php echo $user->status; ?>

@@ -610,10 +610,12 @@ class NewsletterModule {
             $user = (array) $user;
         if (empty($user['id'])) {
             $existing = $this->get_user($user['email']);
-            if ($existing != null)
+            if ($existing != null) {
                 return false;
-            if (empty($user['token']))
+            }
+            if (empty($user['token'])) {
                 $user['token'] = NewsletterModule::get_token();
+            }
             //if (empty($user['created'])) $user['created'] = time();
             // Database default
             //if (empty($user['status'])) $user['status'] = 'S';

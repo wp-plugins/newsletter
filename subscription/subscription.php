@@ -164,17 +164,17 @@ class NewsletterSubscription extends NewsletterModule {
     function hook_wp_login($user_login) {
         global $newsletter;
 
-        $this->logger->info(__METHOD__ . '> Start with ' . $user_login);
+        //$this->logger->info(__METHOD__ . '> Start with ' . $user_login);
         $wp_user = get_user_by('login', $user_login);
         if (!empty($wp_user)) {
-            $this->logger->info($wp_user);
+            //$this->logger->info($wp_user);
             // We have a user able to login, so his subscription can be confirmed if not confirmed
             $user = $newsletter->get_user($wp_user->user_email);
-            if (!empty($user)) {
+            if (!empty($user) && isset($this->options['wp_welcome'])) {
                 $this->confirm($user->id, $this->options['wp_welcome'] == 1);
             }
         }
-        $this->logger->info(__METHOD__ . '> End');
+        //$this->logger->info(__METHOD__ . '> End');
     }
 
     /**
@@ -340,10 +340,17 @@ class NewsletterSubscription extends NewsletterModule {
         } else {
             $user = $newsletter->get_user($user_id);
         }
+        
+        $this->logger->debug('Confirmation for:');
+        $this->logger->debug($user);
+        
 
-        if ($user == null)
+        if ($user == null) {
+            $this->logger->debug('Not found');
             die('No subscriber found.');
+        }
         if ($user->status != 'S') {
+            $this->logger->debug('Was not in status S');
             $user->status = 'E';
             return $user;
         }
@@ -376,11 +383,17 @@ class NewsletterSubscription extends NewsletterModule {
     function unsubscribe() {
         global $newsletter;
         $user = $this->get_user_from_request();
+        
+        $this->logger->debug('Unsubscription for:');
+        $this->logger->debug($user);
+        
         setcookie('newsletter', '', time() - 3600);
         if ($user == null) {
+            $this->logger->debug('Not found');
             die('Subscriber not found');
         }
         if ($user->status != 'C') {
+            $this->logger->debug('Was not in status C');
             $user->status = 'E';
             return $user;
         }

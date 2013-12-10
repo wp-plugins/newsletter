@@ -103,16 +103,24 @@ class NewsletterStore {
         if (isset($data['id'])) {
             $id = $data['id'];
             unset($data['id']);
-            $wpdb->update($table, $data, array('id' => $id));
+            $r = $wpdb->update($table, $data, array('id' => $id));
+            if ($r === false) {
+                $this->logger->fatal($wpdb->last_error);
+                die('Database error.');
+            }
             //$this->logger->debug('save: ' . $wpdb->last_query);
         } else {
-            $wpdb->insert($table, $data);
+            $r = $wpdb->insert($table, $data);
+            if ($r === false) {
+                $this->logger->fatal($wpdb->last_error);
+                die('Database error.');
+            }
             $id = $wpdb->insert_id;
         }
-        if ($wpdb->last_error) {
-            $this->logger->error('save: ' . $wpdb->last_error);
-            return false;
-        }
+//        if ($wpdb->last_error) {
+//            $this->logger->error('save: ' . $wpdb->last_error);
+//            return false;
+//        }
 
         return $this->get_single($table, $id, $return_format);
     }
