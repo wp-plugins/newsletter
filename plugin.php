@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.4.8
+  Version: 3.4.9
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.4.8');
+define('NEWSLETTER_VERSION', '3.4.9');
 
 global $wpdb, $newsletter;
 
@@ -564,20 +564,37 @@ class Newsletter extends NewsletterModule {
         // Simple message is asumed to be html
         if (!is_array($message)) {
             $this->mailer->IsHTML(true);
+            $message = str_replace("\r\n", "\n", $message);
+            $message = str_replace("\r", "\n", $message);
+            $message = str_replace("\n", "\r\n", $message);
             $this->mailer->Body = $message;
         } else {
             // Only html is present?
             if (empty($message['text'])) {
                 $this->mailer->IsHTML(true);
+                $message['html'] = str_replace("\r\n", "\n", $message['html']);
+                $message['html'] = str_replace("\r", "\n", $message['html']);
+                $message['html'] = str_replace("\n", "\r\n", $message['html']);
                 $this->mailer->Body = $message['html'];
             }
             // Only text is present?
             else if (empty($message['html'])) {
                 $this->mailer->IsHTML(false);
+                $message['text'] = str_replace("\r\n", "\n", $message['text']);
+                $message['text'] = str_replace("\r", "\n", $message['text']);
+                $message['text'] = str_replace("\n", "\r\n", $message['text']);
                 $this->mailer->Body = $message['text'];
             } else {
                 $this->mailer->IsHTML(true);
-
+                
+                $message['text'] = str_replace("\r\n", "\n", $message['text']);
+                $message['text'] = str_replace("\r", "\n", $message['text']);
+                $message['text'] = str_replace("\n", "\r\n", $message['text']);
+                
+                $message['html'] = str_replace("\r\n", "\n", $message['html']);
+                $message['html'] = str_replace("\r", "\n", $message['html']);
+                $message['html'] = str_replace("\n", "\r\n", $message['html']);
+                
                 $this->mailer->Body = $message['html'];
                 $this->mailer->AltBody = $message['text'];
             }

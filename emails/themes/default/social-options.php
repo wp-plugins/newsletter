@@ -2,7 +2,7 @@
 <table class="form-table">
     <tr>
         <th>Social block</th>
-        <td><?php $controls->checkbox('theme_social'); ?> Disable</td>
+        <td><?php $controls->checkbox('theme_social_disable'); ?> Disable</td>
     </tr>
     <tr>
         <th>Facebook</th>

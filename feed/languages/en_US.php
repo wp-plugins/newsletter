@@ -1,5 +1,6 @@
 <?php
 
 $options = array(
-    'theme'=>'default'
+    'theme'=>'default',
+    'subscription'=>0
 );

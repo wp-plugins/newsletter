@@ -600,11 +600,10 @@ class NewsletterSubscription extends NewsletterModule {
 
     function get_form_javascript() {
         $options_profile = get_option('newsletter_profile');
-        $buffer .= "\n\n";
+        $buffer = "\n\n";
         $buffer .= '<script type="text/javascript">' . "\n";
         $buffer .= '//<![CDATA[' . "\n";
         $buffer .= 'if (typeof newsletter_check !== "function") {' . "\n";
-        ;
         $buffer .= 'window.newsletter_check = function (f) {' . "\n";
         $buffer .= '    var re = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-]{1,})+\.)+([a-zA-Z0-9]{2,})+$/;' . "\n";
         $buffer .= '    if (!re.test(f.elements["ne"].value)) {' . "\n";

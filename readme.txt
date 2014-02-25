@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 3.7.1
+Tested up to: 3.8.1
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -56,6 +56,13 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.4.9 =
+
+* Fixed some warnings in debug mode
+* Fixed the disabling setting of the social icons (on default newsletter themes) 
+* Added filters on widget for WPML
+* Added filter for single line feeds refused by some mail servers
 
 = 3.4.8 =
 

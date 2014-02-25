@@ -94,11 +94,14 @@ class NewsletterWidget extends WP_Widget {
         extract($args);
 
         echo $before_widget;
+
+        // Filters are used for WPML
         if (!empty($instance['title'])) {
-            echo $before_title . $instance['title'] . $after_title;
+            $title = apply_filters('widget_title', $instance['title'], $instance);
+            echo $before_title . $title . $after_title;
         }
 
-        $buffer = $instance['text'];
+        $buffer = apply_filters('widget_text', $instance['text'], $instance);
         $options = get_option('newsletter');
         $options_profile = get_option('newsletter_profile');
 
