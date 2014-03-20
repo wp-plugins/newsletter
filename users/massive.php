@@ -194,12 +194,16 @@ if ($controls->is_action('bounces')) {
 
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
-  <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+  
 
+    <div id="newsletter-title">
+        <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
     <h2>Massive Actions on Subscribers</h2>
-  <p>A bug or an error using this panel can scramble the subscribers database. Please, backup before run a massive operation.</p>
+    <p>Please, backup before run a massive operation.</p>
+    </div>
 
+  <div style="clear: both; height: 10px;"></div>
   <?php $controls->show(); ?>
 
     <?php if (!empty($results)) { ?>
@@ -356,7 +360,25 @@ if ($controls->is_action('bounces')) {
       </div>
 
       <div id="tabs-4">
-        <?php $controls->textarea('bounced_emails'); ?>
+          <div class="tab-preamble">
+              <p>
+                  Import a set of bounced email addresses: they will be marked as "bounced" and no more contacted. Sending
+                  emails to bounced address (many times) can put your server in some black list.
+              </p>
+          </div>
+          <table class="form-table">
+              <tr>
+                  <th>Bounced addresses</th>
+                  <td>
+                      <?php $controls->textarea('bounced_emails'); ?>
+          <div class="hints">
+              One email address per line.
+          </div>
+                  </td>
+              </tr>
+          </table>
+        
+         
         <?php $controls->button_confirm('bounces', 'Mark those emails as bounced', 'Are you sure?'); ?>
       </div>
 

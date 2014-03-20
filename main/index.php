@@ -22,23 +22,23 @@ if ($controls->is_action('check_versions')) {
 
 
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h2>Welcome and Support</h2>
-
-    <?php $controls->show(); ?>
-
-    <form method="post" action="">
-        <?php $controls->init(); ?>
-
-        <h3>Documentation?</h3>
-
-        <p>
+    <div id="newsletter-title">
+        <h2>Welcome and Support</h2>
+                <p>
             With my horrible English, everything can be found starting from <a href="http://www.satollo.net/plugins/newsletter" target="_blank">Newsletter Official page</a>
             and every configuration panel has some included documentation just to avoid the most common mistakes.
         </p>
+    </div>
+    <div class="newsletter-separator"></div>
 
-        <h3>A few minutes to get the most from Newsletter</h3>
+
+    <?php $controls->show(); ?>
+    <form method="post" action="">
+        <?php $controls->init(); ?>
+
+        <h3>Few minutes to get the most out of Newsletter</h3>
 
         <ol>
             <li>
@@ -99,7 +99,7 @@ if ($controls->is_action('check_versions')) {
             <li>
                 <em>The newsletter is going out too slowly.</em> The <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">delivery engine</a> sends
                 emails as quickly as configured, see the <a href="admin.php?page=newsletter_main_main">main
-                configuration panel</a>. Look at your provider documentation as well, since it surely has a hourly limit.
+                    configuration panel</a>. Look at your provider documentation as well, since it surely has a hourly limit.
             </li>
         </ol>
 
@@ -163,12 +163,12 @@ if ($controls->is_action('check_versions')) {
                         <a href="http://www.satollo.net/plugins/newsletter/follow-up-module" target="_blank">Follow Up</a>
                         <br><small>Sends email series after a subscriber signs up</small>
                     </td>
-                    <?php if (NewsletterModule::extension_exists('followup') &&  class_exists('NewsletterFollowup')) { ?>
+                    <?php if (NewsletterModule::extension_exists('followup') && class_exists('NewsletterFollowup')) { ?>
                         <td><?php echo NewsletterFollowup::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>
                     <?php } ?>
-                        <td><?php echo get_option('newsletter_followup_available_version'); ?></td>
+                    <td><?php echo get_option('newsletter_followup_available_version'); ?></td>
                 </tr>
                 <tr>
                     <td>
@@ -232,8 +232,8 @@ if ($controls->is_action('check_versions')) {
                 </tr>
             </tbody>
         </table>
-        
-<?php $controls->button('check_versions', 'Check for new versions'); ?>
+
+        <?php $controls->button('check_versions', 'Check for new versions'); ?>
 
         <h3>Support</h3>
         <p>

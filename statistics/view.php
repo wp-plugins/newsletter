@@ -4,18 +4,17 @@ $email = $module->get_email($_GET['id']);
 ?>
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/statistics-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h5>Statistics</h5>
+    <div id="newsletter-title">
+        <h2>Statistics for "<?php echo esc_html($email->subject); ?>"</h2>
 
-    <h2>Statistics for "<?php echo esc_html($email->subject); ?>"</h2>
-
-    <div class="preamble">
         <p>
             Complete statistics for this email are available with
             <a href="http://www.satollo.net/plugins/newsletter/reports-module" target="_blank">Reports for Newsletter</a>.
         </p>
     </div>
+    <div class="newsletter-separator"></div>
 
     <table class="widefat" style="width: auto">
         <thead>

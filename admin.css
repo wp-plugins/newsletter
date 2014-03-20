@@ -573,19 +573,17 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 
 .ui-tabs {
-border-color: #ddd;
+    border-color: #ddd;
 }
 
 .ui-tabs-nav {
-background-image: none;
-background-color: #fff;
-border: 0;
-border-bottom: 1px solid #ddd;
-border-radius: 0;
+    background-image: none;
+    background-color: #fff;
+    border: 0;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0;
 }
 
-
-/* Admin header */
 #newsletter-header {
     text-align: left;
     background-color: #f4f4f4;
@@ -600,6 +598,26 @@ border-radius: 0;
     margin-right: 15px;
 }
 
+/* Admin header */
+#newsletter-header-new {
+    text-align: left;
+    background-color: #fff;
+    padding: 10px;
+    xpadding-left: 15px;
+    xborder-radius: 3px;
+    xtext-transform: uppercase;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    float: right;
+    width: 300px;
+    xmargin-bottom: 10px;
+}
+
+#newsletter-header-new a {
+    margin-right: 10px;
+    text-decoration: none;
+}
+
 #newsletter-path {
 
 }
@@ -608,10 +626,23 @@ border-radius: 0;
     margin-bottom: 15px;
 }
 
+#newsletter-title {
+    xfloat: left;
+}
+
+.newsletter-separator {
+    clear: both; 
+    height: 5px;
+}
+
 .wrap, .wrap td, .wrap th, .wrap input, .wrap textarea {
     font-size: 13px;
     font-family: sans-serif;
     line-height: 130%;
+}
+
+.wrap td a {
+    text-decoration: underline;
 }
 
 .main-index a {
@@ -619,15 +650,15 @@ border-radius: 0;
 }
 
 .wrap h2 {
-    color: #21759B;
-    font-size: 20px;
-    margin: 10px 0;
-    padding: 0;
-    font-family: Georgia;
+    xcolor: #21759B;
+    xfont-size: 20px;
+    xmargin: 10px 0;
+    xpadding: 0;
+    xfont-family: Georgia;
 }
 
 .wrap h3 {
-font-family: Georgia;
+    font-family: Georgia;
 }
 
 .wrap h4 {
@@ -712,16 +743,16 @@ table.clicks {
 }
 
 .hints {
-    border: 1px solid #e4e4ee;
-    background-color: #f4f4ff;
-    padding: 5px;
+    xborder: 1px solid #e4e4ee;
+    xbackground-color: #f4f4ff;
+    xpadding: 5px;
     margin-top: 10px;
-    border-radius: 4px 4px;
-    font-size: 12px;
-
+    xborder-radius: 4px 4px;
+    font-size: 13px;
     color: #666;
-background-color: #fcf8e3;
-border-color: #faebcc;
+    font-style: italic;
+    xbackground-color: #fcf8e3;
+    xborder-color: #faebcc;
 }
 
 .intro {
@@ -739,6 +770,12 @@ border-color: #faebcc;
     list-style-position: inside;
 }
 
+.newsletter-badge {
+    color: #fff;
+    background-color: #666;
+    border-radius: 5px;
+    padding: 1px 5px;
+}
 
 .newsletter-checkbox-group, .nl-checkbox-group {
     float: left;
@@ -880,6 +917,7 @@ border-color: #faebcc;
 }
 
 /* Text under the panel title to explain the panel purpose. */
+/*
 .preamble {
     margin-bottom: 15px;
     border-radius: 3px;
@@ -896,17 +934,35 @@ border-color: #faebcc;
 .preamble p {
     margin: 0;
 }
+*/
+
+.newsletter-preamble {
+    margin-bottom: 15px;
+    xborder-radius: 3px;
+    xbackground-color: #f4f4f4;
+    xpadding: 10px;
+    xbackground-image: url("images/preamble.png");
+    xbackground-repeat: no-repeat;
+    xbackground-position: left;
+    xpadding-left: 65px;
+    font-size: 13px;
+    xfont-family: sans-serif;
+}
+
+.newsletter-preamble p {
+    margin: 0;
+}
 
 .tab-preamble {
     font-size: 13px;
     line-height: normal;
-    font-family: sans-serif;
-    color: #3a87ad;
-    background-color: #d9edf7;
-    border: 1px solid #bce8f1;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
+    xfont-family: sans-serif;
+    xcolor: #3a87ad;
+    xbackground-color: #d9edf7;
+    xborder: 1px solid #bce8f1;
+    xpadding: 15px;
+    xmargin-bottom: 20px;
+    xborder-radius: 4px;
 }
 
 .tab-preamble p {

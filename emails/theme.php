@@ -50,12 +50,16 @@ $themes = $module->themes->get_all_with_data();
 <div class="wrap">
 
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h2>New Newsletter</h2>
+    <div id="newsletter-title">
+    <h2>New Newsletter: Theme Selection</h2>
     
     <p>To create custom themes <a href="http://www.satollo.net/plugins/newsletter/newsletter-themes" target="_blank">read here</a>.</p>
-
+    </div>
+    
+    <div class="newsletter-separator"></div>
+    
     <?php $controls->show(); ?>
 
     <form method="post" id="newsletter-form" action="<?php echo $module->get_admin_page_url('new'); ?>">

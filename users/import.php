@@ -16,7 +16,8 @@ if ($controls->is_action('import')) {
     $results = '';
 
     // Set the selected preferences inside the
-    if (!is_array($controls->data['preferences'])) $controls->data['preferences'] = array();
+    if (!is_array($controls->data['preferences']))
+        $controls->data['preferences'] = array();
 
 //    if ($options['followup'] == 'activate') {
 //        $subscriber['followup'] = 1;
@@ -30,10 +31,13 @@ if ($controls->is_action('import')) {
     foreach ($lines as &$line) {
         // Parse the CSV line
         $line = trim($line);
-        if ($line == '') continue;
-        if ($line[0] == '#' || $line[0] == ';') continue;
+        if ($line == '')
+            continue;
+        if ($line[0] == '#' || $line[0] == ';')
+            continue;
         $separator = $controls->data['separator'];
-        if ($separator == 'tab') $separator = "\t";
+        if ($separator == 'tab')
+            $separator = "\t";
         $data = explode($separator, $line);
 
         // Builds a subscriber data structure
@@ -51,12 +55,12 @@ if ($controls->is_action('import')) {
             $subscriber['name'] = $newsletter->normalize_name($data[1]);
             $subscriber['surname'] = $newsletter->normalize_name($data[2]);
             $subscriber['status'] = 'C';
-            foreach ($controls->data['preferences'] as $i) $subscriber['list_' . $i] = 1;
+            foreach ($controls->data['preferences'] as $i)
+                $subscriber['list_' . $i] = 1;
             NewsletterUsers::instance()->save_user($subscriber);
             $results .= '[ADDED] ' . $line . "\n";
             $added_count++;
-        }
-        else {
+        } else {
             if ($mode == 'skip') {
                 $results .= '[SKIPPED] ' . $line . "\n";
                 $skipped_count++;
@@ -68,15 +72,18 @@ if ($controls->is_action('import')) {
                 $subscriber['surname'] = $newsletter->normalize_name($data[2]);
 
                 // Prepare the preference to zero
-                for ($i=1; $i<NEWSLETTER_LIST_MAX; $i++) $subscriber['list_' . $i] = 0;
+                for ($i = 1; $i < NEWSLETTER_LIST_MAX; $i++)
+                    $subscriber['list_' . $i] = 0;
 
-                foreach ($controls->data['preferences'] as $i) $subscriber['list_' . $i] = 1;
+                foreach ($controls->data['preferences'] as $i)
+                    $subscriber['list_' . $i] = 1;
             }
 
             if ($mode == 'update') {
                 $subscriber['name'] = $newsletter->normalize_name($data[1]);
                 $subscriber['surname'] = $newsletter->normalize_name($data[2]);
-                foreach ($controls->data['preferences'] as $i) $subscriber['list_' . $i] = 1;
+                foreach ($controls->data['preferences'] as $i)
+                    $subscriber['list_' . $i] = 1;
             }
 
             NewsletterUsers::instance()->save_user($subscriber);
@@ -84,7 +91,6 @@ if ($controls->is_action('import')) {
             $results .= '[UPDATED] ' . $line . "\n";
             $updated_count++;
         }
-
     }
     if ($error_count) {
         $controls->errors = "Import completed but with errors.";
@@ -95,39 +101,30 @@ if ($controls->is_action('import')) {
 
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    <div id="newsletter-title">
+        <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
 
-        <h2>Import</h2>
+        <h2>Subscriber Import</h2>
+        <p>
+            The import and export functions <strong>ARE NOT for backup</strong>. If you want to backup you should consider to backup the
+            wp_newsletter* tables.
+        </p>
+        <p>Please, read on bottom of this page the data format to use and other important notes.</p>
+
+    </div>
+
+    <div class="newsletter-separator"></div>
 
     <?php $controls->show(); ?>
 
-    <div class="preamble">
-    <p>
-        The import and export functions <strong>ARE NOT for backup</strong>. If you want to backup you should consider to backup the
-        wp_newsletter* tables.
-    </p>
-
-    <p>
-        Please consider to break up your input list if you get errors, blank pages or partially imported lists: it can be a time/resource limit
-        of your provider. It's safe to import the same list a second time, no duplications will occur.
-    </p>
-    <p>
-        Import list format is:<br /><br />
-        <b>email 1</b><i>[separator]</i><b>first name 1</b><i>[separator]</i><b>last name 1</b><i>[new line]</i><br />
-        <b>email 2</b><i>[separator]</i><b>first name 2</b><i>[separator]</i><b>last name 2</b><i>[new line]</i><br />
-        <br />
-        where [separator] must be selected from the available ones. Empty lines and lines starting with "#" will be skipped. There is
-        no separator essaping mechanism, so be sure that field values do not contain the selected separator.
-    </p>
-    </div>
 
     <?php if (!empty($results)) { ?>
 
-    <h3>Results</h3>
+        <h3>Results</h3>
 
-    <textarea wrap="off" style="width: 100%; height: 150px; font-size: 11px; font-family: monospace"><?php echo htmlspecialchars($results) ?></textarea>
+        <textarea wrap="off" style="width: 100%; height: 150px; font-size: 11px; font-family: monospace"><?php echo htmlspecialchars($results) ?></textarea>
 
     <?php } ?>
 
@@ -135,7 +132,6 @@ if ($controls->is_action('import')) {
 
         <?php $controls->init(); ?>
 
-        <h3>CSV text with subscribers</h3>
         <table class="form-table">
             <tr valign="top">
                 <th>Preferences</th>
@@ -151,7 +147,7 @@ if ($controls->is_action('import')) {
             <tr valign="top">
                 <th>Follow up</th>
                 <td>
-                    <?php $controls->select('followup', array('none' => 'None', 'activate' => 'Activate')); ?>
+            <?php $controls->select('followup', array('none' => 'None', 'activate' => 'Activate')); ?>
                 </td>
             </tr>
             -->
@@ -189,5 +185,21 @@ if ($controls->is_action('import')) {
             <?php $controls->button('import', 'Import'); ?>
         </p>
     </form>
+
+    <h3>Data format and other notes</h3>
+
+    <p>
+        Consider to break up your input list if you get errors, blank pages or partially imported lists: it can be a time/resource limit
+        of your provider. It's safe to import the same list a second time, no duplications will occur.
+    </p>
+
+    <p>
+        Import list format is:<br /><br />
+        <b>email 1</b><i>[separator]</i><b>first name 1</b><i>[separator]</i><b>last name 1</b><i>[new line]</i><br />
+        <b>email 2</b><i>[separator]</i><b>first name 2</b><i>[separator]</i><b>last name 2</b><i>[new line]</i><br />
+        <br />
+        where [separator] must be selected from the available ones. Empty lines and lines starting with "#" will be skipped. There is
+        no separator essaping mechanism, so be sure that field values do not contain the selected separator.
+    </p>
 
 </div>

@@ -36,10 +36,14 @@ $options_profile = get_option('newsletter_profile');
 ?>
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
-  <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+    
+    <div id="newsletter-title">
+        <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
 
         <h2>Subscriber Edit</h2>
+    </div>
+    <div class="newsletter-separator"></div> 
 
   <?php $controls->show(); ?>
 
@@ -49,13 +53,13 @@ $options_profile = get_option('newsletter_profile');
     <div id="tabs">
 
       <ul>
-        <li><a href="#tabs-1">General</a></li>
-        <li><a href="#tabs-2">Preferences</a></li>
-        <li><a href="#tabs-3">Profile</a></li>
-        <li><a href="#tabs-4">Other</a></li>
+        <li><a href="#tabs-general">General</a></li>
+        <li><a href="#tabs-preferences">Preferences</a></li>
+        <li><a href="#tabs-profile">Profile</a></li>
+        <li><a href="#tabs-other">Other</a></li>
       </ul>
 
-      <div id="tabs-1">
+      <div id="tabs-general">
 
         <table class="form-table">
           <tr valign="top">
@@ -69,8 +73,7 @@ $options_profile = get_option('newsletter_profile');
             <td>
               <?php $controls->text('name', 50); ?>
               <div class="hints">
-                If you collect only the name of the subscriber without distinction of first and last name, use
-                this field.
+                If you collect only the name of the subscriber without distinction of first and last name this field is used.
               </div>
             </td>
           </tr>
@@ -81,7 +84,7 @@ $options_profile = get_option('newsletter_profile');
             </td>
           </tr>
           <tr valign="top">
-            <th>Sex</th>
+            <th>Gender</th>
             <td>
               <?php $controls->select('sex', array('n' => 'Not specified', 'f' => 'female', 'm' => 'male')); ?>
             </td>
@@ -97,7 +100,8 @@ $options_profile = get_option('newsletter_profile');
               <td>
                   <?php $controls->yesno('test'); ?>
                   <div class="hints">
-                      A test subscriber is a normal subscriber that is used when sending test are made, too.
+                      A test subscriber is a regular subscriber that is even used as recipint when sending test newsletter are sent
+                      (for example to check the layout).
                   </div>
               </td>
           </tr>
@@ -108,11 +112,21 @@ $options_profile = get_option('newsletter_profile');
             <th>Feed by mail</th>
             <td>
               <?php $controls->yesno('feed'); ?>
+                <div class="hints">
+                    "Yes" when this subscriber has the feed by mail service active. The 
+                    <a href="http://www.satollo.net/plugins/newsletter/feed-by-mail-module" target="_blank">feed by mail is an extension of this plugin</a>.
+                </div>
             </td>
           </tr>
         </table>
       </div>
-      <div id="tabs-2">
+      <div id="tabs-preferences">
+                      <div class="tab-preamble">
+              <p>
+              The subscriber's preferences are a set of "on/off" fields that can be used while sending newsletter to
+              select a subset of subscribes. 
+              </p>
+          </div>
         <table class="form-table">
             <tr>
                 <th>Preferences</th>
@@ -123,8 +137,13 @@ $options_profile = get_option('newsletter_profile');
         </table>
       </div>
 
-      <div id="tabs-3">
-
+      <div id="tabs-profile">
+          <div class="tab-preamble">
+              <p>
+              The user's profile is a set of optional and textual fields you can collect along with the subscription process
+              or when the user's editing his profile. Those fields can be configured in the "Subscription Form" panel.
+              </p>
+          </div>
         <table class="widefat" style="width:auto">
           <thead>
             <tr>
@@ -148,8 +167,12 @@ $options_profile = get_option('newsletter_profile');
         </table>
       </div>
 
-      <div id="tabs-4">
-
+      <div id="tabs-other">
+            <div class="tab-preamble">
+              <p>
+              Other user's data collected or generated along the subscription process.
+              </p>
+          </div>
         <table class="form-table">
           <tr valign="top">
             <th>Subscriber ID</th>
@@ -167,6 +190,9 @@ $options_profile = get_option('newsletter_profile');
             <th>From IP address</th>
             <td>
               <?php $controls->value('ip'); ?>
+                <div class="hints">
+                Internet address from which the subscription started. Required by many providers.
+              </div>
             </td>
           </tr>
           <tr valign="top">
@@ -174,7 +200,7 @@ $options_profile = get_option('newsletter_profile');
             <td>
               <?php $controls->text('token', 50); ?>
               <div class="hints">
-                This secret token is used to access the profile page and edit profile data.
+                This secret token is used to access the profile page and edit profile data, to confirm and cancel the subscription.
               </div>
             </td>
           </tr>
@@ -182,6 +208,9 @@ $options_profile = get_option('newsletter_profile');
             <th>Profile URL</th>
             <td>
                 <?php echo plugins_url('newsletter/do/profile.php') . '?nk=' . $id . '-' . $controls->data['token']; ?>
+                <div class="hints">
+                The URL which lands on the user profile editing page. It can be added on newsletters using the {profile_url} tag.
+              </div>
             </td>
           </tr>
 

@@ -92,7 +92,7 @@ else {
 <div class="wrap">
 
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
     <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
 

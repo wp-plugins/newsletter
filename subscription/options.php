@@ -47,7 +47,7 @@ if ($controls->is_action()) {
         if (empty($controls->data['unsubscribed_text'])) {
             $controls->data['unsubscribed_text'] = $defaults['unsubscribed_text'];
         }
-        
+
         $controls->data['confirmed_message'] = NewsletterModule::clean_url_tags($controls->data['confirmed_message']);
         $controls->data['confirmed_text'] = NewsletterModule::clean_url_tags($controls->data['confirmed_text']);
         $controls->data['confirmation_text'] = NewsletterModule::clean_url_tags($controls->data['confirmation_text']);
@@ -119,29 +119,30 @@ if ($controls->is_action('create')) {
 
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscription-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
+    <div id="newsletter-title">
+        <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
 
-    <h2>Subscription, Unsubscription, Profile Page Configuration</h2>
+        <h2>Subscription, Unsubscription, Profile Page Configuration</h2>
+
+
+        <p>
+            In this panel you can configure the subscription and cancellation process, set up every message, the single or double opt in and
+            even a customized subscription form.
+        </p>
+        <p>
+            Emails sent during subscription process are themed with the file subscription/email.php. Open that file to learn how to customize it.
+        </p>
+        <p>
+            Page layout where messages are shown is managed by subscription/page.php file which contains instruction on how to
+            customize it OR use a WordPress page for messages as described on subscription configuration.
+        </p>
+     </div>
+    <div class="newsletter-separator"></div>
+
 
     <?php $controls->show(); ?>
-
-    <div class="preamble">
-    <p>
-        In this panel you can configure the subscription and cancellation process, set up every message, the single or double opt in and
-        even a customized subscription form.
-    </p>
-    <p>
-        Emails sent during subscription process are themed with the file subscription/email.php. Open that file to learn how to customize it.
-    </p>
-    <p>
-        Page layout where messages are shown is managed by subscription/page.php file which contains instruction on how to
-        customize it OR use a WordPress page for messages as described on subscription configuration.
-    </p>
-    </div>
-
-
     <form method="post" action="">
         <?php $controls->init(); ?>
         <div id="tabs">
@@ -209,8 +210,8 @@ if ($controls->is_action('create')) {
                         </td>
                     </tr>
                     </table>
-                        
-                    
+
+
             </div>
 
 
@@ -237,9 +238,9 @@ if ($controls->is_action('create')) {
                         </td>
                     </tr>
                 </table>
-                
+
                 <h3>Special cases</h3>
-                
+
                 <table class="form-table">
                     <tr valign="top">
                         <th>Already subscribed page content</th>
@@ -248,7 +249,7 @@ if ($controls->is_action('create')) {
                             <?php $controls->checkbox('resend_welcome_email_disabled', 'Do not resend the welcome email'); ?>
                             <div class="hints">
                                 Shown when the email is already subscribed and confirmed. The welcome email, is not disabled, will
-                                be sent. Find out more on this topic on its 
+                                be sent. Find out more on this topic on its
                                 <a href="http://www.satollo.net/plugins/newsletter/subscription-module#repeated" target="_blank">documentation page</a>.
                             </div>
                         </td>
@@ -270,7 +271,7 @@ if ($controls->is_action('create')) {
                 <div class="tab-preamble">
                 <p>This configuration applies only when in double opt-in mode.</p>
                 </div>
-                
+
                 <table class="form-table">
                     <tr valign="top">
                         <th>Confirmation required message</th>
@@ -450,7 +451,7 @@ if ($controls->is_action('create')) {
             </div>
 
 
-           
+
 
             <div id="tabs-7">
 
@@ -489,12 +490,12 @@ if ($controls->is_action('create')) {
                     Insert the profile form with user's data. Usually it make sense only on welcome page.<br />
                 </p>
             </div>
-        
-        
+
+
         <div id="tabs-wp">
             <div class="tab-preamble">
                 <p>Configure if and how a regular WordPress user registration can be connected to a Newsletter subscription.</p>
-                <p>Important! This type of subscription does not require confirmation, it's automatic on first login. 
+                <p>Important! This type of subscription does not require confirmation, it's automatic on first login.
                     <a href="http://www.satollo.net/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>.
                 </p>
             </div>

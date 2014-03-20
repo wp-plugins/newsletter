@@ -10,6 +10,16 @@ $options_lists = get_option('newsletter_profile');
 $options_profile = get_option('newsletter_profile');
 $options_main = get_option('newsletter_main');
 
+// Move to base zero
+if ($controls->is_action()) {
+    $controls->data['search_page'] = (int)$controls->data['search_page']-1;
+    $module->save_options($controls->data, 'search');
+}
+else {
+    $controls->data = $module->get_options('search');
+    if (empty($controls->data['search_page'])) $controls->data['search_page'] = 0;
+}
+
 $lists = array(''=>'Any');
 for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++)
 {
@@ -67,16 +77,6 @@ $count = Newsletter::instance()->store->get_count($wpdb->prefix . 'newsletter', 
 $last_page = floor($count / $items_per_page) - ($count % $items_per_page == 0 ? 1 : 0);
 if ($last_page < 0) $last_page = 0;
 
-// Move to base zero
-if ($controls->is_action()) {
-    $controls->data['search_page'] = (int)$controls->data['search_page']-1;
-    $module->save_options($controls->data, 'search');
-}
-else {
-    $controls->data = $module->get_options('search');
-    if (empty($controls->data['search_page'])) $controls->data['search_page'] = 0;
-}
-
 if ($controls->is_action('last')) {
     $controls->data['search_page'] = $last_page;
 }
@@ -108,12 +108,17 @@ $controls->data['search_page']++;
 <div class="wrap">
 
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+   
     
+    <div id="newsletter-title">
+         <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
     <h2>Subscriber Search</h2>
+    </div>
 
+    <div class="newsletter-separator"></div>
+    
     <?php $controls->show(); ?>
 
     <form id="channel" method="post" action="">

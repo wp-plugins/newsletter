@@ -4,16 +4,16 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.4.9
+  Version: 3.5.0
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 
-  Copyright 2009-2013 Stefano Lissa (email: stefano@satollo.net, web: http://www.satollo.net)
+  Copyright 2009-2014 Stefano Lissa (email: stefano@satollo.net, web: http://www.satollo.net)
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.4.9');
+define('NEWSLETTER_VERSION', '3.5.0');
 
 global $wpdb, $newsletter;
 
@@ -110,14 +110,14 @@ class Newsletter extends NewsletterModule {
 
     function __construct() {
 
-       
+
         $this->time_start = time();
-        
+
         // Here because the upgrade is called by the parent constructor and uses the scheduler
         add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
         parent::__construct('main', '1.2.1');
- 
+
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max))
             $max = 100;
@@ -148,7 +148,7 @@ class Newsletter extends NewsletterModule {
 
         if (is_admin()) {
             add_action('admin_head', array($this, 'hook_admin_head'));
-            
+
             // Protection against strange schedule removal on some installations
             if (!wp_next_scheduled('newsletter') && !defined('WP_INSTALLING')) {
                 wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
@@ -235,13 +235,13 @@ class Newsletter extends NewsletterModule {
 
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter');
         wp_mkdir_p(WP_CONTENT_DIR . '/cache/newsletter');
-        
+
         //wp_clear_scheduled_hook('newsletter_updates_run');
         wp_clear_scheduled_hook('newsletter_statistics_version_check');
         wp_clear_scheduled_hook('newsletter_reports_version_check');
         wp_clear_scheduled_hook('newsletter_feed_version_check');
         wp_clear_scheduled_hook('newsletter_popup_version_check');
-        
+
 
         return true;
     }
@@ -353,10 +353,16 @@ class Newsletter extends NewsletterModule {
     }
 
     function hook_check_versions() {
-        $this->logger->info('Checking for new versions');
+        //$this->logger->info('Checking for new versions');
         $url = 'http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=';
-        $modules = array('reports' => 34, 'feed' => 35, 'followup' => 37,
-            'facebook' => 41, 'sendgrid' => 40, 'popup' => 43, 'mandrill' => 44);
+        $modules = array(
+            'reports' => 34, 
+            'feed' => 35, 
+            'followup' => 37,
+            'facebook' => 41, 
+            'sendgrid' => 40, 
+            'popup' => 43, 
+            'mandrill' => 44);
 
         foreach ($modules as $name => $id) {
             $version = @file_get_contents($url . $id);
@@ -388,7 +394,7 @@ class Newsletter extends NewsletterModule {
         }
         // Remove the semaphore so the delivery engine can be activated again
         $this->delete_transient('engine');
-        
+
         $this->logger->debug('hook_newsletter> End');
     }
 
@@ -455,6 +461,7 @@ class Newsletter extends NewsletterModule {
 
             if (isset($user->wp_user_id) && $user->wp_user_id != 0) {
                 $this->logger->debug('Have wp_user_id: ' . $user->wp_user_id);
+                // TODO: possibly name extraction
                 $wp_user_email = $wpdb->get_var($wpdb->prepare("select user_email from $wpdb->users where id=%d limit 1", $user->wp_user_id));
                 if (!empty($wp_user_email)) {
                     $user->email = $wp_user_email;
@@ -472,6 +479,9 @@ class Newsletter extends NewsletterModule {
         return true;
     }
 
+    /**
+     * Probably obsolete.
+     */
     function execute($text, $user = null) {
         global $wpdb;
         ob_start();
@@ -485,7 +495,6 @@ class Newsletter extends NewsletterModule {
 
         return ob_get_clean();
     }
-    
 
     /**
      * This function checks is, during processing, we are getting to near to system limits and should stop any further
@@ -496,24 +505,24 @@ class Newsletter extends NewsletterModule {
 
         if (!$this->limits_set) {
             $this->logger->debug('limits_exceeded> Setting the limits for the first time');
-            
+
             $max_time = NEWSLETTER_CRON_INTERVAL;
-                    
+
             // Actually it should be set on startup, anyway the scripts use as time base the startup time
             if (!empty($this->options['php_time_limit'])) {
-                @set_time_limit((int)$this->options['php_time_limit']);
-            }   
-            else if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
+                @set_time_limit((int) $this->options['php_time_limit']);
+            } else if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
                 @set_time_limit(NEWSLETTER_MAX_EXECUTION_TIME);
-            } 
-            
+            }
+
             $max_time = (int) (@ini_get('max_execution_time') * 0.95);
-            if ($max_time == 0 || $max_time > NEWSLETTER_CRON_INTERVAL) $max_time = (int)(NEWSLETTER_CRON_INTERVAL*0.95);
- 
+            if ($max_time == 0 || $max_time > NEWSLETTER_CRON_INTERVAL)
+                $max_time = (int) (NEWSLETTER_CRON_INTERVAL * 0.95);
+
             $this->time_limit = $this->time_start + $max_time;
-            
+
             $this->logger->info('limits_exceeded> Max time set to ' . $max_time);
- 
+
             $max = $this->options['scheduler_max'];
             if (!is_numeric($max))
                 $max = 100;
@@ -549,6 +558,12 @@ class Newsletter extends NewsletterModule {
      * @param type $headers
      * @return boolean
      */
+    var $mail_method = null;
+
+    function register_mail_method($callable) {
+        $this->mail_method = $callable;
+    }
+
     function mail($to, $subject, $message, $headers = null) {
 
         $this->logger->debug('mail> To: ' . $to);
@@ -558,43 +573,48 @@ class Newsletter extends NewsletterModule {
             return true;
         }
 
+        // Message carrige returns and line feeds clean up
+        if (!is_array($message)) {
+            $message = str_replace("\r\n", "\n", $message);
+            $message = str_replace("\r", "\n", $message);
+            $message = str_replace("\n", "\r\n", $message);
+        } else {
+            if (!empty($message['text'])) {
+                $message['text'] = str_replace("\r\n", "\n", $message['text']);
+                $message['text'] = str_replace("\r", "\n", $message['text']);
+                $message['text'] = str_replace("\n", "\r\n", $message['text']);
+            }
+
+            if (!empty($message['html'])) {
+                $message['html'] = str_replace("\r\n", "\n", $message['html']);
+                $message['html'] = str_replace("\r", "\n", $message['html']);
+                $message['html'] = str_replace("\n", "\r\n", $message['html']);
+            }
+        }
+
+        if ($this->mail_method != null) {
+            return call_user_func($this->mail_method, $to, $subject, $message, $headers);
+        }
+
         if ($this->mailer == null)
             $this->mailer_init();
 
         // Simple message is asumed to be html
         if (!is_array($message)) {
             $this->mailer->IsHTML(true);
-            $message = str_replace("\r\n", "\n", $message);
-            $message = str_replace("\r", "\n", $message);
-            $message = str_replace("\n", "\r\n", $message);
             $this->mailer->Body = $message;
         } else {
             // Only html is present?
             if (empty($message['text'])) {
                 $this->mailer->IsHTML(true);
-                $message['html'] = str_replace("\r\n", "\n", $message['html']);
-                $message['html'] = str_replace("\r", "\n", $message['html']);
-                $message['html'] = str_replace("\n", "\r\n", $message['html']);
                 $this->mailer->Body = $message['html'];
             }
             // Only text is present?
             else if (empty($message['html'])) {
                 $this->mailer->IsHTML(false);
-                $message['text'] = str_replace("\r\n", "\n", $message['text']);
-                $message['text'] = str_replace("\r", "\n", $message['text']);
-                $message['text'] = str_replace("\n", "\r\n", $message['text']);
                 $this->mailer->Body = $message['text'];
             } else {
                 $this->mailer->IsHTML(true);
-                
-                $message['text'] = str_replace("\r\n", "\n", $message['text']);
-                $message['text'] = str_replace("\r", "\n", $message['text']);
-                $message['text'] = str_replace("\n", "\r\n", $message['text']);
-                
-                $message['html'] = str_replace("\r\n", "\n", $message['html']);
-                $message['html'] = str_replace("\r", "\n", $message['html']);
-                $message['html'] = str_replace("\n", "\r\n", $message['html']);
-                
                 $this->mailer->Body = $message['html'];
                 $this->mailer->AltBody = $message['text'];
             }
@@ -658,10 +678,13 @@ class Newsletter extends NewsletterModule {
         if (!empty($this->options['content_transfer_encoding'])) {
             $this->mailer->Encoding = $this->options['content_transfer_encoding'];
         }
+        else {
+            $this->mailer->Encoding = 'base64';
+        }
 
         $this->mailer->CharSet = 'UTF-8';
         $this->mailer->From = $this->options['sender_email'];
-        
+
         $return_path = $this->options['return_path'];
         if (!empty($return_path)) {
             $this->mailer->Sender = $return_path;
@@ -684,7 +707,7 @@ class Newsletter extends NewsletterModule {
             'display' => 'Newsletter'
         );
         $schedules['newsletter_weekly'] = array(
-            'interval' => 86400*7, // seconds
+            'interval' => 86400 * 7, // seconds
             'display' => 'Newsletter Weekly'
         );
         return $schedules;
@@ -843,7 +866,7 @@ class Newsletter extends NewsletterModule {
 
             $text = str_replace('{surname}', $user->surname, $text);
             $text = str_replace('{last_name}', $user->surname, $text);
-            
+
             $full_name = trim($user->name . ' ' . $user->surname);
             if (empty($full_name)) {
                 $text = str_replace(' {full_name}', '', $text);
@@ -851,7 +874,7 @@ class Newsletter extends NewsletterModule {
             } else {
                 $text = str_replace('{full_name}', $full_name, $text);
             }
-            
+
             $text = str_replace('{token}', $user->token, $text);
             $text = str_replace('%7Btoken%7D', $user->token, $text);
             $text = str_replace('{id}', $user->id, $text);
@@ -1107,7 +1130,7 @@ class Newsletter extends NewsletterModule {
 
     function set_user_status($id_or_email, $status) {
         global $wpdb;
-        
+
         $this->logger->debug('Status change to ' . $status . ' of subscriber ' . $id_or_email . ' from ' . $_SERVER['REQUEST_URI']);
 
         $id_or_email = strtolower(trim($id_or_email));
@@ -1193,4 +1216,3 @@ register_activation_hook(__FILE__, 'newsletter_deactivate');
 function newsletter_deactivate() {
     
 }
-

@@ -19,11 +19,13 @@ if ($controls->is_action('save')) {
 ?>
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+    <div id="newsletter-title">
     <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
 
     <h2>New subscriber</h2>
-
+</div>
+    <div class="newsletter-separator"></div> 
     <?php $controls->show(); ?>
 
     <form method="post" action="">

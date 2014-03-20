@@ -514,6 +514,7 @@ class NewsletterModule {
         if (!is_file($file)) {
             $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
         }
+        $file = str_replace('\\', '\\\\', $file);
         $name = 'newsletter_' . $this->module . '_' . $page;
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
         // Rather stupid system to enable a menu voice... it would suffice to say "to editors"
@@ -526,7 +527,7 @@ class NewsletterModule {
         if (!is_file($file)) {
             $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
         }
-
+        $file = str_replace('\\', '\\\\', $file);
         $name = 'newsletter_' . $this->module . '_' . $page;
         eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
         add_submenu_page(null, $title, $title, ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', $name, $name);

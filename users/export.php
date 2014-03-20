@@ -7,22 +7,27 @@ $module = NewsletterUsers::instance();
 
 $lists = array('0' => 'All');
 for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-    if (!isset($options_profile['list_' . $i])) $options_profile['list_' . $i] = '';
+    if (!isset($options_profile['list_' . $i]))
+        $options_profile['list_' . $i] = '';
     $lists['' . $i] = '(' . $i . ') ' . $options_profile['list_' . $i];
 }
 ?>
 
 <div class="wrap">
-    <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h2>Export</h2
+    <div id="newsletter-title">
+        <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
 
-    <div class="preamble">
-    <p>
-        The import and export functions <strong>ARE NOT for backup</strong>. If you want to backup you should consider to backup the
-        wp_newsletter* tables.
-    </p>
+        <h2>Subscriber Export</h2>
+        <p>
+            The import and export functions <strong>ARE NOT for backup</strong>. 
+            If you want to backup you should consider to backup the
+            wp_newsletter* tables.
+        </p>
     </div>
+    <div class="newsletter-separator"></div>    
+
 
     <form method="post" action="<?php echo plugins_url('newsletter'); ?>/users/csv.php">
         <?php $controls->init(); ?>

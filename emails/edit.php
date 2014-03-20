@@ -159,6 +159,7 @@ if ($controls->is_action('test')) {
         Newsletter::instance()->send(Newsletter::instance()->get_email($email_id), $users);
         $controls->messages .= 'Test emails sent to ' . count($users) . ' test subscribers. Read more about test subscribers <a href="http://www.satollo.net/plugins/newsletter/subscribers-module#test" target="_blank">here</a>.';
     }
+    $controls->messages .= '<br>If diagnostic emails are delivered but test emails are not, try to change the encoding to "base 64" on main configuration panel';
 }
 
 
@@ -211,12 +212,14 @@ if ($email['editor'] == 0) {
 
 <div class="wrap">
 
-    <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php //$help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
+    <?php //include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h5>Newsletters Module</h5>
-
+    <div id="newsletter-title">
     <h2>Edit Newsletter</h2>
+     </div>
+    <div class="newsletter-separator"></div>
+    
     <?php
     if ($controls->data['status'] == 'S') {
         echo '<div class="newsletter-message">Warning! This email is configured to be sent to NOT CONFIRMED subscribers.</div>';
@@ -244,7 +247,7 @@ if ($email['editor'] == 0) {
                 <li><a href="#tabs-a">Message</a></li>
                 <li><a href="#tabs-b">Message (textual)</a></li>
                 <li><a href="#tabs-c">Who will receive it</a></li>
-                <li><a href="#tabs-d">Status</a></li>
+                <li><a href="#tabs-d">Other options</a></li>
                 <!--<li><a href="#tabs-5">Documentation</a></li>-->
             </ul>
 
@@ -294,7 +297,7 @@ if ($email['editor'] == 0) {
                 <table class="form-table">
                     
                     <tr valign="top">
-                        <th>Gender</th>
+                        <th><?php _e('Gender', 'newsletter'); ?></th>
                         <td>
                             <?php $controls->checkboxes_group('sex', array('f'=>'Women', 'm'=>'Men', 'n'=>'Not specified')); ?>
                             <div class="hints">
@@ -303,7 +306,7 @@ if ($email['editor'] == 0) {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th>Preferences</th>
+                        <th><?php _e('Subscriber preferences', 'newsletter'); ?></th>
                         <td>
                             Subscribers with at least one preference
                             <?php $controls->select('preferences_status', array(0=>'ACTIVE', 1=>'NOT ACTIVE')); ?>
@@ -317,18 +320,9 @@ if ($email['editor'] == 0) {
                             </div>
                         </td>
                     </tr>
+                    
                     <tr valign="top">
-                        <th>Track clicks and opening?</th>
-                        <td>
-                            <?php $controls->yesno('track'); ?>
-                            <div class="hints">
-                                When this option is enabled, each link in the email text will be rewritten and clicks
-                                on them intercepted.
-                            </div>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Status</th>
+                        <th>Subscriber status</th>
                         <td>
                             <?php $controls->select('status', array('C'=>'Confirmed', 'S'=>'Not confirmed')); ?>
 
@@ -341,7 +335,7 @@ if ($email['editor'] == 0) {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th>Registered users?</th>
+                        <th>Only to WordPress users?</th>
                         <td>
                             <?php $controls->yesno('wp_users'); ?>
 
@@ -371,9 +365,23 @@ if ($email['editor'] == 0) {
             <div id="tabs-d">
                 <table class="form-table">
                     <tr valign="top">
+                        <th>Track clicks and message opening?</th>
+                        <td>
+                            <?php $controls->yesno('track'); ?>
+                            <div class="hints">
+                                When this option is enabled, each link in the email text will be rewritten and clicks
+                                on them intercepted.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr valign="top">
                         <th>Send on</th>
                         <td>
                             <?php $controls->datetime('send_on'); ?> (<?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format')); ?> )
+                        
+                        <div class="hints">
+                                Change this date to schedule this newsletter.
+                            </div>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -381,11 +389,11 @@ if ($email['editor'] == 0) {
                         <td><?php echo $email['status']; ?></td>
                     </tr>
                     <tr valign="top">
-                        <th>Email sent</th>
+                        <th>Messages sent</th>
                         <td><?php echo $email['sent']; ?> of <?php echo $email['total']; ?></td>
                     </tr>
                     <tr valign="top">
-                        <th>Query</th>
+                        <th>Query (tech)</th>
                         <td><?php echo $email['query']; ?></td>
                     </tr>
                 </table>

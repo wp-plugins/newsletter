@@ -90,12 +90,15 @@ function newsletter_emails_get_theme_options($theme) {
 
 <div class="wrap">
 
-    <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php //$help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
+    <?php //include NEWSLETTER_DIR . '/header-new.php'; ?>
 
+    <div id="newsletter-title">
     <h2>New Newsletter</h2>
     <p><a href="<?php echo NewsletterEmails::instance()->get_admin_page_url('theme'); ?>">Back to the themes</a></p>
-
+</div>
+    <div class="newsletter-separator"></div>
+    
     <?php $controls->show(); ?>
 
     <form method="post" action="<?php echo $module->get_admin_page_url('new'); ?>">

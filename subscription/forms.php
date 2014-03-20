@@ -15,31 +15,30 @@ if ($controls->is_action('save')) {
 
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletter-forms'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
-    
-    <h2>Alternative Hand-Coded Forms</h2>
+    <div id="newsletter-title">
+        <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
 
-    <?php $controls->show(); ?>
-
-    <div class="preamble">
+        <h2>Alternative Hand-Coded Forms</h2>
         <p>
             Here you can store your hand coded forms to recall them from short codes.
             <a href="http://www.satollo.net/plugins/newsletter/newsletter-forms" target="_blank">Read more about forms</a>.
         </p>
     </div>
+    <div class="newsletter-separator"></div>
 
+    <?php $controls->show(); ?>
     <form method="post" action="">
         <?php $controls->init(); ?>
 
         <div id="tabs">
 
             <ul>
-                <li><a href="#tabs-1">Forms</a></li>
+                <li><a href="#tabs-forms">Forms</a></li>
             </ul>
 
-            <div id="tabs-1">
+            <div id="tabs-forms">
                 <table class="form-table">
                     <?php for ($i = 1; $i <= 10; $i++) { ?>
                         <tr valign="top">

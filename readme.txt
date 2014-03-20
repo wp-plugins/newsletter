@@ -57,6 +57,17 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.0 =
+
+* Fixed the subscriber list panel
+* Interface reviewed
+* Fixed the image chooser for WP 3.8.1
+* Fixed the export for editors
+* Patch for anonymous users create by woocommerce
+* Madrill API adapter
+* Header separation between this plugin and the extensions
+* Default to base 64 encoding of outgoing email to solve the long lines problem
+
 = 3.4.9 =
 
 * Fixed some warnings in debug mode

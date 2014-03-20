@@ -443,13 +443,16 @@ class NewsletterControls {
             if (empty($options_profile['list_' . $i]))
                 continue;
             echo '<div class="newsletter-preferences-item">';
-            $this->checkbox($name . '_' . $i, '(' . $i . ') ' . htmlspecialchars($options_profile['list_' . $i]));
+            $this->checkbox($name . '_' . $i, '<span class="newsletter-badge">' . $i . '</span> ' . htmlspecialchars($options_profile['list_' . $i]));
             echo '</div>';
         }
         echo '<div style="clear: both"></div>';
-        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
         echo '</div>';
-    }
+        echo '<div class="hints">';
+        echo 'User\'s preferences can be activated from the "Subscription Form" panel. They can be used to simulate lists or create private groups. The number is the "preference number". ';
+        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Read more about preferences</a>.';
+        echo '</div>';
+        }
 
     /**
      * Creates a set of checkboxes all names $name[] and the preference number as value 

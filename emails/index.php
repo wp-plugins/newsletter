@@ -49,16 +49,15 @@ $emails = Newsletter::instance()->get_emails('message');
 <div class="wrap">
 
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletters-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h5>Newsletters Module</h5>
-
+<div id="newsletter-title">
     <h2>Newsletter List</h2>
 
-    <div class="preamble">
         <p>Here you can manage your messages: compose, deliver, monitor.</p>
-    </div>
 
+ </div>
+    <div class="newsletter-separator"></div>
     <?php $controls->show(); ?>
 
     <form method="post" action="">

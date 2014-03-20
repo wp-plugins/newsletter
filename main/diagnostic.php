@@ -78,47 +78,54 @@ if ($controls->is_action('send_test')) {
     $r = $newsletter->mail($controls->data['test_email'], 'Newsletter: pure text email', array('text' => $text));
 
 
-    if ($r) $controls->messages .= 'Newsletter TEXT test email sent.<br />';
-    else $controls->errors .= 'Newsletter TEXT test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+    if ($r)
+        $controls->messages .= 'Newsletter TEXT test email sent.<br />';
+    else
+        $controls->errors .= 'Newsletter TEXT test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
 
     $text = '<p>This is a <strong>html</strong> email sent using the <i>sender data</i> set on Newsletter main setting.</p>';
     $text .= '<p>You should see some "mark up", like bold and italic characters.</p>';
     $text .= '<p>You should see it to come from the email address you set on basic Newsletter plugin setting.</p>';
     $r = $newsletter->mail($controls->data['test_email'], 'Newsletter: pure html email', $text);
-    if ($r) $controls->messages .= 'Newsletter HTML test email sent.<br />';
-    else $controls->errors .= 'Newsletter HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+    if ($r)
+        $controls->messages .= 'Newsletter HTML test email sent.<br />';
+    else
+        $controls->errors .= 'Newsletter HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
 
 
     $text = array();
     $text['html'] = '<p>This is an <b>HTML</b> test email part sent using the sender data set on Newsletter main setting.</p>';
     $text['text'] = 'This is a textual test email part sent using the sender data set on Newsletter main setting.';
     $r = $newsletter->mail($controls->data['test_email'], 'Newsletter: both textual and html email', $text);
-    if ($r) $controls->messages .= 'Newsletter: both textual and html test email sent.<br />';
-    else $controls->errors .= 'Newsletter both TEXT and HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+    if ($r)
+        $controls->messages .= 'Newsletter: both textual and html test email sent.<br />';
+    else
+        $controls->errors .= 'Newsletter both TEXT and HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
 }
 
-if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic');
+if (empty($controls->data))
+    $controls->data = get_option('newsletter_diagnostic');
 ?>
 <div class="wrap">
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletter-diagnostic'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h2>Diagnostic</h2>
+    <div id="newsletter-title">
+        <h2>Newsletter Diagnostic</h2>
+        <p>
+            If something is not working, here are some test procedures and diagnostics. But before you try these,
+            write down any configuration changes that you may have made.
+            For example: Did you use sender email or name? What was the return path? What was the reply to?
+        </p>
+    </div>
+    <div class="newsletter-separator"></div>
+
 
     <?php $controls->show(); ?>
-
-    <div class="preamble">
-    <p>
-        If something is not working, here are some test procedures and diagnostics. But before you try these,
-        write down any configuration changes that you may have made.
-        For example: Did you use sender email or name? What was the return path? What was the reply to?
-    </p>
-    </div>
-
     <form method="post" action="">
         <?php $controls->init(); ?>
 
-        <h3>Test</h3>
+        <h3>Test your mail system</h3>
         Email: <?php $controls->text('test_email'); ?>
         <?php $controls->button('test_wp', 'Send an email with WordPress'); ?>
         <?php $controls->button('send_test', 'Send few emails with Newsletter'); ?>
@@ -214,8 +221,10 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                             <td>
                                 <?php
                                 $value = get_transient('newsletter_main_engine');
-                                if ($value) echo (time() - $value) . ' seconds';
-                                else echo 'Not set';
+                                if ($value)
+                                    echo (time() - $value) . ' seconds';
+                                else
+                                    echo 'Not set';
                                 ?>
                                 <?php $controls->button('delete_transient', 'Delete', null, 'newsletter_main_engine'); ?>
                             </td>
@@ -239,8 +248,10 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                             </td>
                             <td>
                                 <?php
-                                if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) echo 'DISABLED. (really bad, see <a href="http://www.satollo.net/?p=2015" target="_tab">this page)</a>';
-                                else echo "ENABLED. (it's ok)";
+                                if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON)
+                                    echo 'DISABLED. (can be a problem, see the <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_tab">delivery engine documentation</a>)';
+                                else
+                                    echo "ENABLED. (it's ok)";
                                 ?>
                             </td>
                         </tr>
@@ -257,15 +268,15 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 } else {
                                     $found = false;
 
-                                    foreach ($schedules as $key=>&$data) {
-                                        if ($key == 'newsletter') $found = true;
+                                    foreach ($schedules as $key => &$data) {
+                                        if ($key == 'newsletter')
+                                            $found = true;
                                         echo $key . ' - ' . $data['interval'] . ' s<br>';
+                                    }
 
-                                     }
-
-                                     if (!$found) {
-                                         echo 'The "newsletter" schedule was not found, email delivery won\'t work.';
-                                     }
+                                    if (!$found) {
+                                        echo 'The "newsletter" schedule was not found, email delivery won\'t work.';
+                                    }
                                 }
                                 ?>
                             </td>
@@ -302,7 +313,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 <?php echo NewsletterModule::format_scheduler_time('newsletter_followup'); ?>
                                 <br>
                                 Indicates when the Follow Up system runs again (usually every hour) to check for new follow up to send out.
-                                <?php //$controls->button('trigger_followup', 'Trigger now'); ?>
+                                <?php //$controls->button('trigger_followup', 'Trigger now');  ?>
                             </td>
                         </tr>
                         <tr>
@@ -353,7 +364,8 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                         <tr>
                             <td>NEWSLETTER_MAX_EXECUTION_TIME</td>
                             <td>
-                                <?php if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
+                                <?php
+                                if (defined('NEWSLETTER_MAX_EXECUTION_TIME')) {
                                     echo NEWSLETTER_MAX_EXECUTION_TIME . 'seconds';
                                 } else {
                                     echo 'Not set';
@@ -382,7 +394,7 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                         <tr>
                             <td>WP_DEBUG</td>
                             <td>
-                                <?php echo WP_DEBUG?'true':'false'; ?>
+                                <?php echo WP_DEBUG ? 'true' : 'false'; ?>
                             </td>
                         </tr>
                         <tr>
@@ -409,12 +421,15 @@ if (empty($controls->data)) $controls->data = get_option('newsletter_diagnostic'
                                 Obsolete.<br>
                                 <?php
                                 $filters = $wp_filter['phpmailer_init'];
-                                if (!is_array($filters)) echo 'No actions attached';
+                                if (!is_array($filters))
+                                    echo 'No actions attached';
                                 else {
                                     foreach ($filters as &$filter) {
                                         foreach ($filter as &$entry) {
-                                            if (is_array($entry['function'])) echo get_class($entry['function'][0]) . '->' . $entry['function'][1];
-                                            else echo $entry['function'];
+                                            if (is_array($entry['function']))
+                                                echo get_class($entry['function'][0]) . '->' . $entry['function'][1];
+                                            else
+                                                echo $entry['function'];
                                             echo '<br />';
                                         }
                                     }

@@ -1009,6 +1009,8 @@ function newsletter_subscription_user_register($wp_user_id) {
         $module->logger->error('User not found?!');
         return;
     }
+    
+    if (!NewsletterModule::is_email($wp_user->user_email)) return;
 
     $_REQUEST['ne'] = $wp_user->user_email;
     $_REQUEST['nr'] = 'registration';

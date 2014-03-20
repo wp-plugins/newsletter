@@ -95,8 +95,7 @@ if (!$controls->is_action()) {
         if ($mail->IsError()) {
             $controls->errors = '<strong>Connection/email delivery failed.</strong><br>You should contact your provider reporting the SMTP parameter and asking about connection to that SMTP.<br><br>';
             $controls->errors = $mail->ErrorInfo;
-        }
-        else
+        } else
             $controls->messages = 'Success.';
 
         $controls->messages .= '<textarea style="width:100%;height:250px;font-size:10px">';
@@ -109,10 +108,18 @@ if (!$controls->is_action()) {
 <div class="wrap">
 
     <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletter-configuration'; ?>
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <h2>Newsletter Main Configuration</h2>
+    <div id="newsletter-title">
+        <h2>Newsletter Main Configuration</h2>
+        <div class="newsletter-preamble">
+            <p>
+                The general Newsletter configuration: sender name and email, delivery speed, SMTP and others.
+            </p>
+        </div>
+    </div>
 
+    <div class="newsletter-separator"></div>
     <?php $controls->show(); ?>
 
     <!--
@@ -124,7 +131,7 @@ if (!$controls->is_action()) {
         </p>
     </div>
     -->
-    
+
     <form method="post" action="">
         <?php $controls->init(); ?>
 
@@ -147,7 +154,7 @@ if (!$controls->is_action()) {
                         to know every details about these settings.
                     </p>
                 </div>
-                
+
                 <table class="form-table">
 
                     <tr valign="top">
@@ -344,7 +351,7 @@ if (!$controls->is_action()) {
                         <th>Test email address</th>
                         <td>
                             <?php $controls->text_email('smtp_test_email', 30); ?>
-                                <?php $controls->button('smtp_test', 'Send a test email to this address'); ?>
+                            <?php $controls->button('smtp_test', 'Send a test email to this address'); ?>
                             <div class="hints">
                                 If the test reports a "connection failed", review your settings and, if correct, contact
                                 your provider to unlock the connection (if possible).
@@ -352,7 +359,7 @@ if (!$controls->is_action()) {
                         </td>
                     </tr>
                 </table>
-                
+
 
             </div>
 

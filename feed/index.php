@@ -73,7 +73,7 @@ else {
 
 <div class="wrap">
 
-    <?php include NEWSLETTER_DIR . '/header.php'; ?>
+    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
     <h5>Feed by Mail (Demo)</h5>
 
