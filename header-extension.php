@@ -7,23 +7,21 @@
  */
 ?>
 <?php if (NEWSLETTER_HEADER) { ?>
-<div id="newsletter-header">
-    <a href="http://www.satollo.net/plugins/newsletter/newsletter-documentation" target="_blank">Documentation</a>
-    <a href="http://www.satollo.net/forums" target="_blank">Forum</a>
+<div id="newsletter-header-ext">
+    <div style="text-align: center; margin-top: 5px;">
+    <a href="http://www.satollo.net/plugins/newsletter/newsletter-documentation" target="_blank"><img style="vertical-align: bottom" src="<?php echo plugins_url('newsletter'); ?>/images/header/documentation.png"> Documentation</a>
+    <a href="http://www.satollo.net/forums" target="_blank"><img style="vertical-align: bottom" src="<?php echo plugins_url('newsletter'); ?>/images/header/forum.png"> Forum</a>
+    <a href="https://www.facebook.com/satollo.net" target="_blank"><img style="vertical-align: bottom" src="<?php echo plugins_url('newsletter'); ?>/images/header/facebook.png"> Facebook</a>
 
     <!--<a href="http://www.satollo.net/plugins/newsletter/newsletter-collaboration" target="_blank">Collaboration</a>-->
+    </div>
 
-    <form style="display: inline; margin: 0;" action="http://www.satollo.net/wp-content/plugins/newsletter/do/subscribe.php" method="post" target="_blank">
-        Subscribe<!-- to satollo.net--> <input type="email" name="ne" required placeholder="Your email">
-        <input type="submit" value="Go">
+    <div style="text-align: center; margin-top: 5px;">
+    <form style="margin: 0;" action="http://www.satollo.net/wp-content/plugins/newsletter/do/subscribe.php" method="post" target="_blank">
+        My Newsletter<!-- to satollo.net--> <input type="email" name="ne" required placeholder="Your email" style="padding: 2px">
+        <input type="submit" value="Go" style="padding: 2px">
     </form>
-
-    <a href="https://www.facebook.com/satollo.net" target="_blank"><img style="vertical-align: bottom" src="<?php echo plugins_url('newsletter'); ?>/images/facebook.png"></a>
-
-    <!--
-    <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">Engine next run in <?php echo wp_next_scheduled('newsletter') - time(); ?> s</a>
-    -->
+    </div>
 </div>
 <?php } ?>
 
-<?php $newsletter->warnings(); ?>

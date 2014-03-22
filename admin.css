@@ -618,6 +618,22 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     text-decoration: none;
 }
 
+/* Admin header for extensions */
+#newsletter-header-ext {
+    text-align: left;
+    background-color: #fff;
+    padding: 10px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    float: right;
+    width: 300px;
+}
+
+#newsletter-header-ext a {
+    margin-right: 10px;
+    text-decoration: none;
+}
+
 #newsletter-path {
 
 }
@@ -627,7 +643,6 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 }
 
 #newsletter-title {
-    xfloat: left;
 }
 
 .newsletter-separator {
@@ -863,17 +878,13 @@ table.clicks {
 }
 
 .newsletter-message {
-    background-color: lightYellow;
-    border-color: #E6DB55;
-    border-radius: 3px;
+    background-color: #efe;
+    border-color: #393;
+    border-radius: 5px;
     border-style: solid;
-    border-width: 1px;
+    border-width: 3px;
     padding: .6em;
     margin-bottom: .6em;
-    background-image: url("images/messages.png");
-    padding-left: 30px;
-    background-repeat: no-repeat;
-    background-position: left center;
 }
 
 .newsletter-error-span {
@@ -882,17 +893,17 @@ table.clicks {
 }
 
 .newsletter-error {
-    background-color: #FFEBE8;
-    border-color: #C00;
-    border-radius: 3px;
+    background-color: #fee;
+    border-color: #933;
+    border-radius: 5px;
     border-style: solid;
-    border-width: 1px;
+    border-width: 2px;
     padding: .6em;
-    padding-left: 30px;
     margin-bottom: .6em;
-    background-image: url("images/messages.png");
-    background-repeat: no-repeat;
-    background-position: left center;
+}
+
+.newsletter-error strong, .newsletter-message strong {
+    font-weight: bold;
 }
 
 #newsletter-warnings {

@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.1 =
+
+* Support for the SendGrid extension
+
 = 3.5.0 =
 
 * Fixed the subscriber list panel
