@@ -57,6 +57,11 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.2 =
+
+* Fixed the {title} tag replacement for old subscriber list with the gender not set
+* Added the upgrade from old versions button on diagnostic panel
+
 = 3.5.1 =
 
 * Support for the SendGrid extension

@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.5.1
+  Version: 3.5.2
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Useed as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.5.1');
+define('NEWSLETTER_VERSION', '3.5.2');
 
 global $wpdb, $newsletter;
 
@@ -116,7 +116,7 @@ class Newsletter extends NewsletterModule {
         // Here because the upgrade is called by the parent constructor and uses the scheduler
         add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
-        parent::__construct('main', '1.2.1');
+        parent::__construct('main', '1.2.2');
 
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max))
@@ -356,12 +356,12 @@ class Newsletter extends NewsletterModule {
         //$this->logger->info('Checking for new versions');
         $url = 'http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=';
         $modules = array(
-            'reports' => 34, 
-            'feed' => 35, 
+            'reports' => 34,
+            'feed' => 35,
             'followup' => 37,
-            'facebook' => 41, 
-            'sendgrid' => 40, 
-            'popup' => 43, 
+            'facebook' => 41,
+            'sendgrid' => 40,
+            'popup' => 43,
             'mandrill' => 44);
 
         foreach ($modules as $name => $id) {
@@ -677,8 +677,7 @@ class Newsletter extends NewsletterModule {
 
         if (!empty($this->options['content_transfer_encoding'])) {
             $this->mailer->Encoding = $this->options['content_transfer_encoding'];
-        }
-        else {
+        } else {
             $this->mailer->Encoding = 'base64';
         }
 
@@ -861,6 +860,8 @@ class Newsletter extends NewsletterModule {
                     break;
                 case 'n': $text = str_replace('{title}', $options_profile['title_none'], $text);
                     break;
+                default:
+                    $text = str_replace('{title}', '', $text);
             }
 
 
@@ -1156,6 +1157,8 @@ require_once NEWSLETTER_DIR . '/emails/emails.php';
 require_once NEWSLETTER_DIR . '/users/users.php';
 require_once NEWSLETTER_DIR . '/statistics/statistics.php';
 
+
+
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/feed/feed.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/feed/feed.php';
 } else {
@@ -1174,13 +1177,17 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/followup/followup.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/followup/followup.php';
 }
 
-if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/reports/reports.php')) {
-    require_once WP_CONTENT_DIR . '/extensions/newsletter/reports/reports.php';
-}
+//if (!is_dir(WP_PLUGIN_DIR . '/newsletter-reports')) {
+    if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/reports/reports.php')) {
+        //require_once WP_CONTENT_DIR . '/extensions/newsletter/reports/reports.php';
+    }
+//}
 
-if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/mailjet/mailjet.php')) {
-    require_once WP_CONTENT_DIR . '/extensions/newsletter/mailjet/mailjet.php';
-}
+//if (!is_dir(WP_PLUGIN_DIR . '/newsletter-mailjet')) {
+    if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/mailjet/mailjet.php')) {
+        require_once WP_CONTENT_DIR . '/extensions/newsletter/mailjet/mailjet.php';
+    }
+//}
 
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/sendgrid/sendgrid.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/sendgrid/sendgrid.php';
@@ -1197,6 +1204,7 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/popup/popup.php')) {
 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/mandrill/mandrill.php')) {
     require_once WP_CONTENT_DIR . '/extensions/newsletter/mandrill/mandrill.php';
 }
+
 
 require_once(dirname(__FILE__) . '/widget.php');
 

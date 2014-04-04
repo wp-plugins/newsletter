@@ -510,7 +510,10 @@ class NewsletterModule {
 
     function add_menu_page($page, $title) {
         global $newsletter;
-        $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
+        $file = WP_PLUGIN_DIR . '/newsletter-' . $this->module . '/' . $page . '.php';
+        if (!is_file($file)) {
+            $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
+        }
         if (!is_file($file)) {
             $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
         }

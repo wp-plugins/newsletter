@@ -43,6 +43,16 @@ if ($controls->is_action('upgrade')) {
     $controls->messages = 'Upgrade forced!';
 }
 
+if ($controls->is_action('upgrade_old')) {
+    $row = $wpdb->get_row("select * from " . NEWSLETTER_USERS_TABLE . " limit 1");
+    if (!isset($row->id)) {
+        $row = $wpdb->query("alter table " . NEWSLETTER_USERS_TABLE . " drop primary key");
+        $row = $wpdb->query("alter table " . NEWSLETTER_USERS_TABLE . " add column id int not null auto_increment primary key");
+        $row = $wpdb->query("alter table " . NEWSLETTER_USERS_TABLE . " add unique email (email)");
+    }
+    $controls->messages = 'Done.';
+}
+
 if ($controls->is_action('delete_transient')) {
     delete_transient($_POST['btn']);
     $controls->messages = 'Deleted.';
@@ -469,6 +479,13 @@ if (empty($controls->data))
                 </p>
                 <p>
                     <?php $controls->button('undismiss', 'Restore'); ?>
+                </p>
+                
+                 <p>
+                    Very old versions need to be upgraded on a spacial way. Use the button blow.
+                </p>
+                <p>
+                    <?php $controls->button('upgrade_old', 'Force an upgrade from very old versions'); ?>
                 </p>
             </div>
         </div>
