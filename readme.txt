@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.3 =
+
+* Added support for extensions as plugins
+
 = 3.5.2 =
 
 * Fixed the {title} tag replacement for old subscriber list with the gender not set
