@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.4 =
+
+* Fixed the web preview charset
+
 = 3.5.3 =
 
 * Added support for extensions as plugins

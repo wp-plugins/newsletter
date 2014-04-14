@@ -16,5 +16,8 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/view.php')) {
   die();
 }
 
+// Force the UTF-8 charset
+header('Content-Type: text/html;charset=UTF-8');
+
 echo $newsletter->replace($email->message, $user, $email->id);
 ?>

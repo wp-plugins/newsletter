@@ -205,7 +205,14 @@ if (!$controls->is_action()) {
                             </div>
                         </td>
                     </tr>
-
+                    <!--
+                    <tr valign="top">
+                        <th>License key</th>
+                        <td>
+                            <?php $controls->text_email('contract_key', 40); ?> 
+                        </td>
+                    </tr>
+                    -->
                 </table>
             </div>
 
