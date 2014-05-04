@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 3.8.1
+Tested up to: 3.9
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -56,6 +56,10 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.5.5 =
+
+* Added the license key field for special installations
 
 = 3.5.4 =
 
