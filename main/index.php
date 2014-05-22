@@ -127,7 +127,7 @@ if ($controls->is_action('check_versions')) {
                         <a href="http://www.satollo.net/plugins/newsletter/reports-module" target="_blank">Reports</a>
                         <br><small>Extends the statistics system with a better report</small>
                     </td>
-                    <?php if (class_exists('NewsletterReports')) { ?>
+                    <?php if (NewsletterModule::extension_exists('reports') && class_exists('NewsletterReports')) { ?>
                         <td><?php echo NewsletterReports::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>

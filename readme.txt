@@ -57,6 +57,11 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.8 =
+
+* Added soundcloud for social icon on default theme
+* Fixed the welcome screen (should)
+
 = 3.5.7 =
 
 * Added the private flag on newsletters
