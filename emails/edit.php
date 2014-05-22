@@ -37,6 +37,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     $email['message_text'] = $controls->data['message_text'];
     $email['subject'] = $controls->data['subject'];
     $email['track'] = $controls->data['track'];
+    $email['private'] = $controls->data['private'];
 
     // Builds the extended options
     $email['options'] = array();
@@ -364,6 +365,15 @@ if ($email['editor'] == 0) {
 
             <div id="tabs-d">
                 <table class="form-table">
+                    <tr valign="top">
+                        <th>Private?</th>
+                        <td>
+                            <?php $controls->yesno('private'); ?>
+                            <div class="hints">
+                                Potentially used for public showing of a newsletter. Actually has not effects.
+                            </div>
+                        </td>
+                    </tr>
                     <tr valign="top">
                         <th>Track clicks and message opening?</th>
                         <td>

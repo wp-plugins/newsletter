@@ -37,7 +37,7 @@ if ($controls->is_action('upgrade')) {
     NewsletterSubscription::instance()->upgrade();
     NewsletterEmails::instance()->upgrade();
     NewsletterStatistics::instance()->upgrade();
-    if (class_exists('NewsletterFollowup')) {
+    if (method_exists('NewsletterFollowup', 'upgrade')) {
         NewsletterFollowup::instance()->upgrade();
     }
     $controls->messages = 'Upgrade forced!';

@@ -175,7 +175,7 @@ if ($controls->is_action('check_versions')) {
                         <a href="http://www.satollo.net/plugins/newsletter/facebook-up-module" target="_blank">Facebook</a>
                         <br><small>Newsletter sign up (easy) with Facebook</small>
                     </td>
-                    <?php if (class_exists('NewsletterFacebook')) { ?>
+                    <?php if (NewsletterModule::extension_exists('facebook') && method_exists('NewsletterFacebook', 'instance')) { ?>
                         <td><?php echo NewsletterFacebook::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>
@@ -187,7 +187,7 @@ if ($controls->is_action('check_versions')) {
                         <a href="http://www.satollo.net/plugins/newsletter/sendgrid-module" target="_blank">SendGrid</a>
                         <br><small>Integrates with <a href="http://www.satollo.net/affiliate/sendgrid" target="_blank">SendGrid</a> SMTP and bounce report</small>
                     </td>
-                    <?php if (class_exists('NewsletterSendgrid')) { ?>
+                    <?php if (NewsletterModule::extension_exists('sendgrid') && class_exists('NewsletterSendgrid')) { ?>
                         <td><?php echo NewsletterSendgrid::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>
@@ -199,7 +199,7 @@ if ($controls->is_action('check_versions')) {
                         <a href="http://www.satollo.net/plugins/newsletter/mandrill-module" target="_blank">Mandrill</a>
                         <br><small>Integrates with <a href="http://www.mandrill.com/" target="_blank">Mandrill by Mailchimp</a> SMTP and bounce report (experimental)</small>
                     </td>
-                    <?php if (class_exists('NewsletterMandrill')) { ?>
+                    <?php if (NewsletterModule::extension_exists('mandrill') && class_exists('NewsletterMandrill')) { ?>
                         <td><?php echo NewsletterMandrill::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>
@@ -211,7 +211,7 @@ if ($controls->is_action('check_versions')) {
                         <a href="http://www.satollo.net/plugins/newsletter/popup-module" target="_blank">Popup</a>
                         <br><small>A very simple subscription popup (experimental)</small>
                     </td>
-                    <?php if (class_exists('NewsletterPopup')) { ?>
+                    <?php if (NewsletterModule::extension_exists('popup') && class_exists('NewsletterPopup')) { ?>
                         <td><?php echo NewsletterPopup::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>
@@ -223,7 +223,7 @@ if ($controls->is_action('check_versions')) {
                         <a href="http://www.satollo.net/plugins/newsletter/mailjet-module" target="_blank">MailJet</a>
                         <br><small>Integrates with MailJet SMTP service.
                     </td>
-                    <?php if (class_exists('NewsletterMailjet')) { ?>
+                    <?php if (NewsletterModule::extension_exists('mailjet') && class_exists('NewsletterMailjet')) { ?>
                         <td><?php echo NewsletterMailjet::instance()->version; ?></td>
                     <?php } else { ?>
                         <td>Not installed</td>

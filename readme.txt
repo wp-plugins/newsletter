@@ -57,6 +57,16 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.7 =
+
+* Added the private flag on newsletters
+* Fixed old extension version checking/reporting
+
+= 3.5.6 =
+
+* Added custom header for newsletter tagging with mandrill
+* Added internally used html 5 subscription form
+
 = 3.5.5 =
 
 * Added the license key field for special installations
