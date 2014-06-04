@@ -197,19 +197,26 @@ if (!$controls->is_action()) {
                         <th>Reply to</th>
                         <td>
                             <?php $controls->text_email('reply_to', 40); ?> (valid email address)
-                            <div class="hints">
+                            <p class="description">
                                 This is the email address where subscribers will reply (eg. if they want to reply to a newsletter). Leave it blank if
                                 you don't want to specify a different address from the sender email above. Since this setting can
                                 affect the reliability of delivery,
                                 <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#reply-to" target="_blank">read my notes here</a> (important).
-                            </div>
+                            </p>
                         </td>
                     </tr>
                     
                     <tr valign="top">
                         <th>License key</th>
                         <td>
-                            <?php $controls->text('contract_key', 40); ?> 
+                            <?php $controls->text('contract_key', 40); ?>
+                            <p class="description">
+                                This key is used by <a href="http://www.satollo.net/plugins/newsletter" target="_blank">extensions</a> to
+                                self update. It does not unlock hidden features or like!
+                                <?php if (defined('NEWSLETTER_LICENSE_KEY')) { ?>
+                                <br>A global license key is actually defined, this value will be ignored.
+                                <?php } ?>
+                            </p>
                         </td>
                     </tr>
                     

@@ -237,6 +237,15 @@ if ($controls->is_action('create')) {
                             </div>
                         </td>
                     </tr>
+                    <tr valign="top">
+                        <th>Enable the antibot?</th>
+                        <td>
+                            <?php $controls->yesno('antibot'); ?>
+                            <p class="description">
+                                Tries to block bot generated subscriptions (without the annoying captcha).
+                            </p>
+                        </td>
+                    </tr>
                 </table>
 
                 <h3>Special cases</h3>

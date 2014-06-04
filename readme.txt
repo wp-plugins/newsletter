@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.5.9 =
+
+* Added a possible antibot to the subscription flow
+
 = 3.5.8 =
 
 * Added soundcloud for social icon on default theme
