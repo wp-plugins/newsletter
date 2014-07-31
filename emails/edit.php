@@ -45,6 +45,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     $email['options']['preferences'] = $controls->data['preferences'];
     $email['options']['sex'] = $controls->data['sex'];
     $email['options']['status'] = $controls->data['status'];
+    $email['options']['status_operator'] = $controls->data['status_operator'];
     $email['options']['wp_users'] = $controls->data['wp_users'];
 
     $email['options'] = serialize($email['options']);
@@ -58,9 +59,9 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     // Before send, we build the query to extract subscriber, so the delivery engine does not
     // have to worry about the email parameters
     if ($controls->data['status'] == 'S') {
-        $query = "select * from " . $wpdb->prefix . "newsletter where status='S'";
+        $query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='S'";
     } else {
-        $query = "select * from " . $wpdb->prefix . "newsletter where status='C'";
+        $query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='C'";
     }
 
     if ($controls->data['wp_users'] == '1') {
@@ -71,10 +72,11 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     if (is_array($preferences)) {
 
         // Not set one of the preferences specified
+        $operator = $controls->data['preferences_status_operator'] == 0?' or ':' and ';
         if ($controls->data['preferences_status'] == 1) {
             $query .= " and (";
             foreach ($preferences as $x) {
-                $query .= "list_" . $x . "=0 or ";
+                $query .= "list_" . $x . "=0" . $operator;
             }
             $query = substr($query, 0, -4);
             $query .= ")";
@@ -82,7 +84,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
         else {
             $query .= " and (";
             foreach ($preferences as $x) {
-                $query .= "list_" . $x . "=1 or ";
+                $query .= "list_" . $x . "=1" . $operator;
             }
             $query = substr($query, 0, -4);
             $query .= ")";
@@ -128,23 +130,23 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
 
 if ($controls->is_action('send')) {
 
-    $wpdb->update($wpdb->prefix . 'newsletter_emails', array('status' => 'sending'), array('id' => $email_id));
+    $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'sending'), array('id' => $email_id));
     $email['status'] = 'sending';
     $controls->messages .= "Email added to the queue.";
 }
 
 if ($controls->is_action('pause')) {
-    $wpdb->update($wpdb->prefix . 'newsletter_emails', array('status' => 'paused'), array('id' => $email_id));
+    $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'paused'), array('id' => $email_id));
     $email['status'] = 'paused';
 }
 
 if ($controls->is_action('continue')) {
-    $wpdb->update($wpdb->prefix . 'newsletter_emails', array('status' => 'sending'), array('id' => $email_id));
+    $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'sending'), array('id' => $email_id));
     $email['status'] = 'sending';
 }
 
 if ($controls->is_action('abort')) {
-    $wpdb->query("update " . $wpdb->prefix . "newsletter_emails set last_id=0, total=0, sent=0, status='new' where id=" . $email_id);
+    $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set last_id=0, total=0, sent=0, status='new' where id=" . $email_id);
     $email['status'] = 'new';
     $email['total'] = 0;
     $email['sent'] = 0;
@@ -309,8 +311,10 @@ if ($email['editor'] == 0) {
                     <tr valign="top">
                         <th><?php _e('Subscriber preferences', 'newsletter'); ?></th>
                         <td>
-                            Subscribers with at least one preference
-                            <?php $controls->select('preferences_status', array(0=>'ACTIVE', 1=>'NOT ACTIVE')); ?>
+                            Subscribers with 
+                            <?php $controls->select('preferences_status_operator', array(0=>'at least one preference', 1=>'all preferences')); ?>
+                            
+                            <?php $controls->select('preferences_status', array(0=>'active', 1=>'not active')); ?>
                             between the selected ones below:
 
                             <?php $controls->preferences_group('preferences', true); ?>

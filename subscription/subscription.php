@@ -557,7 +557,7 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         if (is_numeric($id) && !empty($token)) {
-            return $wpdb->get_row($wpdb->prepare("select * from " . $wpdb->prefix . "newsletter where id=%d and token=%s limit 1", $id, $token));
+            return $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where id=%d and token=%s limit 1", $id, $token));
         }
 
         return null;

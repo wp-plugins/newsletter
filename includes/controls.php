@@ -180,6 +180,11 @@ class NewsletterControls {
         $this->checkboxes_group($name, $list);
     }
 
+    /** Used to create a select which is part of a group of controls identified by $name that will
+     * produce an array of values as $_REQUEST['name'].
+     * @param string $name
+     * @param array $options Associative array
+     */
     function select_group($name, $options) {
         $value_array = $this->get_value_array($name);
         
@@ -187,8 +192,9 @@ class NewsletterControls {
 
         foreach ($options as $key => $label) {
             echo '<option value="' . $key . '"';
-            if (array_search($value, $value_array) !== false)
+            if (array_search($key, $value_array) !== false) {
                 echo ' selected';
+            }
             echo '>' . htmlspecialchars($label) . '</option>';
         }
 

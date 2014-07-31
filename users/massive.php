@@ -73,7 +73,7 @@ if ($controls->is_action('list_manage')) {
 }
 
 if ($controls->is_action('resend_all')) {
-    $list = $wpdb->get_results("select * from " . $wpdb->prefix . "newsletter where status='S'");
+    $list = $wpdb->get_results("select * from " . NEWSLETTER_USERS_TABLE . " where status='S'");
     $opts = get_option('newsletter');
 
     if ($list) {
@@ -296,9 +296,9 @@ if ($controls->is_action('bounces')) {
         <h3>Sex</h3>
         <?php
             // TODO: do them with a single query
-            $all_count = $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where status='C'");
-            $male_count = $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where sex='m' and status='C'");
-            $female_count = $wpdb->get_var("select count(*) from " . $wpdb->prefix . "newsletter where sex='f' and status='C'");
+            $all_count = $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='C'");
+            $male_count = $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where sex='m' and status='C'");
+            $female_count = $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where sex='f' and status='C'");
             $other_count = ($all_count-$male_count-$female_count)
         ?>
         <table class="widefat" style="width: 300px">

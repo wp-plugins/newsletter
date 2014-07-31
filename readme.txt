@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 3.9
+Tested up to: 3.9.1
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -56,6 +56,16 @@ Thank you, Stefano Lissa (Satollo).
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.6.1 =
+
+* Fixed the widget when field names contain double quotes
+
+= 3.6.0 =
+
+* Removed the extension list from welcome panel
+* Added the and operator in the newsletter recipients selector
+* Fixed the select_group(...) in NewsletterControls class
 
 = 3.5.9 =
 
