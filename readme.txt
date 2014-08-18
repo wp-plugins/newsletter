@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.6.3 =
+
+* fixed the feed by mail test function
+
 = 3.6.2 =
 
 * Added the separator selection on CSV export
