@@ -404,7 +404,7 @@ class NewsletterModule {
         if ($last_run < 0) {
             return array_chunk($posts, ceil(count($posts)/2));
         }
-        
+
         $result = array(array(), array());
         foreach ($posts as &$post) {
             if (self::is_post_old($post, $time))
@@ -457,7 +457,9 @@ class NewsletterModule {
     static function clean_url_tags($text) {
         $text = str_replace('%7B', '{', $text);
         $text = str_replace('%7D', '}', $text);
-        $text = preg_replace("/[\"']http[^\"']+(\\{[^\\}]+\\})[\"']/i", "\"\\1\"", $text);
+
+        // Only tags which are {*_url}
+        $text = preg_replace("/[\"']http[^\"']+(\\{[^\\}]+_url\\})[\"']/i", "\"\\1\"", $text);
         return $text;
     }
 
@@ -505,7 +507,7 @@ class NewsletterModule {
     }
 
     function admin_menu() {
-        
+
     }
 
     function add_menu_page($page, $title) {

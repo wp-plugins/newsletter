@@ -103,6 +103,7 @@ if ($controls->is_action('create')) {
             mode : "specific_textareas",
             editor_selector : "visual",
             theme : "advanced",
+            entity_encoding : "raw",
             theme_advanced_disable : "styleselect",
             relative_urls : false,
             remove_script_host : false,

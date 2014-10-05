@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 3.9.2
+Tested up to: 4.0
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -9,7 +9,7 @@ Add a real newsletter to your blog. In seconds. For free. With unlimited emails 
 
 == Description ==
 
-This plug-in adds a real newsletter system to your WordPress blog. Perfect for list building, 
+This plug-in adds a real newsletter system to your WordPress blog. Perfect for list building,
 you can create cool emails with visual editor, send and
 track them.
 
@@ -57,9 +57,17 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.6.4 =
+
+* Support for greek (and others) characters without the entity encoding
+* Fixed a debug notice in the widget code
+* Added gender on import
+* Added support for the constant NEWSLETTER_LOG_DIR in wp-config.php to define the loggin folder
+* Fixed the domain removal on subscription steps messages
+
 = 3.6.3 =
 
-* fixed the feed by mail test function
+* Fixed the feed by mail test function
 
 = 3.6.2 =
 
@@ -131,7 +139,7 @@ No screen shots are available at this time.
 = 3.4.9 =
 
 * Fixed some warnings in debug mode
-* Fixed the disabling setting of the social icons (on default newsletter themes) 
+* Fixed the disabling setting of the social icons (on default newsletter themes)
 * Added filters on widget for WPML
 * Added filter for single line feeds refused by some mail servers
 

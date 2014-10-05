@@ -88,10 +88,13 @@ if ($controls->is_action('send_test')) {
     $r = $newsletter->mail($controls->data['test_email'], 'Newsletter: pure text email', array('text' => $text));
 
 
-    if ($r)
+    if ($r) {
         $controls->messages .= 'Newsletter TEXT test email sent.<br />';
-    else
+    } else {
         $controls->errors .= 'Newsletter TEXT test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+        //$controls->errors .='<pre>xxx' . htmlspecialchars(print_r($newsletter->mailer->ErrorInfo, true)) . '</pre>';
+        $controls->errors .='<pre>' . print_r(error_get_last(), true) . '</pre>';
+    }
 
     $text = '<p>This is a <strong>html</strong> email sent using the <i>sender data</i> set on Newsletter main setting.</p>';
     $text .= '<p>You should see some "mark up", like bold and italic characters.</p>';
@@ -197,8 +200,7 @@ if (empty($controls->data))
                             </td>
                             <td>
                                 <?php
-                                $dir = WP_CONTENT_DIR . '/logs/newsletter';
-                                if (!is_dir($dir)) {
+                                if (!is_dir(NEWSLETTER_LOG_DIR)) {
                                     echo '<span class="newsletter-error-span">The log folder does not exists, no logging possible!</span>';
                                 } else {
                                     echo 'The log folder exists.';
@@ -304,7 +306,7 @@ if (empty($controls->data))
                             </td>
                         </tr>
 
-                      
+
                     </tbody>
                 </table>
             </div>
@@ -443,7 +445,7 @@ if (empty($controls->data))
                 <p>
                     <?php $controls->button('undismiss', 'Restore'); ?>
                 </p>
-                
+
                  <p>
                     Very old versions need to be upgraded on a spacial way. Use the button blow.
                 </p>

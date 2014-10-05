@@ -25,7 +25,7 @@ class NewsletterWidget extends WP_Widget {
 
         $form .= '<p><input class="newsletter-email" type="email" required name="ne" value="' . esc_attr($options_profile['email']) . '" onclick="if (this.defaultValue==this.value) this.value=\'\'" onblur="if (this.value==\'\') this.value=this.defaultValue"/></p>';
 
-        if ($options_profile['sex_status'] == 2) {
+        if (isset($options_profile['sex_status']) && $options_profile['sex_status'] == 2) {
             $form .= '<p><select name="nx" class="newsletter-sex">';
             $form .= '<option value="m">' . $options_profile['sex_male'] . '</option>';
             $form .= '<option value="f">' . $options_profile['sex_female'] . '</option>';
@@ -85,7 +85,7 @@ class NewsletterWidget extends WP_Widget {
         }
 
         $form .= '</form>';
-        
+
         return $form;
     }
 

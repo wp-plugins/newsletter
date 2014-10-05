@@ -185,6 +185,7 @@ if ($email['editor'] == 0) {
         mode : "specific_textareas",
         editor_selector : "visual",
         theme : "advanced",
+        entity_encoding : "raw",
         plugins: "table,fullscreen,legacyoutput",
         theme_advanced_disable : "styleselect",
         theme_advanced_buttons1_add: "forecolor,blockquote,code,fontsizeselect,fontselect",

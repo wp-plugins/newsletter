@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.6.3
+  Version: 3.6.4
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.6.3');
+define('NEWSLETTER_VERSION', '3.6.4');
 
 global $wpdb, $newsletter;
 
@@ -321,7 +321,7 @@ class Newsletter extends NewsletterModule {
     }
 
     function hook_admin_init() {
-        
+
     }
 
     function hook_admin_head() {
@@ -447,7 +447,7 @@ class Newsletter extends NewsletterModule {
             $headers = array('List-Unsubscribe' => '<' . NEWSLETTER_UNSUBSCRIBE_URL . '?nk=' . $user->id . '-' . $user->token . '>');
             $headers['Precedence'] = 'bulk';
             $headers['X-Newsletter-Email-Id'] = $email->id;
-            
+
 
             if (!$test) {
                 $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set sent=sent+1, last_id=" . $user->id . " where id=" . $email->id . " limit 1");
@@ -887,8 +887,9 @@ class Newsletter extends NewsletterModule {
             $text = str_replace('{key}', $user->id . '-' . $user->token, $text);
             $text = str_replace('%7Bkey%7D', $user->id . '-' . $user->token, $text);
 
-            if (strpos($text, '{profile_form}') !== false)
+            if (strpos($text, '{profile_form}') !== false) {
                 $text = str_replace('{profile_form}', NewsletterSubscription::instance()->get_profile_form($user), $text);
+            }
 
             for ($i = 1; $i < NEWSLETTER_PROFILE_MAX; $i++) {
                 $p = 'profile_' . $i;
@@ -1236,5 +1237,5 @@ function newsletter_activate() {
 register_activation_hook(__FILE__, 'newsletter_deactivate');
 
 function newsletter_deactivate() {
-    
+
 }
