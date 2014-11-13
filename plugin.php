@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.satollo.net/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.6.4
+  Version: 3.6.5
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.6.4');
+define('NEWSLETTER_VERSION', '3.6.5');
 
 global $wpdb, $newsletter;
 
@@ -125,8 +125,6 @@ class Newsletter extends NewsletterModule {
 
         add_action('init', array($this, 'hook_init'));
         add_action('newsletter', array($this, 'hook_newsletter'), 1);
-        add_action('newsletter_check_versions', array($this, 'hook_check_versions'), 99);
-
 
         // This specific event is created by "Feed by mail" panel on configuration
         add_action('shutdown', array($this, 'hook_shutdown'));
@@ -231,7 +229,6 @@ class Newsletter extends NewsletterModule {
 
         wp_clear_scheduled_hook('newsletter_update');
         wp_clear_scheduled_hook('newsletter_check_versions');
-        wp_schedule_event(time() + 30, 'newsletter_weekly', 'newsletter_check_versions');
 
         wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter');
         wp_mkdir_p(WP_CONTENT_DIR . '/cache/newsletter');
@@ -350,27 +347,6 @@ class Newsletter extends NewsletterModule {
 
     function relink($text, $email_id, $user_id) {
         return NewsletterStatistics::instance()->relink($text, $email_id, $user_id);
-    }
-
-    function hook_check_versions() {
-        //$this->logger->info('Checking for new versions');
-        $url = 'http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=';
-        $modules = array(
-            'reports' => 34,
-            'feed' => 35,
-            'followup' => 37,
-            'facebook' => 41,
-            'sendgrid' => 40,
-            'popup' => 43,
-            'mandrill' => 44,
-            'mailjet' => 38);
-
-        foreach ($modules as $name => $id) {
-            $version = @file_get_contents($url . $id);
-            if ($version) {
-                update_option('newsletter_' . $name . '_available_version', $version);
-            }
-        }
     }
 
     /**

@@ -164,10 +164,10 @@ if ($controls->is_action('create')) {
                         <th>Opt In</th>
                         <td>
                             <?php $controls->select('noconfirmation', array(0 => 'Double Opt In', 1 => 'Single Opt In')); ?>
-                            <div class="hints">
+                            <p class="description">
                                 <strong>Double Opt In</strong> means subscribers need to confirm their email address by an activation link sent them on a activation email message.<br />
                                 <strong>Single Opt In</strong> means subscribers do not need to confirm their email address.<br />
-                            </div>
+                            </p>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -180,7 +180,7 @@ if ($controls->is_action('create')) {
                             }
                             ?>
 
-                            <div class="hints">
+                            <p class="description">
                                 Optional (but recommended) an address of a WordPress page (eg. <?php echo get_option('home') . '/newsletter'; ?>)
                                 you <strong>manually created</strong> for subscription and messages.
                                 <br>
@@ -191,13 +191,17 @@ if ($controls->is_action('create')) {
                                 If something is not working as expected with this address you can empty the field above and save: a button will appear
                                 to create that page automatically.
                                 <?php } ?>
-                            </div>
+                            </p>
                         </td>
                     </tr>
                     <tr valign="top">
                         <th>Disable visual editors?</th>
                         <td>
                             <?php $controls->yesno('novisual'); ?>
+                            <p class="description">
+                                If you prefer to edit the messages on this cofiguration panel writing them in HTML, you can
+                                disable the visual editors.
+                            </p>
                         </td>
                     </tr>
                      <tr valign="top">
@@ -205,14 +209,12 @@ if ($controls->is_action('create')) {
                         <td>
                             <?php $controls->yesno('notify'); ?>
                             to: <?php $controls->text_email('notify_email'); ?> (email address, leave empty for the WordPress administration email <?php echo get_option('admin_email'); ?>)
-                            <div class="hints">
-                            Notifies when a user confirm his subscription or unsubscribe.
-                            </div>
+                            <p class="description">
+                                Notifications are sent on confirmed subscriptions and cancellations.
+                            </p>
                         </td>
                     </tr>
-                    </table>
-
-
+                </table>
             </div>
 
 
@@ -223,19 +225,19 @@ if ($controls->is_action('create')) {
                         <th>Subscription page</th>
                         <td>
                             <?php $controls->editor('subscription_text'); ?>
-                            <div class="hints">
+                            <p class="description">
                                 User <strong>{subscription_form}</strong> to insert the subscription form where you prefere in the text or
                                 <strong>{subscription_form_N}</strong> (with N from 1 to 10) to insert one of the custom forms.
-                            </div>
+                            </p>
                         </td>
                     </tr>
                     <tr valign="top">
                         <th>Forced preferences</th>
                         <td>
                             <?php $controls->preferences(); ?>
-                            <div class="hints">
+                            <p class="description">
                                 Add to new subscribers these preferences by default.
-                            </div>
+                            </p>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -257,20 +259,20 @@ if ($controls->is_action('create')) {
                         <td>
                             <?php $controls->editor('already_confirmed_text'); ?><br>
                             <?php $controls->checkbox('resend_welcome_email_disabled', 'Do not resend the welcome email'); ?>
-                            <div class="hints">
-                                Shown when the email is already subscribed and confirmed. The welcome email, is not disabled, will
+                           <p class="description">
+                                Shown when the email is already subscribed and confirmed. The welcome email, if not disabled, will
                                 be sent. Find out more on this topic on its
                                 <a href="http://www.satollo.net/plugins/newsletter/subscription-module#repeated" target="_blank">documentation page</a>.
-                            </div>
+                            </p>
                         </td>
                     </tr>
                     <tr valign="top">
                         <th>Error page content</th>
                         <td>
                             <?php $controls->editor('error_text'); ?>
-                            <div class="hints">
-                                Message shown when the email is bounced.
-                            </div>
+                            <p class="description">
+                                Message shown when the email is bounced or other errors occurred.
+                            </p>
                         </td>
                     </tr>
                 </table>
@@ -278,20 +280,19 @@ if ($controls->is_action('create')) {
 
 
             <div id="tabs-3">
-                <div class="tab-preamble">
-                <p>This configuration applies only when in double opt-in mode.</p>
-                </div>
+
+                <p>This configuration applies only when you sent the double opt-in mode.</p>
 
                 <table class="form-table">
                     <tr valign="top">
                         <th>Confirmation required message</th>
                         <td>
                             <?php $controls->editor('confirmation_text'); ?>
-                            <div class="hints">
-                                This is the text showed to a user who has pressed "subscribe me" on the previous
-                                step informing that an email to confirm subscription has just been sent. Remember
-                                the user to check the spam folder and to follow the email instructions.
-                            </div>
+                            <p class="description">
+                                This message is shown to just subscribed users which require to confirm the subscription
+                                following the instructions sent them with the following email. Invite them to check the mailbox and to
+                                give a look to the spam folder if no messages are received within 10 minutes.
+                            </p>
                         </td>
                     </tr>
 
@@ -299,10 +300,10 @@ if ($controls->is_action('create')) {
                         <th>Alternative custom confirmation required page</th>
                         <td>
                             <?php $controls->text('confirmation_url', 70); ?>
-                            <div class="hints">
-                                A full page address (http://yourblog.com/confirm) to be used instead of message above. If empty the message is
-                                used.
-                            </div>
+                            <p class="description">
+                                A full page address (http://yourblog.com/confirm) to be used instead of message above.
+                                If left empty the message above is used.
+                            </p>
                         </td>
                     </tr>
 
@@ -312,13 +313,13 @@ if ($controls->is_action('create')) {
                         <th>Confirmation email</th>
                         <td>
                             <?php $controls->email('confirmation'); ?>
-                            <div class="hints">
+                            <p class="description">
                                 Message sent by email to new subscribers with instructions to confirm their subscription
                                 (for double opt-in process). Do not forget to add the <strong>{subscription_confirm_url}</strong>
                                 that users must click to activate their subscription.<br />
                                 Sometime can be useful to add a <strong>{unsubscription_url}</strong> to let users to
-                                cancel if they wrongly subscribed your newsletter.
-                            </div>
+                                cancel if they wrongly subscribed to your newsletter.
+                            </p>
                         </td>
                     </tr>
                 </table>
@@ -331,11 +332,11 @@ if ($controls->is_action('create')) {
                         <th>Welcome message</th>
                         <td>
                             <?php $controls->editor('confirmed_text'); ?>
-                            <div class="hints">
+                            <p class="description">
                                 Showed when the user follow the confirmation URL sent to him with previous email
                                 settings or if signed up directly with no double opt-in process. You can use the <strong>{profile_form}</strong> tag to let the user to
                                 complete it's profile.
-                            </div>
+                            </p>
                         </td>
                     </tr>
 
@@ -343,10 +344,10 @@ if ($controls->is_action('create')) {
                         <th>Alternative custom welcome page</th>
                         <td>
                             <?php $controls->text('confirmed_url', 70); ?>
-                            <div class="hints">
+                            <p class="description">
                                 A full page address (http://yourblog.com/welcome) to be used instead of message above. If empty the message is
                                 used.
-                            </div>
+                            </p>
                         </td>
                     </tr>
 
@@ -354,11 +355,12 @@ if ($controls->is_action('create')) {
                         <th>Conversion tracking code<br/><small>ADVANCED</small></th>
                         <td>
                             <?php $controls->textarea('confirmed_tracking'); ?>
-                            <div class="hints">
+                            <p class="description">
                                 The code is injected AS-IS in welcome page and can be used to track conversion
                                 (you can use PHP if needed). It does not work with a custom welcome page.
                                 Conversion code is usually supply by tracking services,
-                                like Google AdWords, Google Analytics and so on.</div>
+                                like Google AdWords, Google Analytics and so on.
+                            </p>
                         </td>
                     </tr>
 
@@ -369,13 +371,13 @@ if ($controls->is_action('create')) {
                         </th>
                         <td>
                             <?php $controls->email('confirmed', null, true); ?>
-                            <div class="hints">
+                            <p class="description">
                                 Email sent to the user to confirm his subscription, the successful confirmation
                                 page, the welcome email. This is the right message where to put a <strong>{unlock_url}</strong> link to remember to the
                                 user where is the premium content (if any, main configuration panel).<br />
                                 It's a good idea to add the <strong>{unsubscription_url}</strong> too and the <strong>{profile_url}</strong>
                                 letting users to cancel or manage/complete their profile.
-                            </div>
+                            </p>
                         </td>
                     </tr>
 
@@ -384,12 +386,12 @@ if ($controls->is_action('create')) {
 
             <!-- PROFILE -->
             <div id="tabs-9">
-                <div class="tab-preamble">
+
                     <p>
                         The page shown when the subscriber wants to edit hid profile following the link
                         {profile_url} you added to a newsletter.
                     </p>
-                </div>
+
 
                 <table class="form-table">
                     <tr valign="top">
@@ -411,12 +413,14 @@ if ($controls->is_action('create')) {
 
 
             <div id="tabs-5">
-                <p class="intro">
+
+                <p>
                     A user starts the cancellation process clicking the unsubscription link in
                     a newsletter. This link contains the email to unsubscribe and some unique information
                     to avoid hacking. The user are required to confirm the unsubscription: this is the last
                     step where YOU can communicate with your almost missed user.
-                    <br />
+                </p>
+                <p>
                     To create immediate cancellation, you can use the <strong>{unsubscription_confirm_url}</strong>
                     in your newsletters and upon click on that link goodbye message and email are used directly
                     skipping the confirm request.
@@ -427,11 +431,11 @@ if ($controls->is_action('create')) {
                         <th>Cancellation message</th>
                         <td>
                             <?php $controls->editor('unsubscription_text'); ?>
-                            <div class="hints">
+                            <p class="description">
                                 This text is show to users who click on a "unsubscription link" in a newsletter
                                 email. You <strong>must</strong> insert a link in the text that user can follow to confirm the
                                 unsubscription request using the tag <strong>{unsubscription_confirm_url}</strong>.
-                            </div>
+                            </p>
                         </td>
                     </tr>
 
@@ -440,9 +444,9 @@ if ($controls->is_action('create')) {
                         <th>Goodbye message</th>
                         <td>
                             <?php $controls->editor('unsubscribed_text'); ?>
-                            <div class="hints">
+                            <p class="description">
                                 Shown to users after the cancellation has been completed.
-                            </div>
+                            </p>
                         </td>
                     </tr>
 
@@ -451,10 +455,10 @@ if ($controls->is_action('create')) {
                         <th>Goodbye email</th>
                         <td>
                             <?php $controls->email('unsubscribed'); ?>
-                            <div class="hints">
+                            <p class="description">
                                 Sent after a cancellation, is the last message you send to the user before his removal
                                 from your newsletter subscribers. Leave the subject empty to disable this message.
-                            </div>
+                            </p>
                         </td>
                     </tr>
                 </table>
@@ -503,37 +507,40 @@ if ($controls->is_action('create')) {
 
 
         <div id="tabs-wp">
-            <div class="tab-preamble">
-                <p>Configure if and how a regular WordPress user registration can be connected to a Newsletter subscription.</p>
-                <p>Important! This type of subscription does not require confirmation, it's automatic on first login.
-                    <a href="http://www.satollo.net/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>.
-                </p>
-            </div>
-                <table class="form-table">
-                    <tr valign="top">
-                        <th>Subscription on registration</th>
-                        <td>
-                            <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
-                            <?php $controls->hint('Adds a newsletter subscription option on registration.', 'http://www.satollo.net/plugins/newsletter/subscription-module#registration'); ?>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Check box label</th>
-                        <td>
-                            <?php $controls->text('subscribe_wp_users_label', 30); ?>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Send welcome email to registered users</th>
-                        <td>
-                            <?php $controls->yesno('wp_welcome'); ?>
-                        </td>
-                    </tr>
-                </table>
-        </div>
-            </div>
 
-        <p class="submit">
+            <p>
+                Configure if and how a regular WordPress user registration can be connected to a Newsletter subscription.
+            </p>
+            <p>
+                Important! This type of subscription does not require confirmation, it's automatic on first login.
+                <a href="http://www.satollo.net/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>.
+            </p>
+
+            <table class="form-table">
+                <tr valign="top">
+                    <th>Subscription on registration</th>
+                    <td>
+                        <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
+                        <?php $controls->hint('Adds a newsletter subscription option on registration.', 'http://www.satollo.net/plugins/newsletter/subscription-module#registration'); ?>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th>Check box label</th>
+                    <td>
+                        <?php $controls->text('subscribe_wp_users_label', 30); ?>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th>Send welcome email to registered users</th>
+                    <td>
+                        <?php $controls->yesno('wp_welcome'); ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        </div>
+
+        <p>
             <?php $controls->button('save', 'Save'); ?>
             <?php $controls->button_confirm('reset', 'Reset all', 'Are you sure you want to reset all?'); ?>
         </p>

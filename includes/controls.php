@@ -73,12 +73,12 @@ class NewsletterControls {
             return true;
         die('Invalid call');
     }
-    
+
     function get_value($name) {
         if (!isset($this->data[$name])) return null;
         return $this->data[$name];
     }
-    
+
     function get_value_array($name) {
         if (!isset($this->data[$name]) || !is_array($this->data[$name])) return array();
         return $this->data[$name];
@@ -89,14 +89,14 @@ class NewsletterControls {
      */
     function show() {
         if (!empty($this->errors)) {
-            echo '<div class="newsletter-error">';
+            echo '<div class="error"><p>';
             echo $this->errors;
-            echo '</div>';
+            echo '</p></div>';
         }
         if (!empty($this->messages)) {
-            echo '<div class="newsletter-message">';
+            echo '<div class="updated"><p>';
             echo $this->messages;
-            echo '</div>';
+            echo '</p></div>';
         }
     }
 
@@ -153,7 +153,7 @@ class NewsletterControls {
      */
     function checkboxes_group($name, $values_labels) {
         $value_array = $this->get_value_array($name);
-        
+
         echo "<div class='newsletter-checkboxes-group'>";
         foreach ($values_labels as $value => $label) {
             echo "<div class='newsletter-checkboxes-item'>";
@@ -187,7 +187,7 @@ class NewsletterControls {
      */
     function select_group($name, $options) {
         $value_array = $this->get_value_array($name);
-        
+
         echo '<select name="options[' . $name . '][]">';
 
         foreach ($options as $key => $label) {
@@ -264,7 +264,7 @@ class NewsletterControls {
 
     function value_date($name, $show_remaining) {
         $time = $this->get_value($name);
-        
+
         echo gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
         $delta = $time - time();
         if ($show_remaining && $delta > 0) {
@@ -461,7 +461,7 @@ class NewsletterControls {
         }
 
     /**
-     * Creates a set of checkboxes all names $name[] and the preference number as value 
+     * Creates a set of checkboxes all names $name[] and the preference number as value
      * so the selected checkboxes are retrieved as an array of values ($REQUEST[$name]
      * will be an array if at east one preference is checked).
      */
@@ -482,7 +482,7 @@ class NewsletterControls {
     }
 
     /** Creates as many selects as the active preferences with the three values
-     * 'any', 'yes', 'no' corresponding to the values 0, 1, 2. 
+     * 'any', 'yes', 'no' corresponding to the values 0, 1, 2.
      */
     function preferences_selects($name = 'preferences', $skip_empty = false) {
         $options_profile = get_option('newsletter_profile');
@@ -670,7 +670,7 @@ class NewsletterControls {
     function get_test_subscribers() {
         return NewsletterUsers::instance()->get_test_users();
     }
-    
+
     function css_font_size($name) {
         $value = $this->get_value($name);
 
@@ -683,7 +683,7 @@ class NewsletterControls {
         }
         echo '</select>&nbsp;px';
     }
-    
+
     function css_border($name) {
         $value = $this->get_value($name . '_width');
 
@@ -695,11 +695,11 @@ class NewsletterControls {
             echo '>' . $i . '</option>';
         }
         echo '</select>&nbsp;px&nbsp;&nbsp;';
-        
+
         $this->select($name . '_type', array('solid'=>'Solid', 'dashed'=>'Dashed'));
-        
+
         $this->color($name . '_color');
-        
+
         $value = $this->get_value($name . '_radius');
 
         echo '&nbsp;&nbsp;radius&nbsp;<select id="options-' . $name . '-radius" name="options[' . $name . '_radius]">';

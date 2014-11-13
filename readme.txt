@@ -57,6 +57,14 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.6.5 =
+
+* Added parameter "plugin url" on diagnostic panel
+* Added custom post types to the linear theme
+* Added custom post types to the vimeo-like theme
+* Fixed the feed by mail placeholder panel
+* Fixed the antibot option with preferences
+
 = 3.6.4 =
 
 * Support for greek (and others) characters without the entity encoding

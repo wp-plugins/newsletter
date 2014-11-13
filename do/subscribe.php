@@ -33,7 +33,19 @@ else {
         <body onload="document.getElementById('form').action = '?ts=<?php echo time(); ?>';document.getElementById('form').submit()">
             <form id="form" action="<?php echo plugins_url('newsletter'); ?>/do/dummy.php" method="post">
                 <?php foreach ($_REQUEST as $name => $value) { ?>
+                    <?php
+                    if (is_array($value)) {
+                        foreach ($value as $element) {
+                            ?>
+                            <input type="hidden" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($element); ?>">
+                            <?php
+                        }
+                    } else {
+                    ?>
                     <input type="hidden" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value); ?>">
+                    <?php
+                    }
+                    ?>
                 <?php } ?>
             </form>
         </body>

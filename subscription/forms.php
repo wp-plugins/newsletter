@@ -9,7 +9,7 @@ if (!$controls->is_action()) {
 
 if ($controls->is_action('save')) {
     update_option('newsletter_forms', $controls->data);
-    $controls->messages = 'Saved';
+    $controls->messages = 'Saved.';
 }
 ?>
 
