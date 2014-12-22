@@ -332,10 +332,19 @@ class NewsletterSubscription extends NewsletterModule {
      * @return type
      */
     function mail($to, $subject, $message) {
-
-        ob_start();
-        include NEWSLETTER_DIR . '/subscription/email.php';
-        $message = ob_get_clean();
+        // If the template setup on administrative panel is enabled, use it, if not
+        // use the default old templating system.
+        if ($this->options['template_enabled'] == 1) {
+            $template = $this->options['template'];
+            if (strpos($template, '{message}') === false) {
+                $template .= '{message}';
+            }
+            $message = str_replace('{message}', $message, $template);
+        } else {
+            ob_start();
+            include NEWSLETTER_DIR . '/subscription/email.php';
+            $message = ob_get_clean();
+        }
 
         Newsletter::instance()->mail($to, $subject, $message);
     }
@@ -930,17 +939,19 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         // Lists
-        $buffer .= '<tr><th>&nbsp;</th><td>';
+        $buffer .= '<tr><th>&nbsp;</th><td style="text-align: left"><div class="newsletter-preferences">';
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-            if ($options['list_' . $i . '_status'] == 0)
+            if ($options['list_' . $i . '_status'] == 0) {
                 continue;
-            $buffer .= '<input type="checkbox" name="nl[]" value="' . $i . '"';
+            }
+            $buffer .= '<input class="newsletter-preference" type="checkbox" name="nl[]" value="' . $i . '"';
             $list = 'list_' . $i;
-            if ($user->$list == 1)
+            if ($user->$list == 1) {
                 $buffer .= ' checked';
-            $buffer .= '/> ' . htmlspecialchars($options['list_' . $i]) . '<br />';
+            }
+            $buffer .= '/>&nbsp;<span class="newsletter-preference-label">' . htmlspecialchars($options['list_' . $i]) . '</span><br />';
         }
-        $buffer .= '</td></tr>';
+        $buffer .= '</div></td></tr>';
 
         $extra = apply_filters('newsletter_profile_extra', array(), $user);
         foreach ($extra as &$x) {
@@ -1142,8 +1153,8 @@ function newsletter_subscription_user_register($wp_user_id) {
     $_REQUEST['ne'] = $wp_user->user_email;
     $_REQUEST['nr'] = 'registration';
     // Upon registration there is no last name and first name, sorry.
-    // With registration always store as unconfirmed, it will be confirmed on first login
-    $user = $module->subscribe('S', false);
+    // $status is determined by the opt in
+    $user = $module->subscribe(null, false);
 
     // Now we associate it with wp
     $module->set_user_wp_user_id($user->id, $wp_user_id);

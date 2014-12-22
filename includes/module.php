@@ -107,7 +107,7 @@ class NewsletterModule {
 //    function hook_version_check() {
 //        $this->logger->info('Checking for new version');
 //        if (empty($this->module_id)) return;
-//        $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $this->module_id);
+//        $version = @file_get_contents('http://www.thenewsletterplugin.com/wp-content/plugins/file-commerce-pro/version.php?f=' . $this->module_id);
 //        if ($version) {
 //            update_option($this->prefix . '_available_version', $version);
 //            $this->available_version = $version;
@@ -115,7 +115,7 @@ class NewsletterModule {
 //    }
 
     /**
-     * Return, eventually, the version of this moduke available on satollo.net.
+     * Return, eventually, the version of this module available on thenewsletterplugin.com
      * @return string
      */
     static function get_available_version($module_id, $force = false) {
@@ -123,7 +123,7 @@ class NewsletterModule {
             return '';
         $version = get_transient('newsletter_module_' . $module_id . '_version');
         if ($force || !$version) {
-            $version = @file_get_contents('http://www.satollo.net/wp-content/plugins/file-commerce-pro/version.php?f=' . $module_id);
+            $version = @file_get_contents('http://www.thenewsletterplugin.com/wp-content/plugins/file-commerce-pro/version.php?f=' . $module_id);
             set_transient('newsletter_module_' . $module_id . '_version', $version, 2 * 86400);
         }
         return $version;

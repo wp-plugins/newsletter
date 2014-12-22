@@ -1,9 +1,8 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: trunk
-Donate link: http://www.satollo.net/donations
 
 Add a real newsletter to your blog. In seconds. For free. With unlimited emails and subscribers.
 
@@ -32,9 +31,9 @@ Key features:
 * diagnostic panel for **easy system tests**
 * **extensible** with specific modules (Facebook, Reports, Feed by Mail, Follow Up)
 
-Visit the [Newsletter official page](http://www.satollo.net/plugins/newsletter) to know more.
+Visit the [Newsletter official page](http://www.thenewsletterplugin.com/) to know more.
 
-Thank you, Stefano Lissa (Satollo).
+Thank you, The Newsletter Team
 
 == Installation ==
 
@@ -44,18 +43,30 @@ Thank you, Stefano Lissa (Satollo).
 
 == Frequently Asked Questions ==
 
-See the [Newsletter FAQ](http://www.satollo.net/plugins/newsletter/newsletter-faq) or the
-[Newsletter Forum](http://www.satollo.net/forums) to ask for help.
+See the [Newsletter FAQ](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-faq) or the
+[Newsletter Forum](http://www.thenewsletterplugin.com/forums) to ask for help.
 
-For documentation start from [Newsletter official page](http://www.satollo.net/plugins/newsletter).
+For documentation start from [Newsletter documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
-Thank you, Stefano Lissa (Satollo).
+Thank you, The Newsletter Team
 
 == Screen shots ==
 
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.6.6 =
+
+* Added a cron monitor
+* Added a xmas theme
+* Fixed the opt-in mode for wordpress registsred users
+* Fixed the noticies
+* Fixed somes styles
+* Added the direct newsletter edit for themes without options
+* Header changed
+* Fixed all links to refer the new site www.thenewsletterplugin.com
+* Fixed the newsletter editor default style
 
 = 3.6.5 =
 

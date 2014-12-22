@@ -108,30 +108,15 @@ if (!$controls->is_action()) {
 
 <div class="wrap">
 
-    <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletter-configuration'; ?>
+    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration'; ?>
     <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <div id="newsletter-title">
+
         <h2>Newsletter Main Configuration</h2>
-        <div class="newsletter-preamble">
-            <p>
-                The general Newsletter configuration: sender name and email, delivery speed, SMTP and others.
-            </p>
-        </div>
-    </div>
+
 
     <div class="newsletter-separator"></div>
     <?php $controls->show(); ?>
-
-    <!--
-    <div class="preamble">
-        <p>
-            Do not be scared by all those configurations. Only <strong>basic settings</strong> are important and should be reviewed to
-            make Newsletter plugin work correctly. If something doesn't work, run a test from
-            <a href="admin.php?page=newsletter_main_diagnostic">diagnostic panel</a>.
-        </p>
-    </div>
-    -->
 
     <form method="post" action="">
         <?php $controls->init(); ?>
@@ -150,7 +135,7 @@ if (!$controls->is_action()) {
 
                     <p>
                         <strong>Important!</strong>
-                        <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration" target="_blank">Read the configuration page</a>
+                        <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration" target="_blank">Read the configuration page</a>
                         to know every details about these settings.
                     </p>
 
@@ -165,7 +150,7 @@ if (!$controls->is_action()) {
                             <p class="description">
                                 This the email address from which subscribers will se your email coming. Since this setting can
                                 affect the reliability of delivery,
-                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a> (important).
+                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a> (important).
                                 Generally use an address within your domain name.
                             </p>
                         </td>
@@ -177,7 +162,7 @@ if (!$controls->is_action()) {
 
                             <p class="description">
                                 Insert here the name which subscribers will see as the sender of your email (for example your blog name). Since this setting can affect the reliability of delivery (usually under Windows)
-                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a>.
+                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#sender" target="_blank">read my notes here</a>.
                             </p>
                         </td>
                     </tr>
@@ -189,7 +174,7 @@ if (!$controls->is_action()) {
                             <p class="description">
                                 Email address where delivery error messages are sent by mailing systems (eg. mailbox full, invalid address, ...).<br>
                                 Some providers do not accept this field: they can block emails or force it to a different value affecting the delivery reliability.
-                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#return-path" target="_blank">Read my notes here</a> (important).
+                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#return-path" target="_blank">Read my notes here</a> (important).
                             </p>
                         </td>
                     </tr>
@@ -201,7 +186,7 @@ if (!$controls->is_action()) {
                                 This is the email address where subscribers will reply (eg. if they want to reply to a newsletter). Leave it blank if
                                 you don't want to specify a different address from the sender email above. Since this setting can
                                 affect the reliability of delivery,
-                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#reply-to" target="_blank">read my notes here</a> (important).
+                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#reply-to" target="_blank">read my notes here</a> (important).
                             </p>
                         </td>
                     </tr>
@@ -211,7 +196,7 @@ if (!$controls->is_action()) {
                         <td>
                             <?php $controls->text('contract_key', 40); ?>
                             <p class="description">
-                                This key is used by <a href="http://www.satollo.net/plugins/newsletter" target="_blank">extensions</a> to
+                                This key is used by <a href="http://www.thenewsletterplugin.com/plugins/newsletter" target="_blank">extensions</a> to
                                 self update. It does not unlock hidden features or like!
                                 <?php if (defined('NEWSLETTER_LICENSE_KEY')) { ?>
                                 <br>A global license key is actually defined, this value will be ignored.
@@ -233,7 +218,7 @@ if (!$controls->is_action()) {
                     </p>
                     <p>
                         <strong>Important!</strong> Read the
-                        <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">delivery engine page</a>
+                        <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-delivery-engine" target="_blank">delivery engine page</a>
                         to solve speed problems and find blog setup examples to make it work at the best.
                     </p>
 
@@ -245,7 +230,7 @@ if (!$controls->is_action()) {
                             <p class="description">
                                 The Newsletter delivery engine respects this limit and it should be set to a value less than the maximum allowed by your provider
                                 (Hostgator: 500 per hour, Dreamhost: 100 per hour, Go Daddy: 1000 per <strong>day</strong> using their SMTP, Gmail: 500 per day).
-                                Read <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_blank">more on delivery engine</a> (important).
+                                Read <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-delivery-engine" target="_blank">more on delivery engine</a> (important).
                             </p>
                         </td>
                     </tr>
@@ -255,7 +240,7 @@ if (!$controls->is_action()) {
             <div id="tabs-2">
 
                     <p>
-                        Every setting is explained <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#advanced" target="_blank">here</a>.
+                        Every setting is explained <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#advanced" target="_blank">here</a>.
                     </p>
 
                 <table class="form-table">
@@ -295,7 +280,7 @@ if (!$controls->is_action()) {
                             <?php $controls->select('content_transfer_encoding', array('' => 'Default', '8bit' => '8 bit', 'base64' => 'Base 64')); ?>
                             <p class="description">
                                 Sometimes setting it to Base 64 solves problem with old mail servers (for example truncated or unformatted emails.
-                                <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#enconding" target="_blank">Read more here</a>.
+                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#enconding" target="_blank">Read more here</a>.
                             </p>
                         </td>
                     </tr>
@@ -303,7 +288,7 @@ if (!$controls->is_action()) {
                         <th>PHP max execution time</th>
                         <td>
                             <?php $controls->text('php_time_limit', 10); ?>
-                            (before write in something, <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#advanced" target="_blank">read here</a>)
+                            (before write in something, <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#advanced" target="_blank">read here</a>)
                             <p class="description">
                                 Sets the PHP max execution time in seconds, overriding the default of your server.
                             </p>
@@ -322,12 +307,12 @@ if (!$controls->is_action()) {
                     <p>
 
                         What you need to know to use and external SMTP can be found
-                        <a href="http://www.satollo.net/plugins/newsletter/newsletter-configuration#smtp" target="_blank">here</a>.
+                        <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#smtp" target="_blank">here</a>.
                         <br>
-                        On GoDaddy you should follow this <a href="http://www.satollo.net/godaddy-using-smtp-external-server-on-shared-hosting" target="_blank">special setup</a>.
+                        On GoDaddy you should follow this <a href="http://www.thenewsletterplugin.com/godaddy-using-smtp-external-server-shared-hosting" target="_blank">special setup</a>.
                     </p>
                     <p>
-                        Consider <a href="http://www.satollo.net/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
+                        Consider <a href="http://www.thenewsletterplugin.com/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
                     </p>
 
                 <table class="form-table">
@@ -376,7 +361,7 @@ if (!$controls->is_action()) {
 
             <div id="tabs-3">
                     <p>
-                        Please, <a href="http://www.satollo.net/plugins/newsletter/newsletter-locked-content" target="_blank">read more here how to use and configure</a>,
+                        Please, <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-locked-content" target="_blank">read more here how to use and configure</a>,
                         since it can incredibly increase your subscription rate.
                     </p>
                 <table class="form-table">

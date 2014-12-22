@@ -8,7 +8,7 @@ $module = NewsletterUsers::instance();
 
 <div class="wrap">
 
-    <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
+    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
     <div id="newsletter-title">
@@ -82,7 +82,7 @@ $module = NewsletterUsers::instance();
             <div class="tab-preamble">
                 <p>
                     User count by preference.
-                    <a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Read more about preferences</a> and/or
+                    <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-preferences" target="_blank">Read more about preferences</a> and/or
                     configure them from te "Subscription Form" panel.
                 <p>
             </div>
@@ -110,7 +110,7 @@ $module = NewsletterUsers::instance();
         <div id="tabs-countries">
             <div class="tab-preamble">
                 <?php if (!class_exists('NewsletterReports')) { ?>
-                    <p><strong>The <a href="http://www.satollo.net/plugins/newsletter/reports-module" target="_blank">Reports Extension</a> is required
+                    <p><strong>The <a href="http://www.thenewsletterplugin.com/plugins/newsletter/reports-module" target="_blank">Reports Extension</a> is required
                             to compute the data for this chart.</strong></p>
                 <?php } ?>
                 <p>

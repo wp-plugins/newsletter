@@ -344,6 +344,9 @@ class NewsletterControls {
 
     function wp_editor($name, $settings = array()) {
         wp_editor($this->data[$name], $name, array_merge(array('textarea_name' => 'options[' . $name . ']', 'wpautop' => false), $settings));
+        if (!is_plugin_active('mce_table_buttons/mce_table_buttons.php')) {
+            echo '<p class="description">You can install <a href="https://wordpress.org/plugins/mce-table-buttons/" target="_blank">MCE Table Button</a> for a table management toolbar add on.</p>';
+        }
     }
 
     function textarea($name, $width = '100%', $height = '50') {
@@ -456,7 +459,7 @@ class NewsletterControls {
         echo '</div>';
         echo '<div class="hints">';
         echo 'User\'s preferences can be activated from the "Subscription Form" panel. They can be used to simulate lists or create private groups. The number is the "preference number". ';
-        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Read more about preferences</a>.';
+        echo '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-preferences" target="_blank">Read more about preferences</a>.';
         echo '</div>';
         }
 
@@ -477,7 +480,7 @@ class NewsletterControls {
             echo '</div>';
         }
         echo '<div style="clear: both"></div>';
-        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
+        echo '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
         echo '</div>';
     }
 
@@ -500,7 +503,7 @@ class NewsletterControls {
             echo '</div>';
         }
         echo '<div style="clear: both"></div>';
-        echo '<a href="http://www.satollo.net/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
+        echo '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
         echo '</div>';
     }
 

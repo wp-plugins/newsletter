@@ -111,7 +111,7 @@ if ($controls->is_action('import')) {
 ?>
 
 <div class="wrap">
-    <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscribers-module'; ?>
+    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
     <div id="newsletter-title">

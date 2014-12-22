@@ -62,7 +62,7 @@ if ($controls->is_action()) {
         $controls->messages = 'Saved.';
     }
 
-if ($controls->is_action('create')) {
+    if ($controls->is_action('create')) {
         $page = array();
         $page['post_title'] = 'Newsletter';
         $page['post_content'] = '[newsletter]';
@@ -77,12 +77,37 @@ if ($controls->is_action('create')) {
 
         $controls->data['url'] = get_permalink($page_id);
         $module->save_options($controls->data);
-     }
+    }
 
     if ($controls->is_action('reset')) {
         $controls->data = $module->reset_options();
     }
 
+    if ($controls->is_action('reset-template')) {
+        $controls->data['template'] = file_get_contents(dirname(__FILE__) . '/email.html');
+    }
+
+    if ($controls->is_action('test-template')) {
+
+        $users = NewsletterUsers::instance()->get_test_users();
+        if (count($users) == 0) {
+            $controls->errors = 'There are no test subscribers. Read more about test subscribers <a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank">here</a>.';
+        } else {
+            $template = $controls->data['template'];
+            if (strpos($template, '{message}') === false) {
+                $template .= '{message}';
+            }
+            $message = '<p>This is a generic example of message embedded inside the template.</p>';
+            $message = str_replace('{message}', $message, $template);
+            $addresses = array();
+            foreach ($users as &$user) {
+                $addresses[] = $user->email;
+                Newsletter::instance()->mail($user->email, 'Newsletter Messages Template Test', $newsletter->replace($message, $user));
+            }
+            $controls->messages .= 'Test emails sent to ' . count($users) . ' test subscribers: ' .
+            implode(', ', $addresses) . '. Read more about test subscribers <a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank">here</a>.';
+        }
+    }
 } else {
     $controls->data = get_option('newsletter', array());
 
@@ -99,27 +124,27 @@ if ($controls->is_action('create')) {
 
     <script type="text/javascript">
         tinyMCE.init({
-            inline_styles : false,
-            mode : "specific_textareas",
-            editor_selector : "visual",
-            theme : "advanced",
-            entity_encoding : "raw",
-            theme_advanced_disable : "styleselect",
-            relative_urls : false,
-            remove_script_host : false,
+            inline_styles: false,
+            mode: "specific_textareas",
+            editor_selector: "visual",
+            theme: "advanced",
+            entity_encoding: "raw",
+            theme_advanced_disable: "styleselect",
+            relative_urls: false,
+            remove_script_host: false,
             theme_advanced_buttons1_add: "forecolor,blockquote,code,fontsizeselect,fontselect",
-            theme_advanced_buttons3_add : "tablecontrols,fullscreen",
-            theme_advanced_toolbar_location : "top",
-            theme_advanced_resizing : true,
+            theme_advanced_buttons3_add: "tablecontrols,fullscreen",
+            theme_advanced_toolbar_location: "top",
+            theme_advanced_resizing: true,
             theme_advanced_statusbar_location: "bottom",
-            document_base_url : "<?php echo get_option('home'); ?>/",
-            content_css : "<?php echo plugins_url('newsletter'); ?>/editor.css?" + new Date().getTime()
+            document_base_url: "<?php echo get_option('home'); ?>/",
+            content_css: "<?php echo plugins_url('newsletter'); ?>/editor.css?" + new Date().getTime()
         });
     </script>
 <?php } ?>
 
 <div class="wrap">
-    <?php $help_url = 'http://www.satollo.net/plugins/newsletter/subscription-module'; ?>
+    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module'; ?>
     <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
     <div id="newsletter-title">
@@ -139,7 +164,7 @@ if ($controls->is_action('create')) {
             Page layout where messages are shown is managed by subscription/page.php file which contains instruction on how to
             customize it OR use a WordPress page for messages as described on subscription configuration.
         </p>
-     </div>
+    </div>
     <div class="newsletter-separator"></div>
 
 
@@ -152,6 +177,7 @@ if ($controls->is_action('create')) {
                 <li><a href="#tabs-2">Subscription</a></li>
                 <li><a href="#tabs-3">Confirmation</a></li>
                 <li><a href="#tabs-4">Welcome</a></li>
+                <li><a href="#tabs-8">Template</a></li>
                 <li><a href="#tabs-9">Profile</a></li>
                 <li><a href="#tabs-5">Unsubscription</a></li>
                 <li><a href="#tabs-wp">WP Registration</a></li>
@@ -187,9 +213,9 @@ if ($controls->is_action('create')) {
                                 The page must have in its body <strong>only</strong> the short code <strong>[newsletter]</strong> (as is).
 
                                 <?php if (!empty($controls->data['url'])) { ?>
-                                <br>
-                                If something is not working as expected with this address you can empty the field above and save: a button will appear
-                                to create that page automatically.
+                                    <br>
+                                    If something is not working as expected with this address you can empty the field above and save: a button will appear
+                                    to create that page automatically.
                                 <?php } ?>
                             </p>
                         </td>
@@ -204,7 +230,7 @@ if ($controls->is_action('create')) {
                             </p>
                         </td>
                     </tr>
-                     <tr valign="top">
+                    <tr valign="top">
                         <th>Notifications</th>
                         <td>
                             <?php $controls->yesno('notify'); ?>
@@ -259,10 +285,10 @@ if ($controls->is_action('create')) {
                         <td>
                             <?php $controls->editor('already_confirmed_text'); ?><br>
                             <?php $controls->checkbox('resend_welcome_email_disabled', 'Do not resend the welcome email'); ?>
-                           <p class="description">
+                            <p class="description">
                                 Shown when the email is already subscribed and confirmed. The welcome email, if not disabled, will
                                 be sent. Find out more on this topic on its
-                                <a href="http://www.satollo.net/plugins/newsletter/subscription-module#repeated" target="_blank">documentation page</a>.
+                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module#repeated" target="_blank">documentation page</a>.
                             </p>
                         </td>
                     </tr>
@@ -384,13 +410,43 @@ if ($controls->is_action('create')) {
                 </table>
             </div>
 
+            <!-- TEMPLATE -->
+            <div id="tabs-8">
+                <p>
+                    Edit the default template of confirmation, welcome and cancellation emails. Add the {message} tag where you
+                    want the specific message text to be included.
+                </p>
+
+                <table class="form-table">
+                    <tr valign="top">
+                        <th>Enabled?</th>
+                        <td>
+                            <?php $controls->yesno('template_enabled'); ?>
+                            <p class="description">
+                                When not enabled, the old templating system is used (see the file
+                                wp-content/plugins/newsletter/subscription/email.php).
+                            </p>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Email template</th>
+                        <td>
+                            <?php $controls->textarea('template'); ?>
+                            <?php $controls->button('reset-template', 'Reset this template'); ?>
+                            <?php $controls->button('test-template', 'Send a test'); ?>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
             <!-- PROFILE -->
             <div id="tabs-9">
 
-                    <p>
-                        The page shown when the subscriber wants to edit hid profile following the link
-                        {profile_url} you added to a newsletter.
-                    </p>
+                <p>
+                    The page shown when the subscriber wants to edit hid profile following the link
+                    {profile_url} you added to a newsletter.
+                </p>
 
 
                 <table class="form-table">
@@ -398,8 +454,8 @@ if ($controls->is_action('create')) {
                         <th>Profile page</th>
                         <td>
                             <?php $controls->editor('profile_text'); ?>
-                            <?php $controls->hint('This is the page where subscribers can edit their data and it must contain the {profile_form} tag.',
-                                    'http://www.satollo.net/plugins/newsletter/subscription-module#profile'); ?>
+                            <?php $controls->hint('This is the page where subscribers can edit their data and it must contain the {profile_form} tag.', 'http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module#profile');
+                            ?>
                         </td>
                     </tr>
                     <tr>
@@ -506,38 +562,38 @@ if ($controls->is_action('create')) {
             </div>
 
 
-        <div id="tabs-wp">
+            <div id="tabs-wp">
 
-            <p>
-                Configure if and how a regular WordPress user registration can be connected to a Newsletter subscription.
-            </p>
-            <p>
-                Important! This type of subscription does not require confirmation, it's automatic on first login.
-                <a href="http://www.satollo.net/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>.
-            </p>
+                <p>
+                    Configure if and how a regular WordPress user registration can be connected to a Newsletter subscription.
+                </p>
+                <p>
+                    Important! This type of subscription does not require confirmation, it's automatic on first login.
+                    <a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>.
+                </p>
 
-            <table class="form-table">
-                <tr valign="top">
-                    <th>Subscription on registration</th>
-                    <td>
-                        <?php $controls->select('subscribe_wp_users', array(0=>'No', 1=>'Yes, force subscription', 2=>'Yes, show the option', 3=>'Yes, show the option already checked')); ?>
-                        <?php $controls->hint('Adds a newsletter subscription option on registration.', 'http://www.satollo.net/plugins/newsletter/subscription-module#registration'); ?>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th>Check box label</th>
-                    <td>
-                        <?php $controls->text('subscribe_wp_users_label', 30); ?>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th>Send welcome email to registered users</th>
-                    <td>
-                        <?php $controls->yesno('wp_welcome'); ?>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                <table class="form-table">
+                    <tr valign="top">
+                        <th>Subscription on registration</th>
+                        <td>
+                            <?php $controls->select('subscribe_wp_users', array(0 => 'No', 1 => 'Yes, force subscription', 2 => 'Yes, show the option', 3 => 'Yes, show the option already checked')); ?>
+                            <?php $controls->hint('Adds a newsletter subscription option on registration.', 'http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module#registration'); ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Check box label</th>
+                        <td>
+                            <?php $controls->text('subscribe_wp_users_label', 30); ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Send welcome email to registered users</th>
+                        <td>
+                            <?php $controls->yesno('wp_welcome'); ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
         <p>

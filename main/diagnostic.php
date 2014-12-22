@@ -9,6 +9,11 @@ if ($controls->is_action('save')) {
     $controls->messages = 'Loggin levels saved.';
 }
 
+if ($controls->is_action('reset_cron_calls')) {
+    update_option($module->prefix . '_cron_calls', false);
+    $controls->messages = 'Reset.';
+}
+
 if ($controls->is_action('trigger')) {
     $newsletter->hook_newsletter();
     $controls->messages = 'Delivery engine triggered.';
@@ -73,7 +78,9 @@ if ($controls->is_action('test_wp')) {
     if ($r) {
         $controls->messages .= 'Direct WordPress email sent<br />';
     } else {
-        $controls->errors .= 'Direct WordPress email NOT sent: <strong>ask now your provider</strong> to know if you can send emails from your blog or not..<br>';
+        $controls->errors = 'Direct WordPress email NOT sent: <strong>ask now your provider</strong> to know if you can send emails from your blog or not..<br>';
+        global $phpmailer;
+        $controls->errors .= 'Mailer error message: ' . $phpmailer->ErrorInfo . '<br>';
     }
 }
 
@@ -110,17 +117,38 @@ if ($controls->is_action('send_test')) {
     $text['html'] = '<p>This is an <b>HTML</b> test email part sent using the sender data set on Newsletter main setting.</p>';
     $text['text'] = 'This is a textual test email part sent using the sender data set on Newsletter main setting.';
     $r = $newsletter->mail($controls->data['test_email'], 'Newsletter: both textual and html email', $text);
-    if ($r)
+    if ($r) {
         $controls->messages .= 'Newsletter: both textual and html test email sent.<br />';
-    else
+    } else {
         $controls->errors .= 'Newsletter both TEXT and HTML test email NOT sent: try to change the sender data, remove the return path and the reply to settings.<br />';
+    }
 }
 
-if (empty($controls->data))
+if (empty($controls->data)) {
     $controls->data = get_option('newsletter_diagnostic');
+}
+
+$calls = get_option('newsletter_diagnostic_cron_calls', array());
+
+if (count($calls) > 1) {
+    $mean = 0;
+    $max = 0;
+    $min = 0;
+    for ($i = 1; $i < count($calls); $i++) {
+        $diff = $calls[$i] - $calls[$i - 1];
+        $mean += $diff;
+        if ($min == 0 || $min > $diff) {
+            $min = $diff;
+        }
+        if ($max < $diff) {
+            $max = $diff;
+        }
+    }
+    $mean = $mean / count($calls) - 1;
+}
 ?>
 <div class="wrap">
-    <?php $help_url = 'http://www.satollo.net/plugins/newsletter/newsletter-diagnostic'; ?>
+    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-diagnostic'; ?>
     <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
     <div id="newsletter-title">
@@ -138,39 +166,42 @@ if (empty($controls->data))
     <form method="post" action="">
         <?php $controls->init(); ?>
 
-        <h3>Test your mail system</h3>
-        Email: <?php $controls->text('test_email'); ?>
-        <?php $controls->button('test_wp', 'Send an email with WordPress'); ?>
-        <?php $controls->button('send_test', 'Send few emails with Newsletter'); ?>
-        <p class="description">
-            First test emailing with WordPress if it does not work you need to contact your provider. Test on different addresses.
-            <br>
-            Second test emailing with Newsletter. You must receive three distinct email in different formats.
-            <br>
-            If the WordPress test works but Newsletter test doesn't, check the main configuration and try to change the sender,
-            return path and reply to email addresses.
-        </p>
 
-
-        <h3>System Check and Upgrade</h3>
-        <p>
-            Tables below contain some system parameter that can affect Newsletter plugin working mode. When asking for support consider to
-            report those values.
-        </p>
 
         <div id="tabs">
 
             <ul>
-                <li><a href="#tabs-1">Logging</a></li>
+                <li><a href="#tabs-tests">Tests</a></li>
+                <li><a href="#tabs-logging">Logging</a></li>
                 <li><a href="#tabs-2">Semaphores and Crons</a></li>
                 <li><a href="#tabs-4">System</a></li>
                 <li><a href="#tabs-upgrade">Maintainance</a></li>
             </ul>
 
-            <!-- LOGGING -->
-            <div id="tabs-1">
+            <!-- TESTS -->
+            <div id="tabs-tests">
+                <p>Here you can test if the blog is able to send emails reliabily.</p>
 
-                <h4>Logging</h4>
+                <p>Email address where to send test messages: <?php $controls->text('test_email', 50); ?></p>
+
+                <p>
+                    <?php $controls->button('test_wp', 'Send an email with WordPress'); ?>
+                    <?php $controls->button('send_test', 'Send few emails with Newsletter'); ?>
+                </p>
+
+                <p class="description">
+                    First test emailing with WordPress if it does not work you need to contact your provider. Test on different addresses.
+                    <br>
+                    Second test emailing with Newsletter. You must receive three distinct email in different formats.
+                    <br>
+                    If the WordPress test works but Newsletter test doesn't, check the main configuration and try to change the sender,
+                    return path and reply to email addresses.
+                </p>
+            </div>
+
+            <!-- LOGGING -->
+            <div id="tabs-logging">
+
                 <p>
                     The logging feature of Newsletter, when enabled, writes detailed information of the working
                     status inside few (so called) log files. Log files, one per module, are stored inside the folder
@@ -261,7 +292,7 @@ if (empty($controls->data))
                             <td>
                                 <?php
                                 if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON)
-                                    echo 'DISABLED. (can be a problem, see the <a href="http://www.satollo.net/plugins/newsletter/newsletter-delivery-engine" target="_tab">delivery engine documentation</a>)';
+                                    echo 'DISABLED. (can be a problem, see the <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-delivery-engine" target="_tab">delivery engine documentation</a>)';
                                 else
                                     echo "ENABLED. (it's ok)";
                                 ?>
@@ -301,11 +332,41 @@ if (empty($controls->data))
                             <td>
                                 <?php echo NewsletterModule::format_scheduler_time('newsletter'); ?>
                                 <?php $controls->button('trigger', 'Trigger now'); ?>
-                                <br>
-                                If inactive or always in "running now" status your blog has a problem: <a href="http://www.satollo.net/?p=2015" target="_blank">read more here</a>.
+                                <p class="description">
+                                    If inactive or always in "running now" status your blog has a problem: <a href="http://www.thenewsletterplugin.com/how-to-make-the-wordpress-cron-work" target="_blank">read more here</a>.
+                                </p>
                             </td>
                         </tr>
+                        <tr>
+                            <td>Collected samples</td>
+                            <td>
+                                <?php echo count($calls); ?>
+                                <p class="description">Samples are collected in a maximum number of <?php echo Newsletter::MAX_CRON_SAMPLES; ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Scheduler execution interval mean</td>
+                            <td>
+                                <?php
+                                if (count($calls) > 10) {
+                                    echo (int) $mean . ' seconds';
+                                    if ($mean < NEWSLETTER_CRON_INTERVAL * 1.2) {
+                                        echo ' (<span style="color: green; font-weight: bold">OK</span>)';
+                                    } else {
+                                        echo ' (<span style="color: red; font-weight: bold">KO</span>)';
+                                    }
+                                } else {
+                                    echo 'Still not enough data. It requires few hours to collect a relevant data set.';
+                                }
+                                ?>
 
+                                <p class="description">
+                                    Should be less than <?php echo NEWSLETTER_CRON_INTERVAL; ?> seconds.
+                                    <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-delivery-engine" target="_blank">Read more</a>.
+                                </p>
+
+                            </td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -313,7 +374,6 @@ if (empty($controls->data))
 
             <!-- SYSTEM -->
             <div id="tabs-4">
-                <h4>System parameters</h4>
 
                 <table class="widefat" style="width: auto">
                     <thead>
@@ -367,7 +427,7 @@ if (empty($controls->data))
                                 <br>
                                 Filters:
 
-                                 <?php
+                                <?php
                                 $filters = $wp_filter['plugins_url'];
                                 if (!is_array($filters))
                                     echo 'no filters attached to "plugin_urls"';
@@ -462,6 +522,7 @@ if (empty($controls->data))
                 </table>
 
             </div>
+
             <div id="tabs-upgrade">
                 <p>
                     Plugin and modules are able to upgrade them self when needed. If you urgently need to try to force an upgrade, press the
@@ -478,7 +539,7 @@ if (empty($controls->data))
                     <?php $controls->button('undismiss', 'Restore'); ?>
                 </p>
 
-                 <p>
+                <p>
                     Very old versions need to be upgraded on a spacial way. Use the button blow.
                 </p>
                 <p>

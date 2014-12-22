@@ -4,6 +4,11 @@
 * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Verdana%2CArial%2Csans-serif&fwDefault=normal&fsDefault=1.1em&cornerRadius=4px&bgColorHeader=cccccc&bgTextureHeader=highlight_soft&bgImgOpacityHeader=75&borderColorHeader=aaaaaa&fcHeader=222222&iconColorHeader=222222&bgColorContent=ffffff&bgTextureContent=flat&bgImgOpacityContent=75&borderColorContent=aaaaaa&fcContent=222222&iconColorContent=222222&bgColorDefault=e6e6e6&bgTextureDefault=glass&bgImgOpacityDefault=75&borderColorDefault=d3d3d3&fcDefault=555555&iconColorDefault=888888&bgColorHover=dadada&bgTextureHover=glass&bgImgOpacityHover=75&borderColorHover=999999&fcHover=212121&iconColorHover=454545&bgColorActive=ffffff&bgTextureActive=glass&bgImgOpacityActive=65&borderColorActive=aaaaaa&fcActive=212121&iconColorActive=454545&bgColorHighlight=fbf9ee&bgTextureHighlight=glass&bgImgOpacityHighlight=55&borderColorHighlight=fcefa1&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=fef1ec&bgTextureError=glass&bgImgOpacityError=95&borderColorError=cd0a0a&fcError=cd0a0a&iconColorError=cd0a0a&bgColorOverlay=aaaaaa&bgTextureOverlay=flat&bgImgOpacityOverlay=0&opacityOverlay=30&bgColorShadow=aaaaaa&bgTextureShadow=flat&bgImgOpacityShadow=0&opacityShadow=30&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
 * Copyright 2014 jQuery Foundation and other contributors; Licensed MIT */
 
+/* Imports */
+
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
+
 /* Layout helpers
 ----------------------------------*/
 .ui-helper-hidden {
@@ -630,15 +635,23 @@
 /* Admin header */
 #newsletter-header-new {
     text-align: left;
-    background-color: #fff;
+    background-color: #332D39;
     padding: 10px;
     font-size: 12px;
     border: 1px solid #ccc;
     margin-bottom: 15px;
+    xheight: 110px;
 }
 
 #newsletter-header-new a {
     text-decoration: none;
+    font-family: "Montserrat",sans-serif;
+    color: white;
+    letter-spacing: 0.2em;
+}
+
+#newsletter-header-new a:hover {
+    color: #F64747;
 }
 
 /* Admin header for extensions */
@@ -688,29 +701,16 @@
 }
 
 .wrap h2 {
-    xcolor: #21759B;
-    xfont-size: 20px;
-    xmargin: 10px 0;
-    xpadding: 0;
-    xfont-family: Georgia;
 }
 
 .wrap h3 {
-    font-family: Georgia;
 }
 
 .wrap h4 {
-    font-size: 1.1em;
-    font-weight: bold;
-    font-family: Georgia;
-    font-style: italic;
 }
 
 .wrap h5 {
-    color: #666;
-    font-size: 14px;
-    padding: 0;
-    margin: 10px 0;
+
 }
 
 .wrap ul li {
@@ -885,19 +885,19 @@ table.clicks {
 }
 */
 
-.newsletter-notice {
-    background-color: lightYellow;
-    border-color: #E6DB55;
-    border-radius: 3px;
-    border-style: solid;
-    border-width: 1px;
-    padding: .6em;
-    margin-bottom: .6em;
-    margin-top: .6em;
+.notice {
+    padding-right: 70px;
+    position: relative;
 }
 
-.newsletter-dismiss {
-    float: right;
+.notice a.dismiss {
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+    text-decoration: none;
+    color: #666;
 }
 
 .newsletter-message {
@@ -1033,4 +1033,3 @@ table.clicks {
 .newsletter-box h3 {
     margin-top: 0;
 }
-

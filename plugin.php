@@ -2,18 +2,18 @@
 
 /*
   Plugin Name: Newsletter
-  Plugin URI: http://www.satollo.net/plugins/newsletter
-  Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.satollo.net/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.6.5
+  Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
+  Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
+  Version: 3.6.6
   Author: Stefano Lissa
-  Author URI: http://www.satollo.net
+  Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 
-  Copyright 2009-2014 Stefano Lissa (email: stefano@satollo.net, web: http://www.satollo.net)
+  Copyright 2009-2014 The Newsletter Team (email: info@thenewsletterplugin.com, web: http://www.thenewsletterplugin.com)
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.6.5');
+define('NEWSLETTER_VERSION', '3.6.6');
 
 global $wpdb, $newsletter;
 
@@ -64,6 +64,9 @@ if (!defined('NEWSLETTER_CRON_INTERVAL'))
 if (!defined('NEWSLETTER_HEADER'))
     define('NEWSLETTER_HEADER', true);
 
+if (!defined('NEWSLETTER_DEBUG'))
+    define('NEWSLETTER_DEBUG', false);
+
 // Force the whole system log level to this value
 //define('NEWSLETTER_LOG_LEVEL', 4);
 
@@ -98,6 +101,8 @@ class Newsletter extends NewsletterModule {
     var $lock_found = false;
     static $instance;
 
+    const MAX_CRON_SAMPLES = 300;
+
     /**
      * @return Newsletter
      */
@@ -129,8 +134,19 @@ class Newsletter extends NewsletterModule {
         // This specific event is created by "Feed by mail" panel on configuration
         add_action('shutdown', array($this, 'hook_shutdown'));
 
-        if (defined('DOING_CRON') && DOING_CRON)
+        if (defined('DOING_CRON') && DOING_CRON) {
+            $calls = get_option('newsletter_diagnostic_cron_calls', array());
+            if (empty($calls)) {
+                add_option('newsletter_diagnostic_cron_calls', $calls, null, 'no');
+            }
+            $calls[] = time();
+            if (count($calls) > self::MAX_CRON_SAMPLES) {
+                array_shift($calls);
+            }
+            update_option('newsletter_diagnostic_cron_calls', $calls);
             return;
+        }
+
 
         // TODO: Meditation on how to use those ones...
         register_activation_hook(__FILE__, array($this, 'hook_activate'));
@@ -245,7 +261,8 @@ class Newsletter extends NewsletterModule {
 
     function admin_menu() {
         // This adds the main menu page
-        add_menu_page('Newsletter', 'Newsletter', ($this->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index');
+        add_menu_page('Newsletter', 'Newsletter', ($this->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index',
+                '', plugins_url('newsletter') . '/images/menu-icon.png');
 
         $this->add_menu_page('index', 'Welcome');
         $this->add_menu_page('main', 'Configuration');
@@ -262,13 +279,13 @@ class Newsletter extends NewsletterModule {
         if ($x === false) {
             $warnings .= 'The delivery engine is off (it should never be off). Deactivate and reactivate the plugin. Thank you.<br>';
         } else if (time() - $x > 900) {
-            $warnings .= 'The cron system seems not running correctly. See <a href="http://www.satollo.net/how-to-make-the-wordpress-cron-work" target="_blank">this page</a> for more information.<br>';
+            $warnings .= 'The cron system seems not running correctly. See <a href="http://www.thenewsletterplugin.com/how-to-make-the-wordpress-cron-work" target="_blank">this page</a> for more information.<br>';
         }
 
         if (!empty($warnings)) {
-            echo '<div id="#newsletter-warnings">';
+            echo '<div class="error"><p>';
             echo $warnings;
-            echo '</div>';
+            echo '</p></div>';
         }
     }
 
