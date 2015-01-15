@@ -732,7 +732,7 @@
     font-weight: bold;
     border-right: 1px solid #ddd;
     max-width: 200px;
-    color: #FF5F65
+    color: #000000;
 }
 .form-table th small {
     font-weight: normal;
@@ -1072,7 +1072,7 @@ table.clicks {
     font-family: "Montserrat";
     font-weight: 400;
 }
-h3 {
+#tabs h3 {
     color: #222;
     font-size: 1.3em;
     margin: 1em 0;
