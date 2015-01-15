@@ -3,7 +3,7 @@ Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct 
 Requires at least: 3.3.0
 Tested up to: 4.1
 Stable tag: trunk
-Contributors: satollo,webagile,michael.travan
+Contributors: satollo,webagile,michael-travan
 
 Add a real newsletter to your blog. In seconds. For free. With unlimited emails and subscribers.
 
