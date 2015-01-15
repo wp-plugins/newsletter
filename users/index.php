@@ -69,7 +69,7 @@ if (!empty($controls->data['search_status'])) {
         $where .= " and status=%s";
     }
 }
-    
+
 // Total items, total pages
 $items_per_page = 20;
 $where = $wpdb->prepare($where, $query_args);
@@ -110,15 +110,15 @@ $controls->data['search_page']++;
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
     <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-   
-    
+
+
     <div id="newsletter-title">
          <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
     <h2>Subscriber Search</h2>
     </div>
 
     <div class="newsletter-separator"></div>
-    
+
     <?php $controls->show(); ?>
 
     <form id="channel" method="post" action="">
@@ -126,21 +126,28 @@ $controls->data['search_page']++;
 
         <div style="padding: .6em; border: 1px solid #ddd; background-color: #f4f4f4; border-radius: 3px;">
             <?php $controls->text('search_text', 80); ?>
-            
+
             <!--<?php $controls->checkbox('search_test'); ?> show subscriber with "test" flag on-->
             <?php $controls->select('search_status', array(''=>'Any status', 'T'=>'Test subscribers', 'C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed', 'B'=>'Bounced')); ?>
             <?php $controls->button('search', 'Search'); ?>
         </div>
 
 
+
+
 <div class="newsletter-paginator">
-<?php echo $count ?> subscribers found   
+<?php echo $count ?> subscribers found
 <?php $controls->button('first', '«'); ?>
 <?php $controls->button('prev', '‹'); ?>
 <?php $controls->text('search_page', 3); ?> of <?php echo $last_page+1 ?> <?php $controls->button('go', 'Go'); ?>
 <?php $controls->button('next', '›'); ?>
 <?php $controls->button('last', '»'); ?>
 </div>
+
+<?php if ($where != "where 1=1") { ?>
+    <p><strong>The list is filtered, see the filters above.</strong></p>
+<?php } ?>
+
 <table class="widefat">
     <thead>
 <tr>

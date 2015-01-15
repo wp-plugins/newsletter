@@ -28,7 +28,7 @@ if ($controls->is_action('copy')) {
     $email['type'] = 'message';
     $email['editor'] = $original->editor;
     $email['track'] = $original->track;
-    
+
     Newsletter::instance()->save_email($email);
     $controls->messages .= 'Message duplicated.';
 }
@@ -87,10 +87,11 @@ $emails = Newsletter::instance()->get_emails('message');
                     <th>&nbsp;</th>
                     <th>Id</th>
                     <th>Subject</th>
-                    
+
                     <th>Status</th>
                     <th>Progress<sup>*</sup></th>
                     <th>Date</th>
+                    <th>Tracking</th>
                     <th>&nbsp;</th>
                     <th>&nbsp;</th>
                     <th>&nbsp;</th>
@@ -104,7 +105,7 @@ $emails = Newsletter::instance()->get_emails('message');
                         <td><input type="checkbox" name="ids[]" value="<?php echo $email->id; ?>"/></td>
                         <td><?php echo $email->id; ?></td>
                         <td><?php echo htmlspecialchars($email->subject); ?></td>
-                        
+
                         <td>
                             <?php
                             if ($email->status == 'sending') {
@@ -121,6 +122,7 @@ $emails = Newsletter::instance()->get_emails('message');
                         </td>
                         <td><?php if ($email->status == 'sent' || $email->status == 'sending')echo $email->sent . ' of ' . $email->total; ?></td>
                         <td><?php if ($email->status == 'sent' || $email->status == 'sending') echo $module->format_date($email->send_on); ?></td>
+                        <td><?php echo $email->track==1?'Yes':'No'; ?></td>
                         <td><a class="button" href="<?php echo $module->get_admin_page_url('edit'); ?>&amp;id=<?php echo $email->id; ?>">Edit</a></td>
                         <td>
                             <a class="button" href="<?php echo NewsletterStatistics::instance()->get_statistics_url($email->id); ?>">Statistics</a>

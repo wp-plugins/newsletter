@@ -59,6 +59,7 @@ if ($controls->is_action('create')) {
         $email['track'] = 1;
 
         $theme_options = $module->get_current_theme_options();
+
         $theme_url = $module->get_current_theme_url();
         $theme_subject = '';
 
@@ -129,8 +130,9 @@ function newsletter_emails_get_theme_options($theme) {
     <?php //include NEWSLETTER_DIR . '/header-new.php'; ?>
 
     <div id="newsletter-title">
-    <h2>New Newsletter</h2>
-    <p><a href="<?php echo NewsletterEmails::instance()->get_admin_page_url('theme'); ?>">Back to the themes</a></p>
+    <h2>New Newsletter
+    <a class="add-new-h2" href="<?php echo NewsletterEmails::instance()->get_admin_page_url('theme'); ?>">Back to the themes</a>
+    </h2>
 </div>
     <div class="newsletter-separator"></div>
 
@@ -140,22 +142,23 @@ function newsletter_emails_get_theme_options($theme) {
         <?php $controls->init(); ?>
         <?php $controls->hidden('theme'); ?>
 
-        <table style="width: 100%">
+        <table style="width: 100%; border-collapse: collapse">
             <tr>
-                <td style="text-align: center; vertical-align: top; border-bottom: 1px solid #ccc">
-                    <?php $controls->button_primary('save', '(1) Save options and refresh the preview'); ?><br><br>
+                <td style="text-align: left; vertical-align: top; border-bottom: 1px solid #ddd; padding-bottom: 10px">
+                    <div style="float: right; margin-left: 15px;"><?php $controls->button_primary('save', 'Refresh the preview'); ?></div>
+                    <span style="font-size: 1.1em">Theme options set here are saved for next time you will be using this theme.</span>
+
                 </td>
-                <td style="text-align: center; vertical-align: top; border-bottom: 1px solid #ccc">
-                    <?php $controls->button_primary('create', '(2) Go to edit this message'); ?><br><br>
+                <td style="text-align: left; vertical-align: top; border-bottom: 1px solid #ddd; padding-bottom: 10px">
+                    <div style="float: right"><?php $controls->button_primary('create', 'Proceed to edit &raquo;'); ?></div>
+                    <img style="position: relative; left: 5px; top: 10px;"src="<?php echo plugins_url('newsletter')?>/images/arrow.png" height="35">
                 </td>
             </tr>
             <tr>
-                <td style="width: 600px; vertical-align: top">
+                <td style="width: 600px; vertical-align: top; padding-top: 10px">
                     <?php @include $module->get_current_theme_file_path('theme-options.php'); ?>
-
-                    This theme options are saved for next time you'll use it!
                 </td>
-                <td style="vertical-align: top">
+                <td style="vertical-align: top; padding-top: 15px; padding-left: 15px">
                     <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700" style="border: 1px solid #ccc"></iframe>
                 </td>
             </tr>

@@ -264,7 +264,7 @@ if ($email['editor'] == 0) {
                             <input id="upload_image_button" type="button" value="Choose or upload an image" />
                             <?php $email['editor'] == 0 ? $controls->editor('message', 30) : $controls->textarea_fixed('message', '100%', '700'); ?>
                             <div class="hints">
-                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-tags" target="">See the list of all tags</a> that can be used on the email text.
+                                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-tags" target="_blank">See the list of all tags</a> that can be used on the email text.
                             </div>
                         
             </div>

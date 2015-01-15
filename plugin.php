@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.6.6');
+define('NEWSLETTER_VERSION', '3.6.7');
 
 global $wpdb, $newsletter;
 
@@ -298,6 +298,7 @@ class Newsletter extends NewsletterModule {
                 wp_enqueue_script('media-upload');
                 wp_enqueue_script('thickbox');
                 wp_enqueue_style('thickbox');
+                wp_enqueue_media();
             }
         }
 
