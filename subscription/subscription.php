@@ -1041,7 +1041,8 @@ class NewsletterSubscription extends NewsletterModule {
         $email = trim($this->options['notify_email']);
         if (empty($email))
             $email = get_option('admin_email');
-        wp_mail($email, '[' . get_option('blogname') . '] ' . $subject, $message, "Content-type: text/plain; charset=UTF-8\n");
+        $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+        wp_mail($email, '[' . $blogname . '] ' . $subject, $message, "Content-type: text/plain; charset=UTF-8\n");
     }
 
 }

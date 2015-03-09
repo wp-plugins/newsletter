@@ -686,12 +686,18 @@
     height: 5px;
 }
 
+/*
 .wrap, .wrap td, .wrap th, .wrap input, .wrap textarea {
     font-size: 13px;
     font-family: sans-serif;
     line-height: 130%;
 }
+*/
 
+.wrap select {
+    height: auto;
+    vertical-align: initial;
+}
 .wrap {
     background-color: white;
     padding: 10px;

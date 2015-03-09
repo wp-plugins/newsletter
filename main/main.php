@@ -213,7 +213,7 @@ if (!$controls->is_action()) {
 
                 <p>
                     These informations are used by Newsletter themes to automatically generate some sections of regular newsletters,
-                    <a href="http://www.thenewsletterplugin.com/plugins/newsletter/feed-by-mail-module?utm_source=plugin&utm_medium=link&utm_campaign=newsletter-feed" target="_blank">
+                    <a href="http://www.thenewsletterplugin.com/feed-by-mail-extension?utm_source=plugin&utm_medium=link&utm_campaign=newsletter-feed" target="_blank">
                         auto messages
                     </a> and 
                     <a href="http://www.thenewsletterplugin.com/plugins/newsletter/follow-up-module?utm_source=plugin&utm_medium=link&utm_campaign=newsletter-followup" target="_blank">

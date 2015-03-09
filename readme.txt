@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 4.1
+Tested up to: 4.1.1
 Stable tag: trunk
 Contributors: satollo,webagile,michael-travan
 
@@ -56,6 +56,14 @@ Thank you, The Newsletter Team
 No screen shots are available at this time.
 
 == Changelog ==
+
+= 3.6.8 =
+
+* Fixed the subject of the administrative notification
+* Cleaned up obsolete code
+* Added support for extension versions check
+* Fixed typo in text only themes
+* Fixed wrong unsubscribe code in German Welcome Email
 
 = 3.6.7 =
 

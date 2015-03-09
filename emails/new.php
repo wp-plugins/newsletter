@@ -9,9 +9,9 @@ if ($controls->is_action('theme')) {
 
     // If this theme has no intermediate options...
     if (!file_exists($module->get_current_theme_file_path('theme-options.php'))) {
- $email = array();
+        $email = array();
         $email['status'] = 'new';
-        $email['subject'] = 'Here the email subject';
+        $email['subject'] = __('Here the email subject', 'newsletter-emails');
         $email['track'] = 1;
 
         $theme_options = $module->get_current_theme_options();
@@ -33,14 +33,14 @@ if ($controls->is_action('theme')) {
         $email['type'] = 'message';
         $email['send_on'] = time();
         $email = Newsletter::instance()->save_email($email);
-            ?>
-    <script>
-        location.href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>";
-    </script>
-    <div class="wrap">
-    <p>If you are not automatically redirected to the composer, <a href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>">click here</a>.</p>
-    </div>
-    <?php
+        ?>
+        <script>
+            location.href = "<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>";
+        </script>
+        <div class="wrap">
+            <p>If you are not automatically redirected to the composer, <a href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>">click here</a>.</p>
+        </div>
+        <?php
         return;
     }
 }
@@ -53,87 +53,85 @@ if ($controls->is_action('save')) {
 if ($controls->is_action('create')) {
     $module->save_options($controls->data);
 
-        $email = array();
-        $email['status'] = 'new';
-        $email['subject'] = 'Here the email subject';
-        $email['track'] = 1;
+    $email = array();
+    $email['status'] = 'new';
+    $email['subject'] = __('Here the email subject', 'newsletter-emails');
+    $email['track'] = 1;
 
-        $theme_options = $module->get_current_theme_options();
+    $theme_options = $module->get_current_theme_options();
 
-        $theme_url = $module->get_current_theme_url();
-        $theme_subject = '';
+    $theme_url = $module->get_current_theme_url();
+    $theme_subject = '';
 
-        ob_start();
-        include $module->get_current_theme_file_path('theme.php');
-        $email['message'] = ob_get_clean();
+    ob_start();
+    include $module->get_current_theme_file_path('theme.php');
+    $email['message'] = ob_get_clean();
 
-        if (!empty($theme_subject)) {
-            $email['subject'] = $theme_subject;
-        }
+    if (!empty($theme_subject)) {
+        $email['subject'] = $theme_subject;
+    }
 
-        ob_start();
-        include $module->get_current_theme_file_path('theme-text.php');
-        $email['message_text'] = ob_get_clean();
+    ob_start();
+    include $module->get_current_theme_file_path('theme-text.php');
+    $email['message_text'] = ob_get_clean();
 
-        $email['type'] = 'message';
-        $email['send_on'] = time();
-        $email = Newsletter::instance()->save_email($email);
+    $email['type'] = 'message';
+    $email['send_on'] = time();
+    $email = Newsletter::instance()->save_email($email);
     ?>
     <script>
-        location.href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>";
+        location.href = "<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>";
     </script>
     <div class="wrap">
-    <p>If you are not automatically redirected to the composer, <a href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>">click here</a>.</p>
+        <p><a href="<?php echo $module->get_admin_page_url('edit'); ?>&id=<?php echo $email->id; ?>">click here to proceed</a>.</p>
     </div>
     <?php
-        return;
+    return;
 }
 
 if ($controls->data == null) {
     $controls->data = $module->get_options();
 }
 
-
-
 function newsletter_emails_update_options($options) {
     add_option('newsletter_emails', '', null, 'no');
     update_option('newsletter_emails', $options);
-  }
+}
 
 function newsletter_emails_update_theme_options($theme, $options) {
     $x = strrpos($theme, '/');
     if ($x !== false) {
-      $theme = substr($theme, $x+1);
+        $theme = substr($theme, $x + 1);
     }
     add_option('newsletter_emails_' . $theme, '', null, 'no');
     update_option('newsletter_emails_' . $theme, $options);
-  }
+}
 
 function newsletter_emails_get_options() {
     $options = get_option('newsletter_emails', array());
     return $options;
-  }
+}
 
 function newsletter_emails_get_theme_options($theme) {
     $x = strrpos($theme, '/');
     if ($x !== false) {
-      $theme = substr($theme, $x+1);
+        $theme = substr($theme, $x + 1);
     }
     $options = get_option('newsletter_emails_' . $theme, array());
     return $options;
-  }
+}
 ?>
 
 <div class="wrap">
 
-    <?php //$help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletters-module'; ?>
-    <?php //include NEWSLETTER_DIR . '/header-new.php'; ?>
+    <?php //$help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletters-module';  ?>
+    <?php //include NEWSLETTER_DIR . '/header-new.php';  ?>
 
     <div id="newsletter-title">
-    <h2>New Newsletter
-    <a class="add-new-h2" href="<?php echo NewsletterEmails::instance()->get_admin_page_url('theme'); ?>">Back to the themes</a>
-    </h2>
-</div>
+        <h2><?php _e('Create a newsletter', 'newsletter-emails') ?>
+            <a class="add-new-h2" href="<?php echo NewsletterEmails::instance()->get_admin_page_url('theme'); ?>"><?php _e('Back to the themes', 'newsletter-emails') ?></a>
+        </h2>
+    </div>
     <div class="newsletter-separator"></div>
 
     <?php $controls->show(); ?>
@@ -145,13 +143,13 @@ function newsletter_emails_get_theme_options($theme) {
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="text-align: left; vertical-align: top; border-bottom: 1px solid #ddd; padding-bottom: 10px">
-                    <div style="float: right; margin-left: 15px;"><?php $controls->button_primary('save', 'Refresh the preview'); ?></div>
-                    <span style="font-size: 1.1em">Theme options set here are saved for next time you will be using this theme.</span>
+                    <div style="float: right; margin-left: 15px;"><?php $controls->button_primary('save', __('Refresh the preview', 'newsletter-emails')); ?></div>
+                    <span style="font-size: 1.1em"><?php _e('Theme options are saved for next time you\'ll use this theme.', 'newsletter-emails') ?></span>
 
                 </td>
                 <td style="text-align: left; vertical-align: top; border-bottom: 1px solid #ddd; padding-bottom: 10px">
                     <div style="float: right"><?php $controls->button_primary('create', 'Proceed to edit &raquo;'); ?></div>
-                    <img style="position: relative; left: 5px; top: 10px;"src="<?php echo plugins_url('newsletter')?>/images/arrow.png" height="35">
+                    <img style="position: relative; left: 5px; top: 10px;"src="<?php echo plugins_url('newsletter') ?>/images/arrow.png" height="35">
                 </td>
             </tr>
             <tr>
