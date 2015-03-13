@@ -1122,7 +1122,7 @@ class Newsletter extends NewsletterModule {
      * Called weekly if at least one extension is active.
      */
     function hook_newsletter_extension_versions($force = false) {
-        if (!$force && !defined('NESLETTER_EXTENSION')) {
+        if (!$force && !defined('NEWSLETTER_EXTENSION')) {
             return;
         }
         $response = wp_remote_get('http://www.thenewsletterplugin.com/wp-content/versions/all.txt');
