@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.6.9 =
+
+* Little fix
+
 = 3.6.8 =
 
 * Fixed the subject of the administrative notification

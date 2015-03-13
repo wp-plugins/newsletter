@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.6.8
+  Version: 3.6.9
   Author: Stefano Lissa
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.6.8');
+define('NEWSLETTER_VERSION', '3.6.9');
 
 global $wpdb, $newsletter;
 
@@ -266,8 +266,7 @@ class Newsletter extends NewsletterModule {
 
     function admin_menu() {
         // This adds the main menu page
-        add_menu_page('Newsletter', 'Newsletter', ($this->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index',
-                '', plugins_url('newsletter') . '/images/menu-icon.png');
+        add_menu_page('Newsletter', 'Newsletter', ($this->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index', '', plugins_url('newsletter') . '/images/menu-icon.png');
 
         $this->add_menu_page('index', 'Welcome');
         $this->add_menu_page('main', 'Configuration');
@@ -341,7 +340,7 @@ class Newsletter extends NewsletterModule {
     }
 
     function hook_admin_init() {
-
+        
     }
 
     function hook_admin_head() {
@@ -1123,7 +1122,9 @@ class Newsletter extends NewsletterModule {
      * Called weekly if at least one extension is active.
      */
     function hook_newsletter_extension_versions($force = false) {
-        if (!$force && !defined('NESLETTER_EXTENSION')) return;
+        if (!$force && !defined('NESLETTER_EXTENSION')) {
+            return;
+        }
         $response = wp_remote_get('http://www.thenewsletterplugin.com/wp-content/versions/all.txt');
         if (is_wp_error($response)) {
             $this->logger->error($response);
@@ -1136,7 +1137,9 @@ class Newsletter extends NewsletterModule {
 
     function get_extension_version($extension_id) {
         $versions = get_option('newsletter_extension_versions');
-        if (!is_array($versions)) return null;
+        if (!is_array($versions)) {
+            return null;
+        }
         foreach ($versions as $data) {
             if ($data->id == $extension_id) {
                 return $data->version;
@@ -1176,21 +1179,22 @@ class Newsletter extends NewsletterModule {
         if (empty($new_version)) {
             return $value;
         }
-        
-//        if (file_exists(WP_PLUGIN_DIR . '/' . $extension->plugin)) {
-//            $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $extension->plugin, false, false);
-//        }
-//        else if (file_exists(WPMU_PLUGIN_DIR . '/' . $extension->plugin)) {
-//            $plugin_data = get_plugin_data(WPMU_PLUGIN_DIR . '/' . $extension->plugin, false, false);
-//        }
-//        
-//        if (!isset($plugin_data)) {
-//            return $value;
-//        }
-//        
-//        if (version_compare($new_version, $plugin_data['Version']) <= 0) {
-//            //return $value;
-//        }
+
+        if (function_exists('get_plugin_data')) {
+            if (file_exists(WP_PLUGIN_DIR . '/' . $extension->plugin)) {
+                $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $extension->plugin, false, false);
+            } else if (file_exists(WPMU_PLUGIN_DIR . '/' . $extension->plugin)) {
+                $plugin_data = get_plugin_data(WPMU_PLUGIN_DIR . '/' . $extension->plugin, false, false);
+            }
+        }
+
+        if (!isset($plugin_data)) {
+            return $value;
+        }
+
+        if (version_compare($new_version, $plugin_data['Version']) <= 0) {
+            return $value;
+        }
 
         $plugin = new stdClass();
         $plugin->id = $extension->id;
@@ -1198,7 +1202,6 @@ class Newsletter extends NewsletterModule {
         $plugin->plugin = $extension->plugin;
         $plugin->new_version = $new_version;
         $plugin->url = '';
-        //set_transient($this->prefix . '_plugin', $plugin, 7 * 86400);
         $value->response[$extension->plugin] = $plugin;
 
         if (defined('NEWSLETTER_LICENSE_KEY')) {
@@ -1297,5 +1300,5 @@ function newsletter_activate() {
 register_activation_hook(__FILE__, 'newsletter_deactivate');
 
 function newsletter_deactivate() {
-
+    
 }
