@@ -3,10 +3,14 @@ require_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
 $module = NewsletterEmails::instance();
 
-
 // Always required
-$email_id = $_GET['id'];
-$email = Newsletter::instance()->get_email($email_id, ARRAY_A);
+$email = Newsletter::instance()->get_email($_GET['id'], ARRAY_A);
+if (empty($email)) {
+    echo 'Wrong email identifier';
+    return;
+}
+$email_id = $email['id'];
+
 
 // If there is no action we assume we are enter the first time so we populate the
 // $nc->data with the editable email fields
@@ -220,7 +224,7 @@ if ($email['editor'] == 0) {
 
         window.send_to_editor = function (html) {
             var imgURL = html.match(/src=\"(.*?)\"/);
-            tinyMCE.execCommand( 'mceInsertContent', false, '<img src="' + imgURL[1] + '" />' );
+            tinyMCE.execCommand('mceInsertContent', false, '<img src="' + imgURL[1] + '" />');
             tb_remove();
         }
     });
@@ -274,13 +278,13 @@ if ($email['editor'] == 0) {
                 <?php $controls->text('subject', 70, 'Subject'); ?>
 
                 <input id="upload_image_button" type="button" value="Choose or upload an image" />
-                
-                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-tags" target="_blank"><?php _e('Available tags', 'newsletter-emails')?></a>
-                
+
+                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-tags" target="_blank"><?php _e('Available tags', 'newsletter-emails') ?></a>
+
                 <br><br>
-                
+
                 <?php $email['editor'] == 0 ? $controls->editor('message', 30) : $controls->textarea_fixed('message', '100%', '700'); ?>
-  
+
 
             </div>
 
@@ -395,8 +399,8 @@ if ($email['editor'] == 0) {
                         </td>
                     </tr>
                 </table>
-                 </div>
-                            <div id="tabs-status">
+            </div>
+            <div id="tabs-status">
                 <table class="form-table">
                     <tr valign="top">
                         <th>Email status</th>

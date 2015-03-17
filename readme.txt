@@ -57,6 +57,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.7.0 =
+
+* Bugfix
+
 = 3.6.9 =
 
 * Little fix
