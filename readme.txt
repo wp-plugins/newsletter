@@ -57,6 +57,23 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= coming =
+
+* Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
+
+= 3.7.1 =
+
+* Attempt to fix the home url retrieval on some custom installations
+* Removed some unused code
+* Fixed the rate request notice
+* Added the new URL tracking option (beta)
+* Added the new URL tracking option notice
+* Added file owner checking on diagnostic panel
+* Added action files call checking on diagnostic panel
+* Added dimensions on read-tracking image
+* Added the html tag to the message templates
+* Changed the template generation method to avoid conflicts with themes
+
 = 3.7.0 =
 
 * Bugfix
