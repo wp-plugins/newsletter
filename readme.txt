@@ -61,6 +61,10 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.7.2 =
+
+* Fixed the editor issue on subscription steps panel
+
 = 3.7.1 =
 
 * Attempt to fix the home url retrieval on some custom installations

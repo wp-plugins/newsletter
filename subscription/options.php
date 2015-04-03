@@ -147,30 +147,6 @@ if ($controls->is_action()) {
 }
 ?>
 
-<?php if (isset($controls->data['novisual']) && $controls->data['novisual'] != 1) { ?>
-    <script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/tiny_mce/tiny_mce.js"></script>
-
-    <script type="text/javascript">
-        tinyMCE.init({
-            inline_styles: false,
-            mode: "specific_textareas",
-            editor_selector: "visual",
-            theme: "advanced",
-            entity_encoding: "raw",
-            theme_advanced_disable: "styleselect",
-            relative_urls: false,
-            remove_script_host: false,
-            theme_advanced_buttons1_add: "forecolor,blockquote,code,fontsizeselect,fontselect",
-            theme_advanced_buttons3_add: "tablecontrols,fullscreen",
-            theme_advanced_toolbar_location: "top",
-            theme_advanced_resizing: true,
-            theme_advanced_statusbar_location: "bottom",
-            document_base_url: "<?php echo get_option('home'); ?>/",
-            content_css: "<?php echo plugins_url('newsletter'); ?>/editor.css?" + new Date().getTime()
-        });
-    </script>
-<?php } ?>
-
 <div class="wrap">
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module'; ?>
     <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
@@ -248,6 +224,7 @@ if ($controls->is_action()) {
                             </p>
                         </td>
                     </tr>
+                    <?php /*
                     <tr valign="top">
                         <th>Disable visual editors?</th>
                         <td>
@@ -258,6 +235,7 @@ if ($controls->is_action()) {
                             </p>
                         </td>
                     </tr>
+                    */ ?>
                     <tr valign="top">
                         <th>Notifications</th>
                         <td>
