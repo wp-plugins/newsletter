@@ -224,6 +224,18 @@ if ($controls->is_action()) {
                             </p>
                         </td>
                     </tr>
+                     <tr valign="top">
+                        <th>Action URLs</th>
+                        <td>
+                            <?php $controls->select('action_url', array(0=>__('Standard', 'newsletter-statistics'), 
+                    1=>__('Blog Home URL with parameters', 'newsletter-statistics'))) ?>
+                            <p class="description">
+                                How the URLs for unsubscription, profile editing and so on should look. Due to some spam filter
+                                rules, the "Blog Home URL" should be safe but can conflict with plugins which removes the query string
+                                parameters.
+                            </p>
+                        </td>
+                    </tr>
                     <?php /*
                     <tr valign="top">
                         <th>Disable visual editors?</th>

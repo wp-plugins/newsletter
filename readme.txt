@@ -61,6 +61,20 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.7.4 =
+
+* Added control to avoid the wp super cache caching on newsletter services
+* Added the new action URL schema (see the subscription steps panel)
+* Added confirmation_url attribute to the form short code
+* Added referrer attribute to the form short code
+* Newsletters now start with empty subject and it's require to write it
+* Fixed the API add service key check
+* Fixed a couple of PHP noticies on widget (when not configured)
+
+= 3.7.3 =
+
+* Fixed extra profile field rules and placeholder
+
 = 3.7.2 =
 
 * Fixed the editor issue on subscription steps panel

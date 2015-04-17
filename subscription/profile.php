@@ -22,23 +22,6 @@ if (!$controls->is_action()) {
 $status = array(0 => 'Disabled/Private use', 1 => 'Only on profile page', 2 => 'Even on subscription forms');
 $rules = array(0 => 'Optional', 1 => 'Required');
 ?>
-<script type="text/javascript" src="<?php echo get_option('siteurl'); ?>/wp-content/plugins/newsletter/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript">
-    tinyMCE.init({
-        mode: "specific_textareas",
-        editor_selector: "visual",
-        theme: "advanced",
-        theme_advanced_disable: "styleselect",
-        relative_urls: false,
-        remove_script_host: false,
-        theme_advanced_buttons3: "",
-        theme_advanced_toolbar_location: "top",
-        theme_advanced_resizing: true,
-        theme_advanced_statusbar_location: "bottom",
-        document_base_url: "<?php echo get_option('home'); ?>/",
-        content_css: "<?php echo get_option('blogurl'); ?>/wp-content/plugins/newsletter/editor.css?" + new Date().getTime()
-    });
-</script>
 
 <div class="wrap">
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module'; ?>
@@ -177,6 +160,18 @@ $rules = array(0 => 'Optional', 1 => 'Required');
                     or selection list. Fields of type "list" must be configured with a set of options, comma separated
                     like: "first option, second option, third option".
                 </p>
+                <p>
+                    The placeholder works only on HTML 5 compliant browsers.
+                </p>
+                
+                 <table class="form-table">
+                    <tr>
+                        <th>Error message</th>
+                        <td>
+                            <?php $controls->text('profile_error', 50); ?>
+                        </td>
+                    </tr>
+                </table>
 
                 <table class="widefat">
                     <thead>

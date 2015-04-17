@@ -144,6 +144,8 @@ class NewsletterWidget extends WP_Widget {
     }
 
     function form($instance) {
+        if (!is_array($instance)) $instance = array();
+        $instance = array_merge(array('title'=>'', 'text'=>''), $instance);
         ?>
         <p>
             <label for="<?php echo $this->get_field_id('title'); ?>">

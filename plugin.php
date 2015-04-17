@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.7.2
+  Version: 3.7.4
   Author: Stefano Lissa
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.7.2');
+define('NEWSLETTER_VERSION', '3.7.4');
 
 global $wpdb, $newsletter;
 
@@ -442,7 +442,7 @@ class Newsletter extends NewsletterModule {
             if (!$test && $this->limits_exceeded())
                 return false;
 
-            $headers = array('List-Unsubscribe' => '<' . NEWSLETTER_UNSUBSCRIBE_URL . '?nk=' . $user->id . '-' . $user->token . '>');
+            $headers = array('List-Unsubscribe' => '<' . home_url() . 'na=u&nk=' . $user->id . '-' . $user->token . '>');
             $headers['Precedence'] = 'bulk';
             $headers['X-Newsletter-Email-Id'] = $email->id;
 
@@ -905,29 +905,59 @@ class Newsletter extends NewsletterModule {
             $id_token = '&amp;ni=' . $user->id . '&amp;nt=' . $user->token;
             $nk = $user->id . '-' . $user->token;
 
-            //$text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', self::add_qs(plugins_url('do.php', __FILE__), 'a=c' . $id_token));
-            $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', plugins_url('newsletter/do/confirm.php') . '?nk=' . $nk);
-            $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', plugins_url('newsletter/do/unsubscribe.php') . '?nk=' . $nk);
-            //$text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', NEWSLETTER_URL . '/do/unsubscribe.php?nk=' . $nk);
-            $text = $this->replace_url($text, 'UNSUBSCRIPTION_URL', plugins_url('newsletter/do/unsubscription.php') . '?nk=' . $nk);
-            $text = $this->replace_url($text, 'CHANGE_URL', plugins_url('newsletter/do/change.php'));
+            $options_subscription = NewsletterSubscription::instance()->options;
 
-            // Obsolete.
-            $text = $this->replace_url($text, 'FOLLOWUP_SUBSCRIPTION_URL', self::add_qs($base, 'nm=fs' . $id_token));
-            $text = $this->replace_url($text, 'FOLLOWUP_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=fu' . $id_token));
-            $text = $this->replace_url($text, 'FEED_SUBSCRIPTION_URL', self::add_qs($base, 'nm=es' . $id_token));
-            $text = $this->replace_url($text, 'FEED_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=eu' . $id_token));
+            if (!empty($options_subscription['action_url'])) {
+                $home_url = home_url();
+                //$text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', self::add_qs(plugins_url('do.php', __FILE__), 'a=c' . $id_token));
+                $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', $home_url . '?na=c&nk=' . $nk);
+                $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', $home_url . '?na=u&nk=' . $nk);
+                //$text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', NEWSLETTER_URL . '/do/unsubscribe.php?nk=' . $nk);
+                $text = $this->replace_url($text, 'UNSUBSCRIPTION_URL', $home_url . '?na=uc&nk=' . $nk);
+                $text = $this->replace_url($text, 'CHANGE_URL', plugins_url('newsletter/do/change.php'));
+
+                // Obsolete.
+                $text = $this->replace_url($text, 'FOLLOWUP_SUBSCRIPTION_URL', self::add_qs($base, 'nm=fs' . $id_token));
+                $text = $this->replace_url($text, 'FOLLOWUP_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=fu' . $id_token));
+                $text = $this->replace_url($text, 'FEED_SUBSCRIPTION_URL', self::add_qs($base, 'nm=es' . $id_token));
+                $text = $this->replace_url($text, 'FEED_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=eu' . $id_token));
 
 
-            if (empty($options_profile['profile_url']))
-                $text = $this->replace_url($text, 'PROFILE_URL', plugins_url('newsletter/do/profile.php') . '?nk=' . $nk);
-            else
-                $text = $this->replace_url($text, 'PROFILE_URL', self::add_qs($options_profile['profile_url'], 'ni=' . $user->id . '&amp;nt=' . $user->token));
+                if (empty($options_profile['profile_url']))
+                    $text = $this->replace_url($text, 'PROFILE_URL', $home_url . '?na=p&nk=' . $nk);
+                else
+                    $text = $this->replace_url($text, 'PROFILE_URL', self::add_qs($options_profile['profile_url'], 'ni=' . $user->id . '&amp;nt=' . $user->token));
 
-            //$text = $this->replace_url($text, 'UNLOCK_URL', self::add_qs($this->options_main['lock_url'], 'nm=m' . $id_token));
-            $text = $this->replace_url($text, 'UNLOCK_URL', plugins_url('newsletter/do/unlock.php') . '?nk=' . $nk);
-            if (!empty($email_id)) {
-                $text = $this->replace_url($text, 'EMAIL_URL', plugins_url('newsletter/do/view.php') . '?id=' . $email_id . '&amp;nk=' . $nk);
+                //$text = $this->replace_url($text, 'UNLOCK_URL', self::add_qs($this->options_main['lock_url'], 'nm=m' . $id_token));
+                $text = $this->replace_url($text, 'UNLOCK_URL', $home_url . '?na=ul&nk=' . $nk);
+                if (!empty($email_id)) {
+                    $text = $this->replace_url($text, 'EMAIL_URL', $home_url . '?na=v&id=' . $email_id . '&amp;nk=' . $nk);
+                }
+            } else {
+                //$text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', self::add_qs(plugins_url('do.php', __FILE__), 'a=c' . $id_token));
+                $text = $this->replace_url($text, 'SUBSCRIPTION_CONFIRM_URL', plugins_url('newsletter/do/confirm.php') . '?nk=' . $nk);
+                $text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', plugins_url('newsletter/do/unsubscribe.php') . '?nk=' . $nk);
+                //$text = $this->replace_url($text, 'UNSUBSCRIPTION_CONFIRM_URL', NEWSLETTER_URL . '/do/unsubscribe.php?nk=' . $nk);
+                $text = $this->replace_url($text, 'UNSUBSCRIPTION_URL', plugins_url('newsletter/do/unsubscription.php') . '?nk=' . $nk);
+                $text = $this->replace_url($text, 'CHANGE_URL', plugins_url('newsletter/do/change.php'));
+
+                // Obsolete.
+                $text = $this->replace_url($text, 'FOLLOWUP_SUBSCRIPTION_URL', self::add_qs($base, 'nm=fs' . $id_token));
+                $text = $this->replace_url($text, 'FOLLOWUP_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=fu' . $id_token));
+                $text = $this->replace_url($text, 'FEED_SUBSCRIPTION_URL', self::add_qs($base, 'nm=es' . $id_token));
+                $text = $this->replace_url($text, 'FEED_UNSUBSCRIPTION_URL', self::add_qs($base, 'nm=eu' . $id_token));
+
+
+                if (empty($options_profile['profile_url']))
+                    $text = $this->replace_url($text, 'PROFILE_URL', plugins_url('newsletter/do/profile.php') . '?nk=' . $nk);
+                else
+                    $text = $this->replace_url($text, 'PROFILE_URL', self::add_qs($options_profile['profile_url'], 'ni=' . $user->id . '&amp;nt=' . $user->token));
+
+                //$text = $this->replace_url($text, 'UNLOCK_URL', self::add_qs($this->options_main['lock_url'], 'nm=m' . $id_token));
+                $text = $this->replace_url($text, 'UNLOCK_URL', plugins_url('newsletter/do/unlock.php') . '?nk=' . $nk);
+                if (!empty($email_id)) {
+                    $text = $this->replace_url($text, 'EMAIL_URL', plugins_url('newsletter/do/view.php') . '?id=' . $email_id . '&amp;nk=' . $nk);
+                }
             }
 
             for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {

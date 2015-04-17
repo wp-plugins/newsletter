@@ -56,15 +56,17 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
 
     $email['options'] = serialize($email['options']);
 
-    if (is_array($controls->data['preferences']))
+    if (is_array($controls->data['preferences'])) {
         $email['preferences'] = implode(',', $controls->data['preferences']);
-    else
+    } else {
         $email['preferences'] = '';
+    }
 
-    if (is_array($controls->data['sex']))
+    if (is_array($controls->data['sex'])) {
         $email['sex'] = implode(',', $controls->data['sex']);
-    else
+    } else {
         $email['sex'] = '';
+    }
 
     // Before send, we build the query to extract subscriber, so the delivery engine does not
     // have to worry about the email parameters
@@ -111,13 +113,11 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
     }
 
     $email['query'] = $query;
-    if ($controls->is_action('test')) {
-        $email['total'] = 0;
-    } else {
-        $email['total'] = $wpdb->get_var(str_replace('*', 'count(*)', $query));
+    $email['total'] = $wpdb->get_var(str_replace('*', 'count(*)', $query));
+    
+    if ($controls->is_action('send') && $controls->data['send_on'] < time()) {
+        $controls->data['send_on'] = time();
     }
-    $email['sent'] = 0;
-    $email['last_id'] = 0;
     $email['send_on'] = $controls->data['send_on'];
 
     if ($controls->is_action('editor')) {
@@ -138,10 +138,14 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
 }
 
 if ($controls->is_action('send')) {
-
-    $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'sending'), array('id' => $email_id));
-    $email['status'] = 'sending';
-    $controls->messages .= "Email added to the queue.";
+    // Todo subject check
+    if ($email['subject'] == '') {
+        $controls->errors = 'Ops, you missed to write the subject!';
+    } else {
+        $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'sending'), array('id' => $email_id));
+        $email['status'] = 'sending';
+        $controls->messages .= "Email added to the queue.";
+    }
 }
 
 if ($controls->is_action('pause')) {
@@ -155,9 +159,8 @@ if ($controls->is_action('continue')) {
 }
 
 if ($controls->is_action('abort')) {
-    $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set last_id=0, total=0, sent=0, status='new' where id=" . $email_id);
+    $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set last_id=0, sent=0, status='new' where id=" . $email_id);
     $email['status'] = 'new';
-    $email['total'] = 0;
     $email['sent'] = 0;
     $email['last_id'] = 0;
     $controls->messages = "Sending aborted.";
@@ -249,7 +252,7 @@ if ($email['editor'] == 0) {
     <?php $controls->show(); ?>
 
     <form method="post" action="" id="newsletter-form">
-        <?php $controls->init(); ?>
+        <?php $controls->init(array('cookie_name'=>'newsletter_emails_edit_tab')); ?>
 
         <p class="submit">
             <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button('save', 'Save'); ?>
@@ -258,8 +261,8 @@ if ($email['editor'] == 0) {
             <?php if ($email['status'] == 'new') $controls->button_confirm('send', 'Send', 'Start a real delivery?'); ?>
             <?php if ($email['status'] == 'sending') $controls->button_confirm('pause', 'Pause', 'Pause the delivery?'); ?>
             <?php if ($email['status'] == 'paused') $controls->button_confirm('continue', 'Continue', 'Continue the delivery?'); ?>
-            <?php if ($email['status'] != 'new') $controls->button_confirm('abort', 'Abort', 'Abort the delivery?'); ?>
-            <?php $controls->button_confirm('editor', 'Save and switch to ' . ($email['editor'] == 0 ? 'HTML source' : 'visual') . ' editor', 'Sure?'); ?>
+            <?php if ($email['status'] == 'paused') $controls->button_confirm('abort', 'Abort', 'Abort the delivery?'); ?>
+            <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button_confirm('editor', 'Save and switch to ' . ($email['editor'] == 0 ? 'HTML source' : 'visual') . ' editor', 'Sure?'); ?>
         </p>
 
         <div id="tabs">
@@ -314,9 +317,9 @@ if ($email['editor'] == 0) {
                         <th><?php _e('Gender', 'newsletter-emails'); ?></th>
                         <td>
                             <?php $controls->checkboxes_group('sex', array('f' => 'Women', 'm' => 'Men', 'n' => 'Not specified')); ?>
-                            <div class="hints">
+                            <p class="description">
                                 Leaving all gender options unselected disable this filter.
-                            </div>
+                            </p>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -395,7 +398,10 @@ if ($email['editor'] == 0) {
                     <tr valign="top">
                         <th><?php _e('Send on', 'newsletter-emails') ?></th>
                         <td>
-                            <?php $controls->datetime('send_on'); ?> (<?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format')); ?> )
+                            <?php $controls->datetime('send_on'); ?> (now: <?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format')); ?>)
+                            <p class="description">
+                                If the current date and time are wrong, check your timezone on the General WordPress settings.
+                            </p>
                         </td>
                     </tr>
                 </table>

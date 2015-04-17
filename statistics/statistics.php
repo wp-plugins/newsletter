@@ -116,6 +116,11 @@ class NewsletterStatistics extends NewsletterModule {
         if (strpos($href, '/newsletter/') !== false) {
             return $matches[0];
         }
+        
+        if (strpos($href, '?na=') !== false) {
+            return $matches[0];
+        }
+        
         // Do not relink anchors
         if (substr($href, 0, 1) == '#') {
             return $matches[0];

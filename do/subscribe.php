@@ -12,7 +12,9 @@ unset($_REQUEST['na']);
 unset($_POST['na']);
 unset($_GET['na']);
 
-require_once '../../../../wp-load.php';
+if (!defined('ABSPATH')) {
+    require_once '../../../../wp-load.php';
+}
 
 $module = NewsletterSubscription::instance();
 if (!isset($module->options['antibot'])) $module->options['antibot'] = 0;
@@ -42,12 +44,12 @@ else {
                     if (is_array($value)) {
                         foreach ($value as $element) {
                             ?>
-                            <input type="hidden" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($element); ?>">
+                <input type="hidden" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr(stripslashes($element)); ?>">
                             <?php
                         }
                     } else {
                     ?>
-                    <input type="hidden" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value); ?>">
+                    <input type="hidden" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr(stripslashes($value)); ?>">
                     <?php
                     }
                     ?>

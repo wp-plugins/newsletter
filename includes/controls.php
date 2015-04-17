@@ -612,7 +612,9 @@ class NewsletterControls {
         $this->select($name, $days);
     }
 
-    function init() {
+    function init($options = array()) {
+        $cookie_name = 'newsletter_tab';
+        if (isset($options['cookie_name'])) $cookie_name = $options['cookie_name'];
         echo '<script type="text/javascript">
     jQuery(document).ready(function(){
         jQuery("textarea.dynamic").focus(function() {
@@ -620,9 +622,9 @@ class NewsletterControls {
             jQuery(this).css("height", "400px");
         });
       tabs = jQuery("#tabs").tabs({
-        active : jQuery.cookie("newsletter_tab"),
+        active : jQuery.cookie("' . $cookie_name . '"),
         activate : function( event, ui ){
-            jQuery.cookie("newsletter_tab", ui.newTab.index(),{expires: 1});
+            jQuery.cookie("' . $cookie_name . '", ui.newTab.index(),{expires: 1});
         }
       });
     });

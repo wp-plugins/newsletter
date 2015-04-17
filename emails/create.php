@@ -1,5 +1,8 @@
 <?php
 
+// Stops WP Super Cache which removes the logged_in cookie
+$_GET['preview'] = 'true';
+
 require_once '../../../../wp-load.php';
 
 if (!is_user_logged_in()) die();
@@ -15,7 +18,7 @@ if ($controls->is_action('create')) {
 
     $email = array();
     $email['status'] = 'new';
-    $email['subject'] = __('Here the email subject', 'newsletter-emails');
+    $email['subject'] = ''; //__('Here the email subject', 'newsletter-emails');
     $email['track'] = 1;
 
     $theme_options = $module->get_current_theme_options();

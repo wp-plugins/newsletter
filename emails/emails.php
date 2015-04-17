@@ -20,6 +20,14 @@ class NewsletterEmails extends NewsletterModule {
     function __construct() {
         $this->themes = new NewsletterThemes('emails');
         parent::__construct('emails', '1.1.1');
+
+        $action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
+        if (!empty($action)) {
+            if ($action == 'v') {
+                include dirname(__FILE__ . '/../do/view.php');
+            }
+            return;
+        }
     }
 
     function upgrade() {
@@ -52,9 +60,11 @@ class NewsletterEmails extends NewsletterModule {
      * Returns the current selected theme.
      */
     function get_current_theme() {
-       $theme = $this->options['theme'];
-       if (empty($theme)) return 'blank';
-       else return $theme;
+        $theme = $this->options['theme'];
+        if (empty($theme))
+            return 'blank';
+        else
+            return $theme;
     }
 
     function get_current_theme_options() {
@@ -62,7 +72,7 @@ class NewsletterEmails extends NewsletterModule {
         // main options merge
         $main_options = Newsletter::instance()->options;
         foreach ($main_options as $key => $value) {
-            $theme_options['main_'.$key] = $value;
+            $theme_options['main_' . $key] = $value;
         }
         return $theme_options;
     }
@@ -100,7 +110,8 @@ class NewsletterEmails extends NewsletterModule {
             $email['type'] = 'message';
             $query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='C'";
 
-            if ($email['list'] != 0) $query .= " and list_" . $email['list'] . "=1";
+            if ($email['list'] != 0)
+                $query .= " and list_" . $email['list'] . "=1";
             $email['preferences'] = $email['list'];
 
             if (!empty($email['sex'])) {
