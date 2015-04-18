@@ -915,7 +915,7 @@ class NewsletterSubscription extends NewsletterModule {
         if (isset($attrs['action']))
             $action = $attrs['action'];
         if (isset($attrs['referrer']))
-            $action = $attrs['referrer'];
+            $referrer = $attrs['referrer'];
 
         $options_profile = get_option('newsletter_profile');
         $options = get_option('newsletter');
@@ -970,7 +970,9 @@ class NewsletterSubscription extends NewsletterModule {
             if ($options_profile['list_' . $i . '_status'] != 2) {
                 continue;
             }
-            if (array_search($i, $preferences) !== false) {
+            
+            // Already added above
+            if (isset($preferences) && array_search($i, $preferences) !== false) {
                 continue;
             }
 
@@ -1346,6 +1348,9 @@ add_shortcode('newsletter_embed', 'newsletter_shortcode_form');
 add_shortcode('newsletter_form', 'newsletter_shortcode_form');
 
 function newsletter_shortcode_form($attrs, $content) {
+    if (!empty($content)) {
+        return NewsletterSubscription::instance()->shortcode_subscription($attrs, $content);
+    }
     if (isset($attrs['form'])) {
         return NewsletterSubscription::instance()->get_form($attrs['form']);
     } else {

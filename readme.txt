@@ -61,6 +61,10 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.7.5 =
+
+* Fixed the referrer attribute on shortcodes
+
 = 3.7.4 =
 
 * Added control to avoid the wp super cache caching on newsletter services
