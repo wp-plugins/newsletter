@@ -7,6 +7,7 @@ class NewsletterSubscription extends NewsletterModule {
     const MESSAGE_CONFIRMED = 'confirmed';
 
     static $instance;
+    var $action;
 
     /**
      * @return NewsletterSubscription
@@ -19,25 +20,11 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('subscription', '1.1.2');
-        
-        // Direct action call
-        $action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
-        if (!empty($action)) {
-            if ($action == 'u') {
-                include dirname(__FILE__ . '/../do/unsubscription.php');
-            } else if ($action == 'uc') {
-                include dirname(__FILE__ . '/../do/unsubscribe.php');
-            } else if ($action == 'p' || $action == 'pe') {
-                include dirname(__FILE__ . '/../do/profile.php');
-            } else if ($action == 'c') {
-                include dirname(__FILE__ . '/../do/confirm.php');
-            } else if ($action == 'ul') {
-                include dirname(__FILE__ . '/../do/unlock.php');
-            }
-            return;
-        }
-        
+        // Grab it before a plugin decides to remove it.
+        $this->action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
+
+        parent::__construct('subscription', '1.1.3');
+
         add_action('wp_login', array($this, 'hook_wp_login'));
 
         // Must be called after the Newsletter::hook_init, since some constants are defined
@@ -46,46 +33,37 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function hook_init() {
+        if (!is_admin() && !empty($this->action)) {
+            add_action('wp_loaded', array($this, 'hook_wp_loaded'));
+        }
+        
         add_shortcode('newsletter_profile', array($this, 'shortcode_profile'));
         add_shortcode('newsletter_subscription', array($this, 'shortcode_subscription'));
         add_shortcode('newsletter_field', array($this, 'shortcode_field'));
         add_action('wp_footer', array($this, 'hook_wp_footer'));
+    }
 
-        $action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
-        if (empty($action) || is_admin())
-            return;
+    function hook_wp_loaded() {
 
-        if ($action == 's') {
-            $user = $this->subscribe();
-            if ($user->status == 'E')
-                $this->show_message('error', $user->id);
-            if ($user->status == 'C')
-                $this->show_message('confirmation', $user->id);
-            if ($user->status == 'S')
-                $this->show_message('confirmed', $user->id);
+        switch ($this->action) {
+            case 'u':
+                include dirname(__FILE__) . '/../do/unsubscription.php';
+                break;
+            case 'uc':
+                include dirname(__FILE__) . '/../do/unsubscribe.php';
+                break;
+            case 'p':
+            case 'pe':
+                include dirname(__FILE__) . '/../do/profile.php';
+                break;
+            case 'c':
+                include dirname(__FILE__) . '/../do/confirm.php';
+                break;
+            case 'ul':
+                include dirname(__FILE__) . '/../do/unlock.php';
+                break;
         }
-        else if ($action == 'c') {
-            $user = NewsletterSubscription::instance()->confirm();
-            $this->show_message('confirmed', $user);
-        } else if ($action == 'u') {
-            $user = $this->get_user_from_request();
-            if ($user == null)
-                die('No subscriber found.');
-            $this->show_message('unsubscription', $user->id);
-        }
-        else if ($action == 'uc') {
-            $user = $this->unsubscribe();
-            if ($user->status == 'E') {
-                $this->show_message('error', $user->id);
-            } else {
-                $this->show_message('unsubscribed', $user);
-            }
-        } else if ($action == 'p' || $action == 'pe') {
-            $user = $this->get_user_from_request();
-            if ($user == null)
-                die('No subscriber found.');
-            $this->show_message('profile', $user);
-        }
+        die();
     }
 
     function upgrade() {
@@ -263,10 +241,15 @@ class NewsletterSubscription extends NewsletterModule {
             $user = array('email' => $email);
         }
 
-        $user['name'] = $newsletter->normalize_name(stripslashes($_REQUEST['nn']));
+        if (isset($_REQUEST['nn'])) {
+            $user['name'] = $newsletter->normalize_name(stripslashes($_REQUEST['nn']));
+        }
         // TODO: required checking
 
-        $user['surname'] = $newsletter->normalize_name(stripslashes($_REQUEST['ns']));
+        if (isset($_REQUEST['ns'])) {
+            $user['surname'] = $newsletter->normalize_name(stripslashes($_REQUEST['ns']));
+        }
+
         // TODO: required checking
 
         if (!empty($_REQUEST['nx'])) {
@@ -274,7 +257,9 @@ class NewsletterSubscription extends NewsletterModule {
         }
         // TODO: valid values check
 
-        $user['referrer'] = strip_tags(trim($_REQUEST['nr']));
+        if (isset($_REQUEST['nr'])) {
+            $user['referrer'] = strip_tags(trim($_REQUEST['nr']));
+        }
         $user['http_referer'] = strip_tags(trim($_SERVER['HTTP_REFERER']));
 
         // New profiles
@@ -316,8 +301,7 @@ class NewsletterSubscription extends NewsletterModule {
             $user['status'] = $opt_in == 1 ? 'C' : 'S';
         }
 
-        $user = apply_filters('newsletter_user_subscribe', $user);
-
+        //$user = apply_filters('newsletter_user_subscribe', $user);
         // TODO: should be removed!!!
         if (defined('NEWSLETTER_FEED_VERSION')) {
             $options_feed = get_option('newsletter_feed', array());
@@ -528,7 +512,7 @@ class NewsletterSubscription extends NewsletterModule {
         if (!empty($alert)) {
             $params = '&alert=' . urlencode($alert);
         }
-        
+
         if ($key == 'confirmation') {
             $this->options['confirmation_url'] = $_REQUEST['ncu'];
         }
@@ -667,10 +651,11 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function shortcode_subscription($attrs, $content) {
-        if (!is_array($attrs)) $attrs = array();
-        
-        $attrs = array_merge(array('class'=>'newsletter'), $attrs);
-        
+        if (!is_array($attrs))
+            $attrs = array();
+
+        $attrs = array_merge(array('class' => 'newsletter'), $attrs);
+
         if (isset($attrs['css'])) {
             if (!empty($attrs['css'])) {
                 echo '<style scoped>';
@@ -682,7 +667,7 @@ class NewsletterSubscription extends NewsletterModule {
             include dirname(__FILE__) . '/styles/shortcode-default.css';
             echo '</style>';
         }
-        
+
         $options_profile = get_option('newsletter_profile');
 
         $buffer = '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '" class="' . $attrs['class'] . '">';
@@ -690,11 +675,11 @@ class NewsletterSubscription extends NewsletterModule {
         if (isset($attrs['referrer'])) {
             $buffer .= "<input type='hidden' name='nr' value='$referrer'>";
         }
-        
+
         if (isset($attrs['confirmation_url'])) {
             $buffer .= "<input type='hidden' name='ncu' value='" . esc_attr($attrs['confirmation_url']) . "'>\n";
         }
-        
+
         //$content = str_replace("\r\n", "", $content);
         $buffer .= do_shortcode($content);
 
@@ -928,7 +913,7 @@ class NewsletterSubscription extends NewsletterModule {
         } else {
             $buffer .= '<form method="post" action="' . $action . '" onsubmit="return newsletter_check(this)">' . "\n\n";
         }
-        
+
         if (isset($attrs['confirmation_url'])) {
             $buffer .= "<input type='hidden' name='ncu' value='" . esc_attr($attrs['confirmation_url']) . "'>\n";
         }
@@ -970,7 +955,7 @@ class NewsletterSubscription extends NewsletterModule {
             if ($options_profile['list_' . $i . '_status'] != 2) {
                 continue;
             }
-            
+
             // Already added above
             if (isset($preferences) && array_search($i, $preferences) !== false) {
                 continue;

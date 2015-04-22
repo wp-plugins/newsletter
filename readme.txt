@@ -61,6 +61,13 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.7.6 =
+
+* Fixed the new action URL schema
+* Added a notice for blank page on newsletter creation
+* Few notices removed
+* Added more html require attributes
+
 = 3.7.5 =
 
 * Fixed the referrer attribute on shortcodes

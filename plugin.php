@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.7.5
+  Version: 3.7.6
   Author: Stefano Lissa
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.7.5');
+define('NEWSLETTER_VERSION', '3.7.6');
 
 global $wpdb, $newsletter;
 
@@ -455,13 +455,14 @@ class Newsletter extends NewsletterModule {
             $mt = $this->replace($email->message_text, $user, $email->id);
 
 
-            if ($email->track == 1)
+            if ($email->track == 1) {
                 $m = $this->relink($m, $email->id, $user->id);
+            }
 
             $s = $this->replace($email->subject, $user);
 
             if (isset($user->wp_user_id) && $user->wp_user_id != 0) {
-                $this->logger->debug('Have wp_user_id: ' . $user->wp_user_id);
+                $this->logger->debug('Has wp_user_id: ' . $user->wp_user_id);
                 // TODO: possibly name extraction
                 $wp_user_email = $wpdb->get_var($wpdb->prepare("select user_email from $wpdb->users where id=%d limit 1", $user->wp_user_id));
                 if (!empty($wp_user_email)) {
@@ -760,8 +761,13 @@ class Newsletter extends NewsletterModule {
         if (is_numeric($id) && !empty($token)) {
             return $wpdb->get_row($wpdb->prepare("select * from " . NEWSLETTER_USERS_TABLE . " where id=%d and token=%s limit 1", $id, $token));
         }
+        
+        $wp_user_id = get_current_user_id();
+        if (empty($wp_user_id)) return null;
 
-        return null;
+        $user = $this->get_user_by_wp_user_id($wp_user_id);
+        return $user;
+
 
         /*
           if ($this->options_main['wp_integration'] != 1) {
@@ -1036,14 +1042,14 @@ class Newsletter extends NewsletterModule {
     function shortcode_newsletter_lock($attrs, $content = null) {
         global $hyper_cache_stop, $cache_stop;
 
-        $this->logger->debug('Lock short code start');
+        //$this->logger->debug('Lock short code start');
         $hyper_cache_stop = true;
         $cache_stop = true;
 
         $this->lock_found = true;
 
         $user = $this->check_user();
-        if (is_user_logged_in() || ($user != null && $user->status == 'C')) {
+        if ($user != null && $user->status == 'C') {
             return do_shortcode($content);
         }
 
@@ -1056,22 +1062,10 @@ class Newsletter extends NewsletterModule {
         $buffer = $this->replace($buffer, null, null, 'lock');
 
         $buffer = do_shortcode($buffer);
-        $this->logger->debug('Lock short code end');
+        //$this->logger->debug('Lock short code end');
 
         return '<div class="newsletter-lock">' . $buffer . '</div>';
     }
-
-//    function shortcode_newsletter_profile($attrs, $content) {
-//        global $wpdb, $current_user;
-//
-//        $user = $this->check_user();
-//
-//        if ($user == null) {
-//            return 'No user found.';
-//        }
-//
-//        return $this->profile_form($user);
-//    }
 
     /**
      * Exceutes a query and log it.

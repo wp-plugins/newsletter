@@ -7,11 +7,13 @@ header('Cache-Control: no-cache,no-store,private');
 unset($_REQUEST['na']);
 unset($_POST['na']);
 unset($_GET['na']);
-
-require_once '../../../../wp-load.php';
+if (!defined('ABSPATH')) {
+    require_once '../../../../wp-load.php';
+}
 
 $user = NewsletterSubscription::instance()->get_user_from_request();
-if ($user == null)
+if ($user == null) {
     die('No subscriber found.');
+}
 NewsletterSubscription::instance()->show_message('unsubscription', $user);
 

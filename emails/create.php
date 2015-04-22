@@ -5,7 +5,10 @@ $_GET['preview'] = 'true';
 
 require_once '../../../../wp-load.php';
 
-if (!is_user_logged_in()) die();
+if (!is_user_logged_in()) {
+    echo 'No logged in user found. A plugin is almost surely removing the authentication cookies, usually a cache plugin. Try to report the issue on http://www.thenewsletterplugin.com forum.';
+    die();
+}
 if (Newsletter::instance()->options['editor'] == 1 && !current_user_can('manage_categories')) die();
 else if (!current_user_can('manage_options')) die();
 

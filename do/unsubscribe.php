@@ -2,13 +2,17 @@
 header('Content-Type: text/html;charset=UTF-8');
 header('X-Robots-Tag: noindex,nofollow,noarchive');
 header('Cache-Control: no-cache,no-store,private');
-if (isset($_GET['ts']) && time() - $_GET['ts'] < 30) {
-    // Patch to avoid "na" parameter to disturb the call
-    unset($_REQUEST['na']);
-    unset($_POST['na']);
-    unset($_GET['na']);
 
+// Patch to avoid "na" parameter to disturb the call
+unset($_REQUEST['na']);
+unset($_POST['na']);
+unset($_GET['na']);
+if (!defined('ABSPATH')) {
     require_once '../../../../wp-load.php';
+}
+
+
+if (isset($_GET['ts']) && time() - $_GET['ts'] < 30) {
 
     $user = NewsletterSubscription::instance()->unsubscribe();
     if ($user->status == 'E') {
@@ -17,6 +21,11 @@ if (isset($_GET['ts']) && time() - $_GET['ts'] < 30) {
         NewsletterSubscription::instance()->show_message('unsubscribed', $user);
     }
 } else {
+    $url = plugins_url('newsletter') . '/do/unsubscribe.php?';
+    foreach ($_REQUEST as $name => $value) {
+        $url .= urlencode($name) . '=' . urlencode($value) . '&';
+    }
+    $url .= '&ts=' . time();
     ?><!DOCTYPE html>
     <html>
         <head>

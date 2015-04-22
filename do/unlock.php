@@ -6,8 +6,9 @@ header('Cache-Control: no-cache,no-store,private');
 unset($_REQUEST['na']);
 unset($_POST['na']);
 unset($_GET['na']);
-
-include '../../../../wp-load.php';
+if (!defined('ABSPATH')) {
+    include '../../../../wp-load.php';
+}
 
 $user = NewsletterSubscription::instance()->check_user();
 
