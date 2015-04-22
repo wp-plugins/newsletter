@@ -513,7 +513,7 @@ class NewsletterSubscription extends NewsletterModule {
             $params = '&alert=' . urlencode($alert);
         }
 
-        if ($key == 'confirmation') {
+        if (isset($_REQUEST['ncu'])) {
             $this->options['confirmation_url'] = $_REQUEST['ncu'];
         }
 

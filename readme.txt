@@ -67,6 +67,7 @@ No screen shots are available at this time.
 * Added a notice for blank page on newsletter creation
 * Few notices removed
 * Added more html require attributes
+* Fixed the alternative confirmation redirect
 
 = 3.7.5 =
 
