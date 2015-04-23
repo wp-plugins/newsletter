@@ -32,19 +32,16 @@ This plug-in adds a **real newsletter system** to your WordPress blog: perfect f
 = Extend Features With Pro Extensions! =
 Need *more power* ? Feel *something's missing* ? The Newsletter Plugin features can be easily extended through our **premium, professional Extensions** ! Let us introduce just two of them : )
 
-* [Reports](http://www.thenewsletterplugin.com/plugins/newsletter/reports-module)
-* The **Reports Extension for Newsletter** is a regular WordPress plugin which improves the internal statistics collection system and provides better reports of data collected for each sent email. Neat.
-
-* [Feed By Mail](http://www.thenewsletterplugin.com/feed-by-mail-extension)
-* **Feed By Mail Extension** generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch ! 
+* [Reports Extension for Newsletter](http://www.thenewsletterplugin.com/plugins/newsletter/reports-module) is a regular WordPress plugin which improves the internal statistics collection system and provides better reports of data collected for each sent email. Neat.
+* [Feed By Mail Extension](http://www.thenewsletterplugin.com/feed-by-mail-extension) generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch ! 
 
 = Support =
 We provide support for our plugin on [Wordpress.org forums](https://wordpress.org/support/plugin/newsletter) and through our official [forum here](http://www.thenewsletterplugin.com/forums), but only Premium Users with an active license have access to one-to-one support via our [ticketing system](http://www.thenewsletterplugin.com/support-ticket). 
 
 = Follow Us =
-**Our Official Website** - http://www.thenewsletterplugin.com/ 
-**Our Facebook Page** - https://www.facebook.com/thenewsletterplugin 
-**Our Twitter Account** - https://twitter.com/newsletterwp 
+* **Our Official Website** - http://www.thenewsletterplugin.com/ 
+* **Our Facebook Page** - https://www.facebook.com/thenewsletterplugin 
+* **Our Twitter Account** - https://twitter.com/newsletterwp 
 
 == Installation ==
 
