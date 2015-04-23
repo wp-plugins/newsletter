@@ -6,7 +6,7 @@
 
 /* Imports */
 
-@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+/*@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);*/
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
 
 /* Layout helpers
@@ -1060,13 +1060,13 @@ table.clicks {
     color: #FD5F65;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    font-family: "Montserrat";
+    /*font-family: "Montserrat";*/
     font-size: 10px;
     border: 1px red solid;
 }
 
 .tip-content {
-    font-family: "Montserrat";
+    /*font-family: "Montserrat";*/
     font-weight: 500;
     font-size: 11px;
     color: #999999;
@@ -1075,14 +1075,14 @@ table.clicks {
 /* CSS General Font Styles */
 
 .wrap p {
-    font-family: "Montserrat";
+    /*font-family: "Montserrat";*/
     font-weight: 400;
 }
 #tabs h3 {
     color: #222;
     font-size: 1.3em;
     margin: 1em 0;
-    font-family: "Montserrat";
+    /*font-family: "Montserrat";*/
     text-transform: uppercase;
     letter-spacing: 0.2em;
     border-bottom: 1px solid black;
@@ -1103,7 +1103,7 @@ p.description {
 }
 
 .tnp-theme-preview p {
-    font-family: "Montserrat";
+    /*font-family: "Montserrat";*/
     font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;

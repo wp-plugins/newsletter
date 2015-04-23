@@ -68,6 +68,13 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.7.7 =
+
+* Fixed the editor role
+* Fixed the unsubscription url with the new action url schema
+* Fixed the readme.txt
+* Tested with WP 4.2
+
 = 3.7.6 =
 
 * Fixed the new action URL schema
@@ -716,25 +723,3 @@ Version 2.5.0.1
 Version 2.5.0
 - Official first release
 
-= SVN =
-
-Actually I'm using SVN in a wrong way (deliberately). Usually development with SNV
-should be done in this way:
-
-* the trunk is where the latest (eventually not working code) is available
-* the tags should contains some folders with public releases (stable or beta or alpha)
-* the branches should contains some folders representing stable releases which are there to be eventually fixed
-
-For example, when I released the version 3.0 of this plugin, I should have created
-a 3.0 folder inside the branches and fixed it when bug were reported. From time to
-time from that branch I should have created a tag, for example 3.0.4.
-
-Actually, to make this tag available it should have been reported on the readme.txt
-committed on the trunk.
-
-To make it easier, I keep in the trunk the 3.0 branch and I fix it committing the patches
-and leaving the official stable tag on readme.txt set to "trunk". That helps me
-in quick fixing the plugin without creating tags.
-
-On branches I have the 3.1 branch where I'm develping new features and when ready to be
-committed I'll merge them on trunk, updating the trunk.
