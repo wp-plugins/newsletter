@@ -9,57 +9,32 @@ Add a real newsletter to your blog. In seconds. For free. With unlimited emails 
 
 == Description ==
 
-**The Newsletter Plugin**
-=========================
+This plug-in adds a real newsletter system to your WordPress blog. Perfect for list building,
+you can create cool emails with visual editor, send and
+track them.
 
-This plug-in adds a **real newsletter system** to your WordPress blog: perfect for list building, you can easily create, send and track e-mails, headache-free. It just works ! 
+** Let me know if the plugin is doing well: rate it, thank you!** (see the stars on the right)
 
+Unlimited subscribers, unlimited e-mails.
 
-> **Main Features:** 
+Key features:
 
-> - **Unlimited Subscribers** with statistics 
-> - **Unlimited Emails** with tracking
-> - Customizable **subscription widget**, **page** or **custom form**
-> - Wordpress User Registration **seamless integration**
-> - **Single** And **Double Opt-In** plus privacy checkbox for EU laws compliance
-> - **Subscribers preferences** to fine-target your campaigns
-> - SMTP-Ready 
-> - Customizable Themes
-> - Html and Text versions of Emails 
-> - **Fully Translatable** from Admin Panel (no .po/.mo)
-> - Diagnostics Panel 
+* **unlimited subscribers** (the database is your, why should I limit you?) with statistics
+* **unlimited emails** with tracking
+* subscription widget, page or via custom form
+* integrated with **WordPress user registration**
+* single and double opt-in plus privacy acceptance checkbox (as per European laws)
+* subscriber preferences to fine target your campaigns
+* **SMTP** ready (Gmail, SendGrid, ...)
+* html and text version messages
+* configurable themes
+* every message and label **fully translatable** from administrative panels (no .po/.mo file to edit)
+* diagnostic panel for **easy system tests**
+* **extensible** with specific modules (Facebook, Reports, Feed by Mail, Follow Up)
 
-----------
+Visit the [Newsletter official page](http://www.thenewsletterplugin.com/) to know more.
 
-<i class="icon-play"></i> **Set Up Your First Newsletter In Just A Couple Of Clicks**
-
-<iframe width="100%" height="350px" src="https://www.youtube.com/embed/JaxK7XwqvVI" frameborder="0" allowfullscreen></iframe>
-
-----------
-
-**Extend Features With [Pro Extensions!](http://www.thenewsletterplugin.com/premium) **
------------------------------------------
-Need *more power* ? Feel *something's missing* ? The Newsletter Plugin features can be easily extended through our **premium, professional Extensions** ! Let us introduce just two of them : ) 
-
-
-> **[Reports](http://www.thenewsletterplugin.com/plugins/newsletter/reports-module)**
-> The Reports Extension for Newsletter is a regular WordPress plugin which improves the internal statistics collection system and provides better reports of data collected for each sent email. Neat.
-
-> **[Feed By Mail](http://www.thenewsletterplugin.com/feed-by-mail-extension)**
-> Feed By Mail Extension generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch ! 
-
------
-
-**Support**
------------
-We provide support for our plugin on [Wordpress.org forums](https://wordpress.org/support/plugin/newsletter) and through our official [forum here](http://www.thenewsletterplugin.com/forums), but only Premium Users with an active license have access to one-to-one support via our [ticketing system](http://www.thenewsletterplugin.com/support-ticket). 
-
------
-**Follow Us**
--------------
-**Our Official Website** - http://www.thenewsletterplugin.com/
-**Our Facebook Page** - https://www.facebook.com/thenewsletterplugin
-**Our Twitter Account** - https://twitter.com/newsletterwp
+Thank you, The Newsletter Team
 
 == Installation ==
 
