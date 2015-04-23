@@ -29,10 +29,12 @@ This plug-in adds a **real newsletter system** to your WordPress blog: perfect f
 **Set Up Your First Newsletter In Just A Couple Of Clicks**
 [youtube https://www.youtube.com/watch?v=JaxK7XwqvVI]
 
-= Extend Features With [Pro Extensions!](http://www.thenewsletterplugin.com/premium "The Newsletter Plugin Extensions") =
+** Extend Features With [Pro Extensions!](http://www.thenewsletterplugin.com/premium "The Newsletter Plugin Extensions")**
 Need *more power* ? Feel *something's missing* ? The Newsletter Plugin features can be easily extended through our **premium, professional Extensions** ! Let us introduce just two of them : )
+
 * **[Reports](http://www.thenewsletterplugin.com/plugins/newsletter/reports-module)**
 * The Reports Extension for Newsletter is a regular WordPress plugin which improves the internal statistics collection system and provides better reports of data collected for each sent email. Neat.
+
 * **[Feed By Mail](http://www.thenewsletterplugin.com/feed-by-mail-extension)**
 * Feed By Mail Extension generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch ! 
 
