@@ -13,7 +13,7 @@ Add a real newsletter to your blog. In seconds. For free. With unlimited emails 
 
 This plug-in adds a **real newsletter system** to your WordPress blog: perfect for list building, you can easily create, send and track e-mails, headache-free. It just works ! 
 
-**Main Features:** 
+= Main Features: =
 * **Unlimited Subscribers** with statistics 
 * **Unlimited Emails** with tracking
 * Customizable **subscription widget**, **page** or **custom form**
@@ -29,17 +29,17 @@ This plug-in adds a **real newsletter system** to your WordPress blog: perfect f
 **Set Up Your First Newsletter In Just A Couple Of Clicks**
 [youtube https://www.youtube.com/watch?v=JaxK7XwqvVI]
 
-**Extend Features With [Pro Extensions!](http://www.thenewsletterplugin.com/premium "The Newsletter Plugin Extensions")**
+= Extend Features With [Pro Extensions!](http://www.thenewsletterplugin.com/premium "The Newsletter Plugin Extensions") =
 Need *more power* ? Feel *something's missing* ? The Newsletter Plugin features can be easily extended through our **premium, professional Extensions** ! Let us introduce just two of them : )
 * **[Reports](http://www.thenewsletterplugin.com/plugins/newsletter/reports-module)**
 * The Reports Extension for Newsletter is a regular WordPress plugin which improves the internal statistics collection system and provides better reports of data collected for each sent email. Neat.
 * **[Feed By Mail](http://www.thenewsletterplugin.com/feed-by-mail-extension)**
 * Feed By Mail Extension generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch ! 
 
-**Support**
+= Support =
 We provide support for our plugin on [Wordpress.org forums](https://wordpress.org/support/plugin/newsletter) and through our official [forum here](http://www.thenewsletterplugin.com/forums), but only Premium Users with an active license have access to one-to-one support via our [ticketing system](http://www.thenewsletterplugin.com/support-ticket). 
 
-**Follow Us**
+= Follow Us =
 **Our Official Website** - http://www.thenewsletterplugin.com/
 **Our Facebook Page** - https://www.facebook.com/thenewsletterplugin
 **Our Twitter Account** - https://twitter.com/newsletterwp
