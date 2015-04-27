@@ -6,6 +6,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 class NewsletterEmails extends NewsletterModule {
 
     static $instance;
+    var $action;
 
     /**
      * @return NewsletterEmails
@@ -18,15 +19,22 @@ class NewsletterEmails extends NewsletterModule {
     }
 
     function __construct() {
+        // Grab it before a (stupid) plugin removes it.
+        $this->action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
         $this->themes = new NewsletterThemes('emails');
         parent::__construct('emails', '1.1.1');
 
-        $action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
-        if (!empty($action)) {
-            if ($action == 'v') {
-                include dirname(__FILE__ . '/../do/view.php');
-            }
-            return;
+        if (!is_admin() && !empty($this->action)) {
+            add_action('wp_loaded', array($this, 'hook_wp_loaded'));
+        }
+    }
+
+    function hook_wp_loaded() {
+        global $newsletter, $wpdb;
+        switch ($this->action) {
+            case 'v':
+                include dirname(__FILE__) . '/../do/view.php';
+                die();
         }
     }
 

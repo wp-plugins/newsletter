@@ -44,7 +44,7 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function hook_wp_loaded() {
-
+        global $newsletter, $wpdb;
         switch ($this->action) {
             case 'u':
                 include dirname(__FILE__) . '/../do/unsubscription.php';
@@ -62,6 +62,8 @@ class NewsletterSubscription extends NewsletterModule {
             case 'ul':
                 include dirname(__FILE__) . '/../do/unlock.php';
                 break;
+            default:
+                return;
         }
         die();
     }
@@ -301,7 +303,7 @@ class NewsletterSubscription extends NewsletterModule {
             $user['status'] = $opt_in == 1 ? 'C' : 'S';
         }
 
-        //$user = apply_filters('newsletter_user_subscribe', $user);
+        $user = apply_filters('newsletter_user_subscribe', $user);
         // TODO: should be removed!!!
         if (defined('NEWSLETTER_FEED_VERSION')) {
             $options_feed = get_option('newsletter_feed', array());

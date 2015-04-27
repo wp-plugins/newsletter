@@ -27,4 +27,5 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/view.php')) {
 }
 
 echo $newsletter->replace($email->message, $user, $email->id);
+die();
 ?>
