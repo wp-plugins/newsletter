@@ -91,7 +91,7 @@ $font_size = $theme_options['theme_font_size'];
                                 <?php
                                 foreach ($posts as $post) {
                                     setup_postdata($post);
-                                    $image = nt_post_image(get_the_ID());
+                                    $image = nt_post_image(get_the_ID(), 'thumbnail');
                                     ?>
 
 

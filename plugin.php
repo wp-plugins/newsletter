@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.7.8
+  Version: 3.7.9
   Author: Stefano Lissa
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.7.8');
+define('NEWSLETTER_VERSION', '3.7.9');
 
 global $wpdb, $newsletter;
 
@@ -442,7 +442,7 @@ class Newsletter extends NewsletterModule {
             if (!$test && $this->limits_exceeded())
                 return false;
 
-            $headers = array('List-Unsubscribe' => '<' . home_url() . 'na=u&nk=' . $user->id . '-' . $user->token . '>');
+            $headers = array('List-Unsubscribe' => '<' . home_url() . '?na=u&nk=' . $user->id . '-' . $user->token . '>');
             $headers['Precedence'] = 'bulk';
             $headers['X-Newsletter-Email-Id'] = $email->id;
 

@@ -6,14 +6,20 @@ $module = NewsletterUsers::instance();
 $options_profile = get_option('newsletter_profile');
 
 if ($controls->is_action('import')) {
+
     $mode = $controls->data['mode'];
 
-    // TODO: to be reomved, it's not safe
+    // TODO: to be removed, it's not safe
     @set_time_limit(100000);
-    $csv = stripslashes($controls->data['csv']);
-    $lines = explode("\n", $csv);
 
     $results = '';
+    
+    if ($_FILES['csv_file']) {
+        $lines = file($_FILES['csv_file']['tmp_name']);
+    } else {
+        $csv = stripslashes($controls->data['csv']);
+        $lines = explode("\n", $csv);
+    }
 
     // Set the selected preferences inside the
     if (!is_array($controls->data['preferences']))
@@ -27,7 +33,7 @@ if ($controls->is_action('import')) {
     $added_count = 0;
     $updated_count = 0;
     $skipped_count = 0;
-
+    
     foreach ($lines as &$line) {
         // Parse the CSV line
         $line = trim($line);
@@ -64,7 +70,7 @@ if ($controls->is_action('import')) {
             if (isset($data[3])) {
                 $subscriber['sex'] = $newsletter->normalize_sex($data[3]);
             }
-            $subscriber['status'] = 'C';
+            $subscriber['status'] = $controls->data['import_as'];
             foreach ($controls->data['preferences'] as $i) {
                 $subscriber['list_' . $i] = 1;
             }
@@ -81,6 +87,7 @@ if ($controls->is_action('import')) {
             if ($mode == 'overwrite') {
                 $subscriber['name'] = $newsletter->normalize_name($data[1]);
                 $subscriber['surname'] = $newsletter->normalize_name($data[2]);
+                $subscriber['status'] = $controls->data['import_as'];
 
                 // Prepare the preference to zero
                 for ($i = 1; $i < NEWSLETTER_LIST_MAX; $i++)
@@ -93,6 +100,7 @@ if ($controls->is_action('import')) {
             if ($mode == 'update') {
                 $subscriber['name'] = $newsletter->normalize_name($data[1]);
                 $subscriber['surname'] = $newsletter->normalize_name($data[2]);
+                $subscriber['status'] = $controls->data['import_as'];
                 foreach ($controls->data['preferences'] as $i)
                     $subscriber['list_' . $i] = 1;
             }
@@ -130,7 +138,6 @@ if ($controls->is_action('import')) {
 
     <?php $controls->show(); ?>
 
-
     <?php if (!empty($results)) { ?>
 
         <h3>Results</h3>
@@ -139,11 +146,32 @@ if ($controls->is_action('import')) {
 
     <?php } ?>
 
-    <form method="post">
+        <form method="post" enctype="multipart/form-data">
 
         <?php $controls->init(); ?>
 
         <table class="form-table">
+
+            <tr valign="top">
+                <th><?php _e('Import Subscribers As', 'newsletter-users') ?></th>
+                <td>
+                    <?php $controls->select('import_as', array('C' => __('Confirmed', 'newsletter-users'), 'S' => __('Not confirmed', 'newsletter-users'))); ?>
+                </td>
+            </tr>
+
+            <tr valign="top">
+                <th>Import mode</th>
+                <td>
+                    <?php $controls->select('mode', array('update' => 'Update', 'overwrite' => 'Overwrite', 'skip' => 'Skip')); ?>
+                    if email is already present
+                    <div class="hints">
+                        <strong>Update</strong>: <?php _e('user data will be updated, existing preferences will be left untouched and new ones will be added.', 'newsletter-users') ?><br />
+                        <strong>Overwrite</strong>: <?php _e('user data will be overwritten with new informations (like name and preferences).', 'newsletter-users') ?><br />
+                        <strong>Skip</strong>: <?php _e('user data will be left untouched if already present.', 'newsletter-users') ?>
+                    </div>
+                </td>
+            </tr>
+
             <tr valign="top">
                 <th>Preferences</th>
                 <td>
@@ -155,54 +183,63 @@ if ($controls->is_action('import')) {
             </tr>
 
             <tr valign="top">
-                <th>Import mode</th>
-                <td>
-                    If the email is already present:
-                    <?php $controls->select('mode', array('update' => 'Update', 'overwrite' => 'Overwrite', 'skip' => 'Skip')); ?>
-                    <div class="hints">
-                        <strong>Update</strong>: the user data is updated: if a user was associated to some preferences, those associations will be
-                        kept and the new ones added; his name is updated as well.<br />
-                        <strong>Overwrite</strong>: overwrite the subscriber with specified data (name+preferences).<br />
-                        <strong>Skip</strong>: leave untouched user's data when he's already subscribed.
-                    </div>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th>Separator</th>
+                <th>Field Separator</th>
                 <td>
                     <?php $controls->select('separator', array(';' => 'Semicolon', ',' => 'Comma', 'tab' => 'Tabulation')); ?>
                 </td>
             </tr>
 
-
             <tr valign="top">
-                <th>CSV text</th>
-                <td>
-                    <textarea name="options[csv]" wrap="off" style="width: 100%; height: 300px; font-size: 11px; font-family: monospace"><?php echo $controls->data['csv']; ?></textarea>
-                </td>
+                <th>
+                    <?php _e('CSV file', 'newsletter-users') ?>
+            <div class="tnp-tip">
+                <span class="tip-button">Tip</span>
+                <span class="tip-content">
+                    Upload a CSV file, see format description <a href="#import_format">here</a>.
+                </span>
+            </div>
+            </th>
+            <td>
+                <input type="file" name="csv_file" />
+            </td>
+            </tr>
+            <tr valign="top">
+                <th>CSV text
+            <div class="tnp-tip">
+                <span class="tip-button">Tip</span>
+                <span class="tip-content">
+                    Simply paste CVS text here.
+                </span>
+            </div>
+            </th>
+            <td>
+                <textarea name="options[csv]" wrap="off" style="width: 100%; height: 200px; font-size: 11px; font-family: monospace"><?php echo $controls->data['csv']; ?></textarea>
+            </td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th><td><?php $controls->button('import', 'Import'); ?></td>
             </tr>
         </table>
-
-        <p class="submit">
-            <?php $controls->button('import', 'Import'); ?>
-        </p>
+            
     </form>
 
-    <h3>Data format and other notes</h3>
-
-    <p>
-        Consider to break up your input list if you get errors, blank pages or partially imported lists: it can be a time/resource limit
-        of your provider. It's safe to import the same list a second time, no duplications will occur.
-    </p>
-
-    <p>
-        Import list format is:<br /><br />
-        <b>email 1</b><i>[separator]</i><b>first name 1</b><i>[separator]</i><b>last name 1</b><i>[separator]</i><b>gender 1</b><i>[new line]</i><br />
-        <b>email 2</b><i>[separator]</i><b>first name 2</b><i>[separator]</i><b>last name 2</b><i>[separator]</i><b>gender 2</b><i>[new line]</i><br />
-        <br />
-        where [separator] must be selected from the available ones. Empty lines and lines starting with "#" will be skipped. There is
-        no separator escaping mechanism, so be sure that field values do not contain the selected separator. The only required field is the email
-        all other fields are options. Gender must be "m" or "f".
-    </p>
+        <a name="import_format"></a>
+        
+        <h3>Data format and other notes</h3>
+    
+        <p>
+            Consider to break up your input list if you get errors, blank pages or partially imported lists: it can be a time/resource limit
+            of your provider. It's safe to import the same list a second time, no duplications will occur.
+        </p>
+    
+        <p>
+            Import list format is:<br /><br />
+            <b>email 1</b><i>[separator]</i><b>first name 1</b><i>[separator]</i><b>last name 1</b><i>[separator]</i><b>gender 1</b><i>[new line]</i><br />
+            <b>email 2</b><i>[separator]</i><b>first name 2</b><i>[separator]</i><b>last name 2</b><i>[separator]</i><b>gender 2</b><i>[new line]</i><br />
+            <br />
+            where [separator] must be selected from the available ones. Empty lines and lines starting with "#" will be skipped. There is
+            no separator escaping mechanism, so be sure that field values do not contain the selected separator. The only required field is the email
+            all other fields are options. Gender must be "m" or "f".
+        </p>
 
 </div>

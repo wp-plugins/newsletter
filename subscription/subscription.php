@@ -611,6 +611,7 @@ class NewsletterSubscription extends NewsletterModule {
 
     function get_form_javascript() {
         $options_profile = get_option('newsletter_profile');
+        if (!isset($options_profile['profile_error'])) $options_profile['profile_error'] = '';
         $buffer = "\n\n";
         $buffer .= '<script type="text/javascript">' . "\n";
         $buffer .= '//<![CDATA[' . "\n";

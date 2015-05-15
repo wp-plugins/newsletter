@@ -482,7 +482,9 @@ class NewsletterControls {
             echo '</div>';
         }
         echo '<div style="clear: both"></div>';
-        echo '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-preferences" target="_blank">Click here know more about preferences.</a> They can be configured on Subscription/Form field panel.';
+        echo '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-preferences" target="_blank">'
+        . 'Click here to read more about preferences.'
+                . '</a> They can be configured on Subscription Form - Profile fields panel.';
         echo '</div>';
     }
 

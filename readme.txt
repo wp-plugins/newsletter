@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 4.2
+Tested up to: 4.2.2
 Stable tag: trunk
 Contributors: satollo,webagile,michael-travan
 
@@ -71,6 +71,15 @@ No screen shots are available at this time.
 = coming =
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
+
+= 3.7.9 =
+
+* Added subject empty check when sending tests
+* Added option to import subscribers as confirmed or not confirmed 
+* Added import subscribers from CSV file
+* Updated the WP compatibility version number
+* Fixed the save button on sent emails
+* Fixed the List-§Unsubscribe header with new URL schema
 
 = 3.7.8 =
 

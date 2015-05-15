@@ -4,7 +4,7 @@ $controls = new NewsletterControls();
 $module = NewsletterEmails::instance();
 
 // Always required
-$email = Newsletter::instance()->get_email((int)$_GET['id'], ARRAY_A);
+$email = Newsletter::instance()->get_email((int) $_GET['id'], ARRAY_A);
 
 if (empty($email)) {
     echo 'Wrong email identifier';
@@ -114,7 +114,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
 
     $email['query'] = $query;
     $email['total'] = $wpdb->get_var(str_replace('*', 'count(*)', $query));
-    
+
     if ($controls->is_action('send') && $controls->data['send_on'] < time()) {
         $controls->data['send_on'] = time();
     }
@@ -167,22 +167,26 @@ if ($controls->is_action('abort')) {
 }
 
 if ($controls->is_action('test')) {
-    $users = NewsletterUsers::instance()->get_test_users();
-    if (count($users) == 0) {
-        $controls->messages = __('There are no test subscribers.', 'newsletter-emails');
+    if ($email['subject'] == '') {
+        $controls->errors = 'Ops, you missed to write the subject!';
     } else {
-        Newsletter::instance()->send(Newsletter::instance()->get_email($email_id), $users);
-        $controls->messages = __('Test newsletter sent to:', 'newsletter-emails');
-        foreach ($users as &$user)
-            $controls->messages .= ' ' . $user->email;
-        $controls->messages .= '.';
+        $users = NewsletterUsers::instance()->get_test_users();
+        if (count($users) == 0) {
+            $controls->messages = __('There are no test subscribers.', 'newsletter-emails');
+        } else {
+            Newsletter::instance()->send(Newsletter::instance()->get_email($email_id), $users);
+            $controls->messages = __('Test newsletter sent to:', 'newsletter-emails');
+            foreach ($users as &$user)
+                $controls->messages .= ' ' . $user->email;
+            $controls->messages .= '.';
+        }
+
+        $controls->messages .= '<br>';
+        $controls->messages .= '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank">' .
+                __('Read more about test subscribers', 'newsletter-emails') . '</a>.';
+
+        $controls->messages .= '<br>If diagnostic emails are delivered but test emails are not, try to change the encoding to "base 64" on main configuration panel';
     }
-
-    $controls->messages .= '<br>';
-    $controls->messages .= '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank">' .
-            __('Read more about test subscribers', 'newsletter-emails') . '</a>.';
-
-    $controls->messages .= '<br>If diagnostic emails are delivered but test emails are not, try to change the encoding to "base 64" on main configuration panel';
 }
 
 
@@ -235,7 +239,7 @@ if ($email['editor'] == 0) {
 
 <div class="wrap">
 
-    <?php //$help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletters-module';  ?>
+    <?php //$help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletters-module';   ?>
     <?php //include NEWSLETTER_DIR . '/header-new.php';  ?>
 
     <div id="newsletter-title">
@@ -252,10 +256,10 @@ if ($email['editor'] == 0) {
     <?php $controls->show(); ?>
 
     <form method="post" action="" id="newsletter-form">
-        <?php $controls->init(array('cookie_name'=>'newsletter_emails_edit_tab')); ?>
+        <?php $controls->init(array('cookie_name' => 'newsletter_emails_edit_tab')); ?>
 
         <p class="submit">
-            <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button('save', 'Save'); ?>
+            <?php if ($email['status'] != 'sending') $controls->button('save', 'Save'); ?>
             <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button_confirm('test', 'Save and test', 'Save and send test emails to test addresses?'); ?>
 
             <?php if ($email['status'] == 'new') $controls->button_confirm('send', 'Send', 'Start a real delivery?'); ?>
