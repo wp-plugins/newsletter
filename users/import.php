@@ -14,7 +14,7 @@ if ($controls->is_action('import')) {
 
     $results = '';
     
-    if ($_FILES['csv_file']) {
+    if (is_uploaded_file($_FILES['csv_file']['tmp_name'])) {
         $lines = file($_FILES['csv_file']['tmp_name']);
     } else {
         $csv = stripslashes($controls->data['csv']);

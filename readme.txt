@@ -72,6 +72,10 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.8.0 =
+
+* CSV import fix
+
 = 3.7.9 =
 
 * Added subject empty check when sending tests
