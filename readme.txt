@@ -72,6 +72,14 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.8.1 =
+
+* Corrected open tracking with new tracking URL schema
+* Fixed few notices
+* Unsubscribe action for already unsubscribed subscribers reshow the unsubscription message :-)
+* Changed the confirmation behavior for already confirmed users (welcome page reshown)
+
+
 = 3.8.0 =
 
 * CSV import fix

@@ -383,6 +383,11 @@ class NewsletterSubscription extends NewsletterModule {
             $this->logger->debug('Not found');
             die('No subscriber found.');
         }
+        
+        if ($user->status == 'C') {
+            return $user;
+        }
+        
         if ($user->status != 'S') {
             $this->logger->debug('Was not in status S');
             $user->status = 'E';
@@ -426,6 +431,11 @@ class NewsletterSubscription extends NewsletterModule {
             $this->logger->debug('Not found');
             die('Subscriber not found');
         }
+        
+        if ($user->status == 'U') {
+            return $user;
+        }
+        
         if ($user->status != 'C') {
             $this->logger->debug('Was not in status C');
             $user->status = 'E';
@@ -444,9 +454,9 @@ class NewsletterSubscription extends NewsletterModule {
         global $newsletter;
 
         $user = $this->get_user_from_request();
-        if ($user == null)
+        if ($user == null) {
             die('No subscriber found.');
-
+        }
 
         $options_profile = get_option('newsletter_profile', array());
         $options_main = get_option('newsletter_main', array());
@@ -467,20 +477,23 @@ class NewsletterSubscription extends NewsletterModule {
 
         // Lists. If not list is present or there is no list to choose or all are unchecked.
         $nl = $_REQUEST['nl'];
-        if (!is_array($nl))
+        if (!is_array($nl)) {
             $nl = array();
+        }
 
         // For each preference which an be edited (and so is present on profile form)...
         for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
-            if ($options_profile['list_' . $i . '_status'] == 0)
+            if ($options_profile['list_' . $i . '_status'] == 0) {
                 continue;
+            }
             $data['list_' . $i] = in_array($i, $nl) ? 1 : 0;
         }
 
         // Profile
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
-            if ($options_profile['profile_' . $i . '_status'] == 0)
+            if ($options_profile['profile_' . $i . '_status'] == 0) {
                 continue;
+            }
             $data['profile_' . $i] = stripslashes($_REQUEST['np' . $i]);
         }
 
@@ -488,7 +501,6 @@ class NewsletterSubscription extends NewsletterModule {
 
         // Feed by Mail service is saved here
         $data = apply_filters('newsletter_profile_save', $data);
-        //var_dump($data);
 
         $user = $newsletter->save_user($data);
         return $user;
@@ -611,7 +623,8 @@ class NewsletterSubscription extends NewsletterModule {
 
     function get_form_javascript() {
         $options_profile = get_option('newsletter_profile');
-        if (!isset($options_profile['profile_error'])) $options_profile['profile_error'] = '';
+        if (!isset($options_profile['profile_error']))
+            $options_profile['profile_error'] = '';
         $buffer = "\n\n";
         $buffer .= '<script type="text/javascript">' . "\n";
         $buffer .= '//<![CDATA[' . "\n";
