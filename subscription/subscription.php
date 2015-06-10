@@ -23,7 +23,7 @@ class NewsletterSubscription extends NewsletterModule {
         // Grab it before a plugin decides to remove it.
         $this->action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
 
-        parent::__construct('subscription', '1.1.3');
+        parent::__construct('subscription', '1.1.4');
 
         add_action('wp_login', array($this, 'hook_wp_login'));
 
@@ -35,12 +35,20 @@ class NewsletterSubscription extends NewsletterModule {
     function hook_init() {
         if (!is_admin() && !empty($this->action)) {
             add_action('wp_loaded', array($this, 'hook_wp_loaded'));
+            add_action('delete_user', array($this, 'hook_delete_user'));
         }
-        
+
         add_shortcode('newsletter_profile', array($this, 'shortcode_profile'));
         add_shortcode('newsletter_subscription', array($this, 'shortcode_subscription'));
         add_shortcode('newsletter_field', array($this, 'shortcode_field'));
         add_action('wp_footer', array($this, 'hook_wp_footer'));
+    }
+    
+    function hook_delete_user($id) {
+        global $wpdb;
+        if ($this->options['wp_delete'] == 1) {
+            $wpdb->delete(NEWSLETTER_USERS_TABLE, array('wp_user_id'=>$id));
+        }
     }
 
     function hook_wp_loaded() {
@@ -397,6 +405,15 @@ class NewsletterSubscription extends NewsletterModule {
         $newsletter->set_user_status($user->id, 'C');
         $user->status = 'C';
         $this->notify_admin($user, 'Newsletter subscription');
+        
+        // Check if is connected to a wp user
+        if ($user->wp_user_id) {
+            /* @var $wpdb wpdb */
+            global $wpdb;
+            $wpdb->update($wpdb->users, array('user_email'=>$user->email), array('id'=>$user->wp_user_id));
+            
+            die($wpdb->last_query);
+        }
 
         if (!$emails)
             return $user;
@@ -461,18 +478,33 @@ class NewsletterSubscription extends NewsletterModule {
         $options_profile = get_option('newsletter_profile', array());
         $options_main = get_option('newsletter_main', array());
 
-        if (!$newsletter->is_email($_REQUEST['ne']))
-            die('Wrong email address.');
+        if (!$newsletter->is_email($_REQUEST['ne'])) {
+            $user->alert = $this->options['profile_error'];
+            return $user;
+        }
+
+        $email = $this->normalize_email(stripslashes($_REQUEST['ne']));
+        $email_changed = $email != $user->email;
+        
+        // If the email has been changed, check if it is available
+        if ($email_changed) {
+            $tmp = $this->get_user($email);
+            if ($tmp != null && $tmp->id != $user->id) {
+                $user->alert = $this->options['profile_error'];
+                return $user;
+            }
+        }
 
         // General data
-        $data['email'] = $newsletter->normalize_email(stripslashes($_REQUEST['ne']));
+        $data['email'] = $email;
         $data['name'] = $newsletter->normalize_name(stripslashes($_REQUEST['nn']));
         $data['surname'] = $newsletter->normalize_name(stripslashes($_REQUEST['ns']));
         if ($options_profile['sex_status'] >= 1) {
             $data['sex'] = $_REQUEST['nx'][0];
             // Wrong data injection check
-            if ($data['sex'] != 'm' && $data['sex'] != 'f' && $data['sex'] != 'n')
+            if ($data['sex'] != 'm' && $data['sex'] != 'f' && $data['sex'] != 'n') {
                 die('Wrong sex field');
+            }
         }
 
         // Lists. If not list is present or there is no list to choose or all are unchecked.
@@ -503,6 +535,26 @@ class NewsletterSubscription extends NewsletterModule {
         $data = apply_filters('newsletter_profile_save', $data);
 
         $user = $newsletter->save_user($data);
+                
+        // Email has been changed? Are we using double opt-in?
+        $opt_in = (int) $this->options['noconfirmation'];
+        //die($opt_in);
+        if ($opt_in == 0 && $email_changed) {
+            $data['status'] = 'S';
+            if (empty($this->options['confirmation_disabled'])) {
+                $message = $this->options['confirmation_message'];
+                $subject = $this->options['confirmation_subject'];
+                global $newsletter;
+                $res = $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
+                $alert = $this->options['profile_email_changed'];
+            }
+        }
+        
+        if (isset($alert)) {
+            $user->alert = $alert;
+        } else {
+            $user->alert = $this->options['profile_saved'];
+        }
         return $user;
     }
 

@@ -264,6 +264,10 @@ class NewsletterModule {
             return $url . '?' . $qs;
     }
 
+    /**
+     * Returns the email address normalized, lowecase with no spaces. If it's not a valid email
+     * returns null.
+     */
     static function normalize_email($email) {
         $email = strtolower(trim($email));
         if (!is_email($email))

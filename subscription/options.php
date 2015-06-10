@@ -463,16 +463,28 @@ if ($controls->is_action()) {
             <div id="tabs-9">
 
                 <p>
-                    The page shown when the subscriber wants to edit hid profile following the link
-                    {profile_url} you added to a newsletter.
+                    The page shown when the subscriber wants to edit his profile following the link
+                    {profile_url} you added to a newsletter pr the welcome email.
                 </p>
 
 
                 <table class="form-table">
                     <tr valign="top">
+                        <th>Customized profile page</th>
+                        <td>
+                            <?php $controls->text('profile_url', 70); ?>
+                            <p class="description">
+                                A full page address (e.g. http://yourblog.com/profile) to be used to show and edit the subscriber profile.
+                                Leave empty to use an auto generated page or the main Newsletter page with the message below.
+                                <br>
+                                The custom page must contain the [profile_form] short code.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr valign="top">
                         <th>Profile page</th>
                         <td>
-                            <?php $controls->editor('profile_text'); ?>
+                            <?php $controls->wp_editor('profile_text'); ?>
                             <?php $controls->hint('This is the page where subscribers can edit their data and it must contain the {profile_form} tag.', 'http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module#profile');
                             ?>
                         </td>
@@ -480,7 +492,15 @@ if ($controls->is_action()) {
                     <tr>
                         <th>Other messages</th>
                         <td>
-                            confirmation after profile save: <?php $controls->text('profile_saved', 50); ?>
+                            confirmation after profile save<br>
+                            <?php $controls->text('profile_saved', 80); ?><br><br>
+                            email changed notice<br>
+                            <?php $controls->text('profile_email_changed', 80); ?>
+                            <p class="description">when a subscriber changes his email, he will be unconfirmed and a new confirmation email is sent</p>
+                            <br><br>
+                            generic error<br>
+                            <?php $controls->text('profile_error', 80); ?>
+                            <p class="description">when the email is not valid or already used by another subscriber</p>
                         </td>
                     </tr>
                 </table>
@@ -609,6 +629,13 @@ if ($controls->is_action()) {
                         <th>Send welcome email to registered users</th>
                         <td>
                             <?php $controls->yesno('wp_welcome'); ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th>Subscription delete</th>
+                        <td>
+                            <?php $controls->yesno('wp_delete'); ?>
+                            <p class="description">Delete the subscription connected to a WordPress user when that user is deleted</p>
                         </td>
                     </tr>
                 </table>

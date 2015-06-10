@@ -12,7 +12,8 @@ if (!defined('ABSPATH')) {
 }
 
 $user = NewsletterSubscription::instance()->check_user();
-if ($user == null)
+if ($user == null) {
     die('No subscriber found.');
+}
 
 NewsletterSubscription::instance()->show_message('profile', $user);

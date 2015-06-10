@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.8.1
+  Version: 3.8.2
   Author: Stefano Lissa
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.8.1');
+define('NEWSLETTER_VERSION', '3.8.2');
 
 global $wpdb, $newsletter;
 
@@ -212,6 +212,13 @@ class Newsletter extends NewsletterModule {
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " drop column name");
         $this->upgrade_query("drop table if exists " . $wpdb->prefix . "newsletter_work");
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " convert to character set utf8");
+        
+        if ($charset_collate != 'utf8mb4') {
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            if (function_exists('maybe_convert_table_to_utf8mb4')) {
+                maybe_convert_table_to_utf8mb4(NEWSLETTER_EMAILS_TABLE);
+            }
+        }
 
         // Some setting check to avoid the common support request for mis-configurations
         $options = $this->get_options();

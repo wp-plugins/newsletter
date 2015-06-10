@@ -72,13 +72,19 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.8.2 =
+
+* Improved the profile editing page (with confirmation for email change)
+* Added new sync between confirmed email and linked wp user email
+* Improved check and messages on subscriber edit panel
+* Changed the confirmation behavior for already confirmed users (welcome page reshown)
+* Added the subscription delete option when a WordPress user si deleted
+* Unsubscribe action for already unsubscribed subscribers reshow the unsubscription message
+* Better management of emoji (creating sometime a database error)
+
 = 3.8.1 =
 
 * Corrected open tracking with new tracking URL schema
-* Fixed few notices
-* Unsubscribe action for already unsubscribed subscribers reshow the unsubscription message :-)
-* Changed the confirmation behavior for already confirmed users (welcome page reshown)
-
 
 = 3.8.0 =
 

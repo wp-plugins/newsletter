@@ -39,7 +39,7 @@ class NewsletterStatistics extends NewsletterModule {
 
         // Open tracking image
         if (isset($_GET['noti'])) {
-            list($email_id, $user_id) = explode(';', base64_decode($_GET['r']), 2);
+            list($email_id, $user_id) = explode(';', base64_decode($_GET['noti']), 2);
 
             $wpdb->insert(NEWSLETTER_STATS_TABLE, array(
                 'email_id' => $email_id,
