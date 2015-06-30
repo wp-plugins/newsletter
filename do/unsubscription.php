@@ -13,7 +13,8 @@ if (!defined('ABSPATH')) {
 
 $user = NewsletterSubscription::instance()->get_user_from_request();
 if ($user == null) {
-    die('No subscriber found.');
+    NewsletterSubscription::instance()->show_message('unsubscription_error', null);
 }
-NewsletterSubscription::instance()->show_message('unsubscription', $user);
-
+else {
+    NewsletterSubscription::instance()->show_message('unsubscription', $user);
+}

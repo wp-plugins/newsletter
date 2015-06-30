@@ -14,7 +14,7 @@ if ($controls->is_action('save')) {
 
     if (empty($controls->errors)) {
         $user = $module->get_user($controls->data['email']);
-        if ($user->id != $id) {
+        if ($user && $user->id != $id) {
             $controls->errors = 'The email address is already taken by another subscriber';
         }
     }

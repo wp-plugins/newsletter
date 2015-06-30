@@ -23,7 +23,7 @@ class NewsletterSubscription extends NewsletterModule {
         // Grab it before a plugin decides to remove it.
         $this->action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
 
-        parent::__construct('subscription', '1.1.4');
+        parent::__construct('subscription', '1.1.5');
 
         add_action('wp_login', array($this, 'hook_wp_login'));
 
@@ -410,13 +410,12 @@ class NewsletterSubscription extends NewsletterModule {
         if ($user->wp_user_id) {
             /* @var $wpdb wpdb */
             global $wpdb;
-            $wpdb->update($wpdb->users, array('user_email'=>$user->email), array('id'=>$user->wp_user_id));
-            
-            die($wpdb->last_query);
+            //$wpdb->update($wpdb->users, array('user_email'=>$user->email), array('id'=>$user->wp_user_id));
         }
 
-        if (!$emails)
+        if (!$emails) {
             return $user;
+        }
 
         if (empty($this->options['confirmed_disabled'])) {
             $message = $this->options['confirmed_message'];
@@ -453,17 +452,21 @@ class NewsletterSubscription extends NewsletterModule {
             return $user;
         }
         
-        if ($user->status != 'C') {
-            $this->logger->debug('Was not in status C');
+        if ($user->status != 'C' && $user->status != 'U') {
             $user->status = 'E';
             return $user;
         }
 
-        $newsletter->set_user_status($user->id, 'U');
+        if ($user->status != 'C') {
+            $newsletter->set_user_status($user->id, 'U');
 
-        $this->mail($user->email, $newsletter->replace($this->options['unsubscribed_subject'], $user), $newsletter->replace($this->options['unsubscribed_message'], $user));
-        $this->notify_admin($user, 'Newsletter unsubscription');
-
+            if (!isset($this->options['unsubscribed_disabled'])) {
+                $this->mail($user->email, $newsletter->replace($this->options['unsubscribed_subject'], $user), $newsletter->replace($this->options['unsubscribed_message'], $user));
+            }
+            $this->notify_admin($user, 'Newsletter unsubscription');
+        }
+        
+        // Here the subscriber has status U
         return $user;
     }
 
@@ -700,7 +703,7 @@ class NewsletterSubscription extends NewsletterModule {
             $buffer .= '    }' . "\n";
         }
         $buffer .= '    for (var i=1; i<' . NEWSLETTER_PROFILE_MAX . '; i++) {' . "\n";
-        $buffer .= '    if (f.elements["np" + i] && f.elements["np" + i].value == "") {' . "\n";
+        $buffer .= '    if (f.elements["np" + i] && f.elements["np" + i].required && f.elements["np" + i].value == "") {' . "\n";
         $buffer .= '        alert("' . addslashes($options_profile['profile_error']) . '");' . "\n";
         $buffer .= '        return false;' . "\n";
         $buffer .= '    }' . "\n";
@@ -1480,13 +1483,15 @@ function newsletter_subscription_user_register($wp_user_id) {
     $module = NewsletterSubscription::instance();
 
     // If the integration is disabled...
-    if ($module->options['subscribe_wp_users'] == 0)
+    if ($module->options['subscribe_wp_users'] == 0) {
         return;
+    }
 
     // If not forced and the user didn't choose the newsletter...
     if ($module->options['subscribe_wp_users'] != 1) {
-        if (!isset($_REQUEST['newsletter']))
+        if (!isset($_REQUEST['newsletter'])) {
             return;
+        }
     }
 
     $module->logger->info('Adding a registered WordPress user (' . $wp_user_id . ')');
@@ -1496,14 +1501,16 @@ function newsletter_subscription_user_register($wp_user_id) {
         return;
     }
 
-    if (!NewsletterModule::is_email($wp_user->user_email))
+    // Yes, some registration procedures allow empty email
+    if (!NewsletterModule::is_email($wp_user->user_email)) {
         return;
+    }
 
     $_REQUEST['ne'] = $wp_user->user_email;
     $_REQUEST['nr'] = 'registration';
     // Upon registration there is no last name and first name, sorry.
     // $status is determined by the opt in
-    $user = $module->subscribe(null, false);
+    $user = $module->subscribe(null, $module->options['wp_send_confirmation'] == 1);
 
     // Now we associate it with wp
     $module->set_user_wp_user_id($user->id, $wp_user_id);

@@ -56,6 +56,15 @@ if ($controls->is_action('save')) {
                 </p>
             </td>
         </tr>
+        <tr>
+            <th><?php _e('Secret key', 'newsletter-statistics') ?></th>
+            <td>
+                <?php $controls->value('key') ?>
+                <p class="description">
+                    <?php _e('This auto-generated key is used to protect the click tracking. Shown for debug purposes.', 'newsletter-statistics') ?> 
+                </p>
+            </td>
+        </tr>        
     </table>
     <p>
         <?php $controls->button('save', __('Save', 'newsletter')) ?>

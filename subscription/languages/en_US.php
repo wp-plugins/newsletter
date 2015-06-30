@@ -78,15 +78,15 @@ $options['confirmed_message'] =
 
 $options['confirmed_tracking'] = '';
         
-// Unsubscription request introductory text
+// Unsubscription process
+
 $options['unsubscription_text'] = "<p>Please confirm that you want to unsubscribe by <a href='{unsubscription_confirm_url}'>clicking here</a>.</p>";
+$options['unsubscription_error_text'] = "<p>The subscriber was not found, it probably has already been removed. No further actions are required. Thank you.</p>";
 
 // When you finally loosed your subscriber
-$options['unsubscribed_text'] =
-"<p>Your subscription has been deleted. Thank you.</p>";
+$options['unsubscribed_text'] = "<p>Your subscription has been deleted. Thank you.</p>";
 
-$options['unsubscribed_subject'] =
-"Goodbye, {name}";
+$options['unsubscribed_subject'] = "Goodbye!";
 
 $options['unsubscribed_message'] =
 "<p>This message confirms that you have unsubscribed from the {blog_title} newsletter.</p>

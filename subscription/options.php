@@ -525,7 +525,7 @@ if ($controls->is_action()) {
                     <tr valign="top">
                         <th>Cancellation message</th>
                         <td>
-                            <?php $controls->editor('unsubscription_text'); ?>
+                            <?php $controls->wp_editor('unsubscription_text'); ?>
                             <p class="description">
                                 This text is show to users who click on a "unsubscription link" in a newsletter
                                 email. You <strong>must</strong> insert a link in the text that user can follow to confirm the
@@ -538,7 +538,7 @@ if ($controls->is_action()) {
                     <tr valign="top">
                         <th>Goodbye message</th>
                         <td>
-                            <?php $controls->editor('unsubscribed_text'); ?>
+                            <?php $controls->wp_editor('unsubscribed_text'); ?>
                             <p class="description">
                                 Shown to users after the cancellation has been completed.
                             </p>
@@ -549,13 +549,23 @@ if ($controls->is_action()) {
                     <tr valign="top">
                         <th>Goodbye email</th>
                         <td>
-                            <?php $controls->email('unsubscribed'); ?>
+                            <?php $controls->email('unsubscribed', 'wordpress', true); ?>
                             <p class="description">
                                 Sent after a cancellation, is the last message you send to the user before his removal
                                 from your newsletter subscribers. Leave the subject empty to disable this message.
                             </p>
                         </td>
                     </tr>
+                    <tr>
+                        <th>Unsubscription error</th>
+                        <td>
+                            <?php $controls->wp_editor('unsubscription_error_text'); ?>
+                            <p class="description">
+                                When the unsubscription cannot be completed, for example because the
+                                subscriber has already been removed.
+                            </p>
+                        </td>
+                    </tr>                    
                 </table>
             </div>
 
@@ -611,6 +621,7 @@ if ($controls->is_action()) {
                     <a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module#registration" target="_blank">Read more on documentation page</a>.
                 </p>
 
+                <h3>Suscription</h3>
                 <table class="form-table">
                     <tr valign="top">
                         <th>Subscription on registration</th>
@@ -625,10 +636,25 @@ if ($controls->is_action()) {
                             <?php $controls->text('subscribe_wp_users_label', 30); ?>
                         </td>
                     </tr>
+                </table>
+                
+                <h3>Confirmation</h3>
+                <p>
+                    Subscribers will be automatically confirmed on first log-in (because it demonstrates they received the WP email with
+                    their passsword. Hence no confirmation email is sent. Anyway you can change that behavior here.
+                </p>
+                <table>
+                    <tr valign="top">
+                        <th>Send the confirmation email</th>
+                        <td>
+                            <?php $controls->yesno('wp_send_confirmation'); ?>
+                        </td>
+                    </tr>                    
                     <tr valign="top">
                         <th>Send welcome email to registered users</th>
                         <td>
                             <?php $controls->yesno('wp_welcome'); ?>
+                            <p class="description">When they are confirmed by log-in</p>
                         </td>
                     </tr>
                     <tr valign="top">

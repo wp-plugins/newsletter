@@ -72,6 +72,13 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.8.3 =
+
+* Fixed the editor for unsubscription messages
+* Added the unsubscription error message
+* Fixed the email change from admin panels
+* Fixed the profile field check when set as optionals
+
 = 3.8.2 =
 
 * Improved the profile editing page (with confirmation for email change)

@@ -11,12 +11,11 @@ if (!defined('ABSPATH')) {
     require_once '../../../../wp-load.php';
 }
 
-
 if (isset($_GET['ts']) && time() - $_GET['ts'] < 30) {
 
     $user = NewsletterSubscription::instance()->unsubscribe();
     if ($user->status == 'E') {
-        NewsletterSubscription::instance()->show_message('error', $user->id);
+        NewsletterSubscription::instance()->show_message('unsubscription_error', $user);
     } else {
         NewsletterSubscription::instance()->show_message('unsubscribed', $user);
     }

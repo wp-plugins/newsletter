@@ -19,7 +19,7 @@ class NewsletterStatistics extends NewsletterModule {
     function __construct() {
         global $wpdb;
 
-        parent::__construct('statistics', '1.1.0');
+        parent::__construct('statistics', '1.1.1');
 
         // Link tracking redirect
         if (isset($_GET['nltr'])) {
@@ -83,6 +83,11 @@ class NewsletterStatistics extends NewsletterModule {
         $this->upgrade_query("ALTER TABLE `{$wpdb->prefix}newsletter_stats` ADD INDEX `email_id` (`email_id`)");
         $this->upgrade_query("ALTER TABLE `{$wpdb->prefix}newsletter_stats` ADD INDEX `user_id` (`user_id`)");
 
+        if (empty($this->options['key'])) {
+            $this->options['key'] = md5($_SERVER['REMOTE_ADDR'] . rand(100000, 999999) . time());
+            $this->save_options($this->options);
+        }
+        
         // Stores the link of every email to create short links
 //        $this->upgrade_query("create table if not exists {$wpdb->prefix}newsletter_links (id int auto_increment, primary key (id)) $charset_collate");
 //        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column email_id int not null default 0");
@@ -142,8 +147,10 @@ class NewsletterStatistics extends NewsletterModule {
                 $anchor = substr($anchor, 0, 100);
             }
         }
-
-        $r = urlencode(base64_encode($this->relink_email_id . ';' . $this->relink_user_id . ';' . $href . ';' . $anchor));
+        $r = $this->relink_email_id . ';' . $this->relink_user_id . ';' . $href . ';' . $anchor;
+        $r = $r . ';' . md5($r . $this->options['key']);
+        $r = base64_encode($r);
+        $r = urlencode($r);
 
         if ($this->options['tracking_url'] == 1) {
             $url = home_url() . '?nltr=' . $r;

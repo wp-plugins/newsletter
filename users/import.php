@@ -233,10 +233,11 @@ if ($controls->is_action('import')) {
         </p>
     
         <p>
-            Import list format is:<br /><br />
-            <b>email 1</b><i>[separator]</i><b>first name 1</b><i>[separator]</i><b>last name 1</b><i>[separator]</i><b>gender 1</b><i>[new line]</i><br />
-            <b>email 2</b><i>[separator]</i><b>first name 2</b><i>[separator]</i><b>last name 2</b><i>[separator]</i><b>gender 2</b><i>[new line]</i><br />
-            <br />
+            Import list format is:
+        <p><strong>email</strong><i>[separator]</i><strong>first name</strong><i>[separator]</i><strong>last name</strong><i>[separator]</i><strong>gender</strong><i>[new line]</i></p>
+            Example:
+        <p style="border: 1px solid #bfbfbf">email1@example.com;first name 1;last name 1;m<br />
+            email2@example.com;first name 2;last name 2;f</p>
             where [separator] must be selected from the available ones. Empty lines and lines starting with "#" will be skipped. There is
             no separator escaping mechanism, so be sure that field values do not contain the selected separator. The only required field is the email
             all other fields are options. Gender must be "m" or "f".
