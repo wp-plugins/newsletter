@@ -72,6 +72,10 @@ No screen shots are available at this time.
 
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
+= 3.8.4 =
+
+* Fixed the unsubscription problem
+
 = 3.8.3 =
 
 * Fixed the editor for unsubscription messages

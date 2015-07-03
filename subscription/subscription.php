@@ -457,7 +457,7 @@ class NewsletterSubscription extends NewsletterModule {
             return $user;
         }
 
-        if ($user->status != 'C') {
+        if ($user->status == 'C') {
             $newsletter->set_user_status($user->id, 'U');
 
             if (!isset($this->options['unsubscribed_disabled'])) {
