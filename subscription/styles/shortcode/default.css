@@ -3,7 +3,6 @@
     display: block;
     margin: 15px 0;
     border: 0;
-    padding: 0;
 }
 
 .newsletter-field {
@@ -12,13 +11,9 @@
 }
 
 .newsletter-field label {
-    //display: inline-block;
     display: block;
-    width: 135px;
     font-size: 14px;
     line-height: normal;
-    text-align: right;
-    margin-right: 15px;
 }
 
 .newsletter-field input, .newsletter-field select {
@@ -30,34 +25,12 @@
     border-radius: 2px;
 }
 
-.newsletter-field-preference label, .newsletter-field-privacy label {
+.newsletter-field-checkbox label, .newsletter-field-preference label, .newsletter-field-list label {
     text-align: left;
-}
-
-.newsletter-field-preference, .newsletter-field-privacy, .newsletter-field-button {
-    margin-left: 150px;
-}
-
-.newsletter-field-preference input {
-    margin-right: 10px;
-}
-
-.newsletter-privacy {
-    margin-right: 10px;
+    display: inline;
+    padding-left: 1em;
 }
 
 @media all and (max-width: 480px) {
-    .newsletter-field label {
-        display: block;
-        text-align: left;
-        width: 100%;
-    } 
-    .newsletter-field-preference label, .newsletter-field-privacy label {
-        display: inline;
-        width: auto;
-    }
-    .newsletter-field-preference, .newsletter-field-privacy, .newsletter-field-button {
-        margin-left: 0px;
-    }
 }
 

@@ -70,6 +70,10 @@ No screen shots are available at this time.
 
 = coming =
 
+= 3.8.5 =
+
+* Changed the widget constructor
+* Fixed the newsletter_form shortcode
 * Added shortcodes for in page form building (beta): see the [plugin documentation](http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-documentation).
 
 = 3.8.4 =

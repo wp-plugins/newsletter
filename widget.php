@@ -5,7 +5,7 @@
  */
 class NewsletterWidget extends WP_Widget {
 
-    function NewsletterWidget() {
+    function __construct() {
         parent::WP_Widget(false, $name = 'Newsletter', array('description' => 'Newsletter widget to add subscription forms on sidebars'), array('width' => '350px'));
     }
 
