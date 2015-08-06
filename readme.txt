@@ -68,7 +68,9 @@ No screen shots are available at this time.
 
 == Changelog ==
 
-= coming =
+= 3.8.6 =
+
+* Improved checks on tracking links which could be used for spamming links (open redirect)
 
 = 3.8.5 =
 

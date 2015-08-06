@@ -19,37 +19,15 @@ class NewsletterStatistics extends NewsletterModule {
     function __construct() {
         global $wpdb;
 
-        parent::__construct('statistics', '1.1.1');
+        parent::__construct('statistics', '1.1.2');
 
-        // Link tracking redirect
-        if (isset($_GET['nltr'])) {
-            list($email_id, $user_id, $url, $anchor) = explode(';', base64_decode($_GET['nltr']), 4);
-            $wpdb->insert(NEWSLETTER_STATS_TABLE, array(
-                'email_id' => $email_id,
-                'user_id' => $user_id,
-                'url' => $url,
-                'anchor' => $anchor,
-                'ip' => $_SERVER['REMOTE_ADDR']
-                    )
-            );
-
-            header('Location: ' . $url);
-            die();
+        add_action('wp_loaded', array($this, 'hook_wp_loaded'));
         }
 
-        // Open tracking image
-        if (isset($_GET['noti'])) {
-            list($email_id, $user_id) = explode(';', base64_decode($_GET['noti']), 2);
-
-            $wpdb->insert(NEWSLETTER_STATS_TABLE, array(
-                'email_id' => $email_id,
-                'user_id' => $user_id,
-                'ip' => $_SERVER['REMOTE_ADDR']
-                    )
-            );
-
-            header('Content-Type: image/gif');
-            echo base64_decode('_R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
+    function hook_wp_loaded() {
+        if (isset($_GET['nltr'])) {
+            $_GET['r'] = $_GET['nltr'];
+            include dirname(__FILE__) . '/link.php';
             die();
         }
     }
