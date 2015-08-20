@@ -68,6 +68,10 @@ No screen shots are available at this time.
 
 == Changelog ==
 
+= 3.8.7 =
+
+* Fixed the widget constructor
+
 = 3.8.6 =
 
 * Improved checks on tracking links which could be used for spamming links (open redirect)
