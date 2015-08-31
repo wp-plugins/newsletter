@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
 Requires at least: 3.3.0
-Tested up to: 4.2.2
+Tested up to: 4.3
 Stable tag: trunk
 Contributors: satollo,webagile,michael-travan
 
@@ -64,9 +64,20 @@ Thank you, The Newsletter Team
 
 == Screen shots ==
 
-No screen shots are available at this time.
+No screenshots are available at this time.
 
 == Changelog ==
+
+= 3.8.8 =
+
+* Unsubscription works now only with JavaScript enabled browser to block bots
+* New way to extract excerpts to avoid third party filters
+* Fixed the image selector for header logo
+* Added preview form subscription message template
+* Added WordPress like metadata on themes
+* Fixed the default theme
+* Changed few theme screeshots
+* Added attribute "layout" to shortcode with value "html5" for tableless form
 
 = 3.8.7 =
 
