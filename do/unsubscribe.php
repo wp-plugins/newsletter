@@ -10,32 +10,23 @@ unset($_GET['na']);
 if (!defined('ABSPATH')) {
     require_once '../../../../wp-load.php';
 }
-
-if (isset($_GET['ts']) && time() - $_GET['ts'] < 30) {
-
+header('Content-Type: text/html;charset=UTF-8');
+header('X-Robots-Tag: noindex,nofollow,noarchive');
+header('Cache-Control: no-cache,no-store,private');
+if (NewsletterModule::antibot_form_check()) {
     $user = NewsletterSubscription::instance()->unsubscribe();
     if ($user->status == 'E') {
         NewsletterSubscription::instance()->show_message('unsubscription_error', $user);
     } else {
         NewsletterSubscription::instance()->show_message('unsubscribed', $user);
     }
-} else {
-    $url = plugins_url('newsletter') . '/do/unsubscribe.php?';
-    foreach ($_REQUEST as $name => $value) {
-        $url .= urlencode($name) . '=' . urlencode($value) . '&';
-    }
-    $url .= '&ts=' . time();
-    ?><!DOCTYPE html>
-    <html>
-        <head>
-            <script>
-                location.href = location.href + "&ts=<?php echo time(); ?>";
-            </script>
-        </head>
-        <body>
-            You'll be redirect in few seconds...
-        </body>
-    </html>
-    <?php
+    return;
 }
-?>
+?><!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <?php NewsletterModule::request_to_antibot_form('Unsubscribe'); ?>
+    </body>
+</html>

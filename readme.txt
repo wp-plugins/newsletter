@@ -29,6 +29,12 @@ send and track e-mails, headache-free. It just works out of box!
 **Set Up Your First Newsletter In Just A Couple Of Clicks**
 [youtube https://www.youtube.com/watch?v=JaxK7XwqvVI]
 
+= Integration with WordPress registration =
+
+* Newsletter subscription check box on standard WordPress registration form
+* Auto confirmation on first login
+* Imports already registered users
+
 = Professional Extensions =
 
 Need *more power*? Feel *something's missing*? The Newsletter Plugin features can be easily extended through 
@@ -67,6 +73,15 @@ Thank you, The Newsletter Team
 No screenshots are available at this time.
 
 == Changelog ==
+
+= 3.8.9 =
+
+* Fixed few debug notices
+* Improved support for browser without javascript
+* Adding multi subscription support
+* Improved antibot
+* Fixed some debug/deprecated noticies
+* Added support for new beta Report Extension features
 
 = 3.8.8 =
 

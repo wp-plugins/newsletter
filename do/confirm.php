@@ -11,30 +11,19 @@ if (!defined('ABSPATH')) {
     require_once '../../../../wp-load.php';
 }
 
-if (isset($_GET['ts']) && time() - $_GET['ts'] < 30) {
+if (NewsletterModule::antibot_form_check()) {
     $user = NewsletterSubscription::instance()->confirm();
     if ($user->status == 'E') {
         NewsletterSubscription::instance()->show_message('error', $user->id);
     } else {
         NewsletterSubscription::instance()->show_message('confirmed', $user);
     }
-} else {
-    $url = plugins_url('newsletter') . '/do/confirm.php?';
-    foreach ($_REQUEST as $name=>$value) {
-        $url .= urlencode($name) . '=' . urlencode($value) . '&';
-    }
-    $url .= '&ts=' . time();
-?><!DOCTYPE html>
-    <html>
-        <head>
-            <script>
-                location.href = location.href + "&ts=<?php echo time(); ?>";
-            </script>
-        </head>
-        <body>
-            If you're not redirect in few seconds, <a href="<?php echo $url; ?>">click here</a>, thank you.
-        </body>
-    </html>
-    <?php
 }
-?>
+?><!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <?php NewsletterModule::request_to_antibot_form('Confirm'); ?>
+    </body>
+</html>

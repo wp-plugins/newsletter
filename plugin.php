@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.8.8
+  Version: 3.8.9
   Author: Stefano Lissa
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -13,7 +13,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.8.8');
+define('NEWSLETTER_VERSION', '3.8.9');
 
 global $wpdb, $newsletter;
 
@@ -121,7 +121,7 @@ class Newsletter extends NewsletterModule {
         // Here because the upgrade is called by the parent constructor and uses the scheduler
         add_filter('cron_schedules', array($this, 'hook_cron_schedules'), 1000);
 
-        parent::__construct('main', '1.2.2');
+        parent::__construct('main', '1.2.3');
 
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max))
@@ -183,6 +183,8 @@ class Newsletter extends NewsletterModule {
 
     function upgrade() {
         global $wpdb, $charset_collate;
+        
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
         parent::upgrade();
 
@@ -212,6 +214,17 @@ class Newsletter extends NewsletterModule {
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " drop column name");
         $this->upgrade_query("drop table if exists " . $wpdb->prefix . "newsletter_work");
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " convert to character set utf8");
+        
+        dbDelta("CREATE TABLE `" . $wpdb->prefix . "newsletter_sent` (
+            `email_id` int(10) unsigned NOT NULL DEFAULT '0',
+            `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+            `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
+            `time` int(10) unsigned NOT NULL DEFAULT '0',
+            `error` varchar(100) NOT NULL DEFAULT '',
+            PRIMARY KEY (`email_id`,`user_id`),
+            KEY `user_id` (`user_id`),
+            KEY `email_id` (`email_id`)
+          ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
         
         if ($charset_collate != 'utf8mb4') {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -408,7 +421,7 @@ class Newsletter extends NewsletterModule {
      * Sends an email to targeted users ot to users passed on. If a list of users is given (usually a list of test users)
      * the query inside the email to retrieve users is not used.
      *
-     * @global type $wpdb
+     * @global wpdb $wpdb
      * @global type $newsletter_feed
      * @param type $email
      * @param array $users
@@ -480,7 +493,11 @@ class Newsletter extends NewsletterModule {
                 }
             }
 
-            $this->mail($user->email, $s, array('html' => $m, 'text' => $mt), $headers);
+            $r = $this->mail($user->email, $s, array('html' => $m, 'text' => $mt), $headers);
+            
+            $status = $r?0:1;
+            
+            $wpdb->query($wpdb->prepare("insert into " . $wpdb->prefix . 'newsletter_sent (user_id, email_id, time, status, error) values (%d, %d, %d, %d, %s) on duplicate key update time=%d, status=%d, error=%s', $user->id, $email->id, time(), $status, $this->mail_last_error, time(), $status, $this->mail_last_error));
 
             $this->email_limit--;
         }
@@ -573,8 +590,9 @@ class Newsletter extends NewsletterModule {
         $this->mail_method = $callable;
     }
 
+    var $mail_last_error = '';
     function mail($to, $subject, $message, $headers = null) {
-
+        $this->mail_last_error = '';
         $this->logger->debug('mail> To: ' . $to);
         $this->logger->debug('mail> Subject: ' . $subject);
         if (empty($subject)) {
@@ -643,6 +661,7 @@ class Newsletter extends NewsletterModule {
         $this->mailer->Send();
 
         if ($this->mailer->IsError()) {
+            $this->mail_last_error = $this->mailer->ErrorInfo;
             $this->logger->error('mail> ' . $this->mailer->ErrorInfo);
             // If the error is due to SMTP connection, the mailer cannot be reused since it does not clean up the connection
             // on error.

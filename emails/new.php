@@ -161,7 +161,7 @@ function newsletter_emails_get_theme_options($theme) {
                     <?php @include $module->get_current_theme_file_path('theme-options.php'); ?>
                 </td>
                 <td style="vertical-align: top; padding-top: 15px; padding-left: 15px">
-                    <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time()); ?>" width="100%" height="700" style="border: 1px solid #ccc"></iframe>
+                    <iframe src="<?php echo wp_nonce_url(plugins_url('newsletter') . '/emails/preview.php?' . time(), 'view'); ?>" height="700" style="width: 100%; border: 1px solid #ccc"></iframe>
                 </td>
             </tr>
         </table>

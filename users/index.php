@@ -72,7 +72,9 @@ if (!empty($controls->data['search_status'])) {
 
 // Total items, total pages
 $items_per_page = 20;
-$where = $wpdb->prepare($where, $query_args);
+if (!empty($query_args)) {
+    $where = $wpdb->prepare($where, $query_args);
+}
 $count = Newsletter::instance()->store->get_count(NEWSLETTER_USERS_TABLE, $where);
 $last_page = floor($count / $items_per_page) - ($count % $items_per_page == 0 ? 1 : 0);
 if ($last_page < 0) $last_page = 0;
