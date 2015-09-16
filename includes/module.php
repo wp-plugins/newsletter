@@ -625,9 +625,9 @@ class NewsletterModule {
 
     public static function antibot_form_check() {
         return strtolower($_SERVER['REQUEST_METHOD']) == 'post' && isset($_POST['ts']) && time() - $_POST['ts'] < 30;
-    } 
-    
-    public static function request_to_antibot_form($submit_label='Continue...') {
+    }
+
+    public static function request_to_antibot_form($submit_label = 'Continue...') {
         echo '<form method="post" action="?" id="form">';
         foreach ($_REQUEST as $name => $value) {
             if (is_array($value)) {
@@ -654,35 +654,36 @@ class NewsletterModule {
         echo '<script>document.getElementById("form").submit();</script>';
     }
 
-    /**
-     * Kept for compatibility.
-     *
-     * @param type $post_id
-     * @param type $size
-     * @param type $alternative
-     * @return type
-     */
-    function nt_post_image($post_id = null, $size = 'thumbnail', $alternative = null) {
-        return NewsletterModule::get_post_image($post_id, $size, $alternative);
-    }
+}
 
-    function newsletter_get_post_image($post_id = null, $size = 'thumbnail', $alternative = null) {
-        echo NewsletterModule::get_post_image($post_id, $size, $alternative);
-    }
+/**
+ * Kept for compatibility.
+ *
+ * @param type $post_id
+ * @param type $size
+ * @param type $alternative
+ * @return type
+ */
+function nt_post_image($post_id = null, $size = 'thumbnail', $alternative = null) {
+    return NewsletterModule::get_post_image($post_id, $size, $alternative);
+}
 
-    /**
-     * Accepts a post or a post ID.
-     * 
-     * @param WP_Post $post
-     */
-    function newsletter_the_excerpt($post, $words = 30) {
-        $post = get_post($post);
-        $excerpt = $post->post_excerpt;
-        if (empty($excerpt)) {
-            $excerpt = $post->post_content;
-            $excerpt = strip_shortcodes($excerpt);
-            $excerpt = wp_strip_all_tags($excerpt, true);
-        }
-        echo '<p>' . wp_trim_words($excerpt, $words) . '</p>';
+function newsletter_get_post_image($post_id = null, $size = 'thumbnail', $alternative = null) {
+    echo NewsletterModule::get_post_image($post_id, $size, $alternative);
+}
+
+/**
+ * Accepts a post or a post ID.
+ * 
+ * @param WP_Post $post
+ */
+function newsletter_the_excerpt($post, $words = 30) {
+    $post = get_post($post);
+    $excerpt = $post->post_excerpt;
+    if (empty($excerpt)) {
+        $excerpt = $post->post_content;
+        $excerpt = strip_shortcodes($excerpt);
+        $excerpt = wp_strip_all_tags($excerpt, true);
     }
-}    
+    echo '<p>' . wp_trim_words($excerpt, $words) . '</p>';
+}
