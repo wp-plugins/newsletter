@@ -237,15 +237,15 @@ $options_profile = get_option('newsletter_profile');
                 <p>Newsletter sent to this subscriber.</p>
                 <?php if (!has_action('newsletter_user_newsletters_tab')) { ?>
                 <div class="tnp-tab-notice">
-                    This panel requires the <a href="http://www.thenewsletterplugin.com/extensions/reports-extension" target="_blank">Reports Extension</a>.
-                    Actually available only for beta testers.
+                    This panel requires the <a href="http://www.thenewsletterplugin.com/plugins/newsletter/reports-module" target="_blank">Reports Extension 2.2.3</a>.
+
                 </div>
                 <?php } else do_action('newsletter_user_newsletters_tab', $id) ?>
             </div>
         </div>
 
         <p class="submit">
-            <?php $controls->button('save', 'Save'); ?>
+            <?php $controls->button_save(); ?>
             <?php $controls->button('delete', 'Delete'); ?>
         </p>
 

@@ -628,7 +628,12 @@ class NewsletterModule {
     }
 
     public static function request_to_antibot_form($submit_label = 'Continue...') {
-        echo '<form method="post" action="?" id="form">';
+        header('Content-Type: text/html;charset=UTF-8');
+        header('X-Robots-Tag: noindex,nofollow,noarchive');
+        header('Cache-Control: no-cache,no-store,private');
+        echo "<!DOCTYPE html>\n";
+        echo '<html><head></head><body>';
+        echo '<form method="post" action="' . home_url('/') . '" id="form">';
         foreach ($_REQUEST as $name => $value) {
             if (is_array($value)) {
                 foreach ($value as $element) {
@@ -652,6 +657,8 @@ class NewsletterModule {
         echo esc_attr($submit_label);
         echo '"></noscript></form>';
         echo '<script>document.getElementById("form").submit();</script>';
+        echo '</body></html>';
+        die();
     }
 
 }

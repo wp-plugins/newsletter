@@ -49,8 +49,8 @@ if ($controls->is_action('remove')) {
 // We build the query condition
 $where = "where 1=1";
 $query_args = array();
-$text = trim($controls->data['search_text']);
-if ($text != '') {
+$text = trim($controls->get_value('search_text'));
+if ($text) {
     $query_args[] = '%' . $text . '%';
     $query_args[] = '%' . $text . '%';
     $query_args[] = '%' . $text . '%';

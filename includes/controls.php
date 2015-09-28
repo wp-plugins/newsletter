@@ -287,16 +287,18 @@ class NewsletterControls {
 
     function text($name, $size = 20, $placeholder = '') {
         $value = $this->get_value($name);
-        echo '<input placeholder="' . htmlspecialchars($placeholder) . '" name="options[' . $name . ']" type="text" size="' . $size . '" value="';
-        echo htmlspecialchars($value);
-        echo '"/>';
+        echo '<input placeholder="' . esc_attr($placeholder) . '" name="options[' . $name . ']" type="text" size="' . $size . '" value="';
+        echo esc_attr($value);
+        echo '">';
     }
 
     function text_email($name, $size = 40) {
         $value = $this->get_value($name);
-        echo '<input name="options[' . $name . ']" type="email" placeholder="Valid email address" size="' . $size . '" value="';
-        echo htmlspecialchars($value);
-        echo '"/>';
+        echo '<input name="options[' . $name . ']" type="email" placeholder="';
+        echo esc_attr(__('Valid email address', 'newsletter'));
+        echo '" size="' . $size . '" value="';
+        echo esc_attr($value);
+        echo '">';
     }
 
     function text_url($name, $size = 40) {
@@ -320,6 +322,33 @@ class NewsletterControls {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';this.form.submit()"/>';
         }
     }
+    
+    /**
+     * With translated "Save" label.
+     */
+    function button_save($function = null) {
+        $this->button('save', __('Save', 'newsletter'), $function);
+    }
+    
+    function button_copy($data = '')
+    {
+        echo '<button class="button-secondary" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'copy\';if (!confirm(\'';
+        echo esc_attr(__('Proceed', 'newsletter'));
+        echo '\')) return false;">';
+        echo '<i class="fa fa-copy"></i> ';
+        echo esc_html(__('Copy', 'newsletter'));
+        echo '</button>';
+    }
+    
+    function button_delete($data = '')
+    {
+        echo '<button class="button-secondary" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'copy\';if (!confirm(\'';
+        echo esc_attr(__('Proceed', 'newsletter'));
+        echo '\')) return false;">';
+        echo '<i class="fa fa-times"></i> ';
+        echo esc_html(__('Delete', 'newsletter'));
+        echo '</button>';
+    }    
 
     function button_primary($action, $label, $function = null) {
         if ($function != null) {

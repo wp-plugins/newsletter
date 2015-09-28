@@ -7,7 +7,6 @@ class NewsletterSubscription extends NewsletterModule {
     const MESSAGE_CONFIRMED = 'confirmed';
 
     static $instance;
-    var $action;
 
     /**
      * @return NewsletterSubscription
@@ -20,10 +19,8 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function __construct() {
-        // Grab it before a plugin decides to remove it.
-        $this->action = isset($_REQUEST['na']) ? $_REQUEST['na'] : '';
 
-        parent::__construct('subscription', '1.1.5');
+        parent::__construct('subscription', '1.1.6');
 
         add_action('wp_login', array($this, 'hook_wp_login'));
 
@@ -33,10 +30,8 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function hook_init() {
-        if (!is_admin() && !empty($this->action)) {
-            add_action('wp_loaded', array($this, 'hook_wp_loaded'));
-            add_action('delete_user', array($this, 'hook_delete_user'));
-        }
+        add_action('wp_loaded', array($this, 'hook_wp_loaded'));
+        add_action('delete_user', array($this, 'hook_delete_user'));
 
         add_shortcode('newsletter_profile', array($this, 'shortcode_profile'));
         add_shortcode('newsletter_field', array($this, 'shortcode_field'));
@@ -52,22 +47,88 @@ class NewsletterSubscription extends NewsletterModule {
 
     function hook_wp_loaded() {
         global $newsletter, $wpdb;
-        switch ($this->action) {
+
+        switch ($newsletter->action) {
+            case 's':
+
+                if (NewsletterModule::antibot_form_check()) {
+
+                    $user = NewsletterSubscription::instance()->subscribe();
+
+                    if ($user->status == 'E')
+                        NewsletterSubscription::instance()->show_message('error', $user->id);
+                    if ($user->status == 'C')
+                        NewsletterSubscription::instance()->show_message('confirmed', $user->id);
+                    if ($user->status == 'A')
+                        NewsletterSubscription::instance()->show_message('already_confirmed', $user->id);
+                    if ($user->status == 'S')
+                        NewsletterSubscription::instance()->show_message('confirmation', $user->id);
+                } else {
+
+                    NewsletterModule::request_to_antibot_form('Subscribe');
+                }
+                die();
             case 'u':
-                include dirname(__FILE__) . '/../do/unsubscription.php';
+                $user = NewsletterSubscription::instance()->get_user_from_request();
+                if ($user == null) {
+                    NewsletterSubscription::instance()->show_message('unsubscription_error', null);
+                } else {
+                    NewsletterSubscription::instance()->show_message('unsubscription', $user);
+                }
+                die();
                 break;
             case 'uc':
-                include dirname(__FILE__) . '/../do/unsubscribe.php';
+                if ($this->antibot_form_check()) {
+                    $user = NewsletterSubscription::instance()->unsubscribe();
+                    if ($user->status == 'E') {
+                        NewsletterSubscription::instance()->show_message('unsubscription_error', $user);
+                    } else {
+                        NewsletterSubscription::instance()->show_message('unsubscribed', $user);
+                    }
+                    return;
+                } else {
+                    $this->request_to_antibot_form('Unsubscribe');
+                }
+                die();
                 break;
             case 'p':
             case 'pe':
-                include dirname(__FILE__) . '/../do/profile.php';
+                $user = NewsletterSubscription::instance()->check_user();
+                if ($user == null) {
+                    die('No subscriber found.');
+                }
+
+                NewsletterSubscription::instance()->show_message('profile', $user);
+                die();
                 break;
             case 'c':
-                include dirname(__FILE__) . '/../do/confirm.php';
+                if ($this->antibot_form_check()) {
+                    $user = NewsletterSubscription::instance()->confirm();
+                    if ($user->status == 'E') {
+                        NewsletterSubscription::instance()->show_message('error', $user->id);
+                    } else {
+                        NewsletterSubscription::instance()->show_message('confirmed', $user);
+                    }
+                } else {
+                    $this->request_to_antibot_form('Confirm');
+                }
+                die();
                 break;
             case 'ul':
-                include dirname(__FILE__) . '/../do/unlock.php';
+                $user = NewsletterSubscription::instance()->check_user();
+
+                if ($user == null || $user->status != 'C') {
+                    echo 'Subscriber not found, sorry.';
+                    die();
+                }
+
+                $options_main = get_option('newsletter_main', array());
+
+                setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
+
+                header('Location: ' . $options_main['lock_url']);
+
+                die();
                 break;
             default:
                 return;
@@ -228,12 +289,12 @@ class NewsletterSubscription extends NewsletterModule {
 
             // Already confirmed
             if ($user->status == 'C') {
-                
+
                 set_transient($user->id . '-' . $user->token, $_REQUEST, 3600 * 48);
-                
+
                 // A second subscription always require confirmation otherwise anywan can change other users' data
                 $user->status = 'S';
-                
+
                 $prefix = 'confirmation_';
 
                 if (empty($options[$prefix . 'disabled'])) {
@@ -245,7 +306,7 @@ class NewsletterSubscription extends NewsletterModule {
 
                     $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
                 }
-                
+
                 return $user;
 
                 // Resend the welcome email, if enabled
@@ -268,9 +329,9 @@ class NewsletterSubscription extends NewsletterModule {
             $this->logger->info("New email address");
             $user = array('email' => $email);
         }
-        
+
         $user = $this->update_user_from_request($user);
-        
+
         $user['token'] = $newsletter->get_token();
         $user['ip'] = $_SERVER['REMOTE_ADDR'];
         if ($status != null) {
@@ -381,7 +442,7 @@ class NewsletterSubscription extends NewsletterModule {
         }
         return $user;
     }
-    
+
     /**
      * Send emails during the subscription process. Emails are themes with email.php file.
      * @global type $newsletter
@@ -421,7 +482,7 @@ class NewsletterSubscription extends NewsletterModule {
                     $_REQUEST = $data;
                     // Update the user profile since it's now confirmed
                     $user = $this->update_user_from_request((array) $user);
-                    $this->save_user($user);
+                    $user = $this->save_user($user);
                     delete_transient($user->id . '-' . $user->token);
                     // Forced a fake status so the welcome email is sent
                     $user->status = 'S';
@@ -430,10 +491,6 @@ class NewsletterSubscription extends NewsletterModule {
         } else {
             $user = $newsletter->get_user($user_id);
         }
-
-        $this->logger->debug('Confirmation for:');
-        $this->logger->debug($user);
-
 
         if ($user == null) {
             $this->logger->debug('Not found');
@@ -783,7 +840,7 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         $options_profile = get_option('newsletter_profile');
-        $action = esc_attr(plugins_url('newsletter/do/subscribe.php'));
+        $action = esc_attr(home_url('/') . '?na=s');
         $class = esc_attr($attrs['class']);
         $style = esc_attr($attrs['style']);
         $buffer = '<form method="post" action="' . $action . '" class="' . $class . ' style="' . $style . '">' . "\n";
@@ -795,13 +852,13 @@ class NewsletterSubscription extends NewsletterModule {
         if (isset($attrs['confirmation_url'])) {
             $buffer .= "<input type='hidden' name='ncu' value='" . esc_attr($attrs['confirmation_url']) . "'>\n";
         }
-        
+
         if (isset($attrs['list'])) {
             $arr = explode(',', $attrs['list']);
             foreach ($arr as $a) {
                 $buffer .= "<input type='hidden' name='nl[]' value='" . esc_attr(trim($a)) . "'>\n";
             }
-        }        
+        }
 
         //$content = str_replace("\r\n", "", $content);
         $buffer .= do_shortcode($content);
@@ -1034,17 +1091,17 @@ class NewsletterSubscription extends NewsletterModule {
             $referrer = $attrs['referrer'];
         }
 
+        if (empty($action)) {
+            $action = esc_attr(home_url('/') . '?na=s');
+        }
+
         $options_profile = get_option('newsletter_profile');
         $options = get_option('newsletter');
 
         $buffer = $this->get_form_javascript();
 
         $buffer .= '<div class="newsletter newsletter-subscription">' . "\n";
-        if (empty($action)) {
-            $buffer .= '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '" onsubmit="return newsletter_check(this)">' . "\n\n";
-        } else {
-            $buffer .= '<form method="post" action="' . $action . '" onsubmit="return newsletter_check(this)">' . "\n\n";
-        }
+        $buffer .= '<form method="post" action="' . $action . '" onsubmit="return newsletter_check(this)">' . "\n\n";
 
         if (isset($attrs['confirmation_url'])) {
             $buffer .= "<input type='hidden' name='ncu' value='" . esc_attr($attrs['confirmation_url']) . "'>\n";
@@ -1052,14 +1109,14 @@ class NewsletterSubscription extends NewsletterModule {
         if (!empty($referrer)) {
             $buffer .= "<input type='hidden' name='nr' value='$referrer'>\n";
         }
-        
+
         if (isset($attrs['list'])) {
             $arr = explode(',', $attrs['list']);
             foreach ($arr as $a) {
                 $buffer .= "<input type='hidden' name='nl[]' value='" . esc_attr(trim($a)) . "'>\n";
             }
-        } 
-        
+        }
+
         $buffer .= '<table cellspacing="0" cellpadding="3" border="0">' . "\n\n";
         if ($options_profile['name_status'] == 2) {
             $buffer .= "<!-- first name -->\n";
@@ -1186,27 +1243,28 @@ class NewsletterSubscription extends NewsletterModule {
 
         $buffer = $this->get_form_javascript();
 
+        if (empty($action)) {
+            $action = esc_attr(home_url('/') . '?na=s');
+        }
 
         $buffer .= '<div class="newsletter newsletter-subscription">' . "\n";
-        if (empty($action)) {
-            $buffer .= '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '" onsubmit="return newsletter_check(this)">' . "\n\n";
-        } else {
-            $buffer .= '<form method="post" action="' . $action . '" onsubmit="return newsletter_check(this)">' . "\n\n";
-        }
+
+        $buffer .= '<form method="post" action="' . $action . '" onsubmit="return newsletter_check(this)">' . "\n\n";
+
         if (!empty($referrer)) {
             $buffer .= "<input type='hidden' name='nr' value='$referrer'>\n";
         }
         if (isset($attrs['confirmation_url'])) {
             $buffer .= "<input type='hidden' name='ncu' value='" . esc_attr($attrs['confirmation_url']) . "'>\n";
         }
-        
+
         if (isset($attrs['list'])) {
             $arr = explode(',', $attrs['list']);
             foreach ($arr as $a) {
                 $buffer .= "<input type='hidden' name='nl[]' value='" . esc_attr(trim($a)) . "'>\n";
             }
-        } 
-        
+        }
+
         if ($options_profile['name_status'] == 2) {
             $buffer .= '<div class="newsletter-field newsletter-field-name"><label>' . $options_profile['name'] . '</label>';
             $buffer .= '<input class="newsletter-name" type="text" name="nn" ' . ($options_profile['name_rules'] == 1 ? 'required' : '') . '></div>';
@@ -1429,13 +1487,14 @@ class NewsletterSubscription extends NewsletterModule {
 
         $form = do_shortcode($form);
 
+        $action = home_url('/') . '?na=s';
+
         if (stripos($form, '<form') === false) {
-            $form = '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '">' .
-                    $form . '</form>';
+            $form = '<form method="post" action="' . $action . '">' . $form . '</form>';
         }
 
         // For compatibility
-        $form = str_replace('{newsletter_url}', plugins_url('newsletter/do/subscribe.php'), $form);
+        $form = str_replace('{newsletter_url}', $action, $form);
 
         $form = $this->replace_lists($form);
 

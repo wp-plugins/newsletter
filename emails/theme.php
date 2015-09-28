@@ -43,6 +43,44 @@ function newsletter_emails_get_theme_options($theme) {
 }
 
 $themes = $module->themes->get_all_with_data();
+
+/* @var $wp_theme WP_Theme */
+/*
+$wp_theme = wp_get_theme();
+$dir = $wp_theme->get_template_directory() . '/newsletter/emails/themes';
+$handle = @opendir($dir);
+
+if ($handle !== false) {
+    while ($file = readdir($handle)) {
+        if ($file == '.' || $file == '..') {
+            continue;
+        }
+        if (isset($list[$file])) {
+            continue;
+        }
+        if (!is_file($dir . '/' . $file . '/theme.php')) {
+            continue;
+        }
+        $data = get_file_data($dir . '/' . $file . '/theme.php', array('name' => 'Name', 'type' => 'Type', 'description' => 'Description'));
+        $data['id'] = $file;
+        if (empty($data['name'])) {
+            $data['name'] = $file;
+        }
+        if (empty($data['type'])) {
+            $data['type'] = 'standard';
+        }
+        $screenshot = $dir . '/' . $file . '/screenshot.png';
+        if (is_file($screenshot)) {
+            $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
+        } else {
+            $data['screenshot'] = plugins_url('newsletter') . '/images/theme-screenshot.png';
+        }
+        $list[$file] = $data;
+    }
+    closedir($handle);
+}
+$themes = array_merge($themes, $list);
+*/
 ?>
 
 <div class="wrap">

@@ -1,6 +1,6 @@
 === Newsletter ===
 Tags: newsletter,email,subscription,mass mail,list build,email marketing,direct mailing
-Requires at least: 3.3.0
+Requires at least: 3.4.0
 Tested up to: 4.3.1
 Stable tag: trunk
 Contributors: satollo,webagile,michael-travan
@@ -73,6 +73,32 @@ Thank you, The Newsletter Team
 No screenshots are available at this time.
 
 == Changelog ==
+
+= 3.9.3 =
+
+* Added the blog charset to the dagnostic panel
+* Fixed the read count (was due to antispam filter changes)
+* Language domain fixes
+
+= 3.9.2 =
+
+* Fixed the tab separator in CSV export
+* Removed the already subscribed option
+* Removed obsolete code for anchor tracking
+* Added the sent newsletters to the subscriber editing panel
+* Added a sent-to table
+
+= 3.9.1 =
+
+* Enable the tracking key edit
+* Removed the antibot option, active by default
+* First round of changes for translate.wordpress.org
+* Fixed few notices
+* Added deprecation notices for the email.php and email-alternative.php files
+* Fixed the export separator
+* Removed reference to plugin files in URLs to avoid spam filter
+* Removed the selection of Newsletter action URL
+* Removed obsolete files
 
 = 3.9.0 =
 
