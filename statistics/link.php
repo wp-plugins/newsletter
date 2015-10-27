@@ -6,9 +6,11 @@ if (!defined('ABSPATH')) {
 }
 list($email_id, $user_id, $url, $anchor, $key) = explode(';', base64_decode($_GET['r']), 5);
 
-if (empty($email_id) || empty($user_id) || empty($url)) {
-    header("HTTP/1.0 404 Not Found");
-    die();
+if (!is_user_logged_in()) {
+    if (empty($email_id) || empty($user_id) || empty($url)) {
+        header("HTTP/1.0 404 Not Found");
+        die();
+    }
 }
 
 $parts = parse_url($url);
@@ -17,6 +19,12 @@ $verified = $parts['host'] == $_SERVER['HTTP_HOST'];
 if (!$verified) {
     $options = NewsletterStatistics::instance()->options;
     $verified = $key == md5($email_id . ';' . $user_id . ';' . $url . ';' . $anchor . $options['key']);
+}
+
+// Test emails
+if ($verified && empty($email_id) && is_user_logged_in()) {
+    header('Location: ' . $url);
+    die();
 }
 
 if ($verified) {

@@ -259,17 +259,17 @@ if ($controls->is_action()) {
                             </p>
                         </td>
                     </tr>
-                    <!--
+
                     <tr valign="top">
-                        <th>Enable the antibot?</th>
+                        <th>Disable antibot/antispam?</th>
                         <td>
-                    <?php $controls->yesno('antibot'); ?>
+                            <?php $controls->checkbox('antibot_disable'); ?>
                             <p class="description">
-                                Tries to block bot generated subscriptions (without the annoying captcha).
+                                Required for ajax form subsmissions.
                             </p>
                         </td>
                     </tr>
-                    -->
+
                 </table>
 
                 <h3>Special cases</h3>
@@ -279,8 +279,8 @@ if ($controls->is_action()) {
                     <tr valign="top">
                         <th>Already subscribed page content</th>
                         <td>
-                            <?php $controls->wp_editor('already_confirmed_text'); ?><br>
-                            <?php $controls->checkbox('resend_welcome_email_disabled', 'Do not resend the welcome email'); ?>
+                    <?php $controls->wp_editor('already_confirmed_text'); ?><br>
+                    <?php $controls->checkbox('resend_welcome_email_disabled', 'Do not resend the welcome email'); ?>
                             <p class="description">
                                 Shown when the email is already subscribed and confirmed. The welcome email, if not disabled, will
                                 be sent. Find out more on this topic on its

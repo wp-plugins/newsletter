@@ -51,7 +51,7 @@ class NewsletterSubscription extends NewsletterModule {
         switch ($newsletter->action) {
             case 's':
 
-                if (NewsletterModule::antibot_form_check()) {
+                if (isset($this->options['antibot_disable']) || NewsletterModule::antibot_form_check()) {
 
                     $user = NewsletterSubscription::instance()->subscribe();
 

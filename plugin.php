@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.9.3
+  Version: 3.9.7
   Author: Stefano Lissa
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -14,7 +14,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.9.3');
+define('NEWSLETTER_VERSION', '3.9.7');
 
 global $wpdb, $newsletter;
 
@@ -232,7 +232,7 @@ class Newsletter extends NewsletterModule {
             KEY `email_id` (`email_id`)
           ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
 
-        if ($charset_collate != 'utf8mb4') {
+        if ($charset_collate == 'utf8mb4') {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             if (function_exists('maybe_convert_table_to_utf8mb4')) {
                 maybe_convert_table_to_utf8mb4(NEWSLETTER_EMAILS_TABLE);

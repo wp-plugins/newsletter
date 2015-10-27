@@ -42,7 +42,7 @@ $user_count = $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . 
         </a>
         &nbsp;&nbsp;
         Stay updated: 
-        <form target="_blank" style="display: inline" action="http://www.thenewsletterplugin.com/wp-content/plugins/newsletter/subscribe.php" method="post">
+        <form target="_blank" style="display: inline" action="http://www.thenewsletterplugin.com/?na=s" method="post">
             <input type="email" name="ne" placeholder="Your email" required size="30" value="<?php echo esc_attr($current_user->user_email)?>">
             <input type="hidden" name="nr" value="plugin">
             <input type="submit" value="Go">

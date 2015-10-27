@@ -29,10 +29,18 @@ class NewsletterEmails extends NewsletterModule {
             case 'v':
                 // TODO: Change to Newsletter::instance()->get:email(), not urgent
                 $email = $this->get_email((int) $_GET['id']);
-                if (empty($email))
+                if (empty($email)) {
                     die('Email not found');
+                }
+
+                if ($email->private == 1) {
+                    die('Email not found');
+                }
 
                 $user = NewsletterSubscription::instance()->get_user_from_request();
+                header('Content-Type: text/html;charset=UTF-8');
+                header('X-Robots-Tag: noindex,nofollow,noarchive');
+                header('Cache-Control: no-cache,no-store,private');
 
                 if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/view.php')) {
                     include WP_CONTENT_DIR . '/extensions/newsletter/view.php';
