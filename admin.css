@@ -550,7 +550,6 @@ p.description {
 }
 
 
-
 /* Regole Generali*/
 
 #tnp-body {
@@ -564,8 +563,8 @@ p.description {
     background-color: #F1F1F1 !important;
 }
 
-/* Header & Sub-header Pannelli */
 
+/* Header & Sub-header Pannelli */
 
 #tnp-heading {
     padding: 10px;
@@ -632,8 +631,6 @@ p.description {
 }
 
 
-
-
 /* Dashboard Box */
 
 .postbox {
@@ -686,6 +683,15 @@ p.description {
 #tnp-dash-subscribers tr td:last-of-type {
     width: 80px;
     text-align: right;
+}
+
+#tnp-dash-subscribers tr td:first-of-type {
+    width: 250px;
+    overflow: hidden;
+}
+
+#tnp-dash-subscribers table {
+  table-layout: fixed;
 }
 
 #tnp-dash-documentation .inside div {
@@ -780,13 +786,16 @@ span.wp-media-buttons-icon:before {
     color: #fff;
 }
 
-
 .tnp-paginator [value="Go"] {
     background-color: #27AE60;
 }
 
 .tnp-paginator [value="Go"]:hover {
     background-color: #2ECC71;
+}
+
+.notice-dismiss {
+   padding: 3px;
 }
 
 /*.widefat .button-secondary {
@@ -840,7 +849,6 @@ span.wp-media-buttons-icon:before {
 }
 
 
-
 /* Responsive Video Embeds */
 
 .tnp-video-container {
@@ -862,8 +870,6 @@ span.wp-media-buttons-icon:before {
 
 /* Colors Palette */
 
-
-
 .orange {  
     background-color: #F39C12; /*Orange #F39C12 */
 }
@@ -875,7 +881,6 @@ span.wp-media-buttons-icon:before {
 .purple {
     background-color: #8E44AD; /* Purple #8E44AD */
 }
-
 
 .notice a {
     color: #000 !important;
