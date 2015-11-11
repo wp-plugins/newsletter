@@ -1,10 +1,12 @@
 <?php
-@include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 
+@include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
+$module = Newsletter::instance();
 
 if (!$controls->is_action()) {
     $controls->data = get_option('newsletter_main');
+    
 } else {
     if ($controls->is_action('remove')) {
 
@@ -45,7 +47,6 @@ if (!$controls->is_action()) {
         if (!$newsletter->is_email($controls->data['reply_to'], true)) {
             $controls->errors .= __('Reply to email is not correct.', 'newsletter') . '<br>';
         }
-
         if (empty($controls->errors)) {
             $module->merge_options($controls->data);
             $controls->messages .= __('Saved.', 'newsletter');

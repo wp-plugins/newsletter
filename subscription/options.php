@@ -51,7 +51,7 @@ if ($controls->is_action()) {
 
         $controls->data['confirmed_url'] = trim($controls->data['confirmed_url']);
         $controls->data['confirmation_url'] = trim($controls->data['confirmation_url']);
-        $module->save_options($controls->data);
+        $module->merge_options($controls->data);
         $controls->messages = 'Saved.';
     }
 

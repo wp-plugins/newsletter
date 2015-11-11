@@ -76,6 +76,11 @@ No screenshots are available at this time.
 
 == Changelog ==
 
+= 4.0.2 =
+
+* Fixed main settings saving
+* Fixed unsubscription settings saving
+
 = 4.0.0 =
 
 * Shiny new look
