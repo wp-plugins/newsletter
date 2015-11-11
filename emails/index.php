@@ -1,8 +1,4 @@
 <?php
-if (function_exists('load_plugin_textdomain')) {
-    load_plugin_textdomain('newsletter', false, 'newsletter/emails/languages');
-    load_plugin_textdomain('newsletter', false, 'newsletter/languages');
-}
 require_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
 $module = NewsletterEmails::instance();
@@ -50,18 +46,20 @@ if ($controls->is_action('delete_selected')) {
 $emails = Newsletter::instance()->get_emails('message');
 ?>
 
-<div class="wrap">
+<div class="wrap" id="tnp-wrap">
 
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletters-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+    
+    <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-<div id="newsletter-title">
+    <div id="tnp-heading">
+    
     <h2><?php _e('Newsletters', 'newsletter')?></h2>
 
- </div>
-    <div class="newsletter-separator"></div>
-    <?php $controls->show(); ?>
+    </div>
 
+	<div id="tnp-body">
+    
     <form method="post" action="">
         <?php $controls->init(); ?>
 
@@ -134,7 +132,17 @@ $emails = Newsletter::instance()->get_emails('message');
                     </tr>
                 <?php } ?>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="11">
+                        (*) <?php _e('Expected total at the end of the delivery may differ, due to subscriptions/unsubscriptions occured meanwhile.', 'newsletter')?>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
-        <p>(*) <?php _e('The expected total can change at the delivery end due to subscriptions/unsubscriptions in the meanwhile.', 'newsletter')?></p>
     </form>
+</div>
+
+	<?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

@@ -12,6 +12,9 @@ $options_main = get_option('newsletter_main');
 
 // Move to base zero
 if ($controls->is_action()) {
+    if ($controls->is_action('reset')) {
+        $controls->data = array();
+    }
     $controls->data['search_page'] = (int)$controls->data['search_page']-1;
     $module->save_options($controls->data, 'search');
 }
@@ -107,50 +110,47 @@ $list = $wpdb->get_results($query);
 $controls->data['search_page']++;
 ?>
 
-<div class="wrap">
+<div class="wrap" id="tnp-wrap">
 
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+    <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
+    <div id="tnp-heading">
+      
+        <h2><?php _e('Search and Edit', 'newsletter')?>
+            <a class="tnp-btn-h1" href="?page=newsletter_users_new"><?php _e('Add a new subscriber', 'newsletter') ?></a>
+        </h2>
 
-
-    <div id="newsletter-title">
-         <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-    <h2>Subscriber Search</h2>
     </div>
 
-    <div class="newsletter-separator"></div>
-
-    <?php $controls->show(); ?>
+    <div id="tnp-body">
 
     <form id="channel" method="post" action="">
         <?php $controls->init(); ?>
 
-        <div style="padding: .6em; border: 1px solid #ddd; background-color: #f4f4f4; border-radius: 3px;">
-            <?php $controls->text('search_text', 80, __('Search text', 'newsletter-users')); ?>
+        <div class="tnp-subscribers-search">
+            <?php $controls->text('search_text', 80, __('Search text', 'newsletter')); ?>
 
-            <?php _e('filter by', 'newsletter-users')?>:<?php $controls->select('search_status', array(''=>'Any status', 'T'=>'Test subscribers', 'C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed', 'B'=>'Bounced')); ?>
-            <?php $controls->button('search', __('Search', 'newsletter-users')); ?>
+            <?php _e('filter by', 'newsletter')?>:<?php $controls->select('search_status', array(''=>'Any status', 'T'=>'Test subscribers', 'C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed', 'B'=>'Bounced')); ?>
+            <?php $controls->button('search', __('Search', 'newsletter')); ?>
+            <?php if ($where != "where 1=1") { ?>
+                <?php $controls->button('reset', __('Reset Filters', 'newsletter')); ?>
+        <?php } ?>
             <br>
-            <?php $controls->checkbox('show_preferences', __('Show preferences', 'newsletter-users')); ?>
+            <?php $controls->checkbox('show_preferences', __('Show preferences', 'newsletter')); ?>
         </div>
 
-
-
-
-<div class="newsletter-paginator">
+<div class="tnp-paginator">
 
 <?php $controls->button('first', '«'); ?>
 <?php $controls->button('prev', '‹'); ?>
-<?php $controls->text('search_page', 3); ?> of <?php echo $last_page+1 ?> <?php $controls->button('go', __('Go', 'newsletter-users')); ?>
+<?php $controls->text('search_page', 3); ?> of <?php echo $last_page+1 ?> <?php $controls->button('go', __('Go', 'newsletter')); ?>
 <?php $controls->button('next', '›'); ?>
 <?php $controls->button('last', '»'); ?>
-</div>
 
-        <?php echo $count ?> <?php _e('subscribers found', 'newsletter-users')?>
-<?php if ($where != "where 1=1") { ?>
-    <p><strong><?php _e('The list is filtered, see the filters above.', 'newsletter-users') ?></strong></p>
-<?php } ?>
+<?php echo $count ?> <?php _e('subscriber(s) found', 'newsletter')?>
+
+</div>
 
 <table class="widefat">
     <thead>
@@ -160,9 +160,9 @@ $controls->data['search_page']++;
     <?php if (isset($options['show_profile']) && $options['show_profile'] == 1) { ?>
       <th>Profile</th>
     <?php } ?>
-    <th><?php _e('Status', 'newsletter-users') ?></th>
+    <th><?php _e('Status', 'newsletter') ?></th>
     <?php if (isset($options['show_preferences']) && $options['show_preferences'] == 1) { ?>
-      <th><?php _e('Preferences', 'newsletter-users') ?></th>
+      <th><?php _e('Preferences', 'newsletter') ?></th>
     <?php } ?>
     <th>Actions</th>
     <?php if (isset($options['search_clicks']) && $options['search_clicks'] == 1) { ?>
@@ -203,10 +203,10 @@ $controls->data['search_page']++;
     <small>
         <?php
         switch ($s->status) {
-            case 'S': _e('NOT CONFIRMED', 'newsletter-users'); break;
-            case 'C': _e('CONFIRMED', 'newsletter-users'); break;
-            case 'U': _e('UNSUBSCRIBED', 'newsletter-users'); break;
-            case 'B': _e('BOUNCED', 'newsletter-users'); break;
+            case 'S': _e('NOT CONFIRMED', 'newsletter'); break;
+            case 'C': _e('CONFIRMED', 'newsletter'); break;
+            case 'U': _e('UNSUBSCRIBED', 'newsletter'); break;
+            case 'B': _e('BOUNCED', 'newsletter'); break;
         }
         ?>
     </small>
@@ -226,28 +226,32 @@ $controls->data['search_page']++;
 <?php } ?>
 
 <td>
-    <a class="button-secondary" href="<?php echo $module->get_admin_page_url('edit'); ?>&amp;id=<?php echo $s->id; ?>"><?php _e('Edit', 'newsletter-users') ?></a>
-    <?php $controls->button_confirm('remove', __('Remove', 'newsletter-users'), __('Proceed?', 'newsletter-users'), $s->id); ?>
+    <a class="button-secondary" href="<?php echo $module->get_admin_page_url('edit'); ?>&amp;id=<?php echo $s->id; ?>"><?php _e('Edit', 'newsletter') ?></a>
+    <?php $controls->button_confirm('remove', __('Remove', 'newsletter'), __('Proceed?', 'newsletter'), $s->id); ?>
 
     <?php //$controls->button('status', 'Confirm', 'newsletter_set_status(this.form,' . $s->id . ',\'C\')'); ?>
     <?php //$controls->button('status', 'Unconfirm', 'newsletter_set_status(this.form,' . $s->id . ',\'S\')'); ?>
 
-    <?php $controls->button_confirm('resend', __('Resend confirmation', 'newsletter-users'), __('Proceed?', 'newsletter-users'), $s->id); ?>
-    <?php $controls->button_confirm('resend_welcome', __('Resend welcome', 'newsletter-users'), __('Proceed?', 'newsletter-users'), $s->id); ?>
-    <a href="<?php echo plugins_url('newsletter/do/profile.php'); ?>?nk=<?php echo $s->id . '-' . $s->token; ?>" class="button" target="_blank"><?php _e('Profile page', 'newsletter-users') ?></a>
+    <?php $controls->button_confirm('resend', __('Resend confirmation', 'newsletter'), __('Proceed?', 'newsletter'), $s->id); ?>
+    <?php $controls->button_confirm('resend_welcome', __('Resend welcome', 'newsletter'), __('Proceed?', 'newsletter'), $s->id); ?>
+    <a href="<?php echo plugins_url('newsletter/do/profile.php'); ?>?nk=<?php echo $s->id . '-' . $s->token; ?>" class="button" target="_blank"><?php _e('Profile page', 'newsletter') ?></a>
 </td>
 
 
 </tr>
 <?php } ?>
 </table>
-<div class="newsletter-paginator">
+<div class="tnp-paginator">
 
 <?php $controls->button('first', '«'); ?>
 <?php $controls->button('prev', '‹'); ?>
-<?php $controls->text('search_page', 3); ?> of <?php echo $last_page+1 ?> <?php $controls->button('go', __('Go', 'newsletter-users')); ?>
+<?php $controls->text('search_page', 3); ?> of <?php echo $last_page+1 ?> <?php $controls->button('go', __('Go', 'newsletter')); ?>
 <?php $controls->button('next', '›'); ?>
 <?php $controls->button('last', '»'); ?>
 </div>
     </form>
+</div>
+    
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

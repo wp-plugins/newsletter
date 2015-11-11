@@ -50,20 +50,25 @@ if (!$controls->is_action()) {
 
 $options_profile = get_option('newsletter_profile');
 ?>
-<div class="wrap">
+
+<div class="wrap" id="tnp-wrap">
+
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+    <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-    <div id="newsletter-title">
-        <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+	<div id="tnp-heading">
 
-        <h2>Editing <?php echo esc_html($controls->data['email'])?></h2>
-    </div>
-    <div class="newsletter-separator"></div> 
+        <h2><?php _e('Editing', 'newsletter') ?> <?php echo esc_html($controls->data['email'])?></h2>
 
-    <?php $controls->show(); ?>
+        </div>
 
+	<div id="tnp-body">
+        
     <form method="post" action="">
+        <p>
+            <?php $controls->button_back('?page=newsletter_users_index'); ?>
+            <?php $controls->button_save(); ?>
+        </p>
         <?php $controls->init(); ?>
 
         <div id="tabs">
@@ -250,4 +255,8 @@ $options_profile = get_option('newsletter_profile');
         </p>
 
     </form>
+</div>
+
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

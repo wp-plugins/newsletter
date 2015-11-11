@@ -47,76 +47,25 @@ if (!$controls->is_action()) {
         }
 
         if (empty($controls->errors)) {
-            update_option('newsletter_main', $controls->data);
+            $module->merge_options($controls->data);
             $controls->messages .= __('Saved.', 'newsletter');
         }
-    }
-
-    if ($controls->is_action('smtp_test')) {
-
-        require_once ABSPATH . WPINC . '/class-phpmailer.php';
-        require_once ABSPATH . WPINC . '/class-smtp.php';
-        $mail = new PHPMailer();
-
-        $mail->IsSMTP();
-        $mail->SMTPDebug = true;
-        $mail->CharSet = 'UTF-8';
-        $message = 'This Email is sent by PHPMailer of WordPress';
-        $mail->IsHTML(false);
-        $mail->Body = $message;
-        $mail->From = $controls->data['sender_email'];
-        $mail->FromName = $controls->data['sender_name'];
-        if (!empty($controls->data['return_path']))
-            $mail->Sender = $options['return_path'];
-        if (!empty($controls->data['reply_to']))
-            $mail->AddReplyTo($controls->data['reply_to']);
-
-        $mail->Subject = '[' . get_option('blogname') . '] SMTP test';
-
-        $mail->Host = $controls->data['smtp_host'];
-        if (!empty($controls->data['smtp_port']))
-            $mail->Port = (int) $controls->data['smtp_port'];
-
-        $mail->SMTPSecure = $controls->data['smtp_secure'];
-
-        if (!empty($controls->data['smtp_user'])) {
-            $mail->SMTPAuth = true;
-            $mail->Username = $controls->data['smtp_user'];
-            $mail->Password = $controls->data['smtp_pass'];
-        }
-
-        $mail->SMTPKeepAlive = true;
-        $mail->ClearAddresses();
-        $mail->AddAddress($controls->data['smtp_test_email']);
-        ob_start();
-        $mail->Send();
-        $mail->SmtpClose();
-        $debug = htmlspecialchars(ob_get_clean());
-
-        if ($mail->IsError()) {
-            $controls->errors = '<strong>Connection/email delivery failed.</strong><br>You should contact your provider reporting the SMTP parameter and asking about connection to that SMTP.<br><br>';
-            $controls->errors = $mail->ErrorInfo;
-        } else
-            $controls->messages = 'Success.';
-
-        $controls->messages .= '<textarea style="width:100%;height:250px;font-size:10px">';
-        $controls->messages .= $debug;
-        $controls->messages .= '</textarea>';
     }
 }
 ?>
 
-<div class="wrap">
+<div class="wrap" id="tnp-wrap">
 
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+    
+        <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
+    <div id="tnp-heading">
+    
+    <h2><?php _e('General Settings', 'newsletter') ?></h2>
 
-    <h2>Newsletter Main Configuration</h2>
-
-
-    <div class="newsletter-separator"></div>
-    <?php $controls->show(); ?>
+    </div>
+    <div id="tnp-body">
 
     <form method="post" action="">
         <?php $controls->init(); ?>
@@ -125,11 +74,8 @@ if (!$controls->is_action()) {
 
             <ul>
                 <li><a href="#tabs-basic"><?php _e('Basic Settings', 'newsletter') ?></a></li>
-                <li><a href="#tabs-user"><?php _e('Blog Info', 'newsletter') ?></a></li>
                 <li><a href="#tabs-speed"><?php _e('Delivery Speed', 'newsletter') ?></a></li>
-                <li><a href="#tabs-2"><?php _e('Advanced Settings', 'newsletter') ?></a></li>
-                <li><a href="#tabs-5"><?php _e('SMTP', 'newsletter') ?></a></li>
-                <li><a href="#tabs-3"><?php _e('Content Locking', 'newsletter') ?></a></li>
+                <li><a href="#tabs-advanced"><?php _e('Advanced Settings', 'newsletter') ?></a></li>
             </ul>
 
             <div id="tabs-basic">
@@ -211,151 +157,6 @@ if (!$controls->is_action()) {
                 </table>
             </div>
 
-            <div id="tabs-user">
-
-                <p>
-                    These information are used by Newsletter themes to automatically generate some sections of regular newsletters,
-                    <a href="http://www.thenewsletterplugin.com/feed-by-mail-extension?utm_source=plugin&utm_medium=link&utm_campaign=newsletter-feed" target="_blank">
-                        auto messages
-                    </a> and 
-                    <a href="http://www.thenewsletterplugin.com/plugins/newsletter/follow-up-module?utm_source=plugin&utm_medium=link&utm_campaign=newsletter-followup" target="_blank">
-                        follow-up mails
-                    </a>. 
-                    Themes may not use all these fields and/or have specific alternate configurations. All fields are <strong>optional</strong>.
-                </p>
-
-                <h3>Header Settings</h3>
-
-                <table class="form-table">
-                    <tr valign="top">
-                        <th>
-                            Header logo
-                    <div class="tnp-tip">
-                        <span class="tip-button">Tip</span>
-                        <span class="tip-content">
-                            This image will be placed on top of email templates as-is, eventually stretched to
-                            match the template width.
-                        </span>
-                    </div>
-                    </th>
-                    <td>
-                        <?php $controls->media('header_logo', 'full'); ?>
-                        <p class="description">
-                            Click to change. This should be your logo in .png or .jpg format. The image shown is a resized preview.
-                        </p>
-                    </td>
-                    </tr>
-                    <tr>
-                        <th>Header title</th>
-                        <td>
-                            <?php $controls->text('header_title', 40); ?>
-                            <p class="description">Appears only when no logo has been uploaded or when it's blocked by email clients.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Header subheading</th>
-                        <td>
-                            <?php $controls->text('header_sub', 40); ?>
-                            <p class="description">Appears only if present.</p>
-                        </td>
-                    </tr>
-                </table>
-
-                <h3><?php _e('Social', 'newsletter') ?></h3>
-
-                <p>Social icons will be added automatically to your newsletter only for set URLs.</p>
-
-                <table class="form-table">
-                    <tr valign="top">
-                        <th>Facebook</th>
-                        <td>
-                            <?php $controls->text('facebook_url', 40); ?>
-                            <p class="description">
-                                Your Facebook url (e.g. https://www.facebook.com/thenewsletterplugin)
-                            </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Google+</th>
-                        <td>
-                            <?php $controls->text('googleplus_url', 40); ?>
-                            <p class="description">
-                                Your Google+ url (e.g. https://plus.google.com/...)
-                            </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Twitter</th>
-                        <td>
-                            <?php $controls->text('twitter_url', 40); ?>
-                            <p class="description">
-                                Your Twitter url (e.g. https://twitter.com/...)
-                            </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Linkedin</th>
-                        <td>
-                            <?php $controls->text('linkedin_url', 40); ?>
-                            <p class="description">
-                                Your Linkedin url (e.g. https://www.linkedin.com/in/...)
-                            </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>YouTube</th>
-                        <td>
-                            <?php $controls->text('youtube_url', 40); ?>
-                            <p class="description">
-                                Your YouTube url (e.g. https://www.youtube.com/channel/...)
-                            </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Vimeo</th>
-                        <td>
-                            <?php $controls->text('vimeo_url', 40); ?>
-                            <p class="description">
-                                Your Vimeo url (e.g. http://vimeo.com/...)
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-
-                <h3><?php _e('Footer', 'newsletter') ?></h3>
-
-                <table class="form-table">
-                    <tr valign="top">
-                        <th>Blog or company name</th>
-                        <td>
-                            <?php $controls->text('footer_title', 40); ?>
-                            <p class="description">
-                                User or corporation name to be displayed on the newsletter footer.
-                            </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Address</th>
-                        <td>
-                            <?php $controls->text('footer_contact', 40); ?>
-                            <p class="description">
-                                Your real address, if available. The CAN-SPAM Act requires it.
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Copyright, privacy or legal text</th>
-                        <td>
-                            <?php $controls->text('footer_legal', 40); ?>
-                            <p class="description">
-                                Any copyright, privacy or legal text you want on the newsletter footer.
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-
-            </div>
-
             <div id="tabs-speed">
 
                 <p>
@@ -385,7 +186,8 @@ if (!$controls->is_action()) {
                 </table>
             </div>
 
-            <div id="tabs-2">
+            
+            <div id="tabs-advanced">
 
                 <p>
                     Every setting is explained <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#advanced" target="_blank">here</a>.
@@ -442,123 +244,30 @@ if (!$controls->is_action()) {
                             </p>
                         </td>
                     </tr>
+                    <tr valign="top">
+                        <th>Totally remove this plugin</th>
+                        <td>
+                            <?php $controls->button_confirm('remove', 'Totally remove this plugin', 'Really sure to totally remove this plugin. All data will be lost!'); ?>
+                        </td>
+                    </tr>
                 </table>
 
             </div>
 
 
-            <div id="tabs-5">
-                <p>
-                    <strong>These options can be overridden by modules which integrates with external
-                        SMTPs (like MailJet, SendGrid, ...) if installed and activated.</strong>
-                </p>
-                <p>
-
-                    What you need to know to use and external SMTP can be found
-                    <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#smtp" target="_blank">here</a>.
-                    <br>
-                    On GoDaddy you should follow this <a href="http://www.thenewsletterplugin.com/godaddy-using-smtp-external-server-shared-hosting" target="_blank">special setup</a>.
-                </p>
-                <p>
-                    Consider <a href="http://www.thenewsletterplugin.com/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
-                </p>
-
-                <table class="form-table">
-                    <tr>
-                        <th>Enable the SMTP?</th>
-                        <td><?php $controls->yesno('smtp_enabled'); ?></td>
-                    </tr>
-                    <tr>
-                        <th>SMTP host/port</th>
-                        <td>
-                            host: <?php $controls->text('smtp_host', 30); ?>
-                            port: <?php $controls->text('smtp_port', 6); ?>
-                            <?php $controls->select('smtp_secure', array('' => 'No secure protocol', 'tls' => 'TLS protocol', 'ssl' => 'SSL protocol')); ?>
-                            <p class="description">
-                                Leave port empty for default value (25). To use Gmail try host "smtp.gmail.com" and port "465" and SSL protocol (without quotes).
-                                For GoDaddy use "relay-hosting.secureserver.net".
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Authentication</th>
-                        <td>
-                            user: <?php $controls->text('smtp_user', 30); ?>
-                            password: <?php $controls->text('smtp_pass', 30); ?>
-                            <p class="description">
-                                If authentication is not required, leave "user" field blank.
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Test email address</th>
-                        <td>
-                            <?php $controls->text_email('smtp_test_email', 30); ?>
-                            <?php $controls->button('smtp_test', 'Send a test email to this address'); ?>
-                            <p class="description">
-                                If the test reports a "connection failed", review your settings and, if correct, contact
-                                your provider to unlock the connection (if possible).
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-
-
-            </div>
-
-
-            <div id="tabs-3">
-                <p>
-                    Please, <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-locked-content" target="_blank">read more here how to use and configure</a>,
-                    since it can incredibly increase your subscription rate.
-                </p>
-                <table class="form-table">
-                    <tr valign="top">
-                        <th>Tags or categories to lock</th>
-                        <td>
-                            <?php $controls->text('lock_ids', 70); ?>
-                            <p class="description">
-                                Use tag or category slug or id, comma separated.
-                            </p>
-                        </td>
-                    </tr>
-
-                    <tr valign="top">
-                        <th>Unlock destination URL</th>
-                        <td>
-                            <?php $controls->text('lock_url', 70); ?>
-                            <p class="description">
-                                This is a web address (URL) where users are redirect when they click on unlocking URL ({unlock_url})
-                                inserted in newsletters and welcome message.
-                            </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th>Denied content message</th>
-                        <td>
-                            <?php wp_editor($controls->data['lock_message'], 'lock_message', array('textarea_name' => 'options[lock_message]')); ?>
-
-                            <p class="description">
-                                This message is shown in place of protected post or page content which is surrounded with
-                                [newsletter_lock] and [/newsletter_lock] short codes or in place of the full content if they are
-                                in categories or have tags as specified above.<br />
-                                You can use the {subscription_form} tag to display the subscription form.<br>
-                                <strong>Remeber to add the {unlock_url} on the welcome email so the user can unlock the content.</strong>
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-
-            </div>
 
 
         </div> <!-- tabs -->
 
         <p>
             <?php $controls->button_save(); ?>
-            <?php $controls->button_confirm('remove', 'Totally remove this plugin', 'Really sure to totally remove this plugin. All data will be lost!'); ?>
         </p>
 
     </form>
     <p></p>
 </div>
+    
+<?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
+</div>
+    

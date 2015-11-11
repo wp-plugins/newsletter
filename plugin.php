@@ -3,9 +3,9 @@
 /*
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
-  Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/plugins/newsletter#update">this page</a> to know what's changed.</strong>
-  Version: 3.9.7
-  Author: Stefano Lissa
+  Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
+  Version: 4.0.0
+  Author: Stefano Lissa, The Newsletter Team
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
   Text Domain: newsletter
@@ -14,7 +14,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '3.9.7');
+define('NEWSLETTER_VERSION', '4.0.0');
 
 global $wpdb, $newsletter;
 
@@ -137,7 +137,8 @@ class Newsletter extends NewsletterModule {
         add_action('init', array($this, 'hook_init'));
         add_action('newsletter', array($this, 'hook_newsletter'), 1);
         add_action('newsletter_extension_versions', array($this, 'hook_newsletter_extension_versions'), 1);
-
+        add_action('plugins_loaded', array($this, 'hook_plugins_loaded'));
+        
         // This specific event is created by "Feed by mail" panel on configuration
         add_action('shutdown', array($this, 'hook_shutdown'));
 
@@ -232,7 +233,7 @@ class Newsletter extends NewsletterModule {
             KEY `email_id` (`email_id`)
           ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
 
-        if ($charset_collate == 'utf8mb4') {
+        if ('utf8mb4' === $wpdb->charset) {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             if (function_exists('maybe_convert_table_to_utf8mb4')) {
                 maybe_convert_table_to_utf8mb4(NEWSLETTER_EMAILS_TABLE);
@@ -292,11 +293,14 @@ class Newsletter extends NewsletterModule {
 
     function admin_menu() {
         // This adds the main menu page
-        add_menu_page('Newsletter', 'Newsletter', ($this->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index', '', plugins_url('newsletter') . '/images/menu-icon.png');
+        add_object_page('Newsletter', 'Newsletter', ($this->options['editor'] == 1) ? 'manage_categories' : 'manage_options', 'newsletter_main_index', '', plugins_url('newsletter') . '/images/menu-icon.png');
 
-        $this->add_menu_page('index', 'Welcome');
-        $this->add_menu_page('main', 'Configuration');
-        $this->add_menu_page('diagnostic', 'Diagnostic');
+        $this->add_menu_page('index', 'Dashboard');
+        $this->add_menu_page('main', 'Settings and More');
+        $this->add_admin_page('smtp', 'SMTP');
+        $this->add_admin_page('info', 'Company info');
+        $this->add_admin_page('diagnostic', 'Diagnostic');
+        $this->add_admin_page('startup', 'Quick Startup');
     }
 
     /**
@@ -357,12 +361,11 @@ class Newsletter extends NewsletterModule {
     }
 
     function is_admin_page() {
-        // TODO: Use the module list to detect that...
-        if (!isset($_GET['page']))
+        if (!isset($_GET['page'])) {
             return false;
+        }
         $page = $_GET['page'];
-        return strpos($page, 'newsletter_') === 0 || strpos($page, 'newsletter-statistics/') === 0 || strpos($page, 'newsletter/') === 0 ||
-                strpos($page, 'newsletter-updates/') === 0 || strpos($page, 'newsletter-flows/') === 0;
+        return strpos($page, 'newsletter_') === 0; // || strpos($page, 'newsletter-') === 0;
     }
 
     function hook_admin_init() {
@@ -372,7 +375,9 @@ class Newsletter extends NewsletterModule {
     function hook_admin_head() {
         if ($this->is_admin_page()) {
             echo '<link type="text/css" rel="stylesheet" href="' . plugins_url('newsletter') . '/admin.css?' . NEWSLETTER_VERSION . '"/>';
+            //echo '<link type="text/css" rel="stylesheet" href="' . plugins_url('newsletter') . '/css/dropdown.css?' . NEWSLETTER_VERSION . '"/>';
             echo '<script src="' . plugins_url('newsletter') . '/admin.js?' . NEWSLETTER_VERSION . '"></script>';
+            //echo '<script src="' . plugins_url('newsletter') . '/js/Chart.min.js?' . NEWSLETTER_VERSION . '"></script>';
         }
     }
 
@@ -706,6 +711,7 @@ class Newsletter extends NewsletterModule {
             }
             $this->mailer->SMTPKeepAlive = true;
             $this->mailer->SMTPSecure = $smtp_options['secure'];
+            $this->mailer->SMTPAutoTLS = false;
         } else {
             $this->mailer->IsMail();
         }
@@ -1242,6 +1248,17 @@ class Newsletter extends NewsletterModule {
         }
 
         return $value;
+    }
+    
+    /**
+     * Load plugin textdomain.
+     *
+     * @since 1.0.0
+     */
+    function hook_plugins_loaded() {
+        if (function_exists('load_plugin_textdomain')) {
+            load_plugin_textdomain('newsletter', false, plugin_basename(dirname(__FILE__)) . '/languages');
+        }
     }
 
 }

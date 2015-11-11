@@ -4,10 +4,11 @@ $controls = new NewsletterControls();
 $module = NewsletterSubscription::instance();
 
 if (!$controls->is_action()) {
-    $controls->data = get_option('newsletter_profile');
+    $controls->data = $module->get_options('profile');
 } else {
     if ($controls->is_action('save')) {
-        update_option('newsletter_profile', $controls->data);
+        $module->merge_options($controls->data, 'profile');
+        $controls->add_message_saved();
     }
 
     if ($controls->is_action('reset')) {
@@ -15,7 +16,7 @@ if (!$controls->is_action()) {
         @include NEWSLETTER_DIR . '/subscription/languages/profile-en_US.php';
         @include NEWSLETTER_DIR . '/subscription/languages/profile-' . WPLANG . '.php';
         update_option('newsletter_profile', array_merge(get_option('newsletter_profile', array()), $options));
-        $controls->data = get_option('newsletter_profile');
+        $controls->data = $module->get_options('profile');
     }
 }
 
@@ -23,25 +24,25 @@ $status = array(0 => 'Disabled/Private use', 1 => 'Only on profile page', 2 => '
 $rules = array(0 => 'Optional', 1 => 'Required');
 ?>
 
-<div class="wrap">
+<div class="wrap" id="tnp-wrap">
+    
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscription-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+    
+        <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-    <div id="newsletter-title">
-        <?php include NEWSLETTER_DIR . '/subscription/menu.inc.php'; ?>
-
-        <h2>Subscription Form Fields and Layout</h2>
-        <p>
+    <div id="tnp-heading">
+    
+        <h2><?php _e('Subscription Form Fields and Layout', 'newsletter') ?></h2>
+           <p>
             This panel contains the configuration of the subscription and profile editing forms which collect the subscriber data you want to have.<br>
             And let you to <strong>translate</strong> every single button and label.<br>
             <strong>Preferences</strong> can be an important setting for your newsletter: <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-preferences" target="_blank">here you can read more about them</a>.
         </p>
+        
+      </div>
 
-    </div>
-    <div class="newsletter-separator"></div>
-
-
-    <?php $controls->show(); ?>
+    <div id="tnp-body">  
+        
     <form action="" method="post">
         <?php $controls->init(); ?>
 
@@ -264,4 +265,8 @@ $rules = array(0 => 'Optional', 1 => 'Required');
         </p>
 
     </form>
+</div>
+    
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

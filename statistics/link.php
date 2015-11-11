@@ -21,7 +21,6 @@ if (!$verified) {
     $verified = $key == md5($email_id . ';' . $user_id . ';' . $url . ';' . $anchor . $options['key']);
 }
 
-// Test emails
 if ($verified && empty($email_id) && is_user_logged_in()) {
     header('Location: ' . $url);
     die();

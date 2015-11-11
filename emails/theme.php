@@ -43,61 +43,21 @@ function newsletter_emails_get_theme_options($theme) {
 }
 
 $themes = $module->themes->get_all_with_data();
-
-/* @var $wp_theme WP_Theme */
-/*
-$wp_theme = wp_get_theme();
-$dir = $wp_theme->get_template_directory() . '/newsletter/emails/themes';
-$handle = @opendir($dir);
-
-if ($handle !== false) {
-    while ($file = readdir($handle)) {
-        if ($file == '.' || $file == '..') {
-            continue;
-        }
-        if (isset($list[$file])) {
-            continue;
-        }
-        if (!is_file($dir . '/' . $file . '/theme.php')) {
-            continue;
-        }
-        $data = get_file_data($dir . '/' . $file . '/theme.php', array('name' => 'Name', 'type' => 'Type', 'description' => 'Description'));
-        $data['id'] = $file;
-        if (empty($data['name'])) {
-            $data['name'] = $file;
-        }
-        if (empty($data['type'])) {
-            $data['type'] = 'standard';
-        }
-        $screenshot = $dir . '/' . $file . '/screenshot.png';
-        if (is_file($screenshot)) {
-            $data['screenshot'] = $this->get_theme_url($file) . '/screenshot.png';
-        } else {
-            $data['screenshot'] = plugins_url('newsletter') . '/images/theme-screenshot.png';
-        }
-        $list[$file] = $data;
-    }
-    closedir($handle);
-}
-$themes = array_merge($themes, $list);
-*/
 ?>
 
-<div class="wrap">
+<div class="wrap" id="tnp-wrap">
 
-    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletters-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+	<?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-    <div id="newsletter-title">
-        <h2><?php _e('Select a theme', 'newsletter-emails') ?>
-            <a class="add-new-h2" href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-themes" target="_blank">Custom themes</a>
-        </h2>
-    </div>
+	<div id="tnp-heading">
 
-    <div class="newsletter-separator"></div>
+    <h2><?php _e('Select a theme', 'newsletter') ?>
+        <a class="tnp-btn-h1" href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-themes" target="_blank">Custom themes</a>
+    </h2>
 
-    <?php $controls->show(); ?>
-
+</div>
+	<div id="tnp-body">
+            
     <form method="post" id="newsletter-form" action="<?php echo $module->get_admin_page_url('new'); ?>">
         <?php $controls->init(); ?>
         <?php $controls->hidden('theme'); ?>
@@ -114,4 +74,8 @@ $themes = array_merge($themes, $list);
             </div>
         <?php } ?>
     </form>
+</div>
+
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

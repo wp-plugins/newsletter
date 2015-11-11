@@ -151,23 +151,27 @@ if (count($calls) > 1) {
     $mean = $mean / count($calls) - 1;
 }
 ?>
-<div class="wrap">
-    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-diagnostic'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
 
-    <div id="newsletter-title">
-        <h2>Newsletter Diagnostic</h2>
+<div class="wrap" id="tnp-wrap">
+
+    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-diagnostic'; ?>
+    
+        <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
+
+	<div id="tnp-heading">
+        
+            <h2>Newsletter Diagnostic</h2>
         <p>
             If something is not working, here are some test procedures and diagnostics. But before you try these,
             write down any configuration changes that you may have made.
             For example: Did you use sender email or name? What was the return path? What was the reply to?
         </p>
-    </div>
-    <div class="newsletter-separator"></div>
+    
+        </div>
 
-
-    <?php $controls->show(); ?>
-    <form method="post" action="">
+	<div id="tnp-body">
+        
+        <form method="post" action="">
         <?php $controls->init(); ?>
 
 
@@ -576,4 +580,8 @@ if (count($calls) > 1) {
 
     </form>
 
+</div>
+
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

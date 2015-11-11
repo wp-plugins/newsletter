@@ -16,10 +16,12 @@ $email_id = $email['id'];
 // $nc->data with the editable email fields
 if (!$controls->is_action()) {
     $controls->data = $email;
-    if (!empty($email['preferences']))
+    if (!empty($email['preferences'])) {
         $controls->data['preferences'] = explode(',', $email['preferences']);
-    if (!empty($email['sex']))
+    }
+    if (!empty($email['sex'])) {
         $controls->data['sex'] = explode(',', $email['sex']);
+    }
     $email_options = unserialize($email['options']);
     if (is_array($email_options)) {
         $controls->data = array_merge($controls->data, $email_options);
@@ -85,7 +87,7 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
         $query .= " and wp_user_id<>0";
     }
 
-    
+
     if (isset($controls->data['preferences'])) {
         $preferences = $controls->data['preferences'];
 
@@ -140,17 +142,17 @@ if ($controls->is_action('test') || $controls->is_action('save') || $controls->i
 
     $controls->data['message'] = $email['message'];
 
-    $controls->messages .= 'Saved.<br>';
+    $controls->add_message_saved();
 }
 
 if ($controls->is_action('send')) {
     // Todo subject check
     if ($email['subject'] == '') {
-        $controls->errors = 'Ops, you missed to write the subject!';
+        $controls->errors = __('A subject is required to send', 'newsletter');
     } else {
         $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'sending'), array('id' => $email_id));
         $email['status'] = 'sending';
-        $controls->messages .= "Email added to the queue.";
+        $controls->messages .= __('Now sending, see the progress on newsletter list', 'newsletter');
     }
 }
 
@@ -169,27 +171,28 @@ if ($controls->is_action('abort')) {
     $email['status'] = 'new';
     $email['sent'] = 0;
     $email['last_id'] = 0;
-    $controls->messages = "Sending aborted.";
+    $controls->messages = __('Delivery definitively cancelled', 'newsletter');
 }
 
 if ($controls->is_action('test')) {
     if ($email['subject'] == '') {
-        $controls->errors = 'Ops, you missed to write the subject!';
+        $controls->errors = __('A subject is required to send', 'newsletter');
     } else {
         $users = NewsletterUsers::instance()->get_test_users();
         if (count($users) == 0) {
-            $controls->messages = __('There are no test subscribers.', 'newsletter-emails');
+            $controls->messages = '<strong>' . __('There are no test subscribers to send to', 'newsletter') . '</strong>';
         } else {
             Newsletter::instance()->send(Newsletter::instance()->get_email($email_id), $users);
-            $controls->messages = __('Test newsletter sent to:', 'newsletter-emails');
-            foreach ($users as &$user)
+            $controls->messages = __('Test newsletter sent to:', 'newsletter');
+            foreach ($users as &$user) {
                 $controls->messages .= ' ' . $user->email;
+            }
             $controls->messages .= '.';
         }
 
         $controls->messages .= '<br>';
         $controls->messages .= '<a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank">' .
-                __('Read more about test subscribers', 'newsletter-emails') . '</a>.';
+                __('Read more about test subscribers', 'newsletter') . '</a>.';
 
         $controls->messages .= '<br>If diagnostic emails are delivered but test emails are not, try to change the encoding to "base 64" on main configuration panel';
     }
@@ -254,15 +257,17 @@ if ($email['editor'] == 0) {
     }
 </script>
 
-<div class="wrap">
+<div class="wrap" id="tnp-wrap">
 
-    <?php //$help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/newsletters-module';    ?>
-    <?php //include NEWSLETTER_DIR . '/header-new.php';  ?>
+	<?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-    <div id="newsletter-title">
-        <h2>Edit Newsletter</h2>
+	<div id="tnp-heading">
+            
+    <h2><?php _e('Edit Newsletter', 'newsletter') ?></h2>
+    
     </div>
-    <div class="newsletter-separator"></div>
+
+	<div id="tnp-body">
 
     <?php
     if ($controls->data['status'] == 'S') {
@@ -270,30 +275,28 @@ if ($email['editor'] == 0) {
     }
     ?>
 
-    <?php $controls->show(); ?>
-
     <form method="post" action="" id="newsletter-form">
         <?php $controls->init(array('cookie_name' => 'newsletter_emails_edit_tab')); ?>
 
         <p class="submit">
+            <?php $controls->button_back('?page=newsletter_emails_index') ?>
             <?php if ($email['status'] != 'sending') $controls->button_save(); ?>
             <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button_confirm('test', 'Save and test', 'Save and send test emails to test addresses?'); ?>
 
-            <?php if ($email['status'] == 'new') $controls->button_confirm('send', 'Send', 'Start a real delivery?'); ?>
-            <?php if ($email['status'] == 'sending') $controls->button_confirm('pause', 'Pause', 'Pause the delivery?'); ?>
-            <?php if ($email['status'] == 'paused') $controls->button_confirm('continue', 'Continue', 'Continue the delivery?'); ?>
-            <?php if ($email['status'] == 'paused') $controls->button_confirm('abort', 'Abort', 'Abort the delivery?'); ?>
+            <?php if ($email['status'] == 'new') $controls->button_confirm('send', __('Send', 'newsletter'), __('Start real delivery?', 'newsletter')); ?>
+            <?php if ($email['status'] == 'sending') $controls->button_confirm('pause', __('Pause', 'newsletter'), __('Pause the delivery?', 'newsletter')); ?>
+            <?php if ($email['status'] == 'paused') $controls->button_confirm('continue', __('Continue', 'newsletter'), 'Continue the delivery?'); ?>
+            <?php if ($email['status'] == 'paused') $controls->button_confirm('abort', __('Stop', 'newsletter'), __('This totally stop the delivery, ok?', 'newsletter')); ?>
             <?php if ($email['status'] != 'sending' && $email['status'] != 'sent') $controls->button_confirm('editor', 'Save and switch to ' . ($email['editor'] == 0 ? 'HTML source' : 'visual') . ' editor', 'Sure?'); ?>
         </p>
 
         <div id="tabs">
             <ul>
-                <li><a href="#tabs-a"><?php _e('Message', 'newsletter-emails') ?></a></li>
-                <li><a href="#tabs-b"><?php _e('Message (textual)', 'newsletter-emails') ?></a></li>
-                <li><a href="#tabs-c"><?php _e('Targeting', 'newsletter-emails') ?></a></li>
-                <li><a href="#tabs-d"><?php _e('Other', 'newsletter-emails') ?></a></li>
-                <li><a href="#tabs-status"><?php _e('Status', 'newsletter-emails') ?></a></li>
-                <!--<li><a href="#tabs-5">Documentation</a></li>-->
+                <li><a href="#tabs-a"><?php _e('Message', 'newsletter') ?></a></li>
+                <li><a href="#tabs-b"><?php _e('Message (textual)', 'newsletter') ?></a></li>
+                <li><a href="#tabs-c"><?php _e('Targeting', 'newsletter') ?></a></li>
+                <li><a href="#tabs-d"><?php _e('Other', 'newsletter') ?></a></li>
+                <li><a href="#tabs-status"><?php _e('Status', 'newsletter') ?></a></li>
             </ul>
 
 
@@ -305,7 +308,7 @@ if ($email['editor'] == 0) {
 
                 <input id="upload_image_button" type="button" value="Choose or upload an image" />
 
-                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-tags" target="_blank"><?php _e('Available tags', 'newsletter-emails') ?></a>
+                <a href="http://www.thenewsletterplugin.com/plugins/newsletter/newsletter-tags" target="_blank"><?php _e('Available tags', 'newsletter') ?></a>
 
                 <br><br>
 
@@ -324,20 +327,12 @@ if ($email['editor'] == 0) {
 
 
             <div id="tabs-b">
-                <div class="tab-preamble">
-                    <p>
-                        This is the textual version of your newsletter. If you empty it, only an HTML version will be sent but
-                        is an anti-spam best practice to include a text only version.
-                    </p>
-                </div>
-                <table class="form-table">
-                    <tr valign="top">
-                        <th>Message</th>
-                        <td>
-                            <?php $controls->textarea_fixed('message_text', '100%', '350'); ?>
-                        </td>
-                    </tr>
-                </table>
+                <p>
+                    This is the textual version of your newsletter. If you empty it, only an HTML version will be sent but
+                    is an anti-spam best practice to include a text only version.
+                </p>
+
+                <?php $controls->textarea_fixed('message_text', '100%', '500'); ?>
             </div>
 
 
@@ -345,7 +340,7 @@ if ($email['editor'] == 0) {
                 <table class="form-table">
 
                     <tr valign="top">
-                        <th><?php _e('Gender', 'newsletter-emails'); ?></th>
+                        <th><?php _e('Gender', 'newsletter'); ?></th>
                         <td>
                             <?php $controls->checkboxes_group('sex', array('f' => 'Women', 'm' => 'Men', 'n' => 'Not specified')); ?>
                             <p class="description">
@@ -354,13 +349,13 @@ if ($email['editor'] == 0) {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th><?php _e('Subscriber preferences', 'newsletter-emails'); ?></th>
+                        <th><?php _e('Lists', 'newsletter'); ?></th>
                         <td>
                             Subscribers with
-                            <?php $controls->select('preferences_status_operator', array(0 => 'at least one preference', 1 => 'all preferences')); ?>
+                            <?php $controls->select('preferences_status_operator', array(0 => 'at least one list', 1 => 'all lists')); ?>
 
                             <?php $controls->select('preferences_status', array(0 => 'active', 1 => 'not active')); ?>
-                            between the selected ones below:
+                            <?php _e('checked below', 'newsletter') ?>
 
                             <?php $controls->preferences_group('preferences', true); ?>
                             <p class="description">
@@ -372,12 +367,12 @@ if ($email['editor'] == 0) {
                     </tr>
 
                     <tr valign="top">
-                        <th><?php _e('Subscriber status', 'newsletter-emails') ?></th>
+                        <th><?php _e('Status', 'newsletter') ?></th>
                         <td>
-                            <?php $controls->select('status', array('C' => __('Confirmed', 'newsletter-emails'), 'S' => __('Not confirmed', 'newsletter-emails'))); ?>
+                            <?php $controls->select('status', array('C' => __('Confirmed', 'newsletter'), 'S' => __('Not confirmed', 'newsletter'))); ?>
 
                             <p class="description">
-                                <?php _e('Send to not confirmed subscribers ONLY to ask for confirmation including the {subscription_confirm_url} tag.', 'newsletter-emails') ?>
+                                <?php _e('Send to not confirmed subscribers ONLY to ask for confirmation including the {subscription_confirm_url} tag.', 'newsletter') ?>
                             </p>
                         </td>
                     </tr>
@@ -393,14 +388,14 @@ if ($email['editor'] == 0) {
                     </tr>
                     <tr valign="top">
                         <th>
-                            <?php _e('Targeted subscribers', 'newsletter-emails') ?>
+                            <?php _e('Subscribers count', 'newsletter') ?>
                         </th>
                         <td>
                             <?php
                             echo $wpdb->get_var(str_replace('*', 'count(*)', $email['query']));
                             ?>
                             <p class="description">
-                                <?php _e('Save to update if on targeting filters have been changed', 'newsletter-emails') ?>
+                                <?php _e('Save to update if on targeting filters have been changed', 'newsletter') ?>
                             </p>
                         </td>
                     </tr>
@@ -411,23 +406,23 @@ if ($email['editor'] == 0) {
             <div id="tabs-d">
                 <table class="form-table">
                     <tr valign="top">
-                        <th><?php _e('Private', 'newsletter-emails') ?></th>
+                        <th><?php _e('Keep private', 'newsletter') ?></th>
                         <td>
                             <?php $controls->yesno('private'); ?>
                             <p class="description">
-                                <?php _e('Hide/show from public sent newsletter list.', 'newsletter-emails') ?>
-                                <?php _e('Required', 'newsletter-emails') ?>: <a href="" target="_blank">Newsletter Archive Extension</a>
+                                <?php _e('Hide/show from public sent newsletter list.', 'newsletter') ?>
+                                <?php _e('Required', 'newsletter') ?>: <a href="" target="_blank">Newsletter Archive Extension</a>
                             </p>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th><?php _e('Track clicks and message opening', 'newsletter-emails') ?></th>
+                        <th><?php _e('Track clicks and message opening', 'newsletter') ?></th>
                         <td>
                             <?php $controls->yesno('track'); ?>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th><?php _e('Send on', 'newsletter-emails') ?></th>
+                        <th><?php _e('Send on', 'newsletter') ?></th>
                         <td>
                             <?php $controls->datetime('send_on'); ?> (now: <?php echo date_i18n(get_option('date_format') . ' ' . get_option('time_format')); ?>)
                             <p class="description">
@@ -479,4 +474,8 @@ if ($email['editor'] == 0) {
         </div>
 
     </form>
+</div>
+
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

@@ -90,6 +90,13 @@ class NewsletterControls {
      * Show the errors and messages.
      */
     function show() {
+        static $shown = false;
+
+        if ($shown) {
+            return;
+        }
+        $shown = true;
+        
         if (!empty($this->errors)) {
             echo '<div class="error"><p>';
             echo $this->errors;
@@ -100,6 +107,11 @@ class NewsletterControls {
             echo $this->messages;
             echo '</p></div>';
         }
+    }
+    
+    function add_message_saved() {
+        if (!empty($this->messages)) $this->messages .= '<br><br>';
+        $this->messages .= __('Saved.', 'newsletter');
     }
 
     function hint($text, $url = '') {
@@ -159,13 +171,13 @@ class NewsletterControls {
         echo "<div class='newsletter-checkboxes-group'>";
         foreach ($values_labels as $value => $label) {
             echo "<div class='newsletter-checkboxes-item'>";
-            echo "<input type='checkbox' id='$name' name='options[$name][]' value='$value'";
+            echo "<label><input type='checkbox' id='$name' name='options[$name][]' value='$value'";
             if (array_search($value, $value_array) !== false)
                 echo " checked";
             echo '/>';
             if ($label != '')
-                echo " <label for='$name'>$label</label>";
-            echo "</div>";
+                echo $label;
+            echo "</label></div>";
         }
         echo "</div><div style='clear: both'></div>";
     }
@@ -319,7 +331,7 @@ class NewsletterControls {
         if ($function != null) {
             echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';' . htmlspecialchars($function) . '"/>';
         } else {
-            echo '<input class="button-secondary" type="button" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';this.form.submit()"/>';
+            echo '<input class="button-secondary" type="submit" value="' . $label . '" onclick="this.form.act.value=\'' . $action . '\';return true;"/>';
         }
     }
     
@@ -327,7 +339,15 @@ class NewsletterControls {
      * With translated "Save" label.
      */
     function button_save($function = null) {
-        $this->button('save', __('Save', 'newsletter'), $function);
+        $this->button_primary('save', __('Save', 'newsletter'), $function);
+    }
+    
+    function button_back($url) {
+        echo '<a href="';
+        echo $url;
+        echo '" class="button"><i class="fa fa-chevron-left"></i>&nbsp;';
+        _e('Back', 'newsletter');
+        echo '</a>';
     }
     
     /**
@@ -337,7 +357,7 @@ class NewsletterControls {
     function button_copy($data = '')
     {
         echo '<button class="button-secondary" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'copy\';if (!confirm(\'';
-        echo esc_attr(__('Proceed', 'newsletter'));
+        echo esc_attr(__('Proceed?', 'newsletter'));
         echo '\')) return false;">';
         echo '<i class="fa fa-copy"></i> ';
         echo esc_html(__('Copy', 'newsletter'));
@@ -351,7 +371,7 @@ class NewsletterControls {
     function button_delete($data = '')
     {
         echo '<button class="button-secondary" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'delete\';if (!confirm(\'';
-        echo esc_attr(__('Proceed', 'newsletter'));
+        echo esc_attr(__('Proceed?', 'newsletter'));
         echo '\')) return false;">';
         echo '<i class="fa fa-times"></i> ';
         echo esc_html(__('Delete', 'newsletter'));
@@ -403,6 +423,7 @@ class NewsletterControls {
     function textarea_preview($name, $width = '100%', $height = '200', $header = '', $footer = '') {
         //do_action('newsletter_controls_textarea_preview', $name);
         echo '<input class="button" type="button" onclick="newsletter_textarea_preview(\'options-' . $name . '\', \'\', \'\')" value="Switch editor/preview">';
+        echo '<br><br>';
         echo '<div style="position: relative">';
         echo '<textarea id="options-' . $name . '" name="options[' . $name . ']" wrap="off" style="width:' . $width . ';height:' . $height . 'px">';
         echo htmlspecialchars($this->data[$name]);
@@ -459,12 +480,13 @@ class NewsletterControls {
      * the key $name an array containig the passed value.
      */
     function checkbox_group($name, $value, $label = '') {
-        echo '<input type="checkbox" id="' . $name . '" name="options[' . $name . '][]" value="' . $value . '"';
+        echo '<label><input type="checkbox" id="' . $name . '" name="options[' . $name . '][]" value="' . $value . '"';
         if (is_array($this->data[$name]) && array_search($value, $this->data[$name]) !== false)
             echo ' checked="checked"';
         echo '/>';
         if ($label != '')
-            echo ' <label for="' . $name . '">' . $label . '</label>';
+            echo $label;
+        echo '</label>';
     }
 
     function color($name) {
@@ -517,7 +539,7 @@ class NewsletterControls {
             if (empty($options_profile['list_' . $i]))
                 continue;
             echo '<div class="newsletter-preferences-item">';
-            $this->checkbox($name . '_' . $i, '<span class="newsletter-badge">' . $i . '</span> ' . htmlspecialchars($options_profile['list_' . $i]));
+            $this->checkbox($name . '_' . $i, esc_html($options_profile['list_' . $i]));
             echo '</div>';
         }
         echo '<div style="clear: both"></div>';

@@ -133,8 +133,9 @@ class NewsletterModule {
      */
     function get_options($sub = '') {
         $options = get_option($this->get_prefix($sub));
-        if ($options === false)
+        if ($options === false) {
             return array();
+        }
         return $options;
     }
 
@@ -143,9 +144,11 @@ class NewsletterModule {
             $sub .= '-';
         }
         @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . 'en_US.php';
-        @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . 'en_US.php';
-        @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
-        @include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
+        //@include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . 'en_US.php';
+        if (defined('WPLANG') && WPLANG != 'en_US') {
+            @include NEWSLETTER_DIR . '/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
+        }
+        //@include WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/languages/' . $sub . WPLANG . '.php';
         if (!isset($options) || !is_array($options)) {
             return array();
         }
@@ -179,6 +182,11 @@ class NewsletterModule {
             if (isset($options['log_level']))
                 update_option('newsletter_' . $this->module . '_log_level', $options['log_level']);
         }
+    }
+
+    function merge_options($options, $sub = '') {
+        $old_options = $this->get_options($sub);
+        $this->save_options(array_merge($old_options, $options), $sub);
     }
 
     function backup_options($sub) {
@@ -496,30 +504,38 @@ class NewsletterModule {
 
     function add_menu_page($page, $title) {
         global $newsletter;
-        $file = WP_PLUGIN_DIR . '/newsletter-' . $this->module . '/' . $page . '.php';
-        if (!is_file($file)) {
-            $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
-        }
-        if (!is_file($file)) {
-            $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
-        }
-        $file = str_replace('\\', '\\\\', $file);
+
+//        Why check the plugin dir? I don't remember!
+//        $file = WP_PLUGIN_DIR . '/newsletter-' . $this->module . '/' . $page . '.php';
+//        if (!is_file($file)) {
+//            $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
+//        }
+//        if (!is_file($file)) {
+//            $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
+//        }
+
         $name = 'newsletter_' . $this->module . '_' . $page;
-        eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
-        // Rather stupid system to enable a menu voice... it would suffice to say "to editors"
-        add_submenu_page('newsletter_main_index', $title, $title, ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', $name, $name);
+        add_submenu_page('newsletter_main_index', $title, $title, ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', $name, array($this, 'menu_page'));
     }
 
     function add_admin_page($page, $title) {
         global $newsletter;
-        $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $this->module . '/' . $page . '.php';
-        if (!is_file($file)) {
-            $file = NEWSLETTER_DIR . '/' . $this->module . '/' . $page . '.php';
-        }
-        $file = str_replace('\\', '\\\\', $file);
         $name = 'newsletter_' . $this->module . '_' . $page;
-        eval('function ' . $name . '(){global $newsletter, $wpdb;require \'' . $file . '\';}');
-        add_submenu_page(null, $title, $title, ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', $name, $name);
+        add_submenu_page(null, $title, $title, ($newsletter->options['editor'] == 1) ? 'manage_categories' : 'manage_options', $name, array($this, 'menu_page'));
+    }
+
+    function menu_page() {
+        global $plugin_page, $newsletter, $wpdb;
+
+        $parts = explode('_', $plugin_page, 3);
+        $module = sanitize_file_name($parts[1]);
+        $page = sanitize_file_name($parts[2]);
+
+        $file = WP_CONTENT_DIR . '/extensions/newsletter/' . $module . '/' . $page . '.php';
+        if (!is_file($file)) {
+            $file = NEWSLETTER_DIR . '/' . $module . '/' . $page . '.php';
+        }
+        require $file;
     }
 
     function get_admin_page_url($page) {
@@ -651,6 +667,9 @@ class NewsletterModule {
                 echo esc_attr(stripslashes($value));
                 echo '">';
             }
+        }
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            echo '<input type="hidden" name="nhr" value="' . esc_attr($_SERVER['HTTP_REFERER']) . '">';
         }
         echo '<input type="hidden" name="ts" value="' . time() . '">';
         echo '<noscript><input type="submit" value="';

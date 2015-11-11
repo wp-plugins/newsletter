@@ -17,17 +17,21 @@ if ($controls->is_action('save')) {
     }
 }
 ?>
-<div class="wrap">
+
+<div class="wrap" id="tnp-wrap">
+
     <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
-    <div id="newsletter-title">
-    <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
+    
+    <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-    <h2>New subscriber</h2>
+	<div id="tnp-heading">
+    
+    <h2><?php _e('New Subscriber', 'newsletter') ?></h2>
+    
 </div>
-    <div class="newsletter-separator"></div> 
-    <?php $controls->show(); ?>
-
+    
+    <div id="tnp-body">
+    
     <form method="post" action="">
         <?php $controls->init(); ?>
 
@@ -43,4 +47,8 @@ if ($controls->is_action('save')) {
         </table>
 
     </form>
+</div>
+
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
 </div>

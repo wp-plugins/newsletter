@@ -72,12 +72,10 @@ class NewsletterUsers extends NewsletterModule {
         $this->add_menu_page('index', 'Subscribers');
         $this->add_admin_page('new', 'New subscriber');
         $this->add_admin_page('edit', 'Subscribers Edit');
-
         $this->add_admin_page('massive', 'Massive Management');
         $this->add_admin_page('export', 'Export');
         $this->add_admin_page('import', 'Import');
         $this->add_admin_page('stats', 'Statistics');
-        //$this->add_admin_page('index', 'Old search');
     }
 
     function export($options = null) {
@@ -163,47 +161,20 @@ class NewsletterUsers extends NewsletterModule {
     }
 
     /**
-     * Saves a new user on the database. Return false if the email (that must be unique) is already
-     * there. For a new users set the token and creation time if not passed.
-     *
-     * @global Newsletter $newsletter
-     * @param type $user
-     * @return type
-     */
-    function save_user($user, $return_format = OBJECT) {
-        global $newsletter;
-        return $newsletter->save_user($user, $return_format);
-    }
-
-    /**
      * Returns a list of users marked as "test user".
      * @global Newsletter $newsletter
      * @return array
      */
     function get_test_users() {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
         return $newsletter->get_test_users();
-    }
-
-    /** Returns the user identify by an id or an email. If $id_or_email is an object or an array, it is assumed it contains
-     * the "id" attribute or key and that is used to load the user.
-     *
-     * @global Newsletter $newsletter
-     * @global type $wpdb
-     * @param string|int|object|array $id_or_email
-     * @param type $format
-     * @return boolean
-     */
-    function get_user($id_or_email, $format = OBJECT) {
-        global $wpdb, $newsletter;
-        return $newsletter->get_user($id_or_email, $format);
     }
 
     /**
      * @global Newsletter $newsletter
      */
     function delete_user($id) {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
         return $newsletter->delete_user($id);
     }
 
@@ -215,7 +186,7 @@ class NewsletterUsers extends NewsletterModule {
      * @return boolean
      */
     function set_user_status($id_or_email, $status) {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
         return $newsletter->set_user_status($id_or_email, $status);
     }
 
@@ -226,4 +197,3 @@ class NewsletterUsers extends NewsletterModule {
 }
 
 NewsletterUsers::instance();
-

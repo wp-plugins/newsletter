@@ -26,7 +26,7 @@ if ($controls->is_action('create')) {
 
     $email = array();
     $email['status'] = 'new';
-    $email['subject'] = ''; //__('Here the email subject', 'newsletter-emails');
+    $email['subject'] = ''; //__('Here the email subject', 'newsletter');
     $email['track'] = 1;
 
     $theme_options = $module->get_current_theme_options();

@@ -87,7 +87,9 @@ if ($controls->is_action('import')) {
             if ($mode == 'overwrite') {
                 $subscriber['name'] = $newsletter->normalize_name($data[1]);
                 $subscriber['surname'] = $newsletter->normalize_name($data[2]);
-                $subscriber['status'] = $controls->data['import_as'];
+                if (isset($controls->data['override_status'])) {
+                    $subscriber['status'] = $controls->data['import_as'];
+                }
 
                 // Prepare the preference to zero
                 for ($i = 1; $i < NEWSLETTER_LIST_MAX; $i++)
@@ -118,25 +120,20 @@ if ($controls->is_action('import')) {
 }
 ?>
 
-<div class="wrap">
-    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
+<div class="wrap" id="tnp-wrap">
+    
+    <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-    <div id="newsletter-title">
-        <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-
-        <h2>Subscriber Import</h2>
+    <div id="tnp-heading">
+    
+        <h2><?php _e('Import', 'newsletter') ?></h2>
         <p>
             The import and export functions <strong>ARE NOT for backup</strong>. If you want to backup you should consider to backup the
-            wp_newsletter* tables.
-        </p>
-        <p>Please, read on bottom of this page the data format to use and other important notes.</p>
-
+            wp_newsletter* tables. Please, read on bottom of this page the data format to use and other important notes.</p>
+        
     </div>
-
-    <div class="newsletter-separator"></div>
-
-    <?php $controls->show(); ?>
+    
+    <div id="tnp-body">
 
     <?php if (!empty($results)) { ?>
 
@@ -153,9 +150,11 @@ if ($controls->is_action('import')) {
         <table class="form-table">
 
             <tr valign="top">
-                <th><?php _e('Import Subscribers As', 'newsletter-users') ?></th>
+                <th><?php _e('Import Subscribers As', 'newsletter') ?></th>
                 <td>
-                    <?php $controls->select('import_as', array('C' => __('Confirmed', 'newsletter-users'), 'S' => __('Not confirmed', 'newsletter-users'))); ?>
+                    <?php $controls->select('import_as', array('C' => __('Confirmed', 'newsletter'), 'S' => __('Not confirmed', 'newsletter'))); ?>
+                    <br>
+                    <?php $controls->checkbox('override_status', __('Override status of existing users', 'newsletter')) ?>
                 </td>
             </tr>
 
@@ -165,9 +164,9 @@ if ($controls->is_action('import')) {
                     <?php $controls->select('mode', array('update' => 'Update', 'overwrite' => 'Overwrite', 'skip' => 'Skip')); ?>
                     if email is already present
                     <div class="hints">
-                        <strong>Update</strong>: <?php _e('user data will be updated, existing preferences will be left untouched and new ones will be added.', 'newsletter-users') ?><br />
-                        <strong>Overwrite</strong>: <?php _e('user data will be overwritten with new informations (like name and preferences).', 'newsletter-users') ?><br />
-                        <strong>Skip</strong>: <?php _e('user data will be left untouched if already present.', 'newsletter-users') ?>
+                        <strong>Update</strong>: <?php _e('user data will be updated, existing preferences will be left untouched and new ones will be added.', 'newsletter') ?><br />
+                        <strong>Overwrite</strong>: <?php _e('user data will be overwritten with new informations (like name and preferences).', 'newsletter') ?><br />
+                        <strong>Skip</strong>: <?php _e('user data will be left untouched if already present.', 'newsletter') ?>
                     </div>
                 </td>
             </tr>
@@ -191,7 +190,7 @@ if ($controls->is_action('import')) {
 
             <tr valign="top">
                 <th>
-                    <?php _e('CSV file', 'newsletter-users') ?>
+                    <?php _e('CSV file', 'newsletter') ?>
             <div class="tnp-tip">
                 <span class="tip-button">Tip</span>
                 <span class="tip-content">
@@ -219,28 +218,37 @@ if ($controls->is_action('import')) {
             <tr>
                 <th>&nbsp;</th><td><?php $controls->button('import', 'Import'); ?></td>
             </tr>
-        </table>
-            
-    </form>
-
-        <a name="import_format"></a>
-        
-        <h3>Data format and other notes</h3>
-    
-        <p>
-            Consider to break up your input list if you get errors, blank pages or partially imported lists: it can be a time/resource limit
-            of your provider. It's safe to import the same list a second time, no duplications will occur.
-        </p>
-    
+            <tr>
+                <th>
+                    <a name="import_format"></a>
+                    Data format<br>and other notes
+                    <div class="tnp-tip">
+                <span class="tip-button">Tip</span>
+                <span class="tip-content">Consider to split up your input list if you get errors, blank pages or partially imported lists: it can be a time/resource limit
+            of your provider. It's safe to import the same list a second time, no duplications will occur.</span>
+                </th>
+                <td>
         <p>
             Import list format is:
         <p><strong>email</strong><i>[separator]</i><strong>first name</strong><i>[separator]</i><strong>last name</strong><i>[separator]</i><strong>gender</strong><i>[new line]</i></p>
             Example:
-        <p style="border: 1px solid #bfbfbf">email1@example.com;first name 1;last name 1;m<br />
-            email2@example.com;first name 2;last name 2;f</p>
+        <p style="border: 1px solid #bfbfbf">
+            email1@example.com;first name 1;last name 1;m<br />
+            email2@example.com;first name 2;last name 2;f
+        </p>
+        <p>
             where [separator] must be selected from the available ones. Empty lines and lines starting with "#" will be skipped. There is
             no separator escaping mechanism, so be sure that field values do not contain the selected separator. The only required field is the email
             all other fields are options. Gender must be "m" or "f".
         </p>
+                </td>
+            </tr>
+        </table>
+            
+    </form>
+
+</div>
+    
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
 
 </div>

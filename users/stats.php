@@ -5,21 +5,20 @@ $options_profile = get_option('newsletter_profile');
 $module = NewsletterUsers::instance();
 ?>
 
+<div class="wrap" id="tnp-wrap">
 
-<div class="wrap">
+    <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
-    <?php include NEWSLETTER_DIR . '/header-new.php'; ?>
-
-    <div id="newsletter-title">
-        <?php include NEWSLETTER_DIR . '/users/menu.inc.php'; ?>
-
-        <h2>Subscriber Statistics</h2>
+    <div id="tnp-heading">
+    
+        <h2><?php _e('Statistics', 'newsletter') ?></h2>
 
         <p>Reports values are usually computed only counting confirmed subscribers.</p>
-    </div>
-    <div class="newsletter-separator"></div>
 
+    </div>
+        
+    <div id="tnp-body">
+        
     <div id="tabs">
 
         <ul>
@@ -143,12 +142,44 @@ $module = NewsletterUsers::instance();
             $list = $wpdb->get_results("select referrer, count(*) as total from " . NEWSLETTER_USERS_TABLE . " where status='C' group by referrer order by total desc");
             ?>
             <table class="widefat" style="width: 300px">
-                <thead><tr><th>Referrer</th><th>Total</th></thead>
+                <thead>
+                    <tr><th>Referrer</th><th>Total</th>
+                </thead>
                 <?php foreach ($list as $row) { ?>
-                    <tr><td><?php echo $row->referrer; ?></td><td><?php echo $row->total; ?></td></tr>
+                    <tr>
+                        <td><?php echo empty($row->referrer)?'[undefined]':esc_html($row->referrer) ?></td>
+                        <td><?php echo $row->total; ?></td>
+                    </tr>
                 <?php } ?>
             </table>
-
+            <!--
+<canvas id="myChart" width="400" height="400"></canvas>
+            <script>
+                var ctx = document.getElementById("myChart").getContext("2d");
+                var data = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+        {
+            label: "My First dataset",
+            fillColor: "rgba(220,220,220,0.5)",
+            strokeColor: "rgba(220,220,220,0.8)",
+            highlightFill: "rgba(220,220,220,0.75)",
+            highlightStroke: "rgba(220,220,220,1)",
+            data: [65, 59, 80, 81, 56, 55, 40]
+        },
+        {
+            label: "My Second dataset",
+            fillColor: "rgba(151,187,205,0.5)",
+            strokeColor: "rgba(151,187,205,0.8)",
+            highlightFill: "rgba(151,187,205,0.75)",
+            highlightStroke: "rgba(151,187,205,1)",
+            data: [28, 48, 40, 19, 86, 27, 90]
+        }
+    ]
+};
+var myBarChart = new Chart(ctx).Bar(data);
+</script>
+            -->
         </div>
 
 
@@ -240,7 +271,10 @@ $module = NewsletterUsers::instance();
     </div>
 
 </div>
-
+    
+    <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
+    
+</div>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">

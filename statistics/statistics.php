@@ -33,9 +33,19 @@ class NewsletterStatistics extends NewsletterModule {
             die();
         }
         
+        // Newsletter Open Traking Image
         if (isset($_GET['noti'])) {
-            $_GET['r'] = $_GET['noti'];
-            include dirname(__FILE__) . '/open.php';
+            list($email_id, $user_id) = explode(';', base64_decode($_GET['noti']), 2);
+
+            $wpdb->insert(NEWSLETTER_STATS_TABLE, array(
+                'email_id' => $email_id,
+                'user_id' => $user_id,
+                'ip' => $_SERVER['REMOTE_ADDR']
+                    )
+            );
+
+            header('Content-Type: image/gif');
+            echo base64_decode('_R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
             die();
         }        
     }
@@ -83,7 +93,7 @@ class NewsletterStatistics extends NewsletterModule {
     }
 
     function admin_menu() {
-        $this->add_menu_page('index', 'Statistics');
+        $this->add_admin_page('index', 'Statistics');
         $this->add_admin_page('view', 'Statistics');
     }
 

@@ -5,7 +5,7 @@ require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
 class NewsletterSubscription extends NewsletterModule {
 
     const MESSAGE_CONFIRMED = 'confirmed';
-
+    var $options_lock;
     static $instance;
 
     /**
@@ -20,7 +20,9 @@ class NewsletterSubscription extends NewsletterModule {
 
     function __construct() {
 
-        parent::__construct('subscription', '1.1.6');
+        parent::__construct('subscription', '2.0.0');
+        
+        $this->options_lock = $this->get_options('lock');
 
         add_action('wp_login', array($this, 'hook_wp_login'));
 
@@ -36,6 +38,7 @@ class NewsletterSubscription extends NewsletterModule {
         add_shortcode('newsletter_profile', array($this, 'shortcode_profile'));
         add_shortcode('newsletter_field', array($this, 'shortcode_field'));
         add_action('wp_footer', array($this, 'hook_wp_footer'));
+        add_shortcode('newsletter_lock', array($this, 'shortcode_newsletter_lock'));
     }
 
     function hook_delete_user($id) {
@@ -182,17 +185,90 @@ class NewsletterSubscription extends NewsletterModule {
             $this->options['url'] = $newsletter->options['url'];
             $this->save_options($this->options);
         }
-
+        
+        // Locked content configuration migration
+        $options_lock = $this->get_options('lock');
+        if (empty($options_lock)) {
+            $options_main = Newsletter::instance()->get_options();
+            $options_lock['ids'] = $options_main['lock_ids'];
+            $options_lock['url'] = $options_main['lock_url'];
+            $options_lock['message'] = $options_main['lock_message'];
+            update_option('newsletter_subscription_lock', $options_lock);
+        }
+        
+        $options_template = $this->get_options('template');
+        if (empty($options_template)) {
+            $options_template['enabled'] = $this->options['template_enabled'];
+            $options_template['template'] = $this->options['template'];
+            add_option('newsletter_subscription_template', $options_template, null, 'no');
+        }        
+        
         // Because users do not understand how to create an "extensions" folder...
         @wp_mkdir_p(WP_CONTENT_DIR . '/extensions/newsletter/subscription');
         return true;
     }
 
     function admin_menu() {
-        $this->add_menu_page('options', 'Subscription Steps');
-        $this->add_menu_page('profile', 'Subscription Form');
+        $this->add_menu_page('options', 'List building');
+        $this->add_admin_page('profile', 'Subscription Form');
+        $this->add_admin_page('lock', 'Locked content');
+        $this->add_admin_page('wpusers', 'WP Registration');
         $this->add_admin_page('forms', 'Forms');
+        $this->add_admin_page('lists', 'Lists');
+        $this->add_admin_page('template', 'Template');
+        $this->add_admin_page('unsubscription', 'Unsubscription');
     }
+    
+    function hook_the_content($content) {
+        global $post, $cache_stop;
+
+        if ($this->lock_found || !is_singular() || is_user_logged_in()) {
+            return $content;
+        }
+
+        if (!empty($this->options_lock['ids'])) {
+            $ids = explode(',', $this->options_lock['ids']);
+        }
+
+        if (!empty($ids) && (has_tag($ids) || in_category($ids) || in_array($post->post_name, $ids))) {
+            $cache_stop = true;
+            $user = $this->check_user();
+            if ($user == null || $user->status != 'C') {
+                $buffer = $this->replace($this->options_lock['message']);
+                return '<div class="newsletter-lock">' . do_shortcode($buffer) . '</div>';
+            }
+        }
+
+        return $content;
+    }
+
+    function shortcode_newsletter_lock($attrs, $content = null) {
+        global $hyper_cache_stop, $cache_stop;
+
+        //$this->logger->debug('Lock short code start');
+        $hyper_cache_stop = true;
+        $cache_stop = true;
+
+        $this->lock_found = true;
+
+        $user = $this->check_user();
+        if ($user != null && $user->status == 'C') {
+            return do_shortcode($content);
+        }
+
+        $buffer = $this->options_lock['message'];
+//        ob_start();
+//        eval('? >' . $buffer . "\n");
+//        $buffer = ob_get_clean();
+        // TODO: add the newsletter check on submit
+        $buffer = str_ireplace('<form', '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '"', $buffer);
+        $buffer = $this->replace($buffer, null, null, 'lock');
+
+        $buffer = do_shortcode($buffer);
+        //$this->logger->debug('Lock short code end');
+
+        return '<div class="newsletter-lock">' . $buffer . '</div>';
+    }    
 
     function hook_wp_footer() {
         
@@ -217,7 +293,7 @@ class NewsletterSubscription extends NewsletterModule {
         if ($sub == 'profile') {
             return update_option('newsletter_profile', $options);
         }
-        return parent::save_options($sub);
+        return parent::save_options($options, $sub);
     }
 
     function get_options($sub = '') {
@@ -236,7 +312,8 @@ class NewsletterSubscription extends NewsletterModule {
      * See wp-includes/user.php function wp_signon().
      */
     function hook_wp_login($user_login) {
-        global $newsletter;
+        
+        $newsletter = Newsletter::instance();
 
         //$this->logger->info(__METHOD__ . '> Start with ' . $user_login);
         $wp_user = get_user_by('login', $user_login);
@@ -258,7 +335,7 @@ class NewsletterSubscription extends NewsletterModule {
      * @global Newsletter $newsletter
      */
     function subscribe($status = null, $emails = true) {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
 
         // Messages
         $options = get_option('newsletter', array());
@@ -376,7 +453,7 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function update_user_from_request($user) {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
         $options = get_option('newsletter', array());
 
         $options_profile = get_option('newsletter_profile', array());
@@ -395,10 +472,17 @@ class NewsletterSubscription extends NewsletterModule {
         }
         // TODO: valid values check
 
-        if (isset($_REQUEST['ns'])) {
+        if (isset($_REQUEST['nr'])) {
             $user['referrer'] = strip_tags(trim($_REQUEST['nr']));
         }
-        $user['http_referer'] = strip_tags(trim($_SERVER['HTTP_REFERER']));
+        
+        // From the antibot form
+        if (isset($_REQUEST['nhr'])) {
+            $user['http_referer'] = strip_tags(trim($_REQUEST['nhr']));
+        } else if (isset($_SERVER['HTTP_REFERER'])) {
+            $user['http_referer'] = strip_tags(trim($_SERVER['HTTP_REFERER']));
+        }
+        
         // New profiles
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
             // If the profile cannot be set by  subscriber, skip it.
@@ -473,7 +557,7 @@ class NewsletterSubscription extends NewsletterModule {
      * @return stdClass
      */
     function confirm($user_id = null, $emails = true) {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
         if ($user_id == null) {
             $user = $this->get_user_from_request();
             if ($user) {
@@ -541,7 +625,7 @@ class NewsletterSubscription extends NewsletterModule {
      * @return type
      */
     function unsubscribe() {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
         $user = $this->get_user_from_request();
 
         $this->logger->debug('Unsubscription for:');
@@ -576,7 +660,7 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function save_profile() {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
 
         $user = $this->get_user_from_request();
         if ($user == null) {
@@ -652,7 +736,6 @@ class NewsletterSubscription extends NewsletterModule {
             if (empty($this->options['confirmation_disabled'])) {
                 $message = $this->options['confirmation_message'];
                 $subject = $this->options['confirmation_subject'];
-                global $newsletter;
                 $res = $this->mail($user->email, $newsletter->replace($subject, $user), $newsletter->replace($message, $user));
                 $alert = $this->options['profile_email_changed'];
             }
@@ -669,11 +752,9 @@ class NewsletterSubscription extends NewsletterModule {
     /**
      * Finds the right way to show the message identified by $key (welcome, unsubscription, ...) redirecting the user to the
      * WordPress page or loading the configured url or activating the standard page.
-     *
-     * @global Newsletter $newsletter
      */
     function show_message($key, $user, $alert = '') {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
 
         if (!is_object($user)) {
             if (is_array($user))
@@ -716,7 +797,7 @@ class NewsletterSubscription extends NewsletterModule {
      * @return null
      */
     function get_user_from_request() {
-        global $newsletter;
+        $newsletter = Newsletter::instance();
 
         if (isset($_REQUEST['nk'])) {
             list($id, $token) = @explode('-', $_REQUEST['nk'], 2);
@@ -843,7 +924,7 @@ class NewsletterSubscription extends NewsletterModule {
         $action = esc_attr(home_url('/') . '?na=s');
         $class = esc_attr($attrs['class']);
         $style = esc_attr($attrs['style']);
-        $buffer = '<form method="post" action="' . $action . '" class="' . $class . ' style="' . $style . '">' . "\n";
+        $buffer = '<form method="post" action="' . $action . '" class="' . $class . '" style="' . $style . '">' . "\n";
 
         if (isset($attrs['referrer'])) {
             $buffer .= '<input type="hidden" name="nr" value="' . esc_attr($referrer) . '">' . "\n";

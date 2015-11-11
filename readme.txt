@@ -41,7 +41,7 @@ Need *more power*? Feel *something's missing*? The Newsletter Plugin features ca
 our **premium, professional Extensions**! Let us introduce just two of them : )
 
 * [Reports Extension](http://www.thenewsletterplugin.com/plugins/newsletter/reports-module) is a regular WordPress plugin which improves the internal statistics collection system and provides better reports of data collected for each sent email. Neat.
-* [Feed By Mail Extension](http://www.thenewsletterplugin.com/feed-by-mail-extension) generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch! 
+* [Feed By Mail Extension](http://www.thenewsletterplugin.com/feed-by-mail-extension) generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch!
 * [WooCommerce Extension](http://www.thenewsletterplugin.com/woocommerce-extension) subscribe customers to a mailing list and generate product newletters.
 * [Amazon SES Extension](http://www.thenewsletterplugin.com/amazon-ses-extension-for-the-newsletter-plugin) seamlessly integrate Amazon SES with The Newsletter Plugin. Hassle-free.
 
@@ -76,20 +76,18 @@ No screenshots are available at this time.
 
 == Changelog ==
 
-= 3.9.7 =
+= 4.0.0 =
 
-* Fixed the traking link for test email so logged in user can test them
-
-= 3.9.6 =
-
-* Fixed the online view
+* Shiny new look
+* New top menu
+* Locked content feature moved into the subscription module
+* Separated SMTP configuration panel
+* Newsletter users import transfer first and last name
+* Various bug fixes and improvements
 
 = 3.9.5 =
 
 * Corrected the call to maybe_maybe_convert_table_to_utf8mb4
-* Private newsletter check
-* Force UTF-8 on newsletter online view
-* Re-enabled the antibot option for ajax subscriptions
 
 = 3.9.4 =
 
