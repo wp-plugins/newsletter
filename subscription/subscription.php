@@ -649,7 +649,7 @@ class NewsletterSubscription extends NewsletterModule {
         if ($user->status == 'C') {
             $newsletter->set_user_status($user->id, 'U');
 
-            if (!isset($this->options['unsubscribed_disabled'])) {
+            if (empty($this->options['unsubscribed_disabled'])) {
                 $this->mail($user->email, $newsletter->replace($this->options['unsubscribed_subject'], $user), $newsletter->replace($this->options['unsubscribed_message'], $user));
             }
             $this->notify_admin($user, 'Newsletter unsubscription');

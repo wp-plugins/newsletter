@@ -51,6 +51,7 @@ if ($controls->is_action()) {
 
         $controls->data['confirmed_url'] = trim($controls->data['confirmed_url']);
         $controls->data['confirmation_url'] = trim($controls->data['confirmation_url']);
+        
         $module->merge_options($controls->data);
         $controls->messages = 'Saved.';
     }
@@ -130,12 +131,6 @@ if ($controls->is_action()) {
     }
 } else {
     $controls->data = get_option('newsletter', array());
-
-    // Patch
-    if (isset($controls->data['subscribed_text'])) {
-        $controls->data['confirmation_text'] = $controls->data['subscribed_text'];
-        unset($controls->data['subscribed_text']);
-    }
 }
 ?>
 

@@ -152,6 +152,21 @@ class NewsletterControls {
         echo '>Enabled</option>';
         echo '</select>';
     }
+    
+    function disabled($name) {
+        $value = isset($this->data[$name]) ? (int) $this->data[$name] : 0;
+
+        echo '<select style="width: 100px" name="options[' . $name . ']">';
+        echo '<option value="0"';
+        if ($value == 0)
+            echo ' selected';
+        echo '>Enabled</option>';
+        echo '<option value="1"';
+        if ($value == 1)
+            echo ' selected';
+        echo '>Disabled</option>';
+        echo '</select>';
+    }    
 
     /**
      * Creates a set of checkbox all named as $name with values and labels extracted from
@@ -342,6 +357,15 @@ class NewsletterControls {
         $this->button_primary('save', __('Save', 'newsletter'), $function);
     }
     
+    function button_reset($data = '') {
+        echo '<button class="button-secondary" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'reset\';if (!confirm(\'';
+        echo esc_attr(__('Proceed?', 'newsletter'));
+        echo '\')) return false;">';
+        //echo '<i class="fa fa-times"></i> ';
+        echo esc_html(__('Reset', 'newsletter'));
+        echo '</button>';
+    }    
+    
     function button_back($url) {
         echo '<a href="';
         echo $url;
@@ -434,7 +458,7 @@ class NewsletterControls {
 
     function email($prefix, $editor = null, $disable_option = false) {
         if ($disable_option) {
-            $this->checkbox($prefix . '_disabled', 'Disable this email');
+            $this->disabled($prefix . '_disabled');
             echo '<br>';
         }
         //echo 'Subject:<br />';

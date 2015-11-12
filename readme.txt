@@ -76,6 +76,10 @@ No screenshots are available at this time.
 
 == Changelog ==
 
+= 4.0.3 =
+
+* Fixed the welcome email enable/disable setting 
+
 = 4.0.2 =
 
 * Fixed main settings saving
