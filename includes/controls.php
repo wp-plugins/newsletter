@@ -143,12 +143,14 @@ class NewsletterControls {
 
         echo '<select style="width: 100px" name="options[' . $name . ']">';
         echo '<option value="0"';
-        if ($value == 0)
+        if ($value == 0) {
             echo ' selected';
+        }
         echo '>Disabled</option>';
         echo '<option value="1"';
-        if ($value == 1)
+        if ($value == 1) {
             echo ' selected';
+        }
         echo '>Enabled</option>';
         echo '</select>';
     }
