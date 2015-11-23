@@ -110,6 +110,7 @@ class NewsletterSubscription extends NewsletterModule {
                     if ($user->status == 'E') {
                         NewsletterSubscription::instance()->show_message('error', $user->id);
                     } else {
+                        setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
                         NewsletterSubscription::instance()->show_message('confirmed', $user);
                     }
                 } else {
@@ -125,11 +126,11 @@ class NewsletterSubscription extends NewsletterModule {
                     die();
                 }
 
-                $options_main = get_option('newsletter_main', array());
+                $options = $this->get_options('lock');
 
                 setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
 
-                header('Location: ' . $options_main['lock_url']);
+                header('Location: ' . $options['url']);
 
                 die();
                 break;
@@ -190,16 +191,18 @@ class NewsletterSubscription extends NewsletterModule {
         $options_lock = $this->get_options('lock');
         if (empty($options_lock)) {
             $options_main = Newsletter::instance()->get_options();
-            $options_lock['ids'] = $options_main['lock_ids'];
-            $options_lock['url'] = $options_main['lock_url'];
-            $options_lock['message'] = $options_main['lock_message'];
-            update_option('newsletter_subscription_lock', $options_lock);
+            if (isset($options_main['message'])) {
+                $options_lock['ids'] = $options_main['lock_ids'];
+                $options_lock['url'] = $options_main['lock_url'];
+                $options_lock['message'] = $options_main['lock_message'];
+                update_option('newsletter_subscription_lock', $options_lock);
+            }
         }
         
         $options_template = $this->get_options('template');
         if (empty($options_template)) {
-            $options_template['enabled'] = $this->options['template_enabled'];
-            $options_template['template'] = $this->options['template'];
+            $options_template['enabled'] = isset($this->options['template_enabled'])?1:0;
+            $options_template['template'] = isset($this->options['template'])?$this->options['template']:'';
             add_option('newsletter_subscription_template', $options_template, null, 'no');
         }        
         
@@ -262,10 +265,9 @@ class NewsletterSubscription extends NewsletterModule {
 //        $buffer = ob_get_clean();
         // TODO: add the newsletter check on submit
         $buffer = str_ireplace('<form', '<form method="post" action="' . plugins_url('newsletter/do/subscribe.php') . '"', $buffer);
-        $buffer = $this->replace($buffer, null, null, 'lock');
+        $buffer = Newsletter::instance()->replace($buffer, null, null, 'lock');
 
         $buffer = do_shortcode($buffer);
-        //$this->logger->debug('Lock short code end');
 
         return '<div class="newsletter-lock">' . $buffer . '</div>';
     }    
@@ -538,9 +540,6 @@ class NewsletterSubscription extends NewsletterModule {
         // use the default old templating system.
         if (!empty($options_template['enabled'])) {
             $template = $options_template['template'];
-            if (strpos($template, '{message}') === false) {
-                $template .= '{message}';
-            }
             $message = str_replace('{message}', $message, $template);
         } else {
             ob_start();
@@ -1683,6 +1682,10 @@ function newsletter_shortcode($attrs, $content) {
     $module = NewsletterSubscription::instance();
     $user = $module->get_user_from_request();
     $message_key = $module->get_message_key_from_request();
+    
+//    if ($message_key != 'subscription' && $user == null) {
+//        die('Invalid subscriber');
+//    }
 
 
     $message = $module->options[$message_key . '_text'];

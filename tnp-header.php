@@ -155,15 +155,6 @@ function newsletter_print_entries($group) {
     </div>
 <?php } ?>
 
-<?php if (NEWSLETTER_DEBUG || !isset($dismissed['tracking-url'])) { ?>
-    <div class="notice">
-        <a href="<?php echo $_SERVER['REQUEST_URI'] . '&dismiss=tracking-url' ?>" class="dismiss">&times;</a>
-        <p>
-            There is a new option avoid to hit spam filters available on statistics panel. Check it out.
-        </p>
-    </div>
-<?php } ?>
-
 <?php if (NEWSLETTER_DEBUG || !isset($dismissed['newsletter-page']) && empty(NewsletterSubscription::instance()->options['url'])) { ?>
     <div class="notice">
         <a href="<?php echo $_SERVER['REQUEST_URI'] . '&dismiss=newsletter-page' ?>" class="dismiss">&times;</a>

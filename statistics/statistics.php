@@ -19,7 +19,7 @@ class NewsletterStatistics extends NewsletterModule {
     function __construct() {
         global $wpdb;
 
-        parent::__construct('statistics', '1.1.3');
+        parent::__construct('statistics', '1.1.4');
         
         add_action('wp_loaded', array($this, 'hook_wp_loaded'));
     }
@@ -84,6 +84,9 @@ class NewsletterStatistics extends NewsletterModule {
             $this->save_options($this->options);
         }
 
+        $this->upgrade_query("ALTER TABLE `{$wpdb->prefix}newsletter_emails` ADD COLUMN `read_count` int UNSIGNED NOT NULL DEFAULT 0");
+        $this->upgrade_query("ALTER TABLE `{$wpdb->prefix}newsletter_emails` ADD COLUMN `click_count`  int UNSIGNED NOT NULL DEFAULT 0");
+        
         // Stores the link of every email to create short links
 //        $this->upgrade_query("create table if not exists {$wpdb->prefix}newsletter_links (id int auto_increment, primary key (id)) $charset_collate");
 //        $this->upgrade_query("alter table {$wpdb->prefix}newsletter_links add column email_id int not null default 0");

@@ -126,7 +126,7 @@ if ($controls->is_action()) {
             }
             $controls->messages .= 'Test emails sent to ' . count($users) . ' test subscribers: ' .
                     implode(', ', $addresses) . '. Read more about test subscribers <a href="http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank">here</a>.';
-            $controls->messages .= '<br>If the message is not received, try to chnage the message text it could trigger some antispam filters.';
+            $controls->messages .= '<br>If the message is not received, try to change the message text it could trigger some antispam filters.';
         }
     }
 } else {

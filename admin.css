@@ -554,10 +554,16 @@ p.description {
 
 #tnp-body {
     padding: 10px;
-    background-color: #34495E;
+    background-color: #eee;
     border-radius: 5px;
+    border-color: #34495E;
+    border-width: 10px;
+    border-style: solid;
 }
 
+#tnp-body h3 {
+    margin-top: 0px;
+}
 
 .tnp-body-lite {
     background-color: #F1F1F1 !important;
@@ -806,13 +812,20 @@ span.wp-media-buttons-icon:before {
 /* Paginator */
 
 .tnp-paginator {
-    color: #fff;
+    color: #2C3E50;
     font-family: "Montserrat",sans-serif;
     margin: 10px 0px;
 }
 
 .tnp-paginator .button-secondary {
-    background: none;
+    background: #666;
+    padding: 5px;
+    line-height: normal;
+    height: auto;
+    font-size: 12px;
+    height: 25px;
+    border: none;
+    border-radius: 3px;
 }
 
 .tnp-paginator [value="Go"] {
@@ -828,6 +841,10 @@ span.wp-media-buttons-icon:before {
     border: none;
     border-radius: 3px;
     color: #fff;
+    padding: 5px;
+    line-height: normal;
+    font-size: 12px;
+    height: 25px;
 }
 
 /* Subscribers Search Box */

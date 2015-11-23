@@ -47,6 +47,9 @@ if (!$controls->is_action()) {
                     <?php $controls->text('url', 70); ?>
                     <p class="description">
                         <?php _e('URL where redirect subscribers when they click on unlocking URL ({unlock_url}) inserted in newsletters and welcome message.', 'newsletter') ?>
+                        <br>
+                        Newsletters with tracking active can link directly the pages with locked content since the URLs will 
+                        unlock the content as well.
                     </p>
                 </td>
             </tr>

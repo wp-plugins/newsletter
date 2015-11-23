@@ -23,7 +23,7 @@ else {
     if (empty($controls->data['search_page'])) $controls->data['search_page'] = 0;
 }
 
-$lists = array(''=>'Any');
+$lists = array(''=>'Any List');
 for ($i=1; $i<=NEWSLETTER_LIST_MAX; $i++)
 {
     if (empty($options_lists['list_' . $i])) continue;
@@ -71,6 +71,10 @@ if (!empty($controls->data['search_status'])) {
         $query_args[] = $controls->data['search_status'];
         $where .= " and status=%s";
     }
+}
+
+if (!empty($controls->data['search_list'])) {
+    $where .= " and list_" . ((int)$controls->data['search_list']) . "=1";
 }
 
 // Total items, total pages
@@ -131,13 +135,16 @@ $controls->data['search_page']++;
         <div class="tnp-subscribers-search">
             <?php $controls->text('search_text', 80, __('Search text', 'newsletter')); ?>
 
-            <?php _e('filter by', 'newsletter')?>:<?php $controls->select('search_status', array(''=>'Any status', 'T'=>'Test subscribers', 'C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed', 'B'=>'Bounced')); ?>
-            <?php $controls->button('search', __('Search', 'newsletter')); ?>
+            <?php _e('filter by', 'newsletter')?>:
+                <?php $controls->select('search_status', array(''=>'Any status', 'T'=>'Test subscribers', 'C'=>'Confirmed', 'S'=>'Not confirmed', 'U'=>'Unsubscribed', 'B'=>'Bounced')); ?>
+                <?php $controls->select('search_list', $lists); ?>
+            
+                <?php $controls->button('search', __('Search', 'newsletter')); ?>
             <?php if ($where != "where 1=1") { ?>
                 <?php $controls->button('reset', __('Reset Filters', 'newsletter')); ?>
         <?php } ?>
             <br>
-            <?php $controls->checkbox('show_preferences', __('Show preferences', 'newsletter')); ?>
+            <?php $controls->checkbox('show_preferences', __('Show lists', 'newsletter')); ?>
         </div>
 
 <div class="tnp-paginator">

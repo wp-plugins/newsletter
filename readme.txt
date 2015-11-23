@@ -76,6 +76,14 @@ No screenshots are available at this time.
 
 == Changelog ==
 
+= 4.0.5 =
+
+* Fixed an error on content lock
+* Fixed CSS for extensions
+* Fixed few debug notices
+* Improved the content lock user recognition
+* Subscriber search by list 
+
 = 4.0.4 =
 
 * Fixed and improved the email template for service messages

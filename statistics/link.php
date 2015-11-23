@@ -21,6 +21,7 @@ if (!$verified) {
     $verified = $key == md5($email_id . ';' . $user_id . ';' . $url . ';' . $anchor . $options['key']);
 }
 
+// For feed by mail tests
 if ($verified && empty($email_id) && is_user_logged_in()) {
     header('Location: ' . $url);
     die();
@@ -35,6 +36,10 @@ if ($verified) {
         'ip' => $_SERVER['REMOTE_ADDR']
             )
     );
+    $user = Newsletter::instance()->get_user($user_id);
+    if ($user) {
+        setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
+    }
     header('Location: ' . $url);
     die();
 } else {

@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: http://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="http://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 4.0.4
+  Version: 4.0.5
   Author: Stefano Lissa, The Newsletter Team
   Author URI: http://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -14,7 +14,7 @@
  */
 
 // Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '4.0.4');
+define('NEWSLETTER_VERSION', '4.0.5');
 
 global $wpdb, $newsletter;
 
@@ -222,6 +222,9 @@ class Newsletter extends NewsletterModule {
         $this->upgrade_query("drop table if exists " . $wpdb->prefix . "newsletter_work");
         $this->upgrade_query("alter table " . NEWSLETTER_EMAILS_TABLE . " convert to character set utf8");
 
+        // WP does not manage composite primary key when it tries to upgrade a table...
+        $suppress_errors = $wpdb->suppress_errors(true);
+        
         dbDelta("CREATE TABLE `" . $wpdb->prefix . "newsletter_sent` (
             `email_id` int(10) unsigned NOT NULL DEFAULT '0',
             `user_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -232,6 +235,7 @@ class Newsletter extends NewsletterModule {
             KEY `user_id` (`user_id`),
             KEY `email_id` (`email_id`)
           ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
+        $wpdb->suppress_errors($suppress_errors);
 
         if ('utf8mb4' === $wpdb->charset) {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -375,9 +379,7 @@ class Newsletter extends NewsletterModule {
     function hook_admin_head() {
         if ($this->is_admin_page()) {
             echo '<link type="text/css" rel="stylesheet" href="' . plugins_url('newsletter') . '/admin.css?' . NEWSLETTER_VERSION . '"/>';
-            //echo '<link type="text/css" rel="stylesheet" href="' . plugins_url('newsletter') . '/css/dropdown.css?' . NEWSLETTER_VERSION . '"/>';
             echo '<script src="' . plugins_url('newsletter') . '/admin.js?' . NEWSLETTER_VERSION . '"></script>';
-            //echo '<script src="' . plugins_url('newsletter') . '/js/Chart.min.js?' . NEWSLETTER_VERSION . '"></script>';
         }
     }
 

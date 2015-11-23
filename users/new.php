@@ -20,35 +20,33 @@ if ($controls->is_action('save')) {
 
 <div class="wrap" id="tnp-wrap">
 
-    <?php $help_url = 'http://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module'; ?>
-    
     <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
-	<div id="tnp-heading">
-    
-    <h2><?php _e('New Subscriber', 'newsletter') ?></h2>
-    
-</div>
-    
+    <div id="tnp-heading">
+
+        <h2><?php _e('New Subscriber', 'newsletter') ?></h2>
+
+    </div>
+
     <div id="tnp-body">
-    
-    <form method="post" action="">
-        <?php $controls->init(); ?>
 
-        <table class="form-table">
-            <tr valign="top">
-                <th>New email address</th>
-                <td>
-                    <?php $controls->text('email', 60); ?>
-                    <?php $controls->button('save', 'Proceed'); ?>
+        <form method="post" action="">
+            <?php $controls->init(); ?>
 
-                </td>
-            </tr>
-        </table>
+            <table class="form-table">
+                <tr valign="top">
+                    <th>New email address</th>
+                    <td>
+                        <?php $controls->text('email', 60); ?>
+                        <?php $controls->button('save', 'Proceed'); ?>
 
-    </form>
-</div>
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+    </div>
 
     <?php include NEWSLETTER_DIR . '/tnp-footer.php'; ?>
-    
+
 </div>
