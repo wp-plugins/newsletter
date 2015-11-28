@@ -367,6 +367,7 @@ class NewsletterSubscription extends NewsletterModule {
             }
 
             // Already confirmed
+            //if ($opt_in == 0 && $user->status == 'C') {
             if ($user->status == 'C') {
 
                 set_transient($user->id . '-' . $user->token, $_REQUEST, 3600 * 48);

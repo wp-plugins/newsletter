@@ -56,7 +56,7 @@ $themes = $module->themes->get_all_with_data();
     </h2>
 
 </div>
-	<div id="tnp-body">
+    <div id="tnp-body" class="tnp-darkbg">
             
     <form method="post" id="newsletter-form" action="<?php echo $module->get_admin_page_url('new'); ?>">
         <?php $controls->init(); ?>

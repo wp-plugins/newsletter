@@ -76,6 +76,12 @@ No screenshots are available at this time.
 
 == Changelog ==
 
+= 4.0.6 =
+
+* Fixed forced lists on subscription panel
+* Fixed few i18n tags
+* Fixed background color on theme selector
+
 = 4.0.5 =
 
 * Fixed an error on content lock

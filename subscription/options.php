@@ -52,6 +52,13 @@ if ($controls->is_action()) {
         $controls->data['confirmed_url'] = trim($controls->data['confirmed_url']);
         $controls->data['confirmation_url'] = trim($controls->data['confirmation_url']);
         
+        // Checkboxes patch
+        $options = get_option('newsletter', array());
+        for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
+            unset($options['preferences_' . $i]);
+        }
+        update_option('newsletter', $options);
+        
         $module->merge_options($controls->data);
         $controls->messages = 'Saved.';
     }

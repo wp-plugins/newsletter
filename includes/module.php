@@ -329,8 +329,9 @@ class NewsletterModule {
     }
 
     static function format_date($time) {
-        if (empty($time))
+        if (empty($time)) {
             return '-';
+        }
         return gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
     }
 

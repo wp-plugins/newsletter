@@ -561,8 +561,13 @@ p.description {
     border-style: solid;
 }
 
+.tnp-darkbg {
+    background-color: #34495E!important;
+}
+
 #tnp-body h3 {
-    margin-top: 0px;
+    margin-top: 15px;
+    clear: both;
 }
 
 .tnp-body-lite {

@@ -44,21 +44,8 @@ if ($controls->is_action('save')) {
     <form method="post" action="">
         <?php $controls->init(); ?>
     <table class="form-table">
-        <!--
         <tr>
-            <th><?php _e('Tracking URL', 'newsletter-statistics') ?></th>
-            <td>
-                <?php $controls->select('tracking_url', array(0=>__('Standard', 'newsletter-statistics'), 
-                    1=>__('Blog Home URL with parameters', 'newsletter-statistics'))) ?>
-                <p class="description">
-                    <?php _e('How the links inside newsletters are rewritten to track clicks.', 'newsletter-statistics') ?> 
-                    <?php _e('Since spam filters check links inside emails, <a href="http://www.thenewsletterplugin.com/plugins/newsletter/statistics-module#tracking-url" target="_blank">read more about this setting</a>.', 'newsletter-statistics') ?> 
-                </p>
-            </td>
-        </tr>
-        -->
-        <tr>
-            <th><?php _e('Secret key', 'newsletter-statistics') ?></th>
+            <th><?php _e('Secret key', 'newsletter') ?></th>
             <td>
                 <?php $controls->text('key') ?>
                 <p class="description">
